@@ -5,7 +5,7 @@
   <groupId>com.sonarsource.rule-compare</groupId>
   <artifactId>rule-compare</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
   <name>SonarSource :: Rule Comparison</name>
 
@@ -61,7 +61,7 @@
     </dependency>
   </dependencies>
 
-  <repositories>
+  <!--repositories>
     <repository>
       <id>central</id>
       <name>Atlassian Public Repository</name>
@@ -71,5 +71,5 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-  </repositories>
+  </repositories-->
 </project>
