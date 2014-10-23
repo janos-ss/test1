@@ -1,6 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>com.sonarsource.parent</groupId>
+    <artifactId>parent</artifactId>
+    <version>28</version>
+  </parent>
+  
   <groupId>com.sonarsource.rule-compare</groupId>
   <artifactId>rule-compare</artifactId>
   <version>1.0-SNAPSHOT</version>
@@ -8,14 +15,24 @@
   <name>SonarSource :: Rule Comparison</name>
   <inceptionYear>2014</inceptionYear>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
   <organization>
     <name>SonarSource</name>
     <url>http://www.sonarsource.com</url>
   </organization>
+  <licenses>
+    <license>
+      <name>Commercial</name>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.sonarsource.com/browse/RULEAPI</url>
+  </issueManagement>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
   <dependencies>
     <dependency>
