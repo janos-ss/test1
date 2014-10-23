@@ -10,13 +10,17 @@ public class MarkdownConverter {
   private boolean tableOpen = false;
   private boolean wrongLanguage = false;
   private boolean paragraph = true;
-  private LinkedList<String> listCloses = new LinkedList<String>();
+  private LinkedList<String> listCloses;
 
   public MarkdownConverter() {
   }
 
   public String transform(String markdown, String language) {
-    // RESET GLOBALS!!!
+    codeOpen = false;
+    tableOpen = false;
+    wrongLanguage = false;
+    paragraph = true;
+    listCloses = new LinkedList<String>();
     StringBuilder sb = new StringBuilder();
 
     String[] lines = markdown.split("\r\n");
@@ -24,7 +28,7 @@ public class MarkdownConverter {
     for (int i = 0; i < lines.length; i++) {
       if (lines[i].length() > 0) {
 
-        lines[i] = handleCode(lines[i].matches(language + "[, }]"), lines[i]);
+        lines[i] = handleCode(lines[i].matches(language == null?"":language + "[, }]"), lines[i]);
 
         if (!codeOpen) {
           lines[i] = handleTable(lines[i], sb);
@@ -41,11 +45,9 @@ public class MarkdownConverter {
           }
           sb.append(lines[i]);
           if (paragraph && !codeOpen) {
-            sb.append("</p>%n");
+            sb.append("</p>");
           }
-          else {
-            sb.append("%n");
-          }
+          sb.append("%n");
           paragraph = true;
         }
       }
@@ -55,11 +57,9 @@ public class MarkdownConverter {
     }
     if (codeOpen) {
       sb.append("</pre>%n");
-      codeOpen = false;
     }
     if (tableOpen) {
       sb.append("</table>%n");
-      tableOpen = false;
     }
 
     return sb.toString();
@@ -68,7 +68,7 @@ public class MarkdownConverter {
   protected String handleHeading(String line) {
     if (line.matches("^h[0-9]\\..*")) {
       char level = line.charAt(1);
-      line = "<h" + level + '>' + line.substring(3) + "</h" + level + ">%n";
+      line = "<h" + level + '>' + line.substring(3).trim() + "</h" + level + ">%n";
       paragraph = false;
     }
     return line;
@@ -143,6 +143,7 @@ public class MarkdownConverter {
         line = line.replaceFirst("\\{code\\}", "</pre>");
         wrongLanguage = false;
         codeOpen = false;
+        paragraph = false;
       } else if (line.contains("{code}") || matchesLanguage) {
         codeOpen = true;
         line = line.replaceFirst("\\{code.*\\}", "<pre>");
