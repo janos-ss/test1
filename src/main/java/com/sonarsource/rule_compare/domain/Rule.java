@@ -12,26 +12,37 @@ import java.util.Set;
 public class Rule {
 
   private Boolean defaultActive = null;
-  private String key;
-  private BasicStatus status;
-  private String title; // what about alternatives, e.g. [function|method]
-  private String message;
-  private String fullDescription;
-  private String description;
-  private String nonCompliant;
-  private String compliant;
-  private String exceptions;
-  private String references;
-  private String sqaleCharac;
-  private String sqaleRemediation;
-  private String sqaleCost;
-  private String severity;
-  private List<Parameter> parameterList;
-  private Set<String> tags;
-  private String[] legacyKeys;
+  private String key = null;
+  private BasicStatus status = null;
+  private String title = null; // what about alternatives, e.g. [function|method]
+  private String message = null;
+  private String fullDescription = null;
+  private String description = null;
+  private String nonCompliant = null;
+  private String compliant = null;
+  private String exceptions = null;
+  private String references = null;
+  private String sqaleCharac = null;
+  private String sqaleRemediation = null;
+  private String sqaleCost = null;
+  private String severity = null;
+  private List<Parameter> parameterList = null;
+  private Set<String> tags = null;
+  private String[] legacyKeys = null;
   private List<Rule> subtasks = null;
 
   public Rule() {
+  }
+
+  public void merge(Rule subRule) {
+    if (subRule.defaultActive != null) {
+      this.defaultActive = subRule.defaultActive;
+    }
+
+
+
+
+// PICK UP HERE
   }
 
   @Override

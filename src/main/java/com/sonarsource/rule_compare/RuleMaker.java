@@ -34,6 +34,23 @@ public class RuleMaker {
     Issue issue = fetcher.fetch(key);
 
     if (issue != null) {
+      populateFields(rule, issue, language);
+
+      if (issue.getSubtasks() != null && language != null && language.length() > 0) {
+        Issue subIssue = getSubtask(language, issue.getSubtasks());
+
+//// TEST
+
+        Rule subRule = new Rule();
+        populateFields(subRule, subIssue, null);
+        rule.merge(subRule);
+      }
+    }
+
+    return rule;
+  }
+
+  private void populateFields(Rule rule, Issue issue, String language) {
       rule.setKey(issue.getKey());
       rule.setStatus(issue.getStatus());
       rule.setTitle(issue.getSummary());
@@ -58,23 +75,16 @@ public class RuleMaker {
 
       rule.setParameterList(handleParameterList(getFieldValue(issue, "List of parameters")));
 
-      if (issue.getSubtasks() != null && language != null && language.length() > 0) {
-        Subtask subt = getSubtask(language, issue.getSubtasks());
-        // create rule from subtask & add merge method to Rule? e.g. rule.merge(subRule);
-      }
     }
 
-    return rule;
-  }
-
-  private Subtask getSubtask(String language, Iterable<Subtask> tasks) {
+  private Issue getSubtask(String language, Iterable<Subtask> tasks) {
     Iterator<Subtask> itr = tasks.iterator();
     while (itr.hasNext()) {
       Subtask subt = itr.next();
       String summary = subt.getSummary();
       if (isLanguageMatch(language, subt.getSummary().trim()))
       {
-        return subt;
+        return fetcher.fetch(subt.getIssueKey());
       }
     }
     return null;
