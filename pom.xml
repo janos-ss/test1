@@ -8,12 +8,6 @@
   <name>SonarSource :: Rule Comparison</name>
   <inceptionYear>2014</inceptionYear>
 
-  <parent>
-    <groupId>com.sonarsource.parent</groupId>
-    <artifactId>parent</artifactId>
-    <version>28</version>
-  </parent>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -52,13 +46,11 @@
       <version>2.0.0-m25</version>
       <scope>provided</scope>
     </dependency>
-    <!-- com.atlassian.util.concurrent.Promise jar -->
     <dependency>
       <groupId>com.atlassian.util.concurrent</groupId>
       <artifactId>atlassian-util-concurrent</artifactId>
       <version>2.4.0-M9</version>
     </dependency>
-    <!-- com.google.common.util.concurrent.ListenableFuture jar -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -71,15 +63,4 @@
     </dependency>
   </dependencies>
 
-  <!--repositories>
-    <repository>
-      <id>central</id>
-      <name>Atlassian Public Repository</name>
-      <layout>default</layout>
-      <url>https://maven.atlassian.com/repository/public</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories-->
 </project>
