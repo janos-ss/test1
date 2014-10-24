@@ -3,9 +3,9 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.rule_compare;
+package com.sonarsource.ruleapi;
 
-import com.sonarsource.rule_compare.domain.Rule;
+import com.sonarsource.ruleapi.domain.Rule;
 
 public class Main
 {
@@ -22,7 +22,7 @@ public class Main
 
     RuleMaker maker = new RuleMaker();
 
-    Rule rule = maker.makeRule(ruleKey, language);
+    maker.makeRule(ruleKey, language);
 
   }
 }

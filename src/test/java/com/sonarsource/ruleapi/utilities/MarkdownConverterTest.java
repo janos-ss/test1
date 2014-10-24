@@ -3,9 +3,8 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.rule_compare.utilities;
+package com.sonarsource.ruleapi.utilities;
 
-import com.sonarsource.rule_compare.utilities.MarkdownConverter;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.rule_compare.utilities;
+package com.sonarsource.ruleapi.utilities;
 
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.JiraRestClientFactory;
@@ -11,7 +11,6 @@ import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.SearchResult;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-import com.sonarsource.rule_compare.domain.Rule;
 
 import java.net.URI;
 
@@ -20,37 +19,22 @@ import java.net.URI;
  */
 public class IssueFetcher {
 
-  /*
-   * get custom fields names
-   * http://jira.sonarsource.com/rest/api/latest/issue/createmeta?projectKeys=RSPEC&issuetypeName=Specification&expand=projects.issuetypes.
-   * fields
-   */
-
-  // add ISSUE to get by key, add SEARCH to get by jql query
-
   private static final String RSPEC = "RSPEC-";
   private static final String LEGACY_SEARCH1 = "jql=project%3DRSPEC%20AND%20\"Legacy%20Key\"~\"";
   private static final String LEGACY_SEARCH2 = "\"";
-  private static final URI serverUri = URI.create("http://jira.sonarsource.com/");
-
-  private String key = null;
-  private String legacyKey = null;
+  private static final URI SERVER_URI = URI.create("http://jira.sonarsource.com/");
 
   public IssueFetcher() {
   }
 
   public Issue fetch(String key) {
 
-    Rule rule = null;
     Issue issue = null;
     AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
 
-    if (key.matches("S[0-9]+"))
-    {
+    if (key.matches("S[0-9]+")) {
       issue = getIssueByKey(factory, RSPEC + key.replaceFirst("S", ""));
-    }
-    else
-    {
+    } else {
       issue = getIssueByLegacyKey(factory, LEGACY_SEARCH1 + key + LEGACY_SEARCH2);
     }
 
@@ -58,21 +42,17 @@ public class IssueFetcher {
   }
 
   private Issue getIssueByKey(JiraRestClientFactory factory, String issueKey) {
-    JiraRestClient client = factory.create(serverUri, new AnonymousAuthenticationHandler());
+    JiraRestClient client = factory.create(SERVER_URI, new AnonymousAuthenticationHandler());
     return client.getIssueClient().getIssue(issueKey).claim();
   }
 
   private Issue getIssueByLegacyKey(JiraRestClientFactory factory, String searchString) {
-    Issue issue = null;
+    JiraRestClient client = factory.create(SERVER_URI, new AnonymousAuthenticationHandler());
+    SearchResult sr = client.getSearchClient().searchJql(searchString).claim();
 
-    JiraRestClient client = factory.create(serverUri, new AnonymousAuthenticationHandler());
-    SearchResult sr = client.getSearchClient().searchJql(legacyKey).claim();
-
-    if (sr.getTotal() == 1)
-    {
+    if (sr.getTotal() == 1) {
       return getIssueByKey(factory, sr.getIssues().iterator().next().getKey());
-    }
-    else {
+    } else {
       return null;
     }
   }

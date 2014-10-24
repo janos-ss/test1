@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.rule_compare;
+package com.sonarsource.ruleapi;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.rule_compare.domain;
+package com.sonarsource.ruleapi.domain;
 
 /**
  * Created by ganncamp on 9/19/14.

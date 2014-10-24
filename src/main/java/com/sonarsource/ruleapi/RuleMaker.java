@@ -3,15 +3,15 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.rule_compare;
+package com.sonarsource.ruleapi;
 
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Subtask;
-import com.sonarsource.rule_compare.domain.Parameter;
-import com.sonarsource.rule_compare.domain.Rule;
-import com.sonarsource.rule_compare.utilities.IssueFetcher;
-import com.sonarsource.rule_compare.utilities.MarkdownConverter;
+import com.sonarsource.ruleapi.domain.Parameter;
+import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.utilities.IssueFetcher;
+import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -44,7 +44,7 @@ public class RuleMaker {
       if (issue.getSubtasks() != null && language != null && language.length() > 0) {
         Issue subIssue = getSubtask(language, issue.getSubtasks());
 
-//// TEST
+        // // TEST
 
         Rule subRule = new Rule();
         populateFields(subRule, subIssue, null);
@@ -56,37 +56,36 @@ public class RuleMaker {
   }
 
   private void populateFields(Rule rule, Issue issue, String language) {
-      rule.setKey(issue.getKey());
-      rule.setStatus(issue.getStatus());
-      rule.setTitle(issue.getSummary());
-      rule.setTags(issue.getLabels());
+    rule.setKey(issue.getKey());
+    rule.setStatus(issue.getStatus());
+    rule.setTitle(issue.getSummary());
+    rule.setTags(issue.getLabels());
 
-      setDescription(rule, issue.getDescription(), language);
+    setDescription(rule, issue.getDescription(), language);
 
-      rule.setMessage(issue.getFieldByName("Message").getValue().toString());
-      rule.setDefaultActive(Boolean.valueOf(issue.getFieldByName("Activated by default").getValue().toString()));
+    rule.setMessage(issue.getFieldByName("Message").getValue().toString());
+    rule.setDefaultActive(Boolean.valueOf(issue.getFieldByName("Activated by default").getValue().toString()));
 
-      String tmp = getFieldValue(issue, "Legacy Key");
-      if (tmp != null) {
-        rule.setLegacyKeys(tmp.split(","));
-      }
-
-      rule.setSqaleCharac(pullValueFromJson(getFieldValue(issue, "SQALE Characteristic")));
-      rule.setSqaleRemediation(pullValueFromJson(getFieldValue(issue, "SQALE Remediation Function")));
-      rule.setSqaleCost(pullValueFromJson(getFieldValue(issue, "SQALE Constant Cost or Linear Threshold")));
-      // more sqale fields...
-
-      rule.setSeverity(pullValueFromJson(getFieldValue(issue, "Default Severity")));
-
-      rule.setParameterList(handleParameterList(getFieldValue(issue, "List of parameters")));
-
+    String tmp = getCustomFieldValue(issue, "Legacy Key");
+    if (tmp != null) {
+      rule.setLegacyKeys(tmp.split(","));
     }
+
+    rule.setSqaleCharac(pullValueFromJson(getCustomFieldValue(issue, "SQALE Characteristic")));
+    rule.setSqaleRemediation(pullValueFromJson(getCustomFieldValue(issue, "SQALE Remediation Function")));
+    rule.setSqaleCost(pullValueFromJson(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold")));
+// more sqale fields...
+
+    rule.setSeverity(pullValueFromJson(getCustomFieldValue(issue, "Default Severity")));
+
+    rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters")));
+
+  }
 
   private Issue getSubtask(String language, Iterable<Subtask> tasks) {
     Iterator<Subtask> itr = tasks.iterator();
     while (itr.hasNext()) {
       Subtask subt = itr.next();
-      String summary = subt.getSummary();
       if (isLanguageMatch(language, subt.getSummary().trim()))
       {
         return fetcher.fetch(subt.getIssueKey());
@@ -120,11 +119,9 @@ public class RuleMaker {
           param = new Parameter();
           param.setKey(extractParamValue(line));
           list.add(param);
-        }
-        else if (line.startsWith("default") || line.startsWith("default")) {
+        } else if (line.startsWith("default") || line.startsWith("default")) {
           param.setDefaultVal(extractParamValue(line));
-        }
-        else if (line.startsWith("description") || line.startsWith("description")) {
+        } else if (line.startsWith("description") || line.startsWith("description")) {
           param.setDescription(extractParamValue(line));
         }
       }
@@ -153,12 +150,13 @@ public class RuleMaker {
           return m.get("value");
         }
       } catch (ParseException e) {
+        // nothing to see here
       }
     }
     return null;
   }
 
-  private String getFieldValue(Issue issue, String name) {
+  private String getCustomFieldValue(Issue issue, String name) {
     if (name != null) {
       Field f = issue.getFieldByName(name);
       if (f != null && f.getValue() != null) {
@@ -193,18 +191,16 @@ public class RuleMaker {
     for (int i = 1; i < pieces.length; i++) {
 
       String piece = pieces[i];
-      if (piece.indexOf("Noncompliant Code Example") > -1)
-      {
+      if (piece.indexOf("Noncompliant Code Example") > -1) {
         rule.setNonCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, language));
-      }
-      else if (piece.indexOf("Compliant Solution") > -1)
-      {
+
+      } else if (piece.indexOf("Compliant Solution") > -1) {
         rule.setCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, language));
-      }
-      else if (piece.indexOf("Exceptions") > -1) {
+
+      } else if (piece.indexOf("Exceptions") > -1) {
         rule.setExceptions(markdownConverter.transform(MARKDOWN_H2 + piece, language));
-      }
-      else if (piece.indexOf("See") > -1) {
+
+      }  else if (piece.indexOf("See") > -1) {
         rule.setReferences(markdownConverter.transform(MARKDOWN_H2 + piece, language));
       }
     }
@@ -214,18 +210,16 @@ public class RuleMaker {
 
     rule.setDescription(pieces[0]);
     for (String piece : pieces) {
-      if (piece.indexOf("Noncompliant Code Example") > -1)
-      {
+      if (piece.indexOf("Noncompliant Code Example") > -1) {
         rule.setNonCompliant(HTML_H2 + piece);
-      }
-      else if (piece.indexOf("Compliant Solution") > -1)
-      {
+
+      } else if (piece.indexOf("Compliant Solution") > -1) {
         rule.setNonCompliant(HTML_H2 + piece);
-      }
-      else if (piece.indexOf("Exceptions") > -1) {
+
+      }  else if (piece.indexOf("Exceptions") > -1) {
         rule.setExceptions(HTML_H2 + piece);
-      }
-      else if (piece.indexOf("See") > -1) {
+
+      } else if (piece.indexOf("See") > -1) {
         rule.setReferences(HTML_H2 + piece);
       }
     }

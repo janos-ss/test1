@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.rule_compare.domain;
+package com.sonarsource.ruleapi.domain;
 
 import com.atlassian.jira.rest.client.domain.BasicStatus;
 
@@ -11,9 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by ganncamp on 9/19/14.
- */
 public class Rule {
 
   private Boolean defaultActive = null;
@@ -44,9 +41,6 @@ public class Rule {
       this.defaultActive = subRule.defaultActive;
     }
 
-
-
-
 // PICK UP HERE
   }
 
@@ -59,36 +53,51 @@ public class Rule {
 
     Rule rule = (Rule) o;
 
-    if (!compliant.equals(rule.compliant))
+    if (!compliant.equals(rule.compliant)) {
       return false;
-    if (!defaultActive.equals(rule.defaultActive))
+    }
+    if (!defaultActive.equals(rule.defaultActive)) {
       return false;
-    if (!description.equals(rule.description))
+    }
+    if (!description.equals(rule.description)) {
       return false;
-    if (!exceptions.equals(rule.exceptions))
+    }
+    if (!exceptions.equals(rule.exceptions)) {
       return false;
-    if (!Arrays.equals(legacyKeys, rule.legacyKeys))
+    }
+    if (!Arrays.equals(legacyKeys, rule.legacyKeys)) {
       return false;
-    if (!message.equals(rule.message))
+    }
+    if (!message.equals(rule.message)) {
       return false;
-    if (!nonCompliant.equals(rule.nonCompliant))
+    }
+    if (!nonCompliant.equals(rule.nonCompliant)) {
       return false;
-    if (parameterList != null ? !parameterList.equals(rule.parameterList) : rule.parameterList != null)
+    }
+    if (parameterList != null ? !parameterList.equals(rule.parameterList) : rule.parameterList != null) {
       return false;
-    if (!references.equals(rule.references))
+    }
+    if (!references.equals(rule.references)) {
       return false;
-    if (severity != rule.severity)
+    }
+    if (severity.equals(rule.severity)) {
       return false;
-    if (!sqaleCharac.equals(rule.sqaleCharac))
+    }
+    if (!sqaleCharac.equals(rule.sqaleCharac)) {
       return false;
-    if (!sqaleCost.equals(rule.sqaleCost))
+    }
+    if (!sqaleCost.equals(rule.sqaleCost)) {
       return false;
-    if (!sqaleRemediation.equals(rule.sqaleRemediation))
+    }
+    if (!sqaleRemediation.equals(rule.sqaleRemediation)) {
       return false;
-    if (tags != null ? !tags.equals(rule.tags) : rule.tags != null)
+    }
+    if (tags != null ? !tags.equals(rule.tags) : rule.tags != null) {
       return false;
-    if (!title.equals(rule.title))
+    }
+    if (!title.equals(rule.title)) {
       return false;
+    }
 
     return true;
   }
