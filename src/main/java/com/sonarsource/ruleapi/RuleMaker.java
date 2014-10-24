@@ -119,9 +119,9 @@ public class RuleMaker {
           param = new Parameter();
           param.setKey(extractParamValue(line));
           list.add(param);
-        } else if (line.startsWith("default") || line.startsWith("default")) {
+        } else if (line.startsWith("default") || line.startsWith("Default")) {
           param.setDefaultVal(extractParamValue(line));
-        } else if (line.startsWith("description") || line.startsWith("description")) {
+        } else if (line.startsWith("description") || line.startsWith("Description")) {
           param.setDescription(extractParamValue(line));
         }
       }
