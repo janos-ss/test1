@@ -20,9 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by ganncamp on 10/17/14.
- */
 public class RuleMaker {
 
   private static final String MARKDOWN_H2 = "h2.";
@@ -86,8 +83,7 @@ public class RuleMaker {
     Iterator<Subtask> itr = tasks.iterator();
     while (itr.hasNext()) {
       Subtask subt = itr.next();
-      if (isLanguageMatch(language, subt.getSummary().trim()))
-      {
+      if (isLanguageMatch(language, subt.getSummary().trim())) {
         return fetcher.fetch(subt.getIssueKey());
       }
     }
@@ -101,8 +97,7 @@ public class RuleMaker {
     if (!candidate.startsWith(language)) {
       return false;
     }
-    if (candidate.matches(language + "\\W.*"))
-    {
+    if (candidate.matches(language + "\\W.*")) {
       // Java vs Javascript
       return true;
     }
@@ -132,8 +127,7 @@ public class RuleMaker {
   private String extractParamValue(String line) {
     if (line.indexOf('=') > -1) {
       return line.substring(line.indexOf('=') + 1).trim();
-    }
-    else if (line.indexOf(':') > -1) {
+    } else if (line.indexOf(':') > -1) {
       return line.substring(line.indexOf(':') + 1).trim();
     }
     return line;

@@ -263,8 +263,7 @@ public class MarkdownConverter {
   }
 
   private int findFirst(String src, char charToFind) {
-    for (int i = 0; i < src.length(); i++)
-    {
+    for (int i = 0; i < src.length(); i++) {
       if (src.charAt(i) == charToFind) {
         return i;
       }

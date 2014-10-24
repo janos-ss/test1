@@ -31,7 +31,6 @@ public class Rule {
   private List<Parameter> parameterList = null;
   private Set<String> tags = null;
   private String[] legacyKeys = null;
-  private List<Rule> subtasks = null;
 
   public Rule() {
   }
@@ -46,10 +45,12 @@ public class Rule {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
 
     Rule rule = (Rule) o;
 
@@ -256,10 +257,6 @@ public class Rule {
 
   public void setReferences(String references) {
     this.references = references;
-  }
-
-  public List<Rule> getSubtasks() {
-    return subtasks;
   }
 
   public String getSqaleCharac() {

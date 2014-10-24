@@ -14,9 +14,6 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientF
 
 import java.net.URI;
 
-/**
- * Created by ganncamp on 9/21/14.
- */
 public class IssueFetcher {
 
   private static final String RSPEC = "RSPEC-";

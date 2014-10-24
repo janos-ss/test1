@@ -5,12 +5,10 @@
  */
 package com.sonarsource.ruleapi;
 
-import com.sonarsource.ruleapi.domain.Rule;
 
 public class Main
 {
-  public static void main(String[] args)
-  {
+  public static void main(String[] args) {
     if (args.length < 2) {
 
       System.out.println("Usage: language ruleKey");
