@@ -46,8 +46,8 @@ public class RuleMakerTest extends TestCase{
   }
 
   public void testPullValueFromJson() throws Exception {
-    String json = "[{,\",s,e,l,f,\",:,\",h,t,t,p,:,\\,/,\\,/,j,i,r,a,.,s,o,n,a,r,s,o,u,r,c,e,.,c,o,m,\\,/,r,e,s,t,\\,/,a,p,i,\\,/,2,\\,/,c,u,s,t,o,m,F,i,e,l,d,O,p,t,i,o,n,\\,/,1,0,0,7,1,\",,,\",v,a,l,u,e,\",:,\",R,e,l,i,a,b,i,l,i,t,y,\",,,\",i,d,\",:,\",1,0,0,7,1,\",,,\",c,h,i,l,d,\",:,{,\",s,e,l,f,\",:,\",h,t,t,p,:,\\,/,\\,/,j,i,r,a,.,s,o,n,a,r,s,o,u,r,c,e,.,c,o,m,\\,/,r,e,s,t,\\,/,a,p,i,\\,/,2,\\,/,c,u,s,t,o,m,F,i,e,l,d,O,p,t,i,o,n,\\,/,1,0,0,7,3,\",,,\",v,a,l,u,e,\",:,\",D,a,t,a, ,r,e,l,a,t,e,d, ,r,e,l,i,a,b,i,l,i,t,y,\",,,\",i,d,\",:,\",1,0,0,7,3,\",},}]";
-    Assert.assertEquals(rm.pullValueFromJson(json),"Reliability");
+    String json = "{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10071\",\"value\":\"Reliability\",\"id\":\"10071\",\"child\":{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10073\",\"value\":\"Data related reliability\",\"id\":\"10073\"}}";
+    Assert.assertEquals("Reliability", rm.pullValueFromJson(json));
   }
 
 
