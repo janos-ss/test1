@@ -4,3 +4,4 @@
  * mailto:contact AT sonarsource DOT com
  */
 package com.sonarsource.ruleapi.utilities;
+

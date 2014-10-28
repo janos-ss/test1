@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 public class MarkdownConverterTest extends TestCase {
 
-  MarkdownConverter mc = new MarkdownConverter();
+  private MarkdownConverter mc = new MarkdownConverter();
 
   public void testCode() throws Exception {
     String markdown = "{code}\r\nfor (int i = 0; i < 10; i++) {\r\n  // ...\r\n}\r\n{code}";

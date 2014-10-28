@@ -16,7 +16,7 @@ public class Rule {
   private Boolean defaultActive = null;
   private String key = null;
   private BasicStatus status = null;
-  private String title = null; // what about alternatives, e.g. [function|method]
+  private String title = null;
   private String message = null;
   private String fullDescription = null;
   private String description = null;
