@@ -36,13 +36,13 @@ public class RuleMaker {
     Issue issue = fetcher.fetch(key);
 
     if (issue != null) {
-      populateFields(rule, issue, language);
+      populateFields(rule, issue);
 
-      if (issue.getSubtasks() != null && language != null && language.length() > 0) {
-        Issue subIssue = getSubtask(language, issue.getSubtasks());
+      Issue subIssue = getSubtask(language, issue.getSubtasks());
+      if (subIssue != null) {
 
         Rule subRule = new Rule(language);
-        populateFields(subRule, subIssue, null);
+        populateFields(subRule, subIssue);
         rule.merge(subRule);
       }
     }
@@ -50,13 +50,13 @@ public class RuleMaker {
     return rule;
   }
 
-  private void populateFields(Rule rule, Issue issue, String language) {
+  private void populateFields(Rule rule, Issue issue) {
     rule.setKey(issue.getKey());
     rule.setStatus(issue.getStatus());
     rule.setTitle(issue.getSummary());
     rule.setTags(issue.getLabels());
 
-    setDescription(rule, issue.getDescription(), language);
+    setDescription(rule, issue.getDescription());
 
     rule.setMessage(getFieldValue(issue,"Message"));
     rule.setDefaultActive(Boolean.valueOf(getFieldValue(issue,"Activated by default")));
@@ -73,16 +73,18 @@ public class RuleMaker {
 
     rule.setSeverity(pullValueFromJson(getCustomFieldValue(issue, "Default Severity")));
 
-    rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters"), language));
+    rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters"), rule.getLanguage()));
 
   }
 
   private Issue getSubtask(String language, Iterable<Subtask> tasks) {
-    Iterator<Subtask> itr = tasks.iterator();
-    while (itr.hasNext()) {
-      Subtask subt = itr.next();
-      if (isLanguageMatch(language, subt.getSummary().trim())) {
-        return fetcher.fetch(subt.getIssueKey());
+    if (tasks != null) {
+      Iterator<Subtask> itr = tasks.iterator();
+      while (itr.hasNext()) {
+        Subtask subt = itr.next();
+        if (isLanguageMatch(language, subt.getSummary().trim())) {
+          return fetcher.fetch(subt.getIssueKey());
+        }
       }
     }
     return null;
@@ -222,7 +224,7 @@ public class RuleMaker {
     return null;
   }
 
-  private void setDescription(Rule rule, String fullDescription, String language) {
+  private void setDescription(Rule rule, String fullDescription) {
 
     rule.setFullDescription(fullDescription);
     if (fullDescription != null && fullDescription.length() > 0) {
@@ -230,31 +232,31 @@ public class RuleMaker {
       String[] htmlPieces = fullDescription.split(HTML_H2);
 
       if (markdownPieces.length > 1 || htmlPieces.length == 1) {
-        handleMarkdown(rule, markdownPieces, language);
+        handleMarkdown(rule, markdownPieces);
       } else {
         handleHtml(rule, htmlPieces);
       }
     }
   }
 
-  private void handleMarkdown(Rule rule, String[] pieces, String language) {
+  private void handleMarkdown(Rule rule, String[] pieces) {
 
-    rule.setDescription(markdownConverter.transform(pieces[0], language));
+    rule.setDescription(markdownConverter.transform(pieces[0], rule.getLanguage()));
 
     for (int i = 1; i < pieces.length; i++) {
 
       String piece = pieces[i];
       if (piece.indexOf("Noncompliant Code Example") > -1) {
-        rule.setNonCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, language));
+        rule.setNonCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
 
       } else if (piece.indexOf("Compliant Solution") > -1) {
-        rule.setCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, language));
+        rule.setCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
 
       } else if (piece.indexOf("Exceptions") > -1) {
-        rule.setExceptions(markdownConverter.transform(MARKDOWN_H2 + piece, language));
+        rule.setExceptions(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
 
       }  else if (piece.indexOf("See") > -1) {
-        rule.setReferences(markdownConverter.transform(MARKDOWN_H2 + piece, language));
+        rule.setReferences(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
       }
     }
   }
