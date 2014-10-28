@@ -126,18 +126,18 @@ public class RuleMaker {
           line = stripLeading(line, "**");
           line = stripLeading(line, "*");
           line = line.trim();
+          String label = extractParamLcLabel(line);
 
-          if (isParamLanguageMatch(line, language)) {
-            String lineLc = line.toLowerCase();
-            if (lineLc.startsWith("key")) {
+          if (isParamLanguageMatch(label, language)) {
+            if (label == null || label.startsWith("key")) {
               param = new Parameter();
               param.setKey(extractParamValue(line));
               list.add(param);
-            } else if (lineLc.startsWith("default")) {
+            } else if (label.startsWith("default")) {
               param.setDefaultVal(extractParamValue(line));
-            } else if (lineLc.startsWith("description")) {
+            } else if (label.startsWith("description")) {
               param.setDescription(extractParamValue(line));
-            } else if (lineLc.startsWith("type")) {
+            } else if (label.startsWith("type")) {
               param.setType(extractParamValue(line));
             }
           }
@@ -147,15 +147,14 @@ public class RuleMaker {
     return list;
   }
 
-  private boolean isParamLanguageMatch(String line, String language)
-  {
-    String label = null;
-    if (line.indexOf('=') > -1) {
-      label = line.substring(0,line.indexOf('=')).trim();
-    } else if (line.indexOf(':') > -1) {
-      label = line.substring(0,line.indexOf(':')).trim();
+  private boolean isParamLanguageMatch(String label, String language) {
+    if (label == null) {
+      return true;
     }
-    String [] words = label.split(" ");
+
+    label = label.replace(" value", "");
+
+    String[] words = label.split(" ");
     if (words.length == 1) {
       return true;
     }
@@ -182,6 +181,15 @@ public class RuleMaker {
       return line.substring(line.indexOf(':') + 1).trim();
     }
     return line;
+  }
+
+  private String extractParamLcLabel(String line) {
+    if (line.indexOf('=') > -1) {
+      return line.substring(0,line.indexOf('=')).trim().toLowerCase();
+    } else if (line.indexOf(':') > -1) {
+      return line.substring(0,line.indexOf(':')).trim().toLowerCase();
+    }
+    return null;
   }
 
   protected String pullValueFromJson(String json) {

@@ -35,7 +35,12 @@ public class RuleMakerTest extends TestCase{
   public void testHandleParameterList() throws Exception{
     String paramString = "* key: complexity_threshold\r\n* type = text\r\n** Description: The minimum complexity at which this rule will be triggered.\r\n** Default: 250";
     List<Parameter> paramList = rm.handleParameterList(paramString, "Java");
-    Assert.assertTrue(paramList != null && paramList.size() == 1);
+    Assert.assertTrue(paramList.size() == 1);
+  }
+
+  public void testHandleParameterListEmptyString() throws Exception {
+    List<Parameter> paramList = rm.handleParameterList("", "Java");
+    Assert.assertTrue(paramList.size() == 0);
   }
 
   public void testHandleParameterListMultilanguage() throws Exception {
@@ -45,11 +50,14 @@ public class RuleMakerTest extends TestCase{
 
   }
 
+  public void testHandleParameterListNoKeyLabel() throws Exception {
+    String paramString = "* indentSize \r\n** Description: Number of white-spaces of an indent. If this property is not set, we just check that the code is indented. \r\n** Default value: none \r\n* tabWidth \r\n** Description: Equivalent number of spaces of a tabulation \r\n** Default value: 2\r\n";
+    List<Parameter> paramList = rm.handleParameterList(paramString, "Java");
+    Assert.assertTrue(paramList.size() == 2 && "indentSize".equals(paramList.get(0).getKey()));
+  }
+
   public void testPullValueFromJson() throws Exception {
     String json = "{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10071\",\"value\":\"Reliability\",\"id\":\"10071\",\"child\":{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10073\",\"value\":\"Data related reliability\",\"id\":\"10073\"}}";
     Assert.assertEquals("Reliability", rm.pullValueFromJson(json));
   }
-
-
-
 }
