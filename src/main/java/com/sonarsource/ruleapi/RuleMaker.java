@@ -41,7 +41,7 @@ public class RuleMaker {
       if (issue.getSubtasks() != null && language != null && language.length() > 0) {
         Issue subIssue = getSubtask(language, issue.getSubtasks());
 
-        // // TEST
+// TEST
 
         Rule subRule = new Rule();
         populateFields(subRule, subIssue, null);
@@ -60,8 +60,8 @@ public class RuleMaker {
 
     setDescription(rule, issue.getDescription(), language);
 
-    rule.setMessage(issue.getFieldByName("Message").getValue().toString());
-    rule.setDefaultActive(Boolean.valueOf(issue.getFieldByName("Activated by default").getValue().toString()));
+    rule.setMessage(getFieldValue(issue,"Message"));
+    rule.setDefaultActive(Boolean.valueOf(getFieldValue(issue,"Activated by default")));
 
     String tmp = getCustomFieldValue(issue, "Legacy Key");
     if (tmp != null) {
@@ -75,7 +75,7 @@ public class RuleMaker {
 
     rule.setSeverity(pullValueFromJson(getCustomFieldValue(issue, "Default Severity")));
 
-    rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters")));
+    rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters"), language));
 
   }
 
@@ -90,7 +90,17 @@ public class RuleMaker {
     return null;
   }
 
-  private boolean isLanguageMatch(String language, String candidate) {
+  private String getFieldValue(Issue issue, String fieldName) {
+    if (issue != null && fieldName != null) {
+      Field f = issue.getFieldByName(fieldName);
+      if (f != null && f.getValue() != null) {
+       return f.getValue().toString();
+      }
+    }
+    return null;
+  }
+
+  protected boolean isLanguageMatch(String language, String candidate) {
     if (language.equals(candidate)) {
       return true;
     }
@@ -104,24 +114,65 @@ public class RuleMaker {
     return false;
   }
 
-  private List<Parameter> handleParameterList(String paramString) {
+  protected List<Parameter> handleParameterList(String paramString, String language) {
     List<Parameter> list = new ArrayList<Parameter>();
     Parameter param = null;
     if (paramString != null) {
       String[] lines = paramString.split("\r\n");
       for (String line : lines) {
-        if (line.startsWith("key") || line.startsWith("Key")) {
-          param = new Parameter();
-          param.setKey(extractParamValue(line));
-          list.add(param);
-        } else if (line.startsWith("default") || line.startsWith("Default")) {
-          param.setDefaultVal(extractParamValue(line));
-        } else if (line.startsWith("description") || line.startsWith("Description")) {
-          param.setDescription(extractParamValue(line));
+
+        if (line.trim().length() > 0) {
+
+          line = stripLeading(line, "**");
+          line = stripLeading(line, "*");
+          line = line.trim();
+
+          if (isParamLanguageMatch(line, language)) {
+            String lineLc = line.toLowerCase();
+            if (lineLc.startsWith("key")) {
+              param = new Parameter();
+              param.setKey(extractParamValue(line));
+              list.add(param);
+            } else if (lineLc.startsWith("default")) {
+              param.setDefaultVal(extractParamValue(line));
+            } else if (lineLc.startsWith("description")) {
+              param.setDescription(extractParamValue(line));
+            } else if (lineLc.startsWith("type")) {
+              param.setType(extractParamValue(line));
+            }
+          }
         }
       }
     }
     return list;
+  }
+
+  private boolean isParamLanguageMatch(String line, String language)
+  {
+    String label = null;
+    if (line.indexOf('=') > -1) {
+      label = line.substring(0,line.indexOf('=')).trim();
+    } else if (line.indexOf(':') > -1) {
+      label = line.substring(0,line.indexOf(':')).trim();
+    }
+    String [] words = label.split(" ");
+    if (words.length == 1) {
+      return true;
+    }
+    for (int i = 0; i < words.length; i++) {
+      if (words[i].compareToIgnoreCase(language) == 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private String stripLeading(String line, String toStrip) {
+    String target = line.trim();
+    if (target.startsWith(toStrip)) {
+      return target.substring(toStrip.length());
+    }
+    return target;
   }
 
   private String extractParamValue(String line) {
@@ -133,7 +184,7 @@ public class RuleMaker {
     return line;
   }
 
-  private String pullValueFromJson(String json) {
+  protected String pullValueFromJson(String json) {
     if (json != null) {
       JSONParser jsonParser = new JSONParser();
 

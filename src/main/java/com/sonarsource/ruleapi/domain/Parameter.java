@@ -12,6 +12,7 @@ public class Parameter {
   private String key;
   private String description;
   private String defaultVal;
+  private String type;
 
   public String getKey() {
     return key;
@@ -35,5 +36,15 @@ public class Parameter {
 
   public void setDefaultVal(String defaultVal) {
     this.defaultVal = defaultVal;
+  }
+
+  public String getType() {
+
+    return type;
+  }
+
+  public void setType(String type) {
+
+    this.type = type;
   }
 }

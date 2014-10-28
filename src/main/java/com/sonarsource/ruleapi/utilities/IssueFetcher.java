@@ -29,7 +29,7 @@ public class IssueFetcher {
     Issue issue = null;
     AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
 
-    if (key.matches("S[0-9]+")) {
+    if (key.matches("S?[0-9]+")) {
       issue = getIssueByKey(factory, RSPEC + key.replaceFirst("S", ""));
     } else {
       issue = getIssueByLegacyKey(factory, LEGACY_SEARCH1 + key + LEGACY_SEARCH2);
