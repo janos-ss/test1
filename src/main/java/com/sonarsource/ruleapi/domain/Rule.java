@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class Rule {
 
+  private String language = null;
   private Boolean defaultActive = null;
   private String key = null;
   private BasicStatus status = null;
@@ -32,15 +33,49 @@ public class Rule {
   private Set<String> tags = null;
   private String[] legacyKeys = null;
 
-  public Rule() {
+  public Rule(String language) {
+    this.language = language;
   }
 
   public void merge(Rule subRule) {
+
+    String subTitle = subRule.title.replaceFirst(language, "").trim();
+    if (subTitle.length() > 0) {
+      if (subTitle.startsWith(": ") || subTitle.startsWith("- ")) {
+        subTitle = subTitle.substring(2);
+      }
+      if (subTitle.length() > 0) {
+        this.title = subTitle;
+      }
+    }
+
     if (subRule.defaultActive != null) {
       this.defaultActive = subRule.defaultActive;
     }
-
-// PICK UP HERE
+    if (subRule.severity != null) {
+      this.severity = subRule.severity;
+    }
+    if (subRule.message != null) {
+      this.message = subRule.message;
+    }
+    if (subRule.description != null && subRule.description.length() > 0) {
+      this.description = subRule.description;
+    }
+    if (subRule.nonCompliant != null && subRule.nonCompliant.length() > 0) {
+      this.nonCompliant = subRule.nonCompliant;
+    }
+    if (subRule.compliant != null && subRule.compliant.length() > 0) {
+      this.compliant = subRule.compliant;
+    }
+    if (subRule.exceptions != null && subRule.exceptions.length() > 0) {
+      this.exceptions = subRule.exceptions;
+    }
+    if (subRule.references != null && subRule.references.length() > 0) {
+      this.references = subRule.references;
+    }
+    if (subRule.parameterList != null && ! subRule.parameterList.isEmpty()) {
+      this.parameterList = subRule.parameterList;
+    }
   }
 
   @Override
@@ -267,4 +302,13 @@ public class Rule {
     this.sqaleCharac = sqaleCharac;
   }
 
+  public String getLanguage() {
+
+    return language;
+  }
+
+  public void setLanguage(String language) {
+
+    this.language = language;
+  }
 }

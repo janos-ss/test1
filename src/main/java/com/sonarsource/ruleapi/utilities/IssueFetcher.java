@@ -31,6 +31,8 @@ public class IssueFetcher {
 
     if (key.matches("S?[0-9]+")) {
       issue = getIssueByKey(factory, RSPEC + key.replaceFirst("S", ""));
+    } else if (key.matches(RSPEC+"[0-9]+")) {
+      issue = getIssueByKey(factory, key);
     } else {
       issue = getIssueByLegacyKey(factory, LEGACY_SEARCH1 + key + LEGACY_SEARCH2);
     }

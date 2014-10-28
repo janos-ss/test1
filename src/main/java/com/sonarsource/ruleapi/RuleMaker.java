@@ -32,7 +32,7 @@ public class RuleMaker {
 
   public Rule makeRule(String key, String language) {
 
-    Rule rule = new Rule();
+    Rule rule = new Rule(language);
     Issue issue = fetcher.fetch(key);
 
     if (issue != null) {
@@ -41,9 +41,7 @@ public class RuleMaker {
       if (issue.getSubtasks() != null && language != null && language.length() > 0) {
         Issue subIssue = getSubtask(language, issue.getSubtasks());
 
-// TEST
-
-        Rule subRule = new Rule();
+        Rule subRule = new Rule(language);
         populateFields(subRule, subIssue, null);
         rule.merge(subRule);
       }
@@ -152,8 +150,6 @@ public class RuleMaker {
       return true;
     }
 
-    label = label.replace(" value", "");
-
     String[] words = label.split(" ");
     if (words.length == 1) {
       return true;
@@ -185,9 +181,16 @@ public class RuleMaker {
 
   private String extractParamLcLabel(String line) {
     if (line.indexOf('=') > -1) {
-      return line.substring(0,line.indexOf('=')).trim().toLowerCase();
+      return tidyParamLabel(line.substring(0, line.indexOf('=')));
     } else if (line.indexOf(':') > -1) {
-      return line.substring(0,line.indexOf(':')).trim().toLowerCase();
+      return tidyParamLabel(line.substring(0, line.indexOf(':')));
+    }
+    return null;
+  }
+
+  private String tidyParamLabel(String paramLabel) {
+    if (paramLabel != null) {
+      return paramLabel.trim().toLowerCase().replace(" value","");
     }
     return null;
   }
