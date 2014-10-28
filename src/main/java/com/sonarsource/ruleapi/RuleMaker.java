@@ -229,10 +229,7 @@ public class RuleMaker {
       String[] markdownPieces = fullDescription.split(MARKDOWN_H2);
       String[] htmlPieces = fullDescription.split(HTML_H2);
 
-      if (markdownPieces.length == 1 && htmlPieces.length == 1) {
-        rule.setDescription(fullDescription);
-      }
-      if (markdownPieces.length > 1) {
+      if (markdownPieces.length > 1 || htmlPieces.length == 1) {
         handleMarkdown(rule, markdownPieces, language);
       } else {
         handleHtml(rule, htmlPieces);

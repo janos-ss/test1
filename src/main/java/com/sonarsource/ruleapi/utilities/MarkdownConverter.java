@@ -21,49 +21,69 @@ public class MarkdownConverter {
   }
 
   public String transform(String markdown, String language) {
-    codeOpen = false;
-    tableOpen = false;
-    wrongLanguage = false;
-    paragraph = true;
-    listCloses = new LinkedList<String>();
-    StringBuilder sb = new StringBuilder();
+    if (markdown != null && markdown.length() > 0) {
+      codeOpen = false;
+      tableOpen = false;
+      wrongLanguage = false;
+      paragraph = true;
+      listCloses = new LinkedList<String>();
+      StringBuilder sb = new StringBuilder();
 
-    String[] lines = markdown.split("\r\n");
+      String[] lines = markdown.split("\r\n");
 
-    for (int i = 0; i < lines.length; i++) {
-      if (lines[i].length() > 0) {
+      for (int i = 0; i < lines.length; i++) {
+        if (lines[i].length() > 0) {
 
-        lines[i] = handleCode(lines[i].matches(language == null?"":language + "[, }]"), lines[i]);
+          lines[i] = handleCodeTags(lines[i]);
+          lines[i] = handleEntities(lines[i]);
+          lines[i] = handleCode(lines[i].matches(language == null ? "" : language + "[, }]"), lines[i]);
 
-        if (!codeOpen) {
-          lines[i] = handleTable(lines[i], sb);
-          lines[i] = handleHref(lines[i]);
-          lines[i] = handleHeading(lines[i]);
-          lines[i] = handleBq(lines[i]);
-          lines[i] = handleTt(lines[i]);
-          lines[i] = handleList(sb, lines[i]);
-          lines[i] = handleBold(lines[i]);
-          lines[i] = handleItal(lines[i]);
+          if (!codeOpen) {
+            lines[i] = handleTable(lines[i], sb);
+            lines[i] = handleHref(lines[i]);
+            lines[i] = handleHeading(lines[i]);
+            lines[i] = handleBq(lines[i]);
+            lines[i] = handleTt(lines[i]);
+            lines[i] = handleList(sb, lines[i]);
+            lines[i] = handleBold(lines[i]);
+            lines[i] = handleItal(lines[i]);
+          }
         }
         handleParagraph(sb, lines[i]);
       }
+      closeWhatsOpenEOD(sb);
+      return sb.toString();
     }
-    closeWhatsOpenEOD(sb);
-    return sb.toString();
+    return markdown;
   }
 
   protected void handleParagraph(StringBuilder sb, String line) {
     if (!wrongLanguage) {
-      if (paragraph && !codeOpen) {
+      if (paragraph && !codeOpen && listCloses.isEmpty()) {
         sb.append("<p>");
       }
       sb.append(line);
-      if (paragraph && !codeOpen) {
+      if (paragraph && !codeOpen && listCloses.isEmpty()) {
         sb.append("</p>");
       }
-      sb.append("%n");
+      sb.append("\n");
       paragraph = true;
     }
+  }
+
+  /**
+   * Some markdown contains <code></code> tags. (Grrr..)
+   * @return <code></code> converted to markdown
+   */
+  protected String handleCodeTags(String line) {
+    return line.replaceAll("<code>","{{").replaceAll("</code>","}}");
+  }
+
+  protected String handleEntities(String line) {
+    String l2 = line.replaceAll("&","&amp;");
+    l2 = l2.replaceAll("<","&lt;");
+    l2 = l2.replaceAll(">","&gt;");
+    return l2;
   }
 
   /**
@@ -74,10 +94,10 @@ public class MarkdownConverter {
       sb.append(listCloses.pop());
     }
     if (codeOpen) {
-      sb.append("</pre>%n");
+      sb.append("</pre>\n");
     }
     if (tableOpen) {
-      sb.append("</table>%n");
+      sb.append("</table>\n");
     }
 
   }
@@ -86,7 +106,7 @@ public class MarkdownConverter {
     String line = arg;
     if (line.matches("^h[0-9]\\..*")) {
       char level = line.charAt(1);
-      line = "<h" + level + '>' + line.substring(3).trim() + "</h" + level + ">%n";
+      line = "<h" + level + '>' + line.substring(3).trim() + "</h" + level + ">\n";
       paragraph = false;
     }
     return line;
@@ -135,11 +155,11 @@ public class MarkdownConverter {
     String line = arg;
     if (!tableOpen && line.startsWith("|")) {
       tableOpen = true;
-      sb.append("<table>%n");
+      sb.append("<table>\n");
 
     }else if (tableOpen) {
       tableOpen = false;
-      sb.append("</table>%n");
+      sb.append("</table>\n");
     }
 
     if (line.startsWith("||")) {
@@ -179,23 +199,27 @@ public class MarkdownConverter {
   protected String handleList(StringBuilder sb, String line) {
     int pos = findFirst(line, ' ');
 
-    if (pos > -1 && listCloses.size() > pos) {
-      sb.append(listCloses.pop());
-    }
-
     if (line.matches("[*#]+ +.*")) {
+
+      if (pos > -1 && listCloses.size() > pos) {
+        sb.append(listCloses.pop());
+      }
+
       if (listCloses.size() < pos) {
         if (line.charAt(pos - 1) == '*') {
-          listCloses.push("</ul>%n");
-          sb.append("<ul>%n");
+          listCloses.push("</ul>\n");
+          sb.append("<ul>\n");
         } else {
-          listCloses.push("</ol>%n");
-          sb.append("<ol>%n");
+          listCloses.push("</ol>\n");
+          sb.append("<ol>\n");
         }
       }
 
       return handleLi(line);
+    } else if (! listCloses.isEmpty()) {
+      sb.append(listCloses.pop());
     }
+
     return line;
   }
 

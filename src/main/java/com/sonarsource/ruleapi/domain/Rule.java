@@ -20,11 +20,11 @@ public class Rule {
   private String title = null;
   private String message = null;
   private String fullDescription = null;
-  private String description = null;
-  private String nonCompliant = null;
-  private String compliant = null;
-  private String exceptions = null;
-  private String references = null;
+  private String description = "";
+  private String nonCompliant = "";
+  private String compliant = "";
+  private String exceptions = "";
+  private String references = "";
   private String sqaleCharac = null;
   private String sqaleRemediation = null;
   private String sqaleCost = null;
@@ -76,6 +76,10 @@ public class Rule {
     if (subRule.parameterList != null && ! subRule.parameterList.isEmpty()) {
       this.parameterList = subRule.parameterList;
     }
+  }
+
+  public String getHtmlDescription() {
+    return description + nonCompliant + compliant + exceptions + references;
   }
 
   @Override
