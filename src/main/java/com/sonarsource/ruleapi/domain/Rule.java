@@ -58,6 +58,13 @@ public class Rule {
     if (subRule.message != null) {
       this.message = subRule.message;
     }
+    if (subRule.parameterList != null && ! subRule.parameterList.isEmpty()) {
+      this.parameterList = subRule.parameterList;
+    }
+    mergeDescriptionPieces(subRule);
+  }
+
+  private void mergeDescriptionPieces(Rule subRule) {
     if (subRule.description != null && subRule.description.length() > 0) {
       this.description = subRule.description;
     }
@@ -72,9 +79,6 @@ public class Rule {
     }
     if (subRule.references != null && subRule.references.length() > 0) {
       this.references = subRule.references;
-    }
-    if (subRule.parameterList != null && ! subRule.parameterList.isEmpty()) {
-      this.parameterList = subRule.parameterList;
     }
   }
 
