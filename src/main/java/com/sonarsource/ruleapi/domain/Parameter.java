@@ -5,9 +5,6 @@
  */
 package com.sonarsource.ruleapi.domain;
 
-/**
- * Created by ganncamp on 9/19/14.
- */
 public class Parameter {
   private String key;
   private String description;

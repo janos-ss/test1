@@ -15,7 +15,7 @@ public class Rule {
 
   private String language = null;
   private String key = null;
-  private BasicStatus status = null;
+  private String status = null;
 
   private String severity = null;
   private Boolean defaultActive = null;
@@ -182,11 +182,11 @@ public class Rule {
     this.key = key;
   }
 
-  public BasicStatus getStatus() {
+  public String getStatus() {
     return status;
   }
 
-  public void setStatus(BasicStatus status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

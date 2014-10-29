@@ -23,6 +23,7 @@ import java.util.Map;
 
 public class RuleMaker {
 
+  private static final String MARKDOWN_H2_MATCH = "h2\\.";
   private static final String MARKDOWN_H2 = "h2.";
   private static final String HTML_H2 = "<h2>";
   private MarkdownConverter markdownConverter = new MarkdownConverter();
@@ -53,7 +54,7 @@ public class RuleMaker {
 
   private void populateFields(Rule rule, Issue issue) {
     rule.setKey(issue.getKey());
-    rule.setStatus(issue.getStatus());
+    rule.setStatus(issue.getStatus().getName());
 
     rule.setSeverity(pullValueFromJson(getCustomFieldValue(issue, "Default Severity")));
     rule.setDefaultActive(Boolean.valueOf(getFieldValue(issue,"Activated by default")));
@@ -259,7 +260,7 @@ public class RuleMaker {
 
     rule.setFullDescription(fullDescription);
     if (fullDescription != null && fullDescription.length() > 0) {
-      String[] markdownPieces = fullDescription.split(MARKDOWN_H2);
+      String[] markdownPieces = fullDescription.split(MARKDOWN_H2_MATCH);
       String[] htmlPieces = fullDescription.split(HTML_H2);
 
       if (markdownPieces.length > 1 || htmlPieces.length == 1) {
@@ -300,7 +301,7 @@ public class RuleMaker {
         rule.setNonCompliant(HTML_H2 + piece);
 
       } else if (piece.indexOf("Compliant Solution") > -1) {
-        rule.setNonCompliant(HTML_H2 + piece);
+        rule.setCompliant(HTML_H2 + piece);
 
       }  else if (piece.indexOf("Exceptions") > -1) {
         rule.setExceptions(HTML_H2 + piece);
