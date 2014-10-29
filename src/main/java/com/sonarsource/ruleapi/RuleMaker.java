@@ -57,7 +57,7 @@ public class RuleMaker {
     rule.setStatus(issue.getStatus().getName());
 
     rule.setSeverity(pullValueFromJson(getCustomFieldValue(issue, "Default Severity")));
-    rule.setDefaultActive(Boolean.valueOf(getFieldValue(issue,"Activated by default")));
+    rule.setDefaultActive("Yes".equals(pullValueFromJson(getFieldValue(issue,"Activated by default"))));
     String tmp = getCustomFieldValue(issue, "Legacy Key");
     if (tmp != null) {
       rule.setLegacyKeys(tmp.split(","));
@@ -82,8 +82,7 @@ public class RuleMaker {
     rule.setSqaleLinearFactor(getCustomFieldValue(issue,"SQALE Linear Factor"));
     rule.setSqaleLinearOffset(getCustomFieldValue(issue,"SQALE Linear Offset"));
 
-    tmp = pullValueFromJson(getCustomFieldValue(issue, "Template Rule"));
-    rule.setTemplate("Yes".equals(tmp));
+    rule.setTemplate("Yes".equals(pullValueFromJson(getCustomFieldValue(issue, "Template Rule"))));
 
     rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters"), rule.getLanguage()));
     rule.setTags(issue.getLabels());

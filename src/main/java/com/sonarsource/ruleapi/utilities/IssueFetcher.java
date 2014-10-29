@@ -17,7 +17,7 @@ import java.net.URI;
 public class IssueFetcher {
 
   private static final String RSPEC = "RSPEC-";
-  private static final String LEGACY_SEARCH1 = "jql=project%3DRSPEC%20AND%20\"Legacy%20Key\"~\"";
+  private static final String LEGACY_SEARCH1 = "project%3DRSPEC%20AND%20\"Legacy%20Key\"~\"";
   private static final String LEGACY_SEARCH2 = "\"";
   private static final URI SERVER_URI = URI.create("http://jira.sonarsource.com/");
 
