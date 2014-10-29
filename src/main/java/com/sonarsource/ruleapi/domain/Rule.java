@@ -14,9 +14,14 @@ import java.util.Set;
 public class Rule {
 
   private String language = null;
-  private Boolean defaultActive = null;
   private String key = null;
   private BasicStatus status = null;
+
+  private String severity = null;
+  private Boolean defaultActive = null;
+  private boolean template = false;
+  private String[] legacyKeys = null;
+
   private String title = null;
   private String message = null;
   private String fullDescription = null;
@@ -26,12 +31,15 @@ public class Rule {
   private String exceptions = "";
   private String references = "";
   private String sqaleCharac = null;
+  private String sqaleSubCharac = null;
   private String sqaleRemediation = null;
   private String sqaleCost = null;
-  private String severity = null;
+  private String sqaleLinearArg = null;
+  private String sqaleLinearFactor = null;
+  private String sqaleLinearOffset = null;
+
   private List<Parameter> parameterList = null;
   private Set<String> tags = null;
-  private String[] legacyKeys = null;
 
   public Rule(String language) {
     this.language = language;
@@ -318,5 +326,55 @@ public class Rule {
   public void setLanguage(String language) {
 
     this.language = language;
+  }
+
+  public String getSqaleLinearArg() {
+
+    return sqaleLinearArg;
+  }
+
+  public void setSqaleLinearArg(String sqaleLinearArg) {
+
+    this.sqaleLinearArg = sqaleLinearArg;
+  }
+
+  public String getSqaleLinearFactor() {
+
+    return sqaleLinearFactor;
+  }
+
+  public void setSqaleLinearFactor(String sqaleLinearFactor) {
+
+    this.sqaleLinearFactor = sqaleLinearFactor;
+  }
+
+  public String getSqaleLinearOffset() {
+
+    return sqaleLinearOffset;
+  }
+
+  public void setSqaleLinearOffset(String sqaleLinearOffset) {
+
+    this.sqaleLinearOffset = sqaleLinearOffset;
+  }
+
+  public boolean isTemplate() {
+
+    return template;
+  }
+
+  public void setTemplate(boolean isTemplate) {
+
+    this.template = isTemplate;
+  }
+
+  public String getSqaleSubCharac() {
+
+    return sqaleSubCharac;
+  }
+
+  public void setSqaleSubCharac(String sqaleSubCharac) {
+
+    this.sqaleSubCharac = sqaleSubCharac;
   }
 }

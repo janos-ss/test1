@@ -12,6 +12,7 @@ import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.IssueFetcher;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
+import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -53,27 +54,38 @@ public class RuleMaker {
   private void populateFields(Rule rule, Issue issue) {
     rule.setKey(issue.getKey());
     rule.setStatus(issue.getStatus());
-    rule.setTitle(issue.getSummary());
-    rule.setTags(issue.getLabels());
 
-    setDescription(rule, issue.getDescription());
-
-    rule.setMessage(getFieldValue(issue,"Message"));
+    rule.setSeverity(pullValueFromJson(getCustomFieldValue(issue, "Default Severity")));
     rule.setDefaultActive(Boolean.valueOf(getFieldValue(issue,"Activated by default")));
-
     String tmp = getCustomFieldValue(issue, "Legacy Key");
     if (tmp != null) {
       rule.setLegacyKeys(tmp.split(","));
     }
 
-    rule.setSqaleCharac(pullValueFromJson(getCustomFieldValue(issue, "SQALE Characteristic")));
-    rule.setSqaleRemediation(pullValueFromJson(getCustomFieldValue(issue, "SQALE Remediation Function")));
-    rule.setSqaleCost(pullValueFromJson(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold")));
-// more sqale fields...
+    rule.setTitle(issue.getSummary());
+    rule.setMessage(getFieldValue(issue,"Message"));
 
-    rule.setSeverity(pullValueFromJson(getCustomFieldValue(issue, "Default Severity")));
+    setDescription(rule, issue.getDescription());
+
+    Map<String,Object> sqaleCharMap = getMapFromJson(getCustomFieldValue(issue, "SQALE Characteristic"));
+    if (sqaleCharMap != null) {
+      rule.setSqaleCharac((String)sqaleCharMap.get("value"));
+      Object o = sqaleCharMap.get("child");
+      if (o instanceof Map) {
+        rule.setSqaleSubCharac(getValueFromMap((Map<String, Object>) o));
+      }
+    }
+    rule.setSqaleRemediation(pullValueFromJson(getCustomFieldValue(issue, "SQALE Remediation Function")));
+    rule.setSqaleCost(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold"));
+    rule.setSqaleLinearArg(getCustomFieldValue(issue,"SQALE Linear Argument"));
+    rule.setSqaleLinearFactor(getCustomFieldValue(issue,"SQALE Linear Factor"));
+    rule.setSqaleLinearOffset(getCustomFieldValue(issue,"SQALE Linear Offset"));
+
+    tmp = pullValueFromJson(getCustomFieldValue(issue, "Template Rule"));
+    rule.setTemplate("Yes".equals(tmp));
 
     rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters"), rule.getLanguage()));
+    rule.setTags(issue.getLabels());
 
   }
 
@@ -198,14 +210,33 @@ public class RuleMaker {
   }
 
   protected String pullValueFromJson(String json) {
+    Map<String, Object> m = getMapFromJson(json);
+    return getValueFromMap(m);
+  }
+
+  private String getValueFromMap(Map<String,Object> map) {
+    if (map != null) {
+      Object o = map.get("value");
+      if (o instanceof String) {
+        return (String) o;
+      }
+    }
+    return null;
+  }
+
+  private Map<String,Object> getMapFromJson(String json) {
     if (json != null) {
       JSONParser jsonParser = new JSONParser();
 
       try {
         Object o = jsonParser.parse(json);
+        if (o instanceof JSONArray)
+        {
+          JSONArray arr = (JSONArray)o;
+          o = ((JSONArray) o).get(0);
+        }
         if (o instanceof Map) {
-          Map<String, String> m = (Map<String, String>) o;
-          return m.get("value");
+          return (Map<String, Object>) o;
         }
       } catch (ParseException e) {
         // nothing to see here
@@ -224,7 +255,7 @@ public class RuleMaker {
     return null;
   }
 
-  private void setDescription(Rule rule, String fullDescription) {
+  public void setDescription(Rule rule, String fullDescription) {
 
     rule.setFullDescription(fullDescription);
     if (fullDescription != null && fullDescription.length() > 0) {
