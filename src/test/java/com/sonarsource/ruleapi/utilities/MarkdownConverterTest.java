@@ -8,15 +8,26 @@ package com.sonarsource.ruleapi.utilities;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import java.io.File;
+
 public class MarkdownConverterTest extends TestCase {
 
   private MarkdownConverter mc = new MarkdownConverter();
+
 
   public void testCode() throws Exception {
     String markdown = "{code}\r\nfor (int i = 0; i < 10; i++) {\r\n  // ...\r\n}\r\n{code}";
     String html = "<pre>\nfor (int i = 0; i &lt; 10; i++) {\n  // ...\n}\n</pre>\n";
 
     Assert.assertEquals(html, mc.transform(markdown, "Java"));
+  }
+
+  public void testMultipleCodeSampleLanguages() throws Exception {
+    java.net.URL url = this.getClass().getResource("/utilities");
+    String markdown = new java.util.Scanner(new File(url.getPath() + "/MultipleCodeSampleLanguagesSource.txt"),"UTF8").useDelimiter("\\Z").next();
+    String html =     new java.util.Scanner(new File(url.getPath() + "/MultipleCodeSampleLanguagesResult.txt"),"UTF8").useDelimiter("\\Z").next();
+
+    Assert.assertEquals(html, mc.transform(markdown, "ABAP"));
   }
 
   public void testHeading() throws Exception {
@@ -90,7 +101,7 @@ public class MarkdownConverterTest extends TestCase {
 
   public void testSequentialList() throws Exception {
     String markdown = "The following Javadoc elements are required:\r\n* Parameters, using <code>@param parameterName</code>.\r\n* Method return values, using <code>@return</code>.\r\n* Generic types, using <code>@param <T></code>.\r\n\r\nThe following public methods and constructors are not taken into account by this rule:\r\n* Getters and setters.\r\n* Methods with @Override annotation.\r\n* Empty constructors.\r\n* Static constants.\r\n";
-    String html = "<p>The following Javadoc elements are required:</p>\n<ul>\n<li> Parameters, using <code>@param parameterName</code>.</li>\n<li> Method return values, using <code>@return</code>.</li>\n<li> Generic types, using <code>@param &lt;T&gt;</code>.</li>\n\n</ul>\n<p>The following public methods and constructors are not taken into account by this rule:</p>\n<ul>\n<li> Getters and setters.</li>\n<li> Methods with @Override annotation.</li>\n<li> Empty constructors.</li>\n<li> Static constants.</li>\n</ul>\n";
+    String html = "<p>The following Javadoc elements are required:</p>\n<ul>\n<li> Parameters, using <code>@param parameterName</code>.</li>\n<li> Method return values, using <code>@return</code>.</li>\n<li> Generic types, using <code>@param &lt;T&gt;</code>.</li>\n</ul>\n<p>The following public methods and constructors are not taken into account by this rule:</p>\n<ul>\n<li> Getters and setters.</li>\n<li> Methods with @Override annotation.</li>\n<li> Empty constructors.</li>\n<li> Static constants.</li>\n</ul>\n";
 
     Assert.assertEquals(html, mc.transform(markdown, "Java"));
   }

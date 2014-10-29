@@ -94,7 +94,7 @@ public class RuleMaker {
     if (issue != null && fieldName != null) {
       Field f = issue.getFieldByName(fieldName);
       if (f != null && f.getValue() != null) {
-       return f.getValue().toString();
+        return f.getValue().toString();
       }
     }
     return null;

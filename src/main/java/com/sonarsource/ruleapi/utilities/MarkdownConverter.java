@@ -29,14 +29,21 @@ public class MarkdownConverter {
       listCloses = new LinkedList<String>();
       StringBuilder sb = new StringBuilder();
 
-      String[] lines = markdown.split("\r\n");
+      boolean hasLangCodeSample = hasLanguageCodeSample(language, markdown);
+
+      String[] lines;
+      if (markdown.contains("\r\n")) {
+        lines = markdown.split("\r\n");
+      } else {
+        lines = markdown.split("\n");
+      }
 
       for (int i = 0; i < lines.length; i++) {
         if (lines[i].length() > 0) {
 
           lines[i] = handleCodeTags(lines[i]);
           lines[i] = handleEntities(lines[i]);
-          lines[i] = handleCode(lines[i].matches(language == null ? "" : language + "[, }]"), lines[i]);
+          lines[i] = handleCode(hasLangCodeSample, language, lines[i]);
 
           if (!codeOpen) {
             lines[i] = handleTable(lines[i], sb);
@@ -57,16 +64,22 @@ public class MarkdownConverter {
     return markdown;
   }
 
+  protected boolean hasLanguageCodeSample(String language, String markdown) {
+    return markdown.matches("(?s).*\\{code:title=" + language + "[ ,}].*");
+  }
+
   protected void handleParagraph(StringBuilder sb, String line) {
     if (!wrongLanguage) {
-      if (paragraph && !codeOpen && listCloses.isEmpty()) {
+      if (paragraph && !codeOpen && listCloses.isEmpty() && line.length() >0) {
         sb.append("<p>");
       }
       sb.append(line);
-      if (paragraph && !codeOpen && listCloses.isEmpty()) {
+      if (paragraph && !codeOpen && listCloses.isEmpty() && line.length() >0) {
         sb.append("</p>");
       }
-      sb.append("\n");
+      if (line.length() > 0 || codeOpen) {
+        sb.append("\n");
+      }
       paragraph = true;
     }
   }
@@ -176,25 +189,35 @@ public class MarkdownConverter {
     return line;
   }
 
-  protected String handleCode(boolean matchesLanguage, String arg) {
+  protected String handleCode(boolean hasLanguageCodeSample, String language, String arg) {
     // Java vs Javascript...?
     String line = arg;
     if (line.contains("{code")) {
       if (codeOpen) {
         line = line.replaceFirst("\\{code\\}", "</pre>");
-        wrongLanguage = false;
         codeOpen = false;
         paragraph = false;
-      } else if (line.contains("{code}") || matchesLanguage) {
+      }else if (isCodeLanguageMatch(hasLanguageCodeSample, language, line)) {
+        wrongLanguage = false;
         codeOpen = true;
         line = line.replaceFirst("\\{code.*\\}", "<pre>");
       } else {
         // code sample's for another language
         wrongLanguage = true;
+        codeOpen = true;
       }
     }
     return line;
   }
+
+  protected boolean isCodeLanguageMatch(boolean hasLanguageCodeSample, String language, String line){
+    if (line.contains("{code}")) {
+      return ! hasLanguageCodeSample;
+    }
+
+    return line.matches("\\{code:title=" + language + "[, }].*");
+  }
+
 
   protected String handleList(StringBuilder sb, String line) {
     int pos = findFirst(line, ' ');
