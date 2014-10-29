@@ -68,6 +68,10 @@ public class RuleMakerTest extends TestCase{
     Assert.assertEquals("Reliability", rm.pullValueFromJson(json));
   }
 
+  public void testPullValueFromJsonNullString() throws Exception {
+    Assert.assertNull(rm.pullValueFromJson(null));
+  }
+
   public void testSetMarkdownDescription() throws Exception {
     String markdown = "Even if all browsers are fault-tolerant, HTML tags should be closed to prevent any unexpected behavior.";
     String html = "<p>Even if all browsers are fault-tolerant, HTML tags should be closed to prevent any unexpected behavior.</p>\n";
