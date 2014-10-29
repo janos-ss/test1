@@ -73,21 +73,25 @@ public class Rule {
   }
 
   private void mergeDescriptionPieces(Rule subRule) {
-    if (subRule.description != null && subRule.description.length() > 0) {
+    if (isNotEmpty(subRule.description)) {
       this.description = subRule.description;
     }
-    if (subRule.nonCompliant != null && subRule.nonCompliant.length() > 0) {
+    if (isNotEmpty(subRule.nonCompliant)) {
       this.nonCompliant = subRule.nonCompliant;
     }
-    if (subRule.compliant != null && subRule.compliant.length() > 0) {
+    if (isNotEmpty(subRule.compliant)) {
       this.compliant = subRule.compliant;
     }
-    if (subRule.exceptions != null && subRule.exceptions.length() > 0) {
+    if (isNotEmpty(subRule.exceptions)) {
       this.exceptions = subRule.exceptions;
     }
-    if (subRule.references != null && subRule.references.length() > 0) {
+    if (isNotEmpty(subRule.references)) {
       this.references = subRule.references;
     }
+  }
+
+  private boolean isNotEmpty(String candidate) {
+    return candidate != null && candidate.length() > 0;
   }
 
   public String getHtmlDescription() {
