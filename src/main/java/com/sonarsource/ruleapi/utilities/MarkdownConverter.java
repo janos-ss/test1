@@ -70,11 +70,11 @@ public class MarkdownConverter {
 
   protected void handleParagraph(StringBuilder sb, String line) {
     if (!wrongLanguage) {
-      if (paragraph && !codeOpen && listCloses.isEmpty() && line.length() >0) {
+      if (isPTagNeeded(line)) {
         sb.append("<p>");
       }
       sb.append(line);
-      if (paragraph && !codeOpen && listCloses.isEmpty() && line.length() >0) {
+      if (isPTagNeeded(line)) {
         sb.append("</p>");
       }
       if (line.length() > 0 || codeOpen) {
@@ -82,6 +82,10 @@ public class MarkdownConverter {
       }
       paragraph = true;
     }
+  }
+
+  protected boolean isPTagNeeded(String line) {
+    return paragraph && !codeOpen && listCloses.isEmpty() && line.length() >0;
   }
 
   /**

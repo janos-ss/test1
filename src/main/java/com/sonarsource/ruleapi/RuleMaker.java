@@ -128,30 +128,32 @@ public class RuleMaker {
 
   protected List<Parameter> handleParameterList(String paramString, String language) {
     List<Parameter> list = new ArrayList<Parameter>();
+    if (paramString == null) {
+      return list;
+    }
     Parameter param = null;
-    if (paramString != null) {
-      String[] lines = paramString.split("\r\n");
-      for (String line : lines) {
 
-        if (line.trim().length() > 0) {
+    String[] lines = paramString.split("\r\n");
+    for (String line : lines) {
 
-          line = stripLeading(line, "**");
-          line = stripLeading(line, "*");
-          line = line.trim();
-          String label = extractParamLcLabel(line);
+      if (line.trim().length() > 0) {
 
-          if (isParamLanguageMatch(label, language)) {
-            if (label == null || label.startsWith("key")) {
-              param = new Parameter();
-              param.setKey(extractParamValue(line));
-              list.add(param);
-            } else if (label.startsWith("default")) {
-              param.setDefaultVal(extractParamValue(line));
-            } else if (label.startsWith("description")) {
-              param.setDescription(extractParamValue(line));
-            } else if (label.startsWith("type")) {
-              param.setType(extractParamValue(line));
-            }
+        line = stripLeading(line, "**");
+        line = stripLeading(line, "*");
+        line = line.trim();
+        String label = extractParamLcLabel(line);
+
+        if (isParamLanguageMatch(label, language)) {
+          if (label == null || label.startsWith("key")) {
+            param = new Parameter();
+            param.setKey(extractParamValue(line));
+            list.add(param);
+          } else if (label.startsWith("default")) {
+            param.setDefaultVal(extractParamValue(line));
+          } else if (label.startsWith("description")) {
+            param.setDescription(extractParamValue(line));
+          } else if (label.startsWith("type")) {
+            param.setType(extractParamValue(line));
           }
         }
       }
@@ -230,9 +232,7 @@ public class RuleMaker {
 
       try {
         Object o = jsonParser.parse(json);
-        if (o instanceof JSONArray)
-        {
-          JSONArray arr = (JSONArray)o;
+        if (o instanceof JSONArray) {
           o = ((JSONArray) o).get(0);
         }
         if (o instanceof Map) {

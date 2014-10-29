@@ -5,8 +5,6 @@
  */
 package com.sonarsource.ruleapi.domain;
 
-import com.atlassian.jira.rest.client.domain.BasicStatus;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
