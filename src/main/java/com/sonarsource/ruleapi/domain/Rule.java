@@ -5,14 +5,13 @@
  */
 package com.sonarsource.ruleapi.domain;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 public class Rule {
 
   public enum Severity {
-    Info, Minor, Major, Critical, Blocker
+    INFO, MINOR, MAJOR, CRITICAL, BLOCKER
   }
 
   private String language = null;

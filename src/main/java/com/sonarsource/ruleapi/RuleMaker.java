@@ -56,7 +56,7 @@ public class RuleMaker {
     rule.setKey(issue.getKey());
     rule.setStatus(issue.getStatus().getName());
 
-    rule.setSeverity(Rule.Severity.valueOf(pullValueFromJson(getCustomFieldValue(issue, "Default Severity"))));
+    rule.setSeverity(Rule.Severity.valueOf(pullValueFromJson(getCustomFieldValue(issue, "Default Severity")).toUpperCase()));
     rule.setDefaultActive("Yes".equals(pullValueFromJson(getFieldValue(issue,"Activated by default"))));
     String tmp = getCustomFieldValue(issue, "Legacy Key");
     if (tmp != null) {

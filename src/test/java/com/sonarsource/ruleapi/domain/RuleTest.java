@@ -49,10 +49,10 @@ public class RuleTest extends TestCase {
 
   public void testMergeSeverity() throws Exception {
     Rule rule = new Rule(LANG);
-    rule.setSeverity(Rule.Severity.Critical);
+    rule.setSeverity(Rule.Severity.CRITICAL);
     Rule subRule = new Rule(LANG);
     subRule.setTitle(LANG);
-    subRule.setSeverity(Rule.Severity.Blocker);
+    subRule.setSeverity(Rule.Severity.BLOCKER);
 
     rule.merge(subRule);
 
