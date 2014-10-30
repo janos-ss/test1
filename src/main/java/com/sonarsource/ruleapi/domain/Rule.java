@@ -11,11 +11,13 @@ import java.util.Set;
 
 public class Rule {
 
+  public enum Severity {Info, Minor, Major, Critical, Blocker};
+
   private String language = null;
   private String key = null;
   private String status = null;
 
-  private String severity = null;
+  private Severity severity = null;
   private Boolean defaultActive = null;
   private boolean template = false;
   private String[] legacyKeys = null;
@@ -44,6 +46,9 @@ public class Rule {
   }
 
   public void merge(Rule subRule) {
+    if (subRule.title == null) {
+      return;
+    }
 
     String subTitle = subRule.title.replaceFirst(language, "").trim();
     if (subTitle.length() > 0) {
@@ -107,72 +112,111 @@ public class Rule {
 
     Rule rule = (Rule) o;
 
-    if (!compliant.equals(rule.compliant)) {
+    if (! isTextFunctionallyEquivalent(title,rule.title)) {
+      return false;
+    }
+    if (! isTextFunctionallyEquivalent(description,rule.description)) {
+      return false;
+    }
+    if (template != rule.template) {
+      return false;
+    }
+    if (compliant != null ? !compliant.equals(rule.compliant) : rule.compliant != null) {
       return false;
     }
     if (!defaultActive.equals(rule.defaultActive)) {
       return false;
     }
-    if (!description.equals(rule.description)) {
+    if (!isTextFunctionallyEquivalent(exceptions,rule.exceptions)) {
       return false;
     }
-    if (!exceptions.equals(rule.exceptions)) {
-      return false;
-    }
-    if (!Arrays.equals(legacyKeys, rule.legacyKeys)) {
-      return false;
-    }
-    if (!message.equals(rule.message)) {
-      return false;
-    }
-    if (!nonCompliant.equals(rule.nonCompliant)) {
+    if (nonCompliant != null ? !nonCompliant.equals(rule.nonCompliant) : rule.nonCompliant != null) {
       return false;
     }
     if (parameterList != null ? !parameterList.equals(rule.parameterList) : rule.parameterList != null) {
       return false;
     }
-    if (!references.equals(rule.references)) {
+    if (references != null ? !references.equals(rule.references) : rule.references != null) {
       return false;
     }
-    if (severity.equals(rule.severity)) {
+    if (!severity.equals(rule.severity)) {
       return false;
     }
     if (!sqaleCharac.equals(rule.sqaleCharac)) {
       return false;
     }
-    if (!sqaleCost.equals(rule.sqaleCost)) {
+    if (sqaleCost != null ? !sqaleCost.equals(rule.sqaleCost) : rule.sqaleCost != null) {
       return false;
     }
-    if (!sqaleRemediation.equals(rule.sqaleRemediation)) {
+    if (sqaleLinearArg != null ? !sqaleLinearArg.equals(rule.sqaleLinearArg) : rule.sqaleLinearArg != null) {
+      return false;
+    }
+    if (sqaleLinearFactor != null ? !sqaleLinearFactor.equals(rule.sqaleLinearFactor) : rule.sqaleLinearFactor != null) {
+      return false;
+    }
+    if (sqaleLinearOffset != null ? !sqaleLinearOffset.equals(rule.sqaleLinearOffset) : rule.sqaleLinearOffset != null) {
+      return false;
+    }
+    if (sqaleRemediation != null ? !sqaleRemediation.equals(rule.sqaleRemediation) : rule.sqaleRemediation != null) {
+      return false;
+    }
+    if (!sqaleSubCharac.equals(rule.sqaleSubCharac)) {
       return false;
     }
     if (tags != null ? !tags.equals(rule.tags) : rule.tags != null) {
-      return false;
-    }
-    if (!title.equals(rule.title)) {
       return false;
     }
 
     return true;
   }
 
+  protected boolean isTextFunctionallyEquivalent(String a, String b){
+    if (a == null && b == null) {
+      return true;
+    }
+    if (a == null || b == null) {
+      return false;
+    }
+    if (a.equals(b)) {
+      return true;
+    }
+    if (a.contains("|") || b.contains("|")){
+      String [] aTokens = a.split(" ");
+      String [] bTokens = b.split(" ");
+
+      for (int i=0; i<aTokens.length && i<bTokens.length; i++) {
+        String aTok = aTokens[i];
+        String bTok = bTokens[i];
+        if (! (aTok.equals(bTok) || aTok.contains(bTok) || bTok.contains(aTok))) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
   @Override
   public int hashCode() {
-    int result = defaultActive.hashCode();
+
+    int result = severity.hashCode();
+    result = 31 * result + defaultActive.hashCode();
+    result = 31 * result + (template ? 1 : 0);
     result = 31 * result + title.hashCode();
-    result = 31 * result + message.hashCode();
     result = 31 * result + description.hashCode();
-    result = 31 * result + nonCompliant.hashCode();
-    result = 31 * result + compliant.hashCode();
-    result = 31 * result + exceptions.hashCode();
-    result = 31 * result + references.hashCode();
+    result = 31 * result + (nonCompliant != null ? nonCompliant.hashCode() : 0);
+    result = 31 * result + (compliant != null ? compliant.hashCode() : 0);
+    result = 31 * result + (exceptions != null ? exceptions.hashCode() : 0);
+    result = 31 * result + (references != null ? references.hashCode() : 0);
     result = 31 * result + sqaleCharac.hashCode();
-    result = 31 * result + sqaleRemediation.hashCode();
-    result = 31 * result + sqaleCost.hashCode();
-    result = 31 * result + severity.hashCode();
+    result = 31 * result + sqaleSubCharac.hashCode();
+    result = 31 * result + (sqaleRemediation != null ? sqaleRemediation.hashCode() : 0);
+    result = 31 * result + (sqaleCost != null ? sqaleCost.hashCode() : 0);
+    result = 31 * result + (sqaleLinearArg != null ? sqaleLinearArg.hashCode() : 0);
+    result = 31 * result + (sqaleLinearFactor != null ? sqaleLinearFactor.hashCode() : 0);
+    result = 31 * result + (sqaleLinearOffset != null ? sqaleLinearOffset.hashCode() : 0);
     result = 31 * result + (parameterList != null ? parameterList.hashCode() : 0);
     result = 31 * result + (tags != null ? tags.hashCode() : 0);
-    result = 31 * result + (legacyKeys != null ? Arrays.hashCode(legacyKeys) : 0);
     return result;
   }
 
@@ -248,11 +292,11 @@ public class Rule {
     this.tags = tags;
   }
 
-  public String getSeverity() {
+  public Severity getSeverity() {
     return severity;
   }
 
-  public void setSeverity(String severity) {
+  public void setSeverity(Severity severity) {
     this.severity = severity;
   }
 
