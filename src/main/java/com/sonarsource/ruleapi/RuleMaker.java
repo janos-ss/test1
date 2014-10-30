@@ -148,17 +148,23 @@ public class RuleMaker {
             param = new Parameter();
             param.setKey(extractParamValue(line));
             list.add(param);
-          } else if (label.startsWith("default")) {
-            param.setDefaultVal(extractParamValue(line));
-          } else if (label.startsWith("description")) {
-            param.setDescription(extractParamValue(line));
-          } else if (label.startsWith("type")) {
-            param.setType(extractParamValue(line));
+          } else {
+            fillInParam(param, label, line);
           }
         }
       }
     }
     return list;
+  }
+
+  private void fillInParam(Parameter param, String label, String line) {
+    if (label.startsWith("default")) {
+      param.setDefaultVal(extractParamValue(line));
+    } else if (label.startsWith("description")) {
+      param.setDescription(extractParamValue(line));
+    } else if (label.startsWith("type")) {
+      param.setType(extractParamValue(line));
+    }
   }
 
   private boolean isParamLanguageMatch(String label, String language) {
