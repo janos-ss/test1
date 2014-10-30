@@ -11,7 +11,9 @@ import java.util.Set;
 
 public class Rule {
 
-  public enum Severity {Info, Minor, Major, Critical, Blocker};
+  public enum Severity {
+    Info, Minor, Major, Critical, Blocker
+  }
 
   private String language = null;
   private String key = null;
@@ -50,6 +52,24 @@ public class Rule {
       return;
     }
 
+    mergeTitle(subRule);
+
+    if (subRule.defaultActive != null) {
+      this.defaultActive = subRule.defaultActive;
+    }
+    if (subRule.severity != null) {
+      this.severity = subRule.severity;
+    }
+    if (isNotEmpty(message)) {
+      this.message = subRule.message;
+    }
+    if (subRule.parameterList != null && ! subRule.parameterList.isEmpty()) {
+      this.parameterList = subRule.parameterList;
+    }
+    mergeDescriptionPieces(subRule);
+  }
+
+  private void mergeTitle(Rule subRule) {
     String subTitle = subRule.title.replaceFirst(language, "").trim();
     if (subTitle.length() > 0) {
       if (subTitle.startsWith(": ") || subTitle.startsWith("- ")) {
@@ -59,20 +79,6 @@ public class Rule {
         this.title = subTitle;
       }
     }
-
-    if (subRule.defaultActive != null) {
-      this.defaultActive = subRule.defaultActive;
-    }
-    if (subRule.severity != null) {
-      this.severity = subRule.severity;
-    }
-    if (subRule.message != null) {
-      this.message = subRule.message;
-    }
-    if (subRule.parameterList != null && ! subRule.parameterList.isEmpty()) {
-      this.parameterList = subRule.parameterList;
-    }
-    mergeDescriptionPieces(subRule);
   }
 
   private void mergeDescriptionPieces(Rule subRule) {
@@ -180,6 +186,10 @@ public class Rule {
     if (a.equals(b)) {
       return true;
     }
+    return hasEquivalentTokens(a, b);
+  }
+
+  private boolean hasEquivalentTokens(String a, String b) {
     if (a.contains("|") || b.contains("|")){
       String [] aTokens = a.split(" ");
       String [] bTokens = b.split(" ");
