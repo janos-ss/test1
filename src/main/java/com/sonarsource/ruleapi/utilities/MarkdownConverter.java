@@ -135,9 +135,6 @@ public class MarkdownConverter {
       int pos = line.indexOf("http");
       int hrefStart = findBefore(line, pos, '[');
       int hrefEnd = findAfter(line, pos, ' ');
-      if (hrefEnd == -1) {
-        hrefEnd = line.length() - 1;
-      }
 
       String href = line.substring(pos, hrefEnd - 1);
       String label = line.substring(hrefStart + 1, pos - 1);
@@ -173,15 +170,15 @@ public class MarkdownConverter {
     if (!tableOpen && line.startsWith("|")) {
       tableOpen = true;
       sb.append("<table>\n");
-
-    }else if (tableOpen) {
+    }else if (tableOpen  && ! line.startsWith("|")) {
       tableOpen = false;
       sb.append("</table>\n");
     }
 
     if (line.startsWith("||")) {
       line = "<tr><th>" + line.substring(2, findLast(line, '|') - 1) + "</th></tr>";
-      line = line.replace("\\|\\|", "</th><th>");
+      line = line.replaceAll("\\|\\|","|");
+      line = line.replace("|", "</th><th>");
       paragraph = false;
 
     } else if (line.startsWith("|")) {

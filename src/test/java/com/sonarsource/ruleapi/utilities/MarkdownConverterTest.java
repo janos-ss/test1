@@ -15,8 +15,19 @@ public class MarkdownConverterTest extends TestCase {
   private MarkdownConverter mc = new MarkdownConverter();
 
 
+  public void testTransformNullMarkdown() throws Exception {
+      Assert.assertEquals(null, mc.transform(null, "Java"));
+  }
+
   public void testCode() throws Exception {
     String markdown = "{code}\r\nfor (int i = 0; i < 10; i++) {\r\n  // ...\r\n}\r\n{code}";
+    String html = "<pre>\nfor (int i = 0; i &lt; 10; i++) {\n  // ...\n}\n</pre>\n";
+
+    Assert.assertEquals(html, mc.transform(markdown, "Java"));
+  }
+
+  public void testUnclosedCode() throws Exception {
+    String markdown = "{code}\r\nfor (int i = 0; i < 10; i++) {\r\n  // ...\r\n}\r\n";
     String html = "<pre>\nfor (int i = 0; i &lt; 10; i++) {\n  // ...\n}\n</pre>\n";
 
     Assert.assertEquals(html, mc.transform(markdown, "Java"));
@@ -46,6 +57,20 @@ public class MarkdownConverterTest extends TestCase {
   public void testTable() throws Exception {
     String markdown = "|a|b|c|";
     String html = "<table>\n<tr><td>a</td><td>b</td><td>c</td></tr>\n</table>\n";
+
+    Assert.assertEquals(html, mc.transform(markdown, "Java"));
+  }
+
+  public void testTableWithHeader() throws Exception {
+    String markdown = "||a||b||c||\r\n|a1|b2|c1|";
+    String html = "<table>\n<tr><th>a</th><th>b</th><th>c</th></tr>\n<tr><td>a1</td><td>b1</td><td>c1</td></tr>\n</table>\n";
+
+    Assert.assertEquals(html, mc.transform(markdown, "Java"));
+  }
+
+  public void testTableWithHeaderMultipleRows() throws Exception {
+    String markdown = "||a||b||c||\r\n|a1|b1|c1|\r\n|a2|b2|c2|";
+    String html = "<table>\n<tr><th>a</th><th>b</th><th>c</th></tr>\n<tr><td>a1</td><td>b1</td><td>c1</td></tr>\n<tr><td>a2</td><td>b2</td><td>c2</td></tr>\n</table>\n";
 
     Assert.assertEquals(html, mc.transform(markdown, "Java"));
   }
