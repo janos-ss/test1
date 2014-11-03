@@ -110,7 +110,7 @@ public class RuleComparisonTest extends TestCase {
 
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    Assert.assertEquals(1, rc.compareTags());
+    Assert.assertEquals(1, rc.compare());
   }
 
   public void testCompareTagsTagMissing() throws Exception {
@@ -127,7 +127,7 @@ public class RuleComparisonTest extends TestCase {
 
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    Assert.assertEquals(1, rc.compareTags());
+    Assert.assertEquals(1, rc.compare());
   }
 
   public void testCompareParameterListEq() throws Exception {
@@ -172,7 +172,7 @@ public class RuleComparisonTest extends TestCase {
     p.setDefaultVal("blah");
     implList.add(p);
 
-    Assert.assertEquals(2, rc.compareParameterList());
+    Assert.assertEquals(2, rc.compare());
   }
 
   public void testCompareParameterListParamOneEmpty() throws Exception {
@@ -189,7 +189,7 @@ public class RuleComparisonTest extends TestCase {
 
     specList.add(p);
 
-    Assert.assertEquals(1, rc.compareParameterList());
+    Assert.assertEquals(1, rc.compare());
   }
 
   public void testCompareSqaleConstantCostEasy() throws Exception {
@@ -222,7 +222,7 @@ public class RuleComparisonTest extends TestCase {
     spec.setSqaleConstantCostOrLinearThreshold("1 h");
     impl.setSqaleConstantCostOrLinearThreshold("5min");
 
-    Assert.assertEquals(1, rc.compareSqaleConstantCost());
+    Assert.assertEquals(1, rc.compare());
   }
 
   public void testCompareSqaleConstantCostWithNull() throws Exception {
@@ -232,7 +232,7 @@ public class RuleComparisonTest extends TestCase {
 
     spec.setSqaleConstantCostOrLinearThreshold("5min");
 
-    Assert.assertEquals(-1, rc.compareSqaleConstantCost());
+    Assert.assertEquals(-1, rc.compare());
   }
 
   public void testCompareTitle() throws Exception {
@@ -407,7 +407,7 @@ public class RuleComparisonTest extends TestCase {
     p.setDefaultVal("blah");
     implList.add(p);
 
-    Assert.assertEquals(2, rc.compareParameterList());
+    Assert.assertEquals(2, rc.compare());
   }
 
   public void testToStringParameterListParamOneEmpty() throws Exception {
@@ -424,7 +424,7 @@ public class RuleComparisonTest extends TestCase {
 
     specList.add(p);
 
-    Assert.assertEquals(1, rc.compareParameterList());
+    Assert.assertEquals(1, rc.compare());
   }
 
   public void testToStringSqaleConstantCostEasy() throws Exception {
@@ -457,7 +457,7 @@ public class RuleComparisonTest extends TestCase {
     spec.setSqaleConstantCostOrLinearThreshold("1 h");
     impl.setSqaleConstantCostOrLinearThreshold("5min");
 
-    Assert.assertEquals(1, rc.compareSqaleConstantCost());
+    Assert.assertEquals(1, rc.compare());
   }
 
   public void testToStringTitle() throws Exception {
