@@ -146,7 +146,7 @@ public class RuleComparison{
       sb.append("severity, ");
     }
 
-   if (compareDefaultActive() != 0) {
+    if (compareDefaultActive() != 0) {
       sb.append("default active, ");
     }
 
