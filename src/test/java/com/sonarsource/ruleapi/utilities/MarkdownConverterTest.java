@@ -68,6 +68,14 @@ public class MarkdownConverterTest extends TestCase {
     Assert.assertEquals(html, mc.transform(markdown, "Java"));
   }
 
+  public void testTableWithHeaderTextAfter() throws Exception {
+    String markdown = "||a||b||c||\r\n|a1|b1|c1|\r\nNow is the time";
+    String html = "<table>\n<tr><th>a</th><th>b</th><th>c</th></tr>\n<tr><td>a1</td><td>b1</td><td>c1</td></tr>\n</table>\n<p>Now is the time</p>\n";
+
+    Assert.assertEquals(html, mc.transform(markdown, "Java"));
+  }
+
+
   public void testTableWithHeaderMultipleRows() throws Exception {
     String markdown = "||a||b||c||\r\n|a1|b1|c1|\r\n|a2|b2|c2|";
     String html = "<table>\n<tr><th>a</th><th>b</th><th>c</th></tr>\n<tr><td>a1</td><td>b1</td><td>c1</td></tr>\n<tr><td>a2</td><td>b2</td><td>c2</td></tr>\n</table>\n";
