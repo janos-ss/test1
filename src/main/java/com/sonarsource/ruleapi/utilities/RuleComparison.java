@@ -25,17 +25,10 @@ public class RuleComparison{
   }
 
   public int compare() {
-    if (spec == null && impl == null) {
-      return 0;
+    int result = checkForNulls(spec, impl);
+    if (result != 0 || spec == null) {
+      return result;
     }
-    if (spec == null) {
-      return 1;
-    }
-    if (impl == null) {
-      return -1;
-    }
-
-    int result = 0;
 
     result = compareTitle();
     if (result != 0) {
@@ -61,7 +54,40 @@ public class RuleComparison{
       return result;
     }
 
-    result = compareDescription();
+    result = compareDescriptionValues();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareSqaleValues();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareParameterList();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareTags();
+    return result;
+  }
+
+  private int checkForNulls(Object spec, Object impl) {
+    if (spec == null && impl == null) {
+      return 0;
+    }
+    if (spec == null) {
+      return 1;
+    }
+    if (impl == null) {
+      return -1;
+    }
+    return 0;
+  }
+
+  private int compareDescriptionValues() {
+    int result = compareDescription();
     if (result != 0) {
       return result;
     }
@@ -76,17 +102,17 @@ public class RuleComparison{
       return result;
     }
 
-    result = compareException();
-    if (result != 0) {
-      return result;
-    }
-
     result = compareReference();
     if (result != 0) {
       return result;
     }
 
-    result = compareSqaleCharacteristic();
+    result = compareException();
+    return result;
+  }
+
+  private int compareSqaleValues() {
+    int result = compareSqaleCharacteristic();
     if (result != 0) {
       return result;
     }
@@ -117,20 +143,6 @@ public class RuleComparison{
     }
 
     result = compareSqaleLinearOffset();
-    if (result != 0) {
-      return result;
-    }
-
-    result = compareParameterList();
-    if (result != 0) {
-      return result;
-    }
-
-    result = compareTags();
-    if (result != 0) {
-      return result;
-    }
-
     return result;
   }
 
@@ -158,26 +170,29 @@ public class RuleComparison{
       sb.append("message, ");
     }
 
-    if (compareDescription() != 0) {
-      sb.append("description text, ");
+    sb.append(toStringForDescription());
+
+    sb.append(toStringForSqale());
+
+    if (compareParameterList() != 0) {
+      sb.append("parameter list, ");
     }
 
-    if (compareNoncompliant() != 0) {
-      sb.append("noncompliant code example, ");
+    if (compareTags() != 0) {
+      sb.append("tags ");
     }
 
-    if (compareCompliant() != 0) {
-      sb.append("compliant solution, ");
+
+    if (sb.length() == 0) {
+      return "Rules are equivalent.";
     }
 
-    if (compareException() != 0) {
-      sb.append("exceptions, ");
-    }
+    return "Differences: " + sb.toString();
+  }
 
-    if (compareReference() != 0) {
-      sb.append("references, ");
-    }
+  private String toStringForSqale() {
 
+    StringBuilder sb = new StringBuilder();
     if (compareSqaleCharacteristic() != 0) {
       sb.append("SQALE characteristic, ");
     }
@@ -205,46 +220,46 @@ public class RuleComparison{
     if (compareSqaleLinearOffset() != 0) {
       sb.append("SQALE linear offset, ");
     }
-
-    if (compareParameterList() != 0) {
-      sb.append("parameter list, ");
-    }
-
-    if (compareTags() != 0) {
-      sb.append("tags ");
-    }
-
-
-    if (sb.length() == 0) {
-      return "Rules are equivalent.";
-    }
-
-    return "Differences: " + sb.toString();
+    return sb.toString();
   }
 
+  private String toStringForDescription() {
+
+    StringBuilder sb = new StringBuilder();
+    if (compareDescription() != 0) {
+      sb.append("description text, ");
+    }
+
+    if (compareNoncompliant() != 0) {
+      sb.append("noncompliant code example, ");
+    }
+
+    if (compareCompliant() != 0) {
+      sb.append("compliant solution, ");
+    }
+
+    if (compareException() != 0) {
+      sb.append("exceptions, ");
+    }
+
+    if (compareReference() != 0) {
+      sb.append("references, ");
+    }
+    return sb.toString();
+  }
 
   public int compareSeverity() {
-    if (spec.getSeverity() == null && impl.getSeverity() == null) {
-      return 0;
-    }
-    if (spec.getSeverity() == null) {
-      return 1;
-    }
-    if (impl.getSeverity() == null) {
-      return -1;
+    int result = checkForNulls(spec.getSeverity(), impl.getSeverity());
+    if (result != 0 || spec.getSeverity() == null) {
+      return result;
     }
     return spec.getSeverity().compareTo(impl.getSeverity());
   }
 
   public int compareDefaultActive() {
-    if (spec.getDefaultActive() == null && impl.getDefaultActive() == null) {
-      return 0;
-    }
-    if (spec.getDefaultActive() == null) {
-      return 1;
-    }
-    if (impl.getDefaultActive() == null) {
-      return -1;
+    int result = checkForNulls(spec.getDefaultActive(), impl.getDefaultActive());
+    if (result != 0 && spec.getDefaultActive() == null) {
+      return result;
     }
     return spec.getDefaultActive().compareTo(impl.getDefaultActive());
   }
@@ -309,14 +324,9 @@ public class RuleComparison{
     String a = spec.getSqaleConstantCostOrLinearThreshold();
     String b = impl.getSqaleConstantCostOrLinearThreshold();
 
-    if (a == null && b == null) {
-      return 0;
-    }
-    if (a == null) {
-      return 1;
-    }
-    if (b == null) {
-      return -1;
+    int result = checkForNulls(a, b);
+    if (result != 0 || a == null) {
+      return result;
     }
 
     int aVal = Integer.valueOf(a.replaceAll("\\D",""));
