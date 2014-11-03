@@ -43,8 +43,8 @@ public class Rule {
   private String sqaleLinearFactor = null;
   private String sqaleLinearOffset = null;
 
-  private List<Parameter> parameterList = null;
-  private List<String> tags = null;
+  private List<Parameter> parameterList = new ArrayList<Parameter>();
+  private List<String> tags = new ArrayList<String>();
 
 
   public Rule(String language) {
@@ -111,7 +111,7 @@ public class Rule {
     return description + nonCompliant + compliant + exceptions + references;
   }
 
-    public String getKey() {
+  public String getKey() {
     return key;
   }
 
