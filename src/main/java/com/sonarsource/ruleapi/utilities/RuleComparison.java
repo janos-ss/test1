@@ -76,6 +76,50 @@ public class RuleComparison{
       return result;
     }
 
+    result = compareSqaleCharacteristic();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareSqaleSubcharacertistic();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareSqaleRemediationFunction();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareSqaleConstantCost();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareSqaleLinearArg();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareSqaleLinearFactor();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareSqaleLinearOffset();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareParameterList();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareTags();
+    if (result != 0) {
+      return result;
+    }
 
     return result;
   }
@@ -102,7 +146,7 @@ public class RuleComparison{
   }
 
   public int compareTemplate() {
-    return Boolean.compare(spec.isTemplate(), impl.isTemplate());
+    return Boolean.valueOf(spec.isTemplate()).compareTo(Boolean.valueOf(impl.isTemplate()));
   }
 
   public int compareTitle() {
@@ -168,7 +212,7 @@ public class RuleComparison{
     TimeUnit bUnit = TimeUnit.valueOf(b.replaceAll("\\W","").replace("mn", "min").toUpperCase());
 
     if (aUnit.compareTo(bUnit) == 0) {
-      return Integer.compare(aVal, bVal);
+      return Integer.valueOf(aVal).compareTo(Integer.valueOf(bVal));
     }
     return aUnit.compareTo(bUnit);
   }
@@ -178,7 +222,7 @@ public class RuleComparison{
     List<Parameter> bList = impl.getParameterList();
 
     if (aList.size() != bList.size()) {
-      return Integer.compare(aList.size(), bList.size());
+      return Integer.valueOf(aList.size()).compareTo(Integer.valueOf(bList.size()));
     }
 
     java.util.Collections.sort(aList);
@@ -198,7 +242,7 @@ public class RuleComparison{
     List<String> bList = impl.getTags();
 
     if (aList.size() != bList.size()) {
-      return Integer.compare(aList.size(), bList.size());
+      return Integer.valueOf(aList.size()).compareTo(Integer.valueOf(bList.size()));
     }
 
     java.util.Collections.sort(aList);
@@ -213,14 +257,14 @@ public class RuleComparison{
     return 0;
   }
 
-  protected int compareTextFunctionalEquivalence(String a, String b) {
+  protected static int compareTextFunctionalEquivalence(String a, String b) {
     if (isTextFunctionallyEquivalent(a, b)) {
       return 0;
     }
     return a.compareTo(b);
   }
 
-  protected boolean isTextFunctionallyEquivalent(String a, String b){
+  protected static boolean isTextFunctionallyEquivalent(String a, String b){
     if (a == null && b == null) {
       return true;
     }
@@ -233,7 +277,7 @@ public class RuleComparison{
     return hasEquivalentTokens(a, b);
   }
 
-  private boolean hasEquivalentTokens(String a, String b) {
+  private static boolean hasEquivalentTokens(String a, String b) {
     if (a.contains("|") || b.contains("|")){
       String [] aTokens = a.split(" ");
       String [] bTokens = b.split(" ");
@@ -250,7 +294,7 @@ public class RuleComparison{
     return false;
   }
 
-  private int compareStrings(String a, String b) {
+  private static int compareStrings(String a, String b) {
     if (a == null && b == null){
       return 0;
     }
