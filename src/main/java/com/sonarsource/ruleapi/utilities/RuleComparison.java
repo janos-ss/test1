@@ -19,12 +19,22 @@ public class RuleComparison{
   private Rule spec;
   private Rule impl;
 
-  public RuleComparison(Rule a, Rule b) {
-    this.spec = a;
-    this.impl = b;
+  public RuleComparison(Rule spec, Rule impl) {
+    this.spec = spec;
+    this.impl = impl;
   }
 
   public int compare() {
+    if (spec == null && impl == null) {
+      return 0;
+    }
+    if (spec == null) {
+      return 1;
+    }
+    if (impl == null) {
+      return -1;
+    }
+
     int result = 0;
 
     result = compareTitle();
@@ -124,24 +134,118 @@ public class RuleComparison{
     return result;
   }
 
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
 
+    if (compareTitle() != 0) {
+      sb.append("title, ");
+    }
 
+    if (compareSeverity() != 0) {
+      sb.append("severity, ");
+    }
+
+   if (compareDefaultActive() != 0) {
+      sb.append("default active, ");
+    }
+
+    if (compareTemplate() != 0) {
+      sb.append("template, ");
+    }
+
+    if (compareMessage() != 0) {
+      sb.append("message, ");
+    }
+
+    if (compareDescription() != 0) {
+      sb.append("description text, ");
+    }
+
+    if (compareNoncompliant() != 0) {
+      sb.append("noncompliant code example, ");
+    }
+
+    if (compareCompliant() != 0) {
+      sb.append("compliant solution, ");
+    }
+
+    if (compareException() != 0) {
+      sb.append("exceptions, ");
+    }
+
+    if (compareReference() != 0) {
+      sb.append("references, ");
+    }
+
+    if (compareSqaleCharacteristic() != 0) {
+      sb.append("SQALE characteristic, ");
+    }
+
+    if (compareSqaleSubcharacertistic() != 0) {
+      sb.append("SQALE sub-characteristic, ");
+    }
+
+    if (compareSqaleRemediationFunction() != 0) {
+      sb.append("SQALE remediation function, ");
+    }
+
+    if (compareSqaleConstantCost() != 0) {
+      sb.append("SQALE constant cost or linear threshold, ");
+    }
+
+    if (compareSqaleLinearArg() != 0) {
+      sb.append("SQALE linear argument, ");
+    }
+
+    if (compareSqaleLinearFactor() != 0) {
+      sb.append("SQALE linear factor, ");
+    }
+
+    if (compareSqaleLinearOffset() != 0) {
+      sb.append("SQALE linear offset, ");
+    }
+
+    if (compareParameterList() != 0) {
+      sb.append("parameter list, ");
+    }
+
+    if (compareTags() != 0) {
+      sb.append("tags ");
+    }
 
 
     if (sb.length() == 0) {
-      sb.append("Rules are equivalent.");
+      return "Rules are equivalent.";
     }
-    return sb.toString();
+
+    return "Differences: " + sb.toString();
   }
 
 
   public int compareSeverity() {
+    if (spec.getSeverity() == null && impl.getSeverity() == null) {
+      return 0;
+    }
+    if (spec.getSeverity() == null) {
+      return 1;
+    }
+    if (impl.getSeverity() == null) {
+      return -1;
+    }
     return spec.getSeverity().compareTo(impl.getSeverity());
   }
 
   public int compareDefaultActive() {
+    if (spec.getDefaultActive() == null && impl.getDefaultActive() == null) {
+      return 0;
+    }
+    if (spec.getDefaultActive() == null) {
+      return 1;
+    }
+    if (impl.getDefaultActive() == null) {
+      return -1;
+    }
     return spec.getDefaultActive().compareTo(impl.getDefaultActive());
   }
 
@@ -205,11 +309,21 @@ public class RuleComparison{
     String a = spec.getSqaleConstantCostOrLinearThreshold();
     String b = impl.getSqaleConstantCostOrLinearThreshold();
 
-    int aVal = Integer.valueOf(a.replaceAll("\\D", ""));
+    if (a == null && b == null) {
+      return 0;
+    }
+    if (a == null) {
+      return 1;
+    }
+    if (b == null) {
+      return -1;
+    }
+
+    int aVal = Integer.valueOf(a.replaceAll("\\D",""));
     int bVal = Integer.valueOf(b.replaceAll("\\D",""));
 
-    TimeUnit aUnit = TimeUnit.valueOf(a.replaceAll("\\W", "").replace("mn", "min").toUpperCase());
-    TimeUnit bUnit = TimeUnit.valueOf(b.replaceAll("\\W","").replace("mn", "min").toUpperCase());
+    TimeUnit aUnit = TimeUnit.valueOf(a.replaceAll("\\d","").replaceAll("\\s","").toUpperCase().replace("MN", "MIN"));
+    TimeUnit bUnit = TimeUnit.valueOf(b.replaceAll("\\d","").replaceAll("\\s","").toUpperCase().replace("MN", "MIN"));
 
     if (aUnit.compareTo(bUnit) == 0) {
       return Integer.valueOf(aVal).compareTo(Integer.valueOf(bVal));
@@ -260,6 +374,15 @@ public class RuleComparison{
   protected static int compareTextFunctionalEquivalence(String a, String b) {
     if (isTextFunctionallyEquivalent(a, b)) {
       return 0;
+    }
+    if (a == null && b == null) {
+      return 0;
+    }
+    if (a == null) {
+      return 1;
+    }
+    if (b == null) {
+      return -1;
     }
     return a.compareTo(b);
   }
