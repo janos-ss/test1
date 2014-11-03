@@ -5,6 +5,9 @@
  */
 package com.sonarsource.ruleapi.domain;
 
+import com.google.common.base.Strings;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,16 +34,18 @@ public class Rule {
   private String compliant = "";
   private String exceptions = "";
   private String references = "";
+
   private String sqaleCharac = null;
   private String sqaleSubCharac = null;
-  private String sqaleRemediation = null;
-  private String sqaleCost = null;
+  private String sqaleRemediationFunction = null;
+  private String sqaleConstantCostOrLinearThreshold = null;
   private String sqaleLinearArg = null;
   private String sqaleLinearFactor = null;
   private String sqaleLinearOffset = null;
 
   private List<Parameter> parameterList = null;
-  private Set<String> tags = null;
+  private List<String> tags = null;
+
 
   public Rule(String language) {
     this.language = language;
@@ -53,13 +58,17 @@ public class Rule {
 
     mergeTitle(subRule);
 
+    if (subRule.message != null) {
+      this.message = subRule.message;
+    }
+
     if (subRule.defaultActive != null) {
       this.defaultActive = subRule.defaultActive;
     }
     if (subRule.severity != null) {
       this.severity = subRule.severity;
     }
-    if (isNotEmpty(message)) {
+    if (Strings.isNullOrEmpty(message)) {
       this.message = subRule.message;
     }
     if (subRule.parameterList != null && ! subRule.parameterList.isEmpty()) {
@@ -81,155 +90,28 @@ public class Rule {
   }
 
   private void mergeDescriptionPieces(Rule subRule) {
-    if (isNotEmpty(subRule.description)) {
+    if (!Strings.isNullOrEmpty(subRule.description)) {
       this.description = subRule.description;
     }
-    if (isNotEmpty(subRule.nonCompliant)) {
+    if (!Strings.isNullOrEmpty(subRule.nonCompliant)) {
       this.nonCompliant = subRule.nonCompliant;
     }
-    if (isNotEmpty(subRule.compliant)) {
+    if (!Strings.isNullOrEmpty(subRule.compliant)) {
       this.compliant = subRule.compliant;
     }
-    if (isNotEmpty(subRule.exceptions)) {
+    if (!Strings.isNullOrEmpty(subRule.exceptions)) {
       this.exceptions = subRule.exceptions;
     }
-    if (isNotEmpty(subRule.references)) {
+    if (!Strings.isNullOrEmpty(subRule.references)) {
       this.references = subRule.references;
     }
-  }
-
-  private boolean isNotEmpty(String candidate) {
-    return candidate != null && candidate.length() > 0;
   }
 
   public String getHtmlDescription() {
     return description + nonCompliant + compliant + exceptions + references;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    Rule rule = (Rule) o;
-
-    if (! isTextFunctionallyEquivalent(title,rule.title)) {
-      return false;
-    }
-    if (! isTextFunctionallyEquivalent(description,rule.description)) {
-      return false;
-    }
-    if (template != rule.template) {
-      return false;
-    }
-    if (compliant != null ? !compliant.equals(rule.compliant) : rule.compliant != null) {
-      return false;
-    }
-    if (!defaultActive.equals(rule.defaultActive)) {
-      return false;
-    }
-    if (!isTextFunctionallyEquivalent(exceptions,rule.exceptions)) {
-      return false;
-    }
-    if (nonCompliant != null ? !nonCompliant.equals(rule.nonCompliant) : rule.nonCompliant != null) {
-      return false;
-    }
-    if (parameterList != null ? !parameterList.equals(rule.parameterList) : rule.parameterList != null) {
-      return false;
-    }
-    if (references != null ? !references.equals(rule.references) : rule.references != null) {
-      return false;
-    }
-    if (!severity.equals(rule.severity)) {
-      return false;
-    }
-    if (!sqaleCharac.equals(rule.sqaleCharac)) {
-      return false;
-    }
-    if (sqaleCost != null ? !sqaleCost.equals(rule.sqaleCost) : rule.sqaleCost != null) {
-      return false;
-    }
-    if (sqaleLinearArg != null ? !sqaleLinearArg.equals(rule.sqaleLinearArg) : rule.sqaleLinearArg != null) {
-      return false;
-    }
-    if (sqaleLinearFactor != null ? !sqaleLinearFactor.equals(rule.sqaleLinearFactor) : rule.sqaleLinearFactor != null) {
-      return false;
-    }
-    if (sqaleLinearOffset != null ? !sqaleLinearOffset.equals(rule.sqaleLinearOffset) : rule.sqaleLinearOffset != null) {
-      return false;
-    }
-    if (sqaleRemediation != null ? !sqaleRemediation.equals(rule.sqaleRemediation) : rule.sqaleRemediation != null) {
-      return false;
-    }
-    if (!sqaleSubCharac.equals(rule.sqaleSubCharac)) {
-      return false;
-    }
-    if (tags != null ? !tags.equals(rule.tags) : rule.tags != null) {
-      return false;
-    }
-
-    return true;
-  }
-
-  protected boolean isTextFunctionallyEquivalent(String a, String b){
-    if (a == null && b == null) {
-      return true;
-    }
-    if (a == null || b == null) {
-      return false;
-    }
-    if (a.equals(b)) {
-      return true;
-    }
-    return hasEquivalentTokens(a, b);
-  }
-
-  private boolean hasEquivalentTokens(String a, String b) {
-    if (a.contains("|") || b.contains("|")){
-      String [] aTokens = a.split(" ");
-      String [] bTokens = b.split(" ");
-
-      for (int i=0; i<aTokens.length && i<bTokens.length; i++) {
-        String aTok = aTokens[i];
-        String bTok = bTokens[i];
-        if (! (aTok.equals(bTok) || aTok.contains(bTok) || bTok.contains(aTok))) {
-          return false;
-        }
-      }
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-
-    int result = severity.hashCode();
-    result = 31 * result + defaultActive.hashCode();
-    result = 31 * result + (template ? 1 : 0);
-    result = 31 * result + title.hashCode();
-    result = 31 * result + description.hashCode();
-    result = 31 * result + (nonCompliant != null ? nonCompliant.hashCode() : 0);
-    result = 31 * result + (compliant != null ? compliant.hashCode() : 0);
-    result = 31 * result + (exceptions != null ? exceptions.hashCode() : 0);
-    result = 31 * result + (references != null ? references.hashCode() : 0);
-    result = 31 * result + sqaleCharac.hashCode();
-    result = 31 * result + sqaleSubCharac.hashCode();
-    result = 31 * result + (sqaleRemediation != null ? sqaleRemediation.hashCode() : 0);
-    result = 31 * result + (sqaleCost != null ? sqaleCost.hashCode() : 0);
-    result = 31 * result + (sqaleLinearArg != null ? sqaleLinearArg.hashCode() : 0);
-    result = 31 * result + (sqaleLinearFactor != null ? sqaleLinearFactor.hashCode() : 0);
-    result = 31 * result + (sqaleLinearOffset != null ? sqaleLinearOffset.hashCode() : 0);
-    result = 31 * result + (parameterList != null ? parameterList.hashCode() : 0);
-    result = 31 * result + (tags != null ? tags.hashCode() : 0);
-    return result;
-  }
-
-  public String getKey() {
+    public String getKey() {
     return key;
   }
 
@@ -253,20 +135,20 @@ public class Rule {
     this.fullDescription = fullDescription;
   }
 
-  public String getSqaleRemediation() {
-    return sqaleRemediation;
+  public String getSqaleRemediationFunction() {
+    return sqaleRemediationFunction;
   }
 
-  public void setSqaleRemediation(String sqaleRemediation) {
-    this.sqaleRemediation = sqaleRemediation;
+  public void setSqaleRemediationFunction(String sqaleRemediationFunction) {
+    this.sqaleRemediationFunction = sqaleRemediationFunction;
   }
 
-  public String getSqaleCost() {
-    return sqaleCost;
+  public String getSqaleConstantCostOrLinearThreshold() {
+    return sqaleConstantCostOrLinearThreshold;
   }
 
-  public void setSqaleCost(String sqaleCost) {
-    this.sqaleCost = sqaleCost;
+  public void setSqaleConstantCostOrLinearThreshold(String sqaleConstantCostOrLinearThreshold) {
+    this.sqaleConstantCostOrLinearThreshold = sqaleConstantCostOrLinearThreshold;
   }
 
   public String getTitle() {
@@ -293,12 +175,12 @@ public class Rule {
     this.parameterList = parameterList;
   }
 
-  public Set<String> getTags() {
+  public List<String> getTags() {
     return tags;
   }
 
   public void setTags(Set<String> tags) {
-    this.tags = tags;
+    this.tags = new ArrayList<String>(tags);
   }
 
   public Severity getSeverity() {
