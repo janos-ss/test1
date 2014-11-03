@@ -36,6 +36,11 @@ public class RuleComparisonTest extends TestCase {
     Assert.assertFalse(RuleComparison.isTextFunctionallyEquivalent("test", null));
   }
 
+  public void testIsTextFunctionallyEquivalentOtherNull () throws Exception {
+
+    Assert.assertFalse(RuleComparison.isTextFunctionallyEquivalent(null, "test"));
+  }
+
   public void testIsTextFunctionallyEquivalentSimple() throws Exception {
     String ruleTitle = "Methods should not be empty";
     String specTitle = "[Methods|functions|procedures] should not be empty";
@@ -218,6 +223,16 @@ public class RuleComparisonTest extends TestCase {
     impl.setSqaleConstantCostOrLinearThreshold("5min");
 
     Assert.assertEquals(1, rc.compareSqaleConstantCost());
+  }
+
+  public void testCompareSqaleConstantCostWithNull() throws Exception {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    spec.setSqaleConstantCostOrLinearThreshold("5min");
+
+    Assert.assertEquals(-1, rc.compareSqaleConstantCost());
   }
 
   public void testCompareTitle() throws Exception {
