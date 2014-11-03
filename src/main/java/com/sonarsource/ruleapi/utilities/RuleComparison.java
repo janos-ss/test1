@@ -258,7 +258,7 @@ public class RuleComparison{
 
   public int compareDefaultActive() {
     int result = checkForNulls(spec.getDefaultActive(), impl.getDefaultActive());
-    if (result != 0 && spec.getDefaultActive() == null) {
+    if (result != 0 || spec.getDefaultActive() == null) {
       return result;
     }
     return spec.getDefaultActive().compareTo(impl.getDefaultActive());
