@@ -13,10 +13,12 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RuleMakerTest extends TestCase{
 
   private RuleMaker rm = new RuleMaker();
+  private static final String json = "{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10071\",\"value\":\"Reliability\",\"id\":\"10071\",\"child\":{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10073\",\"value\":\"Data related reliability\",\"id\":\"10073\"}}";
 
   public void testIsLangaugeMatchEasyTrue() throws Exception {
     Assert.assertTrue(rm.isLanguageMatch("Java", "Java"));
@@ -63,13 +65,36 @@ public class RuleMakerTest extends TestCase{
     Assert.assertTrue(paramList.size() == 2 && "indentSize".equals(paramList.get(0).getKey()));
   }
 
+  public void testHandleParameterListUnknownLabel() throws Exception {
+    String paramString = "Key: format \r\nDescription: Regular expression used to check the names against. \r\nDefault Value for Java : ^[a-z][a-zA-Z0-9]*$ \r\nDefault Value for Flex : ^[_a-z][a-zA-Z0-9]*$\r\ntpye:text";
+    List<Parameter> paramList = rm.handleParameterList(paramString, "Java");
+    Assert.assertNull(paramList.get(0).getType());
+  }
+
+  public void testTidyParamLabel() throws Exception {
+
+    Assert.assertNull(rm.tidyParamLabel(null));
+  }
+
   public void testPullValueFromJson() throws Exception {
-    String json = "{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10071\",\"value\":\"Reliability\",\"id\":\"10071\",\"child\":{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10073\",\"value\":\"Data related reliability\",\"id\":\"10073\"}}";
     Assert.assertEquals("Reliability", rm.pullValueFromJson(json));
+  }
+
+  public void testPullChildValueFromJson() throws Exception {
+    Map<String,Object> sqaleCharMap = rm.getMapFromJson(json);
+    Object o = sqaleCharMap.get("child");
+
+    Assert.assertEquals("Data related reliability", rm.getValueFromMap((Map<String, Object>) o));
   }
 
   public void testPullValueFromJsonNullString() throws Exception {
     Assert.assertNull(rm.pullValueFromJson(null));
+  }
+
+  public void testSetFullDescriptionNull() throws Exception {
+    Rule rule = new Rule("Java");
+    rm.setDescription(rule, null);
+    Assert.assertEquals(null, rule.getFullDescription());
   }
 
   public void testSetMarkdownDescription() throws Exception {
@@ -120,6 +145,16 @@ public class RuleMakerTest extends TestCase{
     rm.setDescription(rule, markdown);
 
     Assert.assertEquals(html, rule.getReferences());
+  }
+
+  public void testSetMarkdownNonsense() throws Exception {
+    String markdown = "Even if all browsers are fault-tolerant, HTML tags should be closed to prevent any unexpected behavior.\r\nh2. Nconmpliant Code Example\r\n{code}blah{code}";
+    String html = "<p>Even if all browsers are fault-tolerant, HTML tags should be closed to prevent any unexpected behavior.</p>\n";
+
+    Rule rule = new Rule("HTML");
+    rm.setDescription(rule, markdown);
+
+    Assert.assertEquals(html, rule.getHtmlDescription());
   }
 
   public void testSetHtmlDescription() throws Exception {

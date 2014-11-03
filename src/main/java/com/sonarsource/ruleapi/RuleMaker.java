@@ -210,7 +210,7 @@ public class RuleMaker {
     return null;
   }
 
-  private String tidyParamLabel(String paramLabel) {
+  protected String tidyParamLabel(String paramLabel) {
     if (paramLabel != null) {
       return paramLabel.trim().toLowerCase().replace(" value","");
     }
@@ -222,7 +222,7 @@ public class RuleMaker {
     return getValueFromMap(m);
   }
 
-  private String getValueFromMap(Map<String,Object> map) {
+  protected String getValueFromMap(Map<String,Object> map) {
     if (map != null) {
       Object o = map.get("value");
       if (o instanceof String) {
@@ -232,7 +232,7 @@ public class RuleMaker {
     return null;
   }
 
-  private Map<String,Object> getMapFromJson(String json) {
+  protected Map<String,Object> getMapFromJson(String json) {
     if (json != null) {
       JSONParser jsonParser = new JSONParser();
 
