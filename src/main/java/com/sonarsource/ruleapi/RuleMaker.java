@@ -76,8 +76,8 @@ public class RuleMaker {
         rule.setSqaleSubCharac(getValueFromMap((Map<String, Object>) o));
       }
     }
-    rule.setSqaleRemediation(pullValueFromJson(getCustomFieldValue(issue, "SQALE Remediation Function")));
-    rule.setSqaleCost(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold"));
+    rule.setSqaleRemediationFunction(pullValueFromJson(getCustomFieldValue(issue, "SQALE Remediation Function")));
+    rule.setSqaleConstantCostOrLinearThreshold(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold"));
     rule.setSqaleLinearArg(getCustomFieldValue(issue,"SQALE Linear Argument"));
     rule.setSqaleLinearFactor(getCustomFieldValue(issue,"SQALE Linear Factor"));
     rule.setSqaleLinearOffset(getCustomFieldValue(issue,"SQALE Linear Offset"));

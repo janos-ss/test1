@@ -5,7 +5,7 @@
  */
 package com.sonarsource.ruleapi.domain;
 
-public class Parameter {
+public class Parameter implements Comparable<Parameter>{
   private String key;
   private String description;
   private String defaultVal;
@@ -16,7 +16,7 @@ public class Parameter {
   }
 
   public void setKey(String key) {
-    this.key = key;
+    this.key = key.trim();
   }
 
   public String getDescription() {
@@ -24,7 +24,7 @@ public class Parameter {
   }
 
   public void setDescription(String description) {
-    this.description = description;
+    this.description = description.trim();
   }
 
   public String getDefaultVal() {
@@ -32,16 +32,29 @@ public class Parameter {
   }
 
   public void setDefaultVal(String defaultVal) {
-    this.defaultVal = defaultVal;
+    this.defaultVal = defaultVal.trim();
   }
 
   public String getType() {
-
     return type;
   }
 
   public void setType(String type) {
 
     this.type = type;
+  }
+
+  @Override
+  public int compareTo(Parameter parameter) {
+
+    int result = key.compareTo(parameter.getKey());
+    if (result != 0) {
+      return result;
+    }
+    result = description.compareTo(parameter.getDescription());
+    if (result != 0) {
+      return result;
+    }
+    return defaultVal.compareTo(parameter.getDefaultVal());
   }
 }
