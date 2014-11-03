@@ -10,6 +10,10 @@ import com.sonarsource.ruleapi.domain.Rule;
 
 import java.util.List;
 
+/**
+ * Provides nuanced comparison between rules, taking into account
+ * things such as word variation e.g. [Functions|Methods|Procedures] should not...
+ */
 public class RuleComparison{
 
   public enum TimeUnit {
@@ -19,11 +23,21 @@ public class RuleComparison{
   private Rule spec;
   private Rule impl;
 
+  /**
+   * Initializes comparison with 2 rules to be compared
+   * @param spec Rule fetched from RSpec
+   * @param impl Rule as implemented
+   */
   public RuleComparison(Rule spec, Rule impl) {
     this.spec = spec;
     this.impl = impl;
   }
 
+  /**
+   * Compares the 2 rules with which class was initialized
+   *
+   * @return non-zero iff meaningful differences found
+   */
   public int compare() {
     int result = checkForNulls(spec, impl);
     if (result != 0 || spec == null) {
@@ -146,6 +160,11 @@ public class RuleComparison{
     return result;
   }
 
+  /**
+   * Gives a simple listing of fields where differences were found.
+   *
+   * @return text listing of fields where meaningful differences were found
+   */
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -248,7 +267,7 @@ public class RuleComparison{
     return sb.toString();
   }
 
-  public int compareSeverity() {
+  protected int compareSeverity() {
     int result = checkForNulls(spec.getSeverity(), impl.getSeverity());
     if (result != 0 || spec.getSeverity() == null) {
       return result;
@@ -256,7 +275,7 @@ public class RuleComparison{
     return spec.getSeverity().compareTo(impl.getSeverity());
   }
 
-  public int compareDefaultActive() {
+  protected int compareDefaultActive() {
     int result = checkForNulls(spec.getDefaultActive(), impl.getDefaultActive());
     if (result != 0 || spec.getDefaultActive() == null) {
       return result;
@@ -264,63 +283,63 @@ public class RuleComparison{
     return spec.getDefaultActive().compareTo(impl.getDefaultActive());
   }
 
-  public int compareTemplate() {
+  protected int compareTemplate() {
     return Boolean.valueOf(spec.isTemplate()).compareTo(Boolean.valueOf(impl.isTemplate()));
   }
 
-  public int compareTitle() {
+  protected int compareTitle() {
     return compareTextFunctionalEquivalence(spec.getTitle(), impl.getTitle());
   }
 
-  public int compareMessage() {
+  protected int compareMessage() {
     return compareTextFunctionalEquivalence(spec.getMessage(), impl.getMessage());
   }
 
-  public int compareDescription() {
+  protected int compareDescription() {
     return compareTextFunctionalEquivalence(spec.getDescription(), impl.getDescription());
   }
 
-  public int compareNoncompliant() {
+  protected int compareNoncompliant() {
     return compareStrings(spec.getNonCompliant(), impl.getNonCompliant());
   }
 
-  public int compareCompliant() {
+  protected int compareCompliant() {
     return compareStrings(spec.getCompliant(), impl.getCompliant());
   }
 
-  public int compareException() {
+  protected int compareException() {
     return compareStrings(spec.getExceptions(), impl.getExceptions());
   }
 
-  public int compareReference() {
+  protected int compareReference() {
     return compareStrings(spec.getReferences(), impl.getReferences());
   }
 
-  public int compareSqaleCharacteristic() {
+  protected int compareSqaleCharacteristic() {
     return compareStrings(spec.getSqaleCharac(), impl.getSqaleCharac());
   }
 
-  public int compareSqaleSubcharacertistic() {
+  protected int compareSqaleSubcharacertistic() {
     return compareStrings(spec.getSqaleSubCharac(), impl.getSqaleSubCharac());
   }
 
-  public int compareSqaleRemediationFunction() {
+  protected int compareSqaleRemediationFunction() {
     return compareStrings(spec.getSqaleRemediationFunction(), impl.getSqaleRemediationFunction());
   }
 
-  public int compareSqaleLinearArg() {
+  protected int compareSqaleLinearArg() {
     return compareStrings(spec.getSqaleLinearArg(), impl.getSqaleLinearArg());
   }
 
-  public int compareSqaleLinearFactor() {
+  protected int compareSqaleLinearFactor() {
     return compareStrings(spec.getSqaleLinearFactor(), impl.getSqaleLinearFactor());
   }
 
-  public int compareSqaleLinearOffset() {
+  protected int compareSqaleLinearOffset() {
     return compareStrings(spec.getSqaleLinearOffset(), impl.getSqaleLinearOffset());
   }
 
-  public int compareSqaleConstantCost() {
+  protected int compareSqaleConstantCost() {
     String a = spec.getSqaleConstantCostOrLinearThreshold();
     String b = impl.getSqaleConstantCostOrLinearThreshold();
 
@@ -341,7 +360,7 @@ public class RuleComparison{
     return aUnit.compareTo(bUnit);
   }
 
-  public int compareParameterList() {
+  protected int compareParameterList() {
     List<Parameter> aList = spec.getParameterList();
     List<Parameter> bList = impl.getParameterList();
 
@@ -361,7 +380,7 @@ public class RuleComparison{
     return 0;
   }
 
-  public int compareTags() {
+  protected int compareTags() {
     List<String> aList = spec.getTags();
     List<String> bList = impl.getTags();
 
