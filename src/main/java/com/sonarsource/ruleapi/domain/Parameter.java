@@ -57,4 +57,38 @@ public class Parameter implements Comparable<Parameter>{
     }
     return defaultVal.compareTo(parameter.getDefaultVal());
   }
+
+  @Override
+  public boolean equals(Object o) {
+
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    Parameter parameter = (Parameter) o;
+
+    if (defaultVal != null ? !defaultVal.equals(parameter.defaultVal) : parameter.defaultVal != null) {
+      return false;
+    }
+    if (!description.equals(parameter.description)) {
+      return false;
+    }
+    if (!key.equals(parameter.key)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+
+    int result = key.hashCode();
+    result = 31 * result + description.hashCode();
+    result = 31 * result + (defaultVal != null ? defaultVal.hashCode() : 0);
+    return result;
+  }
 }
