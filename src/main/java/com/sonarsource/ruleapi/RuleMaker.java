@@ -13,6 +13,7 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.IssueFetcher;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -230,7 +231,7 @@ public class RuleMaker {
 
   protected String tidyParamLabel(String paramLabel) {
     if (paramLabel != null) {
-      return paramLabel.trim().toLowerCase().replace(" value","");
+      return paramLabel.trim().toLowerCase().replace(" value", "");
     }
     return null;
   }
@@ -256,7 +257,7 @@ public class RuleMaker {
     return null;
   }
 
-  public Map<String,Object> getMapFromJson(String json) {
+  protected Map<String,Object> getMapFromJson(String json) {
     if (json != null) {
       JSONParser jsonParser = new JSONParser();
 
@@ -275,7 +276,46 @@ public class RuleMaker {
     return null;
   }
 
-  private String getCustomFieldValue(Issue issue, String name) {
+  /**
+   * Custom fields presented in Jira as multi-selects will
+   * return arrays. This method extracts the "value" from
+   * each array item and returns them as a list of Strings.
+   *
+   * @param json The JSON to parse
+   * @return the value of the "value" keys in each object.
+   */
+  public List<String> getValueListFromJson(String json) {
+    if (json != null) {
+      JSONParser jsonParser = new JSONParser();
+
+      try {
+        Object o = jsonParser.parse(json);
+        if (o instanceof JSONArray) {
+          List<String> list = new ArrayList<String>();
+          JSONArray arr = (JSONArray) o;
+          Iterator<JSONObject> itr = arr.iterator();
+          while (itr.hasNext()) {
+            JSONObject jsonObject = itr.next();
+            list.add((String)jsonObject.get("value"));
+          }
+          return list;
+        }
+      } catch (ParseException e) {
+        // nothing to see here
+      }
+    }
+    return null;
+
+  }
+
+  /**
+   * Handles all the steps to retrieve the value of a custom field
+   *
+   * @param issue The Issue to interrogate
+   * @param name The exact name of the custom field
+   * @return The field value returned in the issue
+   */
+  public String getCustomFieldValue(Issue issue, String name) {
     if (name != null) {
       Field f = issue.getFieldByName(name);
       if (f != null && f.getValue() != null) {

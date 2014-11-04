@@ -97,6 +97,13 @@ public class RuleMakerTest extends TestCase{
     Assert.assertEquals(null, rule.getFullDescription());
   }
 
+  public void testGetValueListFromJson() throws Exception {
+    String json = "[{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10100\",\"value\":\"MISRA C\",\"id\":\"10100\"},{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10101\",\"value\":\"MISRA C++\",\"id\":\"10101\"},{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10123\",\"value\":\"Thales C\\/C++\",\"id\":\"10123\"}]";
+    List<String> list = rm.getValueListFromJson(json);
+
+    Assert.assertEquals("Thales C/C++", list.get(2));
+  }
+
   public void testSetMarkdownDescription() throws Exception {
     String markdown = "Even if all browsers are fault-tolerant, HTML tags should be closed to prevent any unexpected behavior.";
     String html = "<p>Even if all browsers are fault-tolerant, HTML tags should be closed to prevent any unexpected behavior.</p>\n";
