@@ -53,7 +53,7 @@ public class RuleMaker {
   public Rule makeRule(String key, String language) {
 
     Rule rule = new Rule(language);
-    Issue issue = fetcher.fetch(key);
+    Issue issue = fetcher.fetchIssueByKey(key);
 
     if (issue != null) {
       populateFields(rule, issue);
@@ -113,7 +113,7 @@ public class RuleMaker {
       while (itr.hasNext()) {
         Subtask subt = itr.next();
         if (isLanguageMatch(language, subt.getSummary().trim())) {
-          return fetcher.fetch(subt.getIssueKey());
+          return fetcher.fetchIssueByKey(subt.getIssueKey());
         }
       }
     }
@@ -235,7 +235,13 @@ public class RuleMaker {
     return null;
   }
 
-  protected String pullValueFromJson(String json) {
+  /**
+   * Custom field values are returned embedded in JSON strings.
+   * This convenience method pulls the "value" component out.
+   * @param json the JSON string
+   * @return  the value of the "value" key
+   */
+  public String pullValueFromJson(String json) {
     Map<String, Object> m = getMapFromJson(json);
     return getValueFromMap(m);
   }
@@ -250,7 +256,7 @@ public class RuleMaker {
     return null;
   }
 
-  protected Map<String,Object> getMapFromJson(String json) {
+  public Map<String,Object> getMapFromJson(String json) {
     if (json != null) {
       JSONParser jsonParser = new JSONParser();
 
