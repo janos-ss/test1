@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * Provides nuanced comparison between rules, taking into account
- * things such as word variation e.g. [Functions|Methods|Procedures] should not...
+ * such things as word variation e.g. "[Functions|Methods|Procedures] should not..."
  */
 public class RuleComparison{
 
@@ -163,7 +163,7 @@ public class RuleComparison{
   /**
    * Gives a simple listing of fields where differences were found.
    *
-   * @return text listing of fields where meaningful differences were found
+   * @return comma-delimited list of fields where meaningful differences were found
    */
   @Override
   public String toString() {
@@ -201,12 +201,11 @@ public class RuleComparison{
       sb.append("tags ");
     }
 
-
-    if (sb.length() == 0) {
-      return "Rules are equivalent.";
+    if (sb.length() > 0) {
+      return "Differences: " + sb.toString();
     }
 
-    return "Differences: " + sb.toString();
+    return "";
   }
 
   private String toStringForSqale() {

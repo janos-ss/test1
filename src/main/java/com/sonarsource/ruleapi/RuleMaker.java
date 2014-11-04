@@ -29,9 +29,27 @@ public class RuleMaker {
   private MarkdownConverter markdownConverter = new MarkdownConverter();
   private IssueFetcher fetcher = new IssueFetcher();
 
+  /**
+   * Given a key and a language, retrieves the relevant Issue
+   * from Jira (if possible), and populates a new Rule with
+   * the details. Rule population includes the retrieval
+   * and overlay of values from any language-specific subtask,
+   * as well as proper handling of labeled language-specific
+   * variants such as {code} blocks and parameter variations.
+   */
   public RuleMaker() {
   }
 
+  /**
+   * Given a rule key and a language (e.g. Java, ABAP, etc), fetches
+   * Issue from Jira and creates from it a Rule. Rule population includes
+   * translation of markdown to HTML so that return value can be compared
+   * directly with Implementation.
+   *
+   * @param key rule key - legacy key, S### or RSPEC-###
+   * @param language language of rule. Used to distinguish among language-specific options
+   * @return rule fetched from Jira
+   */
   public Rule makeRule(String key, String language) {
 
     Rule rule = new Rule(language);
@@ -261,6 +279,19 @@ public class RuleMaker {
     return null;
   }
 
+  /**
+   * <p>Splits the full rule description into into its constituent parts
+   * and processes each, converting markdown to HTML and making the
+   * correct choices among language-specific {code} blocks based
+   * on the rule's language property.</p>
+   *
+   * <p>NOTE that this method cannot distinguish among language-specific
+   * word choices, e.g. [Function|Method|Procedure], so the full set of
+   * choices will remain intact in the resulting text.</p>
+   *
+   * @param rule the rule to be populated
+   * @param fullDescription the text from which to populate it.
+   */
   public void setDescription(Rule rule, String fullDescription) {
 
     rule.setFullDescription(fullDescription);

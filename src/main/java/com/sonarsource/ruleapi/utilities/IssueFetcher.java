@@ -14,6 +14,9 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientF
 
 import java.net.URI;
 
+/**
+ * Retrieves Issue from Jira by key
+ */
 public class IssueFetcher {
 
   private static final String RSPEC = "RSPEC-";
@@ -24,6 +27,17 @@ public class IssueFetcher {
   public IssueFetcher() {
   }
 
+  /**
+   * Retrieves Jira Issue by Jira id (RSPEC-###)
+   * or implementation id (S###) or legacy key.
+   *
+   * If no match is found, or if multiple results
+   * are found for a legacy key search,
+   * null is returned.
+   *
+   * @param key the key to search by.
+   * @return Populated Issue retrieved from Jira or null
+   */
   public Issue fetch(String key) {
 
     Issue issue = null;

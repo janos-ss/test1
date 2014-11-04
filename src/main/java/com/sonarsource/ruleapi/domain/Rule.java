@@ -131,6 +131,15 @@ public class Rule {
     return fullDescription;
   }
 
+  /**
+   * Set the full rule description (description, noncompliant, compliant &etc.)
+   *
+   * For most purposes, the setDescription method in RuleMaker should be used instead.
+   *
+   * {@link com.sonarsource.ruleapi.RuleMaker#setDescription(Rule, String)}
+   *
+   * @param fullDescription the full rule description
+   */
   public void setFullDescription(String fullDescription) {
     this.fullDescription = fullDescription;
   }

@@ -18,7 +18,7 @@ import java.util.Set;
 public class RuleComparisonTest extends TestCase {
 
   private static final String LANG = "Java";
-  private static final String EQUIVALENT = "Rules are equivalent.";
+  private static final String EQUIVALENT = "";
 
   public void testIsTextFunctionallyEquivalentEasy() throws Exception {
     String ruleTitle = "Methods should not be empty";

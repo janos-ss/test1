@@ -20,6 +20,15 @@ public class MarkdownConverter {
   public MarkdownConverter() {
   }
 
+  /**
+   * Converts text in Jira markdown format to HTML, additionally
+   * choosing the correct variant if the markdown contains
+   * multiple, language-specific {code} sections.
+   *
+   * @param markdown the text to be converted
+   * @param language when multiple, language-specific {code} blocks are present, choose the one for this language
+   * @return the HTML version of the passed-in text
+   */
   public String transform(String markdown, String language) {
     if (markdown != null && markdown.length() > 0) {
       codeOpen = false;
@@ -218,7 +227,6 @@ public class MarkdownConverter {
 
     return line.matches("\\{code:title=" + language + "[, }].*");
   }
-
 
   protected String handleList(StringBuilder sb, String line) {
     int pos = findFirst(line, ' ');
