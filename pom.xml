@@ -9,7 +9,7 @@
   </parent>
   
   <groupId>com.sonarsource.rule-api</groupId>
-  <artifactId>rule-compare</artifactId>
+  <artifactId>rule-api</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>SonarSource :: Rule API</name>
