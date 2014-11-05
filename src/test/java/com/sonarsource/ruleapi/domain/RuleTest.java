@@ -5,15 +5,18 @@
  */
 package com.sonarsource.ruleapi.domain;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.ArrayList;
 
-public class RuleTest extends TestCase {
+import static org.fest.assertions.Assertions.assertThat;
+
+
+public class RuleTest {
 
   private static final String LANG = "Java";
 
+  @Test
   public void testMergeNullTitle() throws Exception {
     String title = "Rule title 1";
     Rule rule = new Rule(LANG);
@@ -22,8 +25,10 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(title, rule.getTitle());
+    assertThat(rule.getTitle()).isEqualTo(title);
   }
+
+  @Test
   public void testMergeTitle() throws Exception {
     Rule rule = new Rule(LANG);
     Rule subRule = new Rule(LANG);
@@ -32,9 +37,10 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(title, rule.getTitle());
+    assertThat(rule.getTitle()).isEqualTo(title);
   }
 
+  @Test
   public void testMergeDefaultActive() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setDefaultActive(Boolean.FALSE);
@@ -44,9 +50,10 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(subRule.getDefaultActive(), rule.getDefaultActive());
+    assertThat(rule.getDefaultActive()).isEqualTo(subRule.getDefaultActive());
   }
 
+  @Test
   public void testMergeSeverity() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setSeverity(Rule.Severity.CRITICAL);
@@ -56,9 +63,10 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(subRule.getSeverity(), rule.getSeverity());
+    assertThat(rule.getSeverity()).isEqualTo(subRule.getSeverity());
   }
 
+  @Test
   public void testMergeMessage() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setMessage("Message one");
@@ -68,9 +76,10 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(subRule.getMessage(), rule.getMessage());
+    assertThat(rule.getMessage()).isEqualTo(subRule.getMessage());
   }
 
+  @Test
   public void testMergeDescription() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setDescription("Some text1");
@@ -80,9 +89,10 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(subRule.getDescription(), rule.getDescription());
+    assertThat(rule.getDescription()).isEqualTo(subRule.getDescription());
   }
 
+  @Test
   public void testMergeNoncompliant() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setNonCompliant("Message one");
@@ -92,9 +102,10 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(subRule.getNonCompliant(), rule.getNonCompliant());
+    assertThat(rule.getNonCompliant()).isEqualTo(subRule.getNonCompliant());
   }
 
+  @Test
   public void testMergeCompliant() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setCompliant("Message one");
@@ -104,9 +115,10 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(subRule.getCompliant(), rule.getCompliant());
+    assertThat(rule.getCompliant()).isEqualTo(subRule.getCompliant());
   }
 
+  @Test
   public void testMergeExceptions() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setExceptions("Message one");
@@ -116,9 +128,10 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(subRule.getExceptions(), rule.getExceptions());
+    assertThat(rule.getExceptions()).isEqualTo(subRule.getExceptions());
   }
 
+  @Test
   public void testMergeReferences() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setReferences("Message one");
@@ -128,9 +141,10 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(subRule.getReferences(), rule.getReferences());
+    assertThat(rule.getReferences()).isEqualTo(subRule.getReferences());
   }
 
+  @Test
   public void testMergeParamListEmpty() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setParameterList(new ArrayList<Parameter>());
@@ -145,9 +159,10 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(1, rule.getParameterList().size());
+    assertThat(rule.getParameterList().size()).isEqualTo(1);
   }
 
+  @Test
   public void testMergeParmListNonEmpty() throws Exception {
     Rule rule = new Rule(LANG);
 
@@ -162,6 +177,6 @@ public class RuleTest extends TestCase {
 
     rule.merge(subRule);
 
-    Assert.assertEquals(1, rule.getParameterList().size());
+    assertThat(rule.getParameterList().size()).isEqualTo(1);
   }
 }

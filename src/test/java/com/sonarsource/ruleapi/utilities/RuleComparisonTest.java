@@ -8,46 +8,52 @@ package com.sonarsource.ruleapi.utilities;
 
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RuleComparisonTest extends TestCase {
+import static org.fest.assertions.Assertions.assertThat;
+
+public class RuleComparisonTest {
 
   private static final String LANG = "Java";
-  private static final String EQUIVALENT = "";
 
+  @Test
   public void testIsTextFunctionallyEquivalentEasy() throws Exception {
     String ruleTitle = "Methods should not be empty";
 
-    Assert.assertTrue(RuleComparison.isTextFunctionallyEquivalent(ruleTitle, ruleTitle));
+    assertThat(RuleComparison.isTextFunctionallyEquivalent(ruleTitle, ruleTitle)).isTrue();
   }
 
+  @Test
   public void testIsTextFunctionallyEquivalentBothNull () throws Exception {
 
-    Assert.assertTrue(RuleComparison.isTextFunctionallyEquivalent(null, null));
+    assertThat(RuleComparison.isTextFunctionallyEquivalent(null, null)).isTrue();
   }
 
+  @Test
   public void testIsTextFunctionallyEquivalentOneNull () throws Exception {
 
-    Assert.assertFalse(RuleComparison.isTextFunctionallyEquivalent("test", null));
+    assertThat(RuleComparison.isTextFunctionallyEquivalent("test", null)).isFalse();
   }
 
+  @Test
   public void testIsTextFunctionallyEquivalentOtherNull () throws Exception {
 
-    Assert.assertFalse(RuleComparison.isTextFunctionallyEquivalent(null, "test"));
+    assertThat(RuleComparison.isTextFunctionallyEquivalent(null, "test")).isFalse();
   }
 
+  @Test
   public void testIsTextFunctionallyEquivalentSimple() throws Exception {
     String ruleTitle = "Methods should not be empty";
     String specTitle = "[Methods|functions|procedures] should not be empty";
 
-    Assert.assertTrue(RuleComparison.isTextFunctionallyEquivalent(ruleTitle, specTitle));
+    assertThat(RuleComparison.isTextFunctionallyEquivalent(ruleTitle, specTitle)).isTrue();
   }
 
+  @Test
   public void testIsTextFunctionallyEquivalentHarder() throws Exception {
     String specDescription = "A [function|method|module|subroutine] that grows too large tends to aggregate too many responsibilities.\n" +
             "Such [function|method|module|subroutine] inevitably become harder to understand and therefore harder to maintain.\n" +
@@ -58,25 +64,29 @@ public class RuleComparisonTest extends TestCase {
             "Above a specific threshold, it is strongly advised to refactor into smaller module which focus on well-defined tasks.\n" +
             "Those smaller module will not only be easier to understand, but also probably easier to test.";
 
-    Assert.assertTrue(RuleComparison.isTextFunctionallyEquivalent(specDescription, ruleDescription));
+    assertThat(RuleComparison.isTextFunctionallyEquivalent(specDescription, ruleDescription)).isTrue();
   }
 
+  @Test
   public void testIsTextFunctionallyEquivalentFalse() throws Exception {
-    Assert.assertFalse(RuleComparison.isTextFunctionallyEquivalent("Now is the time", "Four score and seven years ago"));
+    assertThat(RuleComparison.isTextFunctionallyEquivalent("Now is the time", "Four score and seven years ago")).isFalse();
   }
 
+  @Test
   public void testCompareNullRules() throws Exception {
     RuleComparison rc = new RuleComparison(null,null);
-    Assert.assertEquals(0, rc.compare());
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
+  @Test
   public void testCompareOneNullRule() throws Exception {
     Rule spec = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, null);
 
-    Assert.assertEquals(-1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(-1);
   }
 
+  @Test
   public void testCompareTagsEq() throws Exception {
     Rule spec = new Rule(LANG);
     Set<String> specTags = new HashSet<String>();
@@ -92,9 +102,10 @@ public class RuleComparisonTest extends TestCase {
 
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    Assert.assertEquals(EQUIVALENT, rc.toString());
+    assertThat(rc.toString()).hasSize(0);
   }
 
+  @Test
   public void testCompareTagsDifferentTags() throws Exception {
     Rule spec = new Rule(LANG);
     Set<String> specTags = new HashSet<String>();
@@ -110,9 +121,10 @@ public class RuleComparisonTest extends TestCase {
 
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    Assert.assertEquals(1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(1);
   }
 
+  @Test
   public void testCompareTagsTagMissing() throws Exception {
     Rule spec = new Rule(LANG);
     Set<String> specTags = new HashSet<String>();
@@ -127,9 +139,10 @@ public class RuleComparisonTest extends TestCase {
 
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    Assert.assertEquals(1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(1);
   }
 
+  @Test
   public void testCompareParameterListEq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -148,9 +161,10 @@ public class RuleComparisonTest extends TestCase {
     p.setType("boolean");
     implList.add(p);
 
-    Assert.assertEquals(0, rc.compare());
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
+  @Test
   public void testCompareParameterListParamDifference() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -172,9 +186,10 @@ public class RuleComparisonTest extends TestCase {
     p.setDefaultVal("blah");
     implList.add(p);
 
-    Assert.assertEquals(2, rc.compare());
+    assertThat(rc.compare()).isEqualTo(2);
   }
 
+  @Test
   public void testCompareParameterListParamOneEmpty() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -189,9 +204,10 @@ public class RuleComparisonTest extends TestCase {
 
     specList.add(p);
 
-    Assert.assertEquals(1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(1);
   }
 
+  @Test
   public void testCompareSqaleConstantCostEasy() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -200,9 +216,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setSqaleConstantCostOrLinearThreshold("5min");
     impl.setSqaleConstantCostOrLinearThreshold("5min");
 
-    Assert.assertEquals(0, rc.compare());
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
+  @Test
   public void testCompareSqaleConstantCostHard() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -211,9 +228,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setSqaleConstantCostOrLinearThreshold("5 MN");
     impl.setSqaleConstantCostOrLinearThreshold("5min");
 
-    Assert.assertEquals(0, rc.compare());
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
+  @Test
   public void testCompareSqaleConstantCostNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -222,9 +240,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setSqaleConstantCostOrLinearThreshold("1 h");
     impl.setSqaleConstantCostOrLinearThreshold("5min");
 
-    Assert.assertEquals(1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(1);
   }
 
+  @Test
   public void testCompareSqaleConstantCostWithNull() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -232,9 +251,10 @@ public class RuleComparisonTest extends TestCase {
 
     spec.setSqaleConstantCostOrLinearThreshold("5min");
 
-    Assert.assertEquals(-1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(-1);
   }
 
+  @Test
   public void testCompareTitle() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -243,9 +263,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setTitle("title");
     impl.setTitle("title");
 
-    Assert.assertEquals(0, rc.compare());
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
+  @Test
   public void testCompareTitleNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -254,9 +275,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setTitle("title");
     impl.setTitle("a title");
 
-    Assert.assertEquals(19, rc.compare());
+    assertThat(rc.compare()).isEqualTo(19);
   }
 
+  @Test
   public void testCompareSeverity() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -265,9 +287,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setSeverity(Rule.Severity.CRITICAL);
     impl.setSeverity(Rule.Severity.CRITICAL);
 
-    Assert.assertEquals(0, rc.compare());
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
+  @Test
   public void testCompareSeverityNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -276,9 +299,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setSeverity(Rule.Severity.CRITICAL);
     impl.setSeverity(Rule.Severity.MAJOR);
 
-    Assert.assertEquals(1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(1);
   }
 
+  @Test
   public void testCompareDefaultActive() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -287,9 +311,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setDefaultActive(Boolean.TRUE);
     impl.setDefaultActive(Boolean.TRUE);
 
-    Assert.assertEquals(0, rc.compare());
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
+  @Test
   public void testCompareDefaultActiveNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -298,9 +323,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setDefaultActive(Boolean.TRUE);
     impl.setDefaultActive(Boolean.FALSE);
 
-    Assert.assertEquals(1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(1);
   }
 
+  @Test
   public void testCompareDefaultActiveNeqWithNull() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -308,9 +334,10 @@ public class RuleComparisonTest extends TestCase {
 
     spec.setDefaultActive(Boolean.TRUE);
 
-    Assert.assertEquals(-1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(-1);
   }
 
+  @Test
   public void testCompareTemplate() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -319,9 +346,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setTemplate(false);
     impl.setTemplate(false);
 
-    Assert.assertEquals(0, rc.compare());
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
+  @Test
   public void testCompareTemplateNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -330,9 +358,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setTemplate(false);
     impl.setTemplate(true);
 
-    Assert.assertEquals(-1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(-1);
   }
 
+  @Test
   public void testCompareMessage() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -341,9 +370,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setMessage("message");
     impl.setMessage("message");
 
-    Assert.assertEquals(0, rc.compare());
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
+  @Test
   public void testCompareMessageNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -352,9 +382,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setMessage("message");
     impl.setMessage("a message");
 
-    Assert.assertEquals(12, rc.compare());
+    assertThat(rc.compare()).isEqualTo(12);
   }
 
+  @Test
   public void testCompareMessageNeqWithNull() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -362,9 +393,10 @@ public class RuleComparisonTest extends TestCase {
 
     spec.setMessage("message");
 
-    Assert.assertEquals(-1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(-1);
   }
 
+  @Test
   public void testToStringParameterListEq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -383,9 +415,10 @@ public class RuleComparisonTest extends TestCase {
     p.setType("boolean");
     implList.add(p);
 
-    Assert.assertEquals(EQUIVALENT, rc.toString());
+    assertThat(rc.toString()).hasSize(0);
   }
 
+  @Test
   public void testToStringParameterListParamDifference() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -407,9 +440,10 @@ public class RuleComparisonTest extends TestCase {
     p.setDefaultVal("blah");
     implList.add(p);
 
-    Assert.assertEquals(2, rc.compare());
+    assertThat(rc.compare()).isEqualTo(2);
   }
 
+  @Test
   public void testToStringParameterListParamOneEmpty() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -424,9 +458,10 @@ public class RuleComparisonTest extends TestCase {
 
     specList.add(p);
 
-    Assert.assertEquals(1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(1);
   }
 
+  @Test
   public void testToStringSqaleConstantCostEasy() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -435,9 +470,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setSqaleConstantCostOrLinearThreshold("5min");
     impl.setSqaleConstantCostOrLinearThreshold("5min");
 
-    Assert.assertEquals(EQUIVALENT, rc.toString());
+    assertThat(rc.toString()).hasSize(0);
   }
 
+  @Test
   public void testToStringSqaleConstantCostHard() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -446,9 +482,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setSqaleConstantCostOrLinearThreshold("5 MN");
     impl.setSqaleConstantCostOrLinearThreshold("5min");
 
-    Assert.assertEquals(EQUIVALENT, rc.toString());
+    assertThat(rc.toString()).hasSize(0);
   }
 
+  @Test
   public void testToStringSqaleConstantCostNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -457,9 +494,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setSqaleConstantCostOrLinearThreshold("1 h");
     impl.setSqaleConstantCostOrLinearThreshold("5min");
 
-    Assert.assertEquals(1, rc.compare());
+    assertThat(rc.compare()).isEqualTo(1);
   }
 
+  @Test
   public void testToStringTitle() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -468,9 +506,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setTitle("title");
     impl.setTitle("title");
 
-    Assert.assertEquals(EQUIVALENT, rc.toString());
+    assertThat(rc.toString()).hasSize(0);
   }
 
+  @Test
   public void testToStringTitleNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -479,9 +518,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setTitle("title");
     impl.setTitle("a title");
 
-    Assert.assertEquals("Differences: title, ", rc.toString());
+    assertThat(rc.toString()).isEqualTo("Differences: title, ");
   }
 
+  @Test
   public void testToStringSeverity() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -490,9 +530,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setSeverity(Rule.Severity.CRITICAL);
     impl.setSeverity(Rule.Severity.CRITICAL);
 
-    Assert.assertEquals(EQUIVALENT, rc.toString());
+    assertThat(rc.toString()).hasSize(0);
   }
 
+  @Test
   public void testToStringSeverityNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -501,9 +542,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setSeverity(Rule.Severity.CRITICAL);
     impl.setSeverity(Rule.Severity.MAJOR);
 
-    Assert.assertEquals("Differences: severity, ", rc.toString());
+    assertThat(rc.toString()).isEqualTo("Differences: severity, ");
   }
 
+  @Test
   public void testToStringDefaultActive() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -512,10 +554,12 @@ public class RuleComparisonTest extends TestCase {
     spec.setDefaultActive(Boolean.TRUE);
     impl.setDefaultActive(Boolean.TRUE);
 
-    Assert.assertEquals(EQUIVALENT, rc.toString());
+    assertThat(rc.toString()).hasSize(0);
   }
 
+  @Test
   public void testToStringDefaultActiveNeq() throws Exception {
+
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -523,9 +567,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setDefaultActive(Boolean.TRUE);
     impl.setDefaultActive(Boolean.FALSE);
 
-    Assert.assertEquals("Differences: default active, ", rc.toString());
+    assertThat(rc.toString()).isEqualTo("Differences: default active, ");
   }
 
+  @Test
   public void testToStringDefaultActiveNeqWithNull() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -533,9 +578,10 @@ public class RuleComparisonTest extends TestCase {
 
     spec.setDefaultActive(Boolean.TRUE);
 
-    Assert.assertEquals("Differences: default active, ", rc.toString());
+    assertThat(rc.toString()).isEqualTo("Differences: default active, ");
   }
 
+  @Test
   public void testToStringTemplate() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -544,9 +590,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setTemplate(false);
     impl.setTemplate(false);
 
-    Assert.assertEquals(EQUIVALENT, rc.toString());
+    assertThat(rc.toString()).hasSize(0);
   }
 
+  @Test
   public void testToStringTemplateNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -555,9 +602,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setTemplate(false);
     impl.setTemplate(true);
 
-    Assert.assertEquals("Differences: template, ", rc.toString());
+    assertThat(rc.toString()).isEqualTo("Differences: template, ");
   }
 
+  @Test
   public void testToStringMessage() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -566,9 +614,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setMessage("message");
     impl.setMessage("message");
 
-    Assert.assertEquals(EQUIVALENT, rc.toString());
+    assertThat(rc.toString()).hasSize(0);
   }
 
+  @Test
   public void testToStringMessageNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -577,9 +626,10 @@ public class RuleComparisonTest extends TestCase {
     spec.setMessage("message");
     impl.setMessage("a message");
 
-    Assert.assertEquals("Differences: message, ", rc.toString());
+    assertThat(rc.toString()).isEqualTo("Differences: message, ");
   }
 
+  @Test
   public void testToStringMessageNeqWithNull() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -587,7 +637,7 @@ public class RuleComparisonTest extends TestCase {
 
     spec.setMessage("message");
 
-    Assert.assertEquals("Differences: message, ", rc.toString());
+    assertThat(rc.toString()).isEqualTo("Differences: message, ");
   }
 
 }

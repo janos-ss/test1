@@ -6,17 +6,18 @@
 
 package com.sonarsource.ruleapi.domain;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class ParameterTest extends TestCase {
+import static org.fest.assertions.Assertions.assertThat;
 
-  private Parameter full;
+public class ParameterTest {
 
-  @Override
-  protected void setUp() throws Exception
+  private static Parameter full;
+
+  @BeforeClass
+  public static void setUp() throws Exception
   {
-    super.setUp();
     full = new Parameter();
     full.setKey("fullKey");
     full.setDescription("This is the description of the fully-described parameter");
@@ -24,79 +25,82 @@ public class ParameterTest extends TestCase {
     full.setDefaultVal("*.*");
   }
 
+  @Test
   public void testEqualsSameRef() throws Exception {
 
-    Assert.assertTrue(full.equals(full));
+    assertThat(full.equals(full)).isTrue();
   }
 
+  @Test
   public void testEqualsSameValues () throws Exception {
     Parameter copy = new Parameter();
     copy.setDefaultVal(full.getDefaultVal());
     copy.setKey(full.getKey());
     copy.setDescription(full.getDescription());
 
-    Assert.assertTrue(full.equals(copy));
+    assertThat(full.equals(copy)).isTrue();
   }
 
+  @Test
   public void testEqualsNeqKey() throws Exception {
     Parameter copy = new Parameter();
     copy.setDefaultVal("copyKey");
     copy.setKey(full.getKey());
     copy.setDescription(full.getDescription());
 
-    Assert.assertFalse(full.equals(copy));
+    assertThat(full.equals(copy)).isFalse();
   }
 
+  @Test
   public void testEqualsNeqDescription () throws Exception {
     Parameter copy = new Parameter();
     copy.setDefaultVal(full.getDefaultVal());
     copy.setKey(full.getKey());
     copy.setDescription("New description");
 
-    Assert.assertFalse(full.equals(copy));
+    assertThat(full.equals(copy)).isFalse();
   }
 
-
+  @Test
   public void testEqualsNeqDefault () throws Exception {
     Parameter copy = new Parameter();
     copy.setDefaultVal("**/*.*");
     copy.setKey(full.getKey());
     copy.setDescription(full.getDescription());
 
-    Assert.assertFalse(full.equals(copy));
+    assertThat(full.equals(copy)).isFalse();
   }
 
+  @Test
   public void testEqualsNeqNullDefault () throws Exception {
     Parameter copy = new Parameter();
     copy.setKey(full.getKey());
     copy.setDescription(full.getDescription());
 
-    Assert.assertFalse(full.equals(copy));
+    assertThat(full.equals(copy)).isFalse();
   }
 
+  @Test
   public void testEqualsNeqOtherNullDefault () throws Exception {
     Parameter copy = new Parameter();
     copy.setKey(full.getKey());
     copy.setDescription(full.getDescription());
 
-    Assert.assertFalse(copy.equals(full));
+    assertThat(full.equals(copy)).isFalse();
   }
 
+  @Test
   public void testHashCodeDefault () throws Exception {
-    Parameter copy = new Parameter();
-    copy.setKey(full.getKey());
-    copy.setDescription(full.getDescription());
 
-    Assert.assertEquals(-1130130840, full.hashCode());
+    assertThat(full.hashCode()).isEqualTo(-1130130840);
   }
 
+  @Test
   public void testHashCodeNullDefault () throws Exception {
     Parameter copy = new Parameter();
     copy.setKey(full.getKey());
     copy.setDescription(full.getDescription());
 
-    Assert.assertEquals(-1130172670, copy.hashCode());
+    assertThat(copy.hashCode()).isEqualTo(-1130172670);
   }
-
-
 }
