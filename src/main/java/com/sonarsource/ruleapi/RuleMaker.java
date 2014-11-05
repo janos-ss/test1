@@ -22,23 +22,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Given a key and a language, retrieves the relevant Issue
+ * from Jira (if possible), and populates a new Rule with
+ * the details. Rule population includes the retrieval
+ * and overlay of values from any language-specific subtask,
+ * as well as proper handling of labeled language-specific
+ * variants such as {code} blocks and parameter variations.
+ */
 public class RuleMaker {
 
   private static final String MARKDOWN_H2_MATCH = "h2\\.";
   private static final String MARKDOWN_H2 = "h2.";
   private static final String HTML_H2 = "<h2>";
-  private MarkdownConverter markdownConverter = new MarkdownConverter();
-  private IssueFetcher fetcher = new IssueFetcher();
 
-  /**
-   * Given a key and a language, retrieves the relevant Issue
-   * from Jira (if possible), and populates a new Rule with
-   * the details. Rule population includes the retrieval
-   * and overlay of values from any language-specific subtask,
-   * as well as proper handling of labeled language-specific
-   * variants such as {code} blocks and parameter variations.
-   */
-  public RuleMaker() {
+
+  private RuleMaker() {
   }
 
   /**
@@ -51,33 +50,58 @@ public class RuleMaker {
    * @param language language of rule. Used to distinguish among language-specific options
    * @return rule fetched from Jira
    */
-  public Rule makeRule(String key, String language) {
+  public static Rule getRuleByKey(String key, String language) {
+    IssueFetcher fetcher = new IssueFetcher();
 
     Rule rule = new Rule(language);
     Issue issue = fetcher.fetchIssueByKey(key);
-
-    if (issue != null) {
-      populateFields(rule, issue);
-
-      Issue subIssue = getSubtask(language, issue.getSubtasks());
-      if (subIssue != null) {
-
-        Rule subRule = new Rule(language);
-        populateFields(subRule, subIssue);
-        rule.merge(subRule);
-      }
-    }
+    fleshOutRule(fetcher, rule, issue);
 
     return rule;
   }
 
-  private void populateFields(Rule rule, Issue issue) {
+  public static List<Rule> getRulesByJql(String query, String language) {
+    List<Rule> rules = new ArrayList<Rule>();
+
+    IssueFetcher fetcher = new IssueFetcher();
+    List<Issue> issues = fetcher.fetchIssuesBySearch(query);
+
+    Iterator<Issue> itr = issues.iterator();
+    while (itr.hasNext()) {
+      Rule rule = new Rule(language);
+      Issue issue = itr.next();
+      fleshOutRule(fetcher, rule, issue);
+      rules.add(rule);
+    }
+
+    return rules;
+  }
+
+  private static void fleshOutRule(IssueFetcher fetcher, Rule rule, Issue issue) {
+    if (issue != null) {
+      populateFields(rule, issue);
+
+      Issue subIssue = getSubtask(fetcher, rule.getLanguage(), issue.getSubtasks());
+      if (subIssue != null) {
+
+        Rule subRule = new Rule(rule.getLanguage());
+        populateFields(subRule, subIssue);
+        rule.merge(subRule);
+      }
+    }
+  }
+
+  private static void populateFields(Rule rule, Issue issue) {
     rule.setKey(issue.getKey());
     rule.setStatus(issue.getStatus().getName());
 
-    rule.setSeverity(Rule.Severity.valueOf(pullValueFromJson(getCustomFieldValue(issue, "Default Severity")).toUpperCase()));
+    String tmp = getCustomFieldValue(issue, "Default Severity");
+    if (tmp != null) {
+      rule.setSeverity(Rule.Severity.valueOf(pullValueFromJson(tmp).toUpperCase()));
+    }
     rule.setDefaultActive("Yes".equals(pullValueFromJson(getFieldValue(issue,"Activated by default"))));
-    String tmp = getCustomFieldValue(issue, "Legacy Key");
+
+    tmp = getCustomFieldValue(issue, "Legacy Key");
     if (tmp != null) {
       rule.setLegacyKeys(tmp.split(","));
     }
@@ -108,7 +132,7 @@ public class RuleMaker {
 
   }
 
-  private Issue getSubtask(String language, Iterable<Subtask> tasks) {
+  private static Issue getSubtask(IssueFetcher fetcher, String language, Iterable<Subtask> tasks) {
     if (tasks != null) {
       Iterator<Subtask> itr = tasks.iterator();
       while (itr.hasNext()) {
@@ -121,7 +145,7 @@ public class RuleMaker {
     return null;
   }
 
-  private String getFieldValue(Issue issue, String fieldName) {
+  private static String getFieldValue(Issue issue, String fieldName) {
     if (issue != null && fieldName != null) {
       Field f = issue.getFieldByName(fieldName);
       if (f != null && f.getValue() != null) {
@@ -131,7 +155,7 @@ public class RuleMaker {
     return null;
   }
 
-  protected boolean isLanguageMatch(String language, String candidate) {
+  protected static boolean isLanguageMatch(String language, String candidate) {
     if (language.equals(candidate)) {
       return true;
     }
@@ -145,7 +169,7 @@ public class RuleMaker {
     return false;
   }
 
-  protected List<Parameter> handleParameterList(String paramString, String language) {
+  protected static List<Parameter> handleParameterList(String paramString, String language) {
     List<Parameter> list = new ArrayList<Parameter>();
     if (paramString == null) {
       return list;
@@ -176,7 +200,7 @@ public class RuleMaker {
     return list;
   }
 
-  private void fillInParam(Parameter param, String label, String line) {
+  private static void fillInParam(Parameter param, String label, String line) {
     if (label.startsWith("default")) {
       param.setDefaultVal(extractParamValue(line));
     } else if (label.startsWith("description")) {
@@ -186,7 +210,7 @@ public class RuleMaker {
     }
   }
 
-  private boolean isParamLanguageMatch(String label, String language) {
+  private static boolean isParamLanguageMatch(String label, String language) {
     if (label == null) {
       return true;
     }
@@ -203,7 +227,7 @@ public class RuleMaker {
     return false;
   }
 
-  private String stripLeading(String line, String toStrip) {
+  private static String stripLeading(String line, String toStrip) {
     String target = line.trim();
     if (target.startsWith(toStrip)) {
       return target.substring(toStrip.length());
@@ -211,7 +235,7 @@ public class RuleMaker {
     return target;
   }
 
-  private String extractParamValue(String line) {
+  private static String extractParamValue(String line) {
     if (line.indexOf('=') > -1) {
       return line.substring(line.indexOf('=') + 1).trim();
     } else if (line.indexOf(':') > -1) {
@@ -220,7 +244,7 @@ public class RuleMaker {
     return line;
   }
 
-  private String extractParamLcLabel(String line) {
+  private static String extractParamLcLabel(String line) {
     if (line.indexOf('=') > -1) {
       return tidyParamLabel(line.substring(0, line.indexOf('=')));
     } else if (line.indexOf(':') > -1) {
@@ -229,7 +253,7 @@ public class RuleMaker {
     return null;
   }
 
-  protected String tidyParamLabel(String paramLabel) {
+  protected static String tidyParamLabel(String paramLabel) {
     if (paramLabel != null) {
       return paramLabel.trim().toLowerCase().replace(" value", "");
     }
@@ -242,12 +266,15 @@ public class RuleMaker {
    * @param json the JSON string
    * @return  the value of the "value" key
    */
-  public String pullValueFromJson(String json) {
-    Map<String, Object> m = getMapFromJson(json);
-    return getValueFromMap(m);
+  protected static String pullValueFromJson(String json) {
+    if (json != null && json.length() > 0) {
+      Map<String, Object> m = getMapFromJson(json);
+      return getValueFromMap(m);
+    }
+    return null;
   }
 
-  protected String getValueFromMap(Map<String,Object> map) {
+  protected static String getValueFromMap(Map<String,Object> map) {
     if (map != null) {
       Object o = map.get("value");
       if (o instanceof String) {
@@ -257,7 +284,7 @@ public class RuleMaker {
     return null;
   }
 
-  protected Map<String,Object> getMapFromJson(String json) {
+  protected static Map<String,Object> getMapFromJson(String json) {
     if (json != null) {
       JSONParser jsonParser = new JSONParser();
 
@@ -284,7 +311,7 @@ public class RuleMaker {
    * @param json The JSON to parse
    * @return the value of the "value" keys in each object.
    */
-  public List<String> getValueListFromJson(String json) {
+  protected static List<String> getValueListFromJson(String json) {
     if (json != null) {
       JSONParser jsonParser = new JSONParser();
 
@@ -315,7 +342,7 @@ public class RuleMaker {
    * @param name The exact name of the custom field
    * @return The field value returned in the issue
    */
-  public String getCustomFieldValue(Issue issue, String name) {
+  protected static String getCustomFieldValue(Issue issue, String name) {
     if (name != null) {
       Field f = issue.getFieldByName(name);
       if (f != null && f.getValue() != null) {
@@ -338,7 +365,7 @@ public class RuleMaker {
    * @param rule the rule to be populated
    * @param fullDescription the text from which to populate it.
    */
-  public void setDescription(Rule rule, String fullDescription) {
+  public static void setDescription(Rule rule, String fullDescription) {
 
     rule.setFullDescription(fullDescription);
     if (fullDescription != null && fullDescription.length() > 0) {
@@ -353,7 +380,8 @@ public class RuleMaker {
     }
   }
 
-  private void handleMarkdown(Rule rule, String[] pieces) {
+  private static void handleMarkdown(Rule rule, String[] pieces) {
+    MarkdownConverter markdownConverter = new MarkdownConverter();
 
     rule.setDescription(markdownConverter.transform(pieces[0], rule.getLanguage()));
 
@@ -375,7 +403,7 @@ public class RuleMaker {
     }
   }
 
-  private final void handleHtml(Rule rule, String[] pieces) {
+  private static void handleHtml(Rule rule, String[] pieces) {
 
     rule.setDescription(pieces[0]);
     for (String piece : pieces) {

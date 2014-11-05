@@ -26,7 +26,7 @@ import java.util.List;
 public class IssueFetcher {
 
   private static final String RSPEC = "RSPEC-";
-  private static final String SEARCH = "project=RSPEC AND ";
+  private static final String SEARCH = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
   private static final String LEGACY_SEARCH1 = "\"Legacy Key\"~\"";
   private static final String LEGACY_SEARCH2 = "\"";
   private static final URI SERVER_URI = URI.create("http://jira.sonarsource.com/");
