@@ -60,6 +60,12 @@ public class RuleMaker {
     return rule;
   }
 
+  /**
+   * Retrieve a list of open rules based on a JQL snippet.
+   * @param query the jql to use
+   * @param language the language sought. Not used in the query but used to populate rule members
+   * @return a list of retrieved rules
+   */
   public static List<Rule> getRulesByJql(String query, String language) {
     List<Rule> rules = new ArrayList<Rule>();
 
