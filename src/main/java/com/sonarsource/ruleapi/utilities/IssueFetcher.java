@@ -6,7 +6,6 @@
 package com.sonarsource.ruleapi.utilities;
 
 import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.Issue;
