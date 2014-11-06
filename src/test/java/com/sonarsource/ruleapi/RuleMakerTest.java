@@ -106,6 +106,11 @@ public class RuleMakerTest {
   }
 
   @Test
+  public void testPullValueFromJsonEmptyString() throws Exception {
+    assertThat(RuleMaker.pullValueFromJson("")).isNull();
+  }
+
+  @Test
   public void testSetFullDescriptionNull() throws Exception {
     Rule rule = new Rule("Java");
     RuleMaker.setDescription(rule, null);
@@ -117,6 +122,18 @@ public class RuleMakerTest {
     String json = "[{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10100\",\"value\":\"MISRA C\",\"id\":\"10100\"},{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10101\",\"value\":\"MISRA C++\",\"id\":\"10101\"},{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10123\",\"value\":\"Thales C\\/C++\",\"id\":\"10123\"}]";
     List<String> list = RuleMaker.getValueListFromJson(json);
     assertThat(list.get(2)).isEqualTo("Thales C/C++");
+  }
+
+  @Test
+  public void testGetMapFromJsonWithArray() throws Exception {
+    String json = "[{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10100\",\"value\":\"MISRA C\",\"id\":\"10100\"},{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10101\",\"value\":\"MISRA C++\",\"id\":\"10101\"},{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10123\",\"value\":\"Thales C\\/C++\",\"id\":\"10123\"}]";
+    assertThat(RuleMaker.getMapFromJson(json)).hasSize(3);
+  }
+
+  @Test
+  public void testGetValueListFromJsonNoArray() {
+
+    assertThat(RuleMaker.getValueListFromJson(JSON)).hasSize(0);
   }
 
   @Test
