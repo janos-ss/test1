@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class RuleMakerTest {
 
-  private static final String json = "{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10071\",\"value\":\"Reliability\",\"id\":\"10071\",\"child\":{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10073\",\"value\":\"Data related reliability\",\"id\":\"10073\"}}";
+  private static final String JSON = "{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10071\",\"value\":\"Reliability\",\"id\":\"10071\",\"child\":{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10073\",\"value\":\"Data related reliability\",\"id\":\"10073\"}}";
 
   @Test
   public void testIsLangaugeMatchEasyTrue() throws Exception {
@@ -89,12 +90,12 @@ public class RuleMakerTest {
 
   @Test
   public void testPullValueFromJson() throws Exception {
-    assertThat(RuleMaker.pullValueFromJson(json)).isEqualTo("Reliability");
+    assertThat(RuleMaker.pullValueFromJson(JSON)).isEqualTo("Reliability");
   }
 
   @Test
   public void testPullChildValueFromJson() throws Exception {
-    Map<String,Object> sqaleCharMap = RuleMaker.getMapFromJson(json);
+    Map<String,Object> sqaleCharMap = RuleMaker.getMapFromJson(JSON);
     Object o = sqaleCharMap.get("child");
     assertThat(RuleMaker.getValueFromMap((Map<String, Object>) o)).isEqualTo("Data related reliability");
   }
@@ -192,5 +193,60 @@ public class RuleMakerTest {
     RuleMaker.setDescription(rule, html);
 
     assertThat(rule.getHtmlDescription()).isEqualTo(html);
+  }
+
+  @Test
+  public void testEmptyDescription() {
+    Rule rule = new Rule("Java");
+    RuleMaker.setDescription(rule, "");
+    assertThat(rule.getDescription()).hasSize(0);
+  }
+
+  @Test
+  public void testNullDescription() {
+    Rule rule = new Rule("Java");
+    RuleMaker.setDescription(rule, null);
+    assertThat(rule.getDescription()).hasSize(0);
+  }
+
+  @Test
+  public void testNullValueListFromJson() {
+
+    assertThat(RuleMaker.getValueListFromJson(null)).hasSize(0);
+  }
+
+  @Test
+  public void testEmptyValueListFromJson() {
+
+    assertThat(RuleMaker.getValueListFromJson("")).hasSize(0);
+  }
+
+  @Test
+  public void testNonsenseValueListFromJson() {
+
+    assertThat(RuleMaker.getValueListFromJson("this is a test")).hasSize(0);
+  }
+
+  @Test
+  public void testNullMapFromJson() {
+    assertThat(RuleMaker.getMapFromJson(null)).isNull();
+  }
+
+  @Test
+  public void testEmptyMapFromJson() {
+    assertThat(RuleMaker.getMapFromJson("")).isNull();
+  }
+
+  @Test
+  public void testNullGetValueFromMap() {
+    assertThat(RuleMaker.getValueFromMap(null)).isNull();
+  }
+
+  @Test
+  public void testNonStringMapValueGetValueFromMap() {
+
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("value", new Object());
+    assertThat(RuleMaker.getValueFromMap(map)).isNull();
   }
 }
