@@ -60,10 +60,9 @@ public class IssueFetcher {
         searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+","%20");
         issue = getIssueByLegacyKey(searchStr);
       } catch (UnsupportedEncodingException e) {
-        return null;
+        // nothing to see here
       }
     }
-
     return issue;
   }
 
@@ -84,6 +83,7 @@ public class IssueFetcher {
   }
 
   public List<Issue> fetchIssuesBySearch(String search) {
+    List<Issue> issues = new ArrayList<Issue>();
     String searchStr = SEARCH + search;
     try {
       searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+","%20");
@@ -92,7 +92,6 @@ public class IssueFetcher {
 
       Iterable<BasicIssue> basicIssues = sr.getIssues();
 
-      List<Issue> issues = new ArrayList<Issue>();
 
       Iterator<BasicIssue> itr = basicIssues.iterator();
       while (itr.hasNext()) {
@@ -103,11 +102,10 @@ public class IssueFetcher {
           issues.add(issue);
         }
       }
-      return issues;
-
     } catch (UnsupportedEncodingException e) {
-      return null;
+      // nothing to see here
     }
+    return issues;
   }
 
 }

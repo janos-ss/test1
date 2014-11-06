@@ -35,6 +35,7 @@ public class RuleMaker {
   private static final String MARKDOWN_H2_MATCH = "h2\\.";
   private static final String MARKDOWN_H2 = "h2.";
   private static final String HTML_H2 = "<h2>";
+  private static final String VALUE = "value";
 
 
   private RuleMaker() {
@@ -119,7 +120,7 @@ public class RuleMaker {
 
     Map<String,Object> sqaleCharMap = getMapFromJson(getCustomFieldValue(issue, "SQALE Characteristic"));
     if (sqaleCharMap != null) {
-      rule.setSqaleCharac((String)sqaleCharMap.get("value"));
+      rule.setSqaleCharac((String)sqaleCharMap.get(VALUE));
       Object o = sqaleCharMap.get("child");
       if (o instanceof Map) {
         rule.setSqaleSubCharac(getValueFromMap((Map<String, Object>) o));
@@ -282,7 +283,7 @@ public class RuleMaker {
 
   protected static String getValueFromMap(Map<String,Object> map) {
     if (map != null) {
-      Object o = map.get("value");
+      Object o = map.get(VALUE);
       if (o instanceof String) {
         return (String) o;
       }
@@ -318,26 +319,25 @@ public class RuleMaker {
    * @return the value of the "value" keys in each object.
    */
   protected static List<String> getValueListFromJson(String json) {
+    List<String> list = new ArrayList<String>();
     if (json != null) {
       JSONParser jsonParser = new JSONParser();
 
       try {
         Object o = jsonParser.parse(json);
         if (o instanceof JSONArray) {
-          List<String> list = new ArrayList<String>();
           JSONArray arr = (JSONArray) o;
           Iterator<JSONObject> itr = arr.iterator();
           while (itr.hasNext()) {
             JSONObject jsonObject = itr.next();
-            list.add((String)jsonObject.get("value"));
+            list.add((String)jsonObject.get(VALUE));
           }
-          return list;
         }
       } catch (ParseException e) {
         // nothing to see here
       }
     }
-    return null;
+    return list;
 
   }
 
