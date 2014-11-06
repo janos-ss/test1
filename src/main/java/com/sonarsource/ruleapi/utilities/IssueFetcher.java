@@ -56,12 +56,7 @@ public class IssueFetcher {
       issue = getIssueByKey(key);
     } else {
       String searchStr = SEARCH + LEGACY_SEARCH1 + key + LEGACY_SEARCH2;
-      try {
-        searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+","%20");
-        issue = getIssueByLegacyKey(searchStr);
-      } catch (UnsupportedEncodingException e) {
-        // nothing to see here
-      }
+      issue = getIssueByLegacyKey(searchStr);
     }
     return issue;
   }
@@ -82,28 +77,24 @@ public class IssueFetcher {
     }
   }
 
-  public List<Issue> fetchIssuesBySearch(String search) {
+  public List<Issue> fetchIssuesBySearch(String search) throws UnsupportedEncodingException {
     List<Issue> issues = new ArrayList<Issue>();
     String searchStr = SEARCH + search;
-    try {
-      searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+","%20");
-      JiraRestClient client = factory.create(SERVER_URI, new AnonymousAuthenticationHandler());
-      SearchResult sr = client.getSearchClient().searchJql(searchStr).claim();
+    searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+","%20");
+    JiraRestClient client = factory.create(SERVER_URI, new AnonymousAuthenticationHandler());
+    SearchResult sr = client.getSearchClient().searchJql(searchStr).claim();
 
-      Iterable<BasicIssue> basicIssues = sr.getIssues();
+    Iterable<BasicIssue> basicIssues = sr.getIssues();
 
 
-      Iterator<BasicIssue> itr = basicIssues.iterator();
-      while (itr.hasNext()) {
-        BasicIssue bi = itr.next();
+    Iterator<BasicIssue> itr = basicIssues.iterator();
+    while (itr.hasNext()) {
+      BasicIssue bi = itr.next();
 
-        Issue issue = getIssueByKey(bi.getKey());
-        if (issue != null) {
-          issues.add(issue);
-        }
+      Issue issue = getIssueByKey(bi.getKey());
+      if (issue != null) {
+        issues.add(issue);
       }
-    } catch (UnsupportedEncodingException e) {
-      // nothing to see here
     }
     return issues;
   }

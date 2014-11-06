@@ -17,6 +17,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -67,7 +68,7 @@ public class RuleMaker {
    * @param language the language sought. Not used in the query but used to populate rule members
    * @return a list of retrieved rules
    */
-  public static List<Rule> getRulesByJql(String query, String language) {
+  public static List<Rule> getRulesByJql(String query, String language) throws UnsupportedEncodingException {
     List<Rule> rules = new ArrayList<Rule>();
 
     IssueFetcher fetcher = new IssueFetcher();
