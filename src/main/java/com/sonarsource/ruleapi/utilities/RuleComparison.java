@@ -198,7 +198,7 @@ public class RuleComparison{
     }
 
     if (compareTags() != 0) {
-      sb.append("tags ");
+      sb.append("tags, ");
     }
 
     if (sb.length() > 0) {

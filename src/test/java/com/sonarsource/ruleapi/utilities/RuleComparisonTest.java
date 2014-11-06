@@ -125,6 +125,25 @@ public class RuleComparisonTest {
   }
 
   @Test
+  public void testTagsDifferentTagsToString() throws Exception {
+    Rule spec = new Rule(LANG);
+    Set<String> specTags = new HashSet<String>();
+    specTags.add("clumsy");
+    specTags.add("java8");
+    spec.setTags(specTags);
+
+    Rule impl = new Rule(LANG);
+    Set<String> implTags = new HashSet<String>();
+    implTags.add("performance");
+    implTags.add("bug");
+    impl.setTags(implTags);
+
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    assertThat(rc.toString()).isEqualTo("Differences: tags, ");
+  }
+
+  @Test
   public void testCompareTagsTagMissing() throws Exception {
     Rule spec = new Rule(LANG);
     Set<String> specTags = new HashSet<String>();
@@ -205,6 +224,24 @@ public class RuleComparisonTest {
     specList.add(p);
 
     assertThat(rc.compare()).isEqualTo(1);
+  }
+
+  @Test
+  public void testParameterListParamOneEmptyToString() throws Exception {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    List<Parameter> specList = spec.getParameterList();
+
+    Parameter p = new Parameter();
+    p.setKey("aParam");
+    p.setDescription("a param");
+    p.setDefaultVal("blah");
+
+    specList.add(p);
+
+    assertThat(rc.toString()).isEqualTo("Differences: parameter list, ");
   }
 
   @Test
@@ -638,6 +675,266 @@ public class RuleComparisonTest {
     spec.setMessage("message");
 
     assertThat(rc.toString()).isEqualTo("Differences: message, ");
+  }
+
+  @Test
+  public void differentDescription() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String desc = "this is a test";
+
+    spec.setDescription(desc);
+
+    assertThat(rc.compare()).isEqualTo(14);
+  }
+
+  @Test
+  public void differentDescriptionToString() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String desc = "this is a test";
+
+    spec.setDescription(desc);
+
+    assertThat(rc.toString()).isEqualTo("Differences: description text, ");
+  }
+
+  @Test
+  public void differentNoncompliant() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setNonCompliant(str);
+
+    assertThat(rc.compare()).isEqualTo(14);
+  }
+
+  @Test
+  public void differentNoncompliantToString() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setNonCompliant(str);
+
+    assertThat(rc.toString()).isEqualTo("Differences: noncompliant code example, ");
+  }
+
+  @Test
+  public void differentCompliant() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setCompliant(str);
+
+    assertThat(rc.compare()).isEqualTo(14);
+  }
+
+  @Test
+  public void differentCompliantToString() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setCompliant(str);
+
+    assertThat(rc.toString()).isEqualTo("Differences: compliant solution, ");
+  }
+
+  @Test
+  public void differentReferences() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setReferences(str);
+
+    assertThat(rc.compare()).isEqualTo(14);
+  }
+
+  @Test
+  public void differentReferencesToString() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setReferences(str);
+
+    assertThat(rc.toString()).isEqualTo("Differences: references, ");
+  }
+
+  @Test
+  public void differentExceptions() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setExceptions(str);
+
+    assertThat(rc.compare()).isEqualTo(14);
+  }
+
+  @Test
+  public void differentExceptionsToString() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setExceptions(str);
+
+    assertThat(rc.toString()).isEqualTo("Differences: exceptions, ");
+  }
+
+  @Test
+  public void differentSqaleChar() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setSqaleCharac(str);
+
+    assertThat(rc.compare()).isEqualTo(1);
+  }
+
+  @Test
+  public void differentSqaleCharToString() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setSqaleCharac(str);
+
+    assertThat(rc.toString()).isEqualTo("Differences: SQALE characteristic, ");
+  }
+
+  @Test
+  public void differentSqaleSubChar() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setSqaleSubCharac(str);
+
+    assertThat(rc.compare()).isEqualTo(1);
+  }
+
+  @Test
+  public void differentSqaleSubCharToString() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setSqaleSubCharac(str);
+
+    assertThat(rc.toString()).isEqualTo("Differences: SQALE sub-characteristic, ");
+  }
+
+  @Test
+  public void differentSqaleRemediation() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setSqaleRemediationFunction(str);
+
+    assertThat(rc.compare()).isEqualTo(1);
+  }
+
+  @Test
+  public void differentSqaleRemediationToString() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setSqaleRemediationFunction(str);
+
+    assertThat(rc.toString()).isEqualTo("Differences: SQALE remediation function, ");
+  }
+
+  @Test
+  public void differentSqaleLinearArg() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setSqaleLinearArg(str);
+
+    assertThat(rc.compare()).isEqualTo(1);
+  }
+
+  @Test
+  public void differentSqaleLinearArgToString() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setSqaleLinearArg(str);
+
+    assertThat(rc.toString()).isEqualTo("Differences: SQALE linear argument, ");
+  }
+
+  @Test
+  public void differentSqaleLinearFactor() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setSqaleLinearFactor(str);
+
+    assertThat(rc.compare()).isEqualTo(1);
+  }
+
+  @Test
+  public void differentSqaleLinearFactorToString() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    String str = "this is a test";
+
+    spec.setSqaleLinearFactor(str);
+
+    assertThat(rc.toString()).isEqualTo("Differences: SQALE linear factor, ");
   }
 
 }
