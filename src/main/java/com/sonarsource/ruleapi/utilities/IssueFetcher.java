@@ -82,7 +82,7 @@ public class IssueFetcher {
     String searchStr = SEARCH + search;
     searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+","%20");
     JiraRestClient client = factory.create(SERVER_URI, new AnonymousAuthenticationHandler());
-    SearchResult sr = client.getSearchClient().searchJql(searchStr).claim();
+    SearchResult sr = client.getSearchClient().searchJql(searchStr, 500, 0).claim();
 
     Iterable<BasicIssue> basicIssues = sr.getIssues();
 
@@ -96,6 +96,7 @@ public class IssueFetcher {
         issues.add(issue);
       }
     }
+
     return issues;
   }
 
