@@ -143,13 +143,18 @@ public class MarkdownConverter {
     if (line.matches("[^\\[]*\\[[^|]+\\|https?[A-Za-z0-9-._~:/?#\\\\[\\\\]@!$&'()*+,;=% ]+\\].*")) {
       int pos = line.indexOf("http");
       int hrefStart = findBefore(line, pos, '[');
-      int hrefEnd = findAfter(line, pos, ' ');
+      int hrefEnd = findAfter(line, pos, ']');
 
-      String href = line.substring(pos, hrefEnd - 1);
+      String href = line.substring(pos, hrefEnd);
       String label = line.substring(hrefStart + 1, pos - 1);
-      line = line.substring(0, hrefStart)
+      String lineBegin = line.substring(0, hrefStart);
+      String lineEnd = "";
+      if (hrefEnd < line.length()) {
+        lineEnd = line.substring(hrefEnd+1, line.length());
+      }
+      line = lineBegin
         + "<a href=\"" + href + "\">" + label + "</a>"
-        + line.substring(hrefEnd, line.length());
+        + lineEnd;
     }
     return line;
   }

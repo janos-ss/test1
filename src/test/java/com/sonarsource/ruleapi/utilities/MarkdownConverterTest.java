@@ -177,6 +177,21 @@ public class MarkdownConverterTest {
   }
 
   @Test
+  public void testHandleHrefNoSpace() {
+    String markdown = "([more on Wikipedia|http://en.wikipedia.org/wiki/Reentrancy_(computing)]).";
+    String html = "(<a href=\"http://en.wikipedia.org/wiki/Reentrancy_(computing)\">more on Wikipedia</a>).";
+    assertThat(mc.handleHref(markdown)).isEqualTo(html);
+  }
+
+  @Test
+  public void testHrefEndOfLine() {
+    String markdown = "* [MITRE, CWE-459|http://cwe.mitre.org/data/definitions/459.html]";
+    String html = "* <a href=\"http://cwe.mitre.org/data/definitions/459.html\">MITRE, CWE-459</a>";
+
+    assertThat(mc.handleHref(markdown)).isEqualTo(html);
+  }
+
+  @Test
   public void testBq() throws Exception {
     String markdown = "bq. Now is the time for all good men to come to the aid of their country.";
     String html = "<blockquote>Now is the time for all good men to come to the aid of their country.</blockquote>";
