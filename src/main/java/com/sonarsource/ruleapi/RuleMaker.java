@@ -109,10 +109,7 @@ public class RuleMaker {
     }
     rule.setDefaultActive("Yes".equals(pullValueFromJson(getFieldValue(issue,"Activated by default"))));
 
-    tmp = getCustomFieldValue(issue, "Legacy Key");
-    if (tmp != null) {
-      rule.setLegacyKeys(tmp.split(","));
-    }
+    rule.setLegacyKeys(getCustomFieldValueAsList(issue, "Legacy Key"));
 
     rule.setTitle(issue.getSummary());
     rule.setMessage(getFieldValue(issue,"Message"));
@@ -137,6 +134,21 @@ public class RuleMaker {
 
     rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters"), rule.getLanguage()));
     rule.setTags(issue.getLabels());
+
+    rule.setExternalKeys(getCustomFieldValueAsList(issue,"External Keys"));
+    rule.setExternalRepositories(getValueListFromJson(getCustomFieldValue(issue, "External Repositories")));
+
+    rule.setFindbugs(getCustomFieldValueAsList(issue, "FindBugs"));
+    rule.setPmd(getCustomFieldValueAsList(issue, "PMD"));
+    rule.setCheckstyle(getCustomFieldValueAsList(issue, "Checkstyle"));
+    rule.setMisraC04(getCustomFieldValueAsList(issue, "MISRA C 2004"));
+    rule.setMisraC12(getCustomFieldValueAsList(issue, "MISRA C 2012"));
+    rule.setMisraCpp(getCustomFieldValueAsList(issue, "MISRA C++ 2008"));
+    rule.setFindSecBugs(getCustomFieldValueAsList(issue, "FindSecBugs"));
+    rule.setCert(getCustomFieldValueAsList(issue, "CERT"));
+    rule.setOwasp(getCustomFieldValueAsList(issue, "OWASP"));
+    rule.setPhpFig(getCustomFieldValueAsList(issue, "PHP-FIG"));
+    rule.setCwe(getCustomFieldValueAsList(issue, "CWE"));
 
   }
 
@@ -357,6 +369,34 @@ public class RuleMaker {
       }
     }
     return null;
+  }
+
+  protected static List<String> getCustomFieldValueAsList(Issue issue, String name) {
+    String str = getCustomFieldValue(issue, name);
+    return stringToList(str);
+  }
+
+  protected static List<String> stringToList(String str) {
+    List<String> list = new ArrayList<String>();
+    if (str != null) {
+      String[] pieces = str.split(",");
+      for (int i = 0; i < pieces.length; i++) {
+        String target = pieces[i].trim();
+
+        if (pieces[i].contains("&")) {
+          String [] extraPieces = pieces[i].split("&");
+          for (int j = 0; j < extraPieces.length; j++) {
+            target = extraPieces[j].trim();
+            if (target.length() > 0) {
+              list.add(target);
+            }
+          }
+        } else if (target.length() > 0) {
+          list.add(target);
+        }
+      }
+    }
+    return list;
   }
 
   /**

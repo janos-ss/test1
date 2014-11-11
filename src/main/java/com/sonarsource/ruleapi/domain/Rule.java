@@ -24,7 +24,7 @@ public class Rule {
   private Severity severity = null;
   private Boolean defaultActive = null;
   private boolean template = false;
-  private String[] legacyKeys = null;
+  private List<String> legacyKeys = null;
 
   private String title = null;
   private String message = null;
@@ -45,6 +45,20 @@ public class Rule {
 
   private List<Parameter> parameterList = new ArrayList<Parameter>();
   private List<String> tags = new ArrayList<String>();
+
+  private List<String> externalKeys;
+  private List<String> externalRepositories;
+  private List<String> findbugs;
+  private List<String> pmd;
+  private List<String> checkstyle;
+  private List<String> misraC12;
+  private List<String> misraC04;
+  private List<String> misraCpp;
+  private List<String> findSecBugs;
+  private List<String> cert;
+  private List<String> owasp;
+  private List<String> phpFig;
+  private List<String> cwe;
 
 
   public Rule(String language) {
@@ -208,11 +222,11 @@ public class Rule {
     this.defaultActive = defaultActive;
   }
 
-  public String[] getLegacyKeys() {
+  public List<String> getLegacyKeys() {
     return legacyKeys;
   }
 
-  public void setLegacyKeys(String[] legacyKeys) {
+  public void setLegacyKeys(List<String> legacyKeys) {
     this.legacyKeys = legacyKeys;
   }
 
@@ -322,5 +336,140 @@ public class Rule {
   public void setSqaleSubCharac(String sqaleSubCharac) {
 
     this.sqaleSubCharac = sqaleSubCharac;
+  }
+
+  public void setTags(List<String> tags) {
+
+    this.tags = tags;
+  }
+
+  public List<String> getExternalKeys() {
+
+    return externalKeys;
+  }
+
+  public void setExternalKeys(List<String> externalKeys) {
+
+    this.externalKeys = externalKeys;
+  }
+
+  public List<String> getExternalRepositories() {
+
+    return externalRepositories;
+  }
+
+  public void setExternalRepositories(List<String> externalRepositories) {
+
+    this.externalRepositories = externalRepositories;
+  }
+
+  public List<String> getFindbugs() {
+
+    return findbugs;
+  }
+
+  public void setFindbugs(List<String> findbugs) {
+
+    this.findbugs = findbugs;
+  }
+
+  public List<String> getPmd() {
+
+    return pmd;
+  }
+
+  public void setPmd(List<String> pmd) {
+
+    this.pmd = pmd;
+  }
+
+  public List<String> getCheckstyle() {
+
+    return checkstyle;
+  }
+
+  public void setCheckstyle(List<String> checkstyle) {
+
+    this.checkstyle = checkstyle;
+  }
+
+  public List<String> getMisraC12() {
+
+    return misraC12;
+  }
+
+  public void setMisraC12(List<String> misraC12) {
+
+    this.misraC12 = misraC12;
+  }
+
+  public List<String> getMisraC04() {
+
+    return misraC04;
+  }
+
+  public void setMisraC04(List<String> misraC04) {
+
+    this.misraC04 = misraC04;
+  }
+
+  public List<String> getMisraCpp() {
+
+    return misraCpp;
+  }
+
+  public void setMisraCpp(List<String> misraCpp) {
+
+    this.misraCpp = misraCpp;
+  }
+
+  public List<String> getFindSecBugs() {
+
+    return findSecBugs;
+  }
+
+  public void setFindSecBugs(List<String> findSecBugs) {
+
+    this.findSecBugs = findSecBugs;
+  }
+
+  public List<String> getCert() {
+
+    return cert;
+  }
+
+  public void setCert(List<String> cert) {
+
+    this.cert = cert;
+  }
+
+  public List<String> getOwasp() {
+
+    return owasp;
+  }
+
+  public void setOwasp(List<String> owasp) {
+
+    this.owasp = owasp;
+  }
+
+  public List<String> getPhpFig() {
+
+    return phpFig;
+  }
+
+  public void setPhpFig(List<String> phpFig) {
+
+    this.phpFig = phpFig;
+  }
+
+  public List<String> getCwe() {
+
+    return cwe;
+  }
+
+  public void setCwe(List<String> cwe) {
+
+    this.cwe = cwe;
   }
 }
