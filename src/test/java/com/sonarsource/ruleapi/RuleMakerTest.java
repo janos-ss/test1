@@ -266,4 +266,46 @@ public class RuleMakerTest {
     map.put("value", new Object());
     assertThat(RuleMaker.getValueFromMap(map)).isNull();
   }
+
+  @Test
+  public void testStringToListNull() {
+
+    assertThat(RuleMaker.stringToList(null)).hasSize(0);
+  }
+
+  @Test
+  public void testStringToListEmpty() {
+
+    assertThat(RuleMaker.stringToList("")).hasSize(0);
+  }
+
+  @Test
+  public void testStringToListOne() {
+
+    assertThat(RuleMaker.stringToList("yo")).hasSize(1);
+  }
+
+  @Test
+  public void testStringToListComma() {
+
+    assertThat(RuleMaker.stringToList("hello, you")).hasSize(2);
+  }
+
+  @Test
+  public void testStringToListAmps() {
+
+    assertThat(RuleMaker.stringToList("hello && you")).hasSize(2);
+  }
+
+  @Test
+  public void testStringToListAmp() {
+
+    assertThat(RuleMaker.stringToList("hello & you")).hasSize(2);
+  }
+
+  @Test
+  public void testStringToListAmpAndComma() {
+
+    assertThat(RuleMaker.stringToList("hello, you & you")).hasSize(3);
+  }
 }
