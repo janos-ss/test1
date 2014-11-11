@@ -379,19 +379,12 @@ public class RuleMaker {
   protected static List<String> stringToList(String str) {
     List<String> list = new ArrayList<String>();
     if (str != null) {
-      String[] pieces = str.split(",");
+      String tmp = str.replace('&', ',');
+      String[] pieces = tmp.split(",");
       for (int i = 0; i < pieces.length; i++) {
         String target = pieces[i].trim();
 
-        if (pieces[i].contains("&")) {
-          String [] extraPieces = pieces[i].split("&");
-          for (int j = 0; j < extraPieces.length; j++) {
-            target = extraPieces[j].trim();
-            if (target.length() > 0) {
-              list.add(target);
-            }
-          }
-        } else if (target.length() > 0) {
+        if (target.length() > 0) {
           list.add(target);
         }
       }
