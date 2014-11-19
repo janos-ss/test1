@@ -20,6 +20,7 @@ import static org.fest.assertions.Assertions.assertThat;
 public class RuleMakerTest {
 
   private static final String JSON = "{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10071\",\"value\":\"Reliability\",\"id\":\"10071\",\"child\":{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10073\",\"value\":\"Data related reliability\",\"id\":\"10073\"}}";
+  private static final String FULL_JSON = "";
 
   @Test
   public void testIsLangaugeMatchEasyTrue() throws Exception {
@@ -89,51 +90,10 @@ public class RuleMakerTest {
   }
 
   @Test
-  public void testPullValueFromJson() throws Exception {
-    assertThat(RuleMaker.pullValueFromJson(JSON)).isEqualTo("Reliability");
-  }
-
-  @Test
-  public void testPullChildValueFromJson() throws Exception {
-    Map<String,Object> sqaleCharMap = RuleMaker.getMapFromJson(JSON);
-    Object o = sqaleCharMap.get("child");
-    assertThat(RuleMaker.getValueFromMap((Map<String, Object>) o)).isEqualTo("Data related reliability");
-  }
-
-  @Test
-  public void testPullValueFromJsonNullString() throws Exception {
-    assertThat(RuleMaker.pullValueFromJson(null)).isNull();
-  }
-
-  @Test
-  public void testPullValueFromJsonEmptyString() throws Exception {
-    assertThat(RuleMaker.pullValueFromJson("")).isNull();
-  }
-
-  @Test
   public void testSetFullDescriptionNull() throws Exception {
     Rule rule = new Rule("Java");
     RuleMaker.setDescription(rule, null);
     assertThat(rule.getFullDescription()).isNull();
-  }
-
-  @Test
-  public void testGetValueListFromJson() throws Exception {
-    String json = "[{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10100\",\"value\":\"MISRA C\",\"id\":\"10100\"},{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10101\",\"value\":\"MISRA C++\",\"id\":\"10101\"},{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10123\",\"value\":\"Thales C\\/C++\",\"id\":\"10123\"}]";
-    List<String> list = RuleMaker.getValueListFromJson(json);
-    assertThat(list.get(2)).isEqualTo("Thales C/C++");
-  }
-
-  @Test
-  public void testGetMapFromJsonWithArray() throws Exception {
-    String json = "[{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10100\",\"value\":\"MISRA C\",\"id\":\"10100\"},{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10101\",\"value\":\"MISRA C++\",\"id\":\"10101\"},{\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10123\",\"value\":\"Thales C\\/C++\",\"id\":\"10123\"}]";
-    assertThat(RuleMaker.getMapFromJson(json)).hasSize(3);
-  }
-
-  @Test
-  public void testGetValueListFromJsonNoArray() {
-
-    assertThat(RuleMaker.getValueListFromJson(JSON)).hasSize(0);
   }
 
   @Test
@@ -224,34 +184,6 @@ public class RuleMakerTest {
     Rule rule = new Rule("Java");
     RuleMaker.setDescription(rule, null);
     assertThat(rule.getDescription()).hasSize(0);
-  }
-
-  @Test
-  public void testNullValueListFromJson() {
-
-    assertThat(RuleMaker.getValueListFromJson(null)).hasSize(0);
-  }
-
-  @Test
-  public void testEmptyValueListFromJson() {
-
-    assertThat(RuleMaker.getValueListFromJson("")).hasSize(0);
-  }
-
-  @Test
-  public void testNonsenseValueListFromJson() {
-
-    assertThat(RuleMaker.getValueListFromJson("this is a test")).hasSize(0);
-  }
-
-  @Test
-  public void testNullMapFromJson() {
-    assertThat(RuleMaker.getMapFromJson(null)).isNull();
-  }
-
-  @Test
-  public void testEmptyMapFromJson() {
-    assertThat(RuleMaker.getMapFromJson("")).isNull();
   }
 
   @Test

@@ -5,15 +5,16 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
-import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
-import com.atlassian.jira.rest.client.domain.BasicIssue;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.SearchResult;
-import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,12 +26,14 @@ import java.util.List;
 public class IssueFetcher {
 
   private static final String RSPEC = "RSPEC-";
-  private static final String SEARCH = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
   private static final String LEGACY_SEARCH1 = "\"Legacy Key\"~\"";
   private static final String LEGACY_SEARCH2 = "\"";
-  private static final URI SERVER_URI = URI.create("http://jira.sonarsource.com/");
 
-  private AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
+  private static final String BASE_URL = "http://jira.sonarsource.com/rest/api/latest/";
+  private static final String SEARCH = "search?expand=names&maxResults=500&jql=";
+  private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
+  private static final String ISSUE = "issue/";
+  private static final String EXPAND = "?expand=names";
 
   public IssueFetcher() {
   }
@@ -46,52 +49,52 @@ public class IssueFetcher {
    * @param key the key to search by.
    * @return Populated Issue retrieved from Jira or null
    */
-  public Issue fetchIssueByKey(String key) {
+  public JSONObject fetchIssueByKey(String key) throws ParseException, UnsupportedEncodingException {
 
-    Issue issue = null;
+    JSONObject issue = null;
 
     if (key.matches("S?[0-9]+")) {
       issue = getIssueByKey(RSPEC + key.replaceFirst("S", ""));
     } else if (key.matches(RSPEC+"[0-9]+")) {
       issue = getIssueByKey(key);
     } else {
-      String searchStr = SEARCH + LEGACY_SEARCH1 + key + LEGACY_SEARCH2;
+      String searchStr = LEGACY_SEARCH1 + key + LEGACY_SEARCH2;
       issue = getIssueByLegacyKey(searchStr);
     }
     return issue;
   }
 
-  private Issue getIssueByKey(String issueKey) {
-    JiraRestClient client = factory.create(SERVER_URI, new AnonymousAuthenticationHandler());
-    return client.getIssueClient().getIssue(issueKey).claim();
+  private JSONObject getIssueByKey(String issueKey) throws ParseException {
+      return getJsonFromUrl(BASE_URL + ISSUE + issueKey + EXPAND);
   }
 
-  private Issue getIssueByLegacyKey(String searchString) {
-    JiraRestClient client = factory.create(SERVER_URI, new AnonymousAuthenticationHandler());
-    SearchResult sr = client.getSearchClient().searchJql(searchString).claim();
+  private JSONObject getIssueByLegacyKey(String searchString) throws ParseException, UnsupportedEncodingException {
+    String searchStr = URLEncoder.encode(BASE_QUERY + searchString, "UTF-8").replaceAll("\\+","%20");
 
-    if (sr.getTotal() == 1) {
-      return getIssueByKey(sr.getIssues().iterator().next().getKey());
-    } else {
-      return null;
+    JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
+    JSONArray issues = (JSONArray) sr.get("issues");
+
+    if (issues.size() == 1) {
+      return getIssueByKey(((JSONObject) issues.get(0)).get("key").toString());
     }
+    return null;
   }
 
-  public List<Issue> fetchIssuesBySearch(String search) throws UnsupportedEncodingException {
-    List<Issue> issues = new ArrayList<Issue>();
-    String searchStr = SEARCH + search;
+  public List<JSONObject> fetchIssuesBySearch(String search) throws UnsupportedEncodingException, ParseException {
+
+    List<JSONObject> issues = new ArrayList<JSONObject>();
+
+    String searchStr = BASE_QUERY + search;
     searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+","%20");
-    JiraRestClient client = factory.create(SERVER_URI, new AnonymousAuthenticationHandler());
-    SearchResult sr = client.getSearchClient().searchJql(searchStr, 500, 0).claim();
 
-    Iterable<BasicIssue> basicIssues = sr.getIssues();
+    JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
+    JSONArray jIssues = (JSONArray) sr.get("issues");
 
-
-    Iterator<BasicIssue> itr = basicIssues.iterator();
+    Iterator<JSONObject> itr = jIssues.iterator();
     while (itr.hasNext()) {
-      BasicIssue bi = itr.next();
+      JSONObject jobj = itr.next();
 
-      Issue issue = getIssueByKey(bi.getKey());
+      JSONObject issue = getIssueByKey(jobj.get("key").toString());
       if (issue != null) {
         issues.add(issue);
       }
@@ -100,4 +103,23 @@ public class IssueFetcher {
     return issues;
   }
 
+  public JSONObject getJsonFromUrl(String url) throws ParseException {
+    Client client = ClientBuilder.newClient();
+
+    WebTarget webResource = client.target(url);
+
+    Response response = webResource.request().accept("application/json").get(Response.class);
+
+    int status = response.getStatus();
+    if (status < 200 || status > 299) {
+      throw new RuntimeException("Failed : HTTP error code : "
+              + response.getStatus());
+    }
+
+    String responseStr = response.readEntity(String.class);
+    response.close();
+
+    JSONParser parser = new JSONParser();
+    return (JSONObject)parser.parse(responseStr);
+  }
 }

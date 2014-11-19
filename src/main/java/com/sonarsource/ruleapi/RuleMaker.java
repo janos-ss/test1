@@ -5,23 +5,16 @@
  */
 package com.sonarsource.ruleapi;
 
-import com.atlassian.jira.rest.client.domain.Field;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.Subtask;
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.IssueFetcher;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Given a key and a language, retrieves the relevant Issue
@@ -52,12 +45,12 @@ public class RuleMaker {
    * @param language language of rule. Used to distinguish among language-specific options
    * @return rule fetched from Jira
    */
-  public static Rule getRuleByKey(String key, String language) {
+  public static Rule getRuleByKey(String key, String language) throws ParseException, UnsupportedEncodingException {
     IssueFetcher fetcher = new IssueFetcher();
 
     Rule rule = new Rule(language);
-    Issue issue = fetcher.fetchIssueByKey(key);
-    fleshOutRule(fetcher, rule, issue);
+    JSONObject jsonRule = fetcher.fetchIssueByKey(key);
+    fleshOutRule(fetcher, rule, jsonRule);
 
     return rule;
   }
@@ -68,16 +61,14 @@ public class RuleMaker {
    * @param language the language sought. Not used in the query but used to populate rule members
    * @return a list of retrieved rules
    */
-  public static List<Rule> getRulesByJql(String query, String language) throws UnsupportedEncodingException {
+  public static List<Rule> getRulesByJql(String query, String language) throws UnsupportedEncodingException, ParseException {
     List<Rule> rules = new ArrayList<Rule>();
 
     IssueFetcher fetcher = new IssueFetcher();
-    List<Issue> issues = fetcher.fetchIssuesBySearch(query);
+    List<JSONObject> issues = fetcher.fetchIssuesBySearch(query);
 
-    Iterator<Issue> itr = issues.iterator();
-    while (itr.hasNext()) {
+    for (JSONObject issue : issues) {
       Rule rule = new Rule(language);
-      Issue issue = itr.next();
       fleshOutRule(fetcher, rule, issue);
       rules.add(rule);
     }
@@ -85,11 +76,14 @@ public class RuleMaker {
     return rules;
   }
 
-  private static void fleshOutRule(IssueFetcher fetcher, Rule rule, Issue issue) {
-    if (issue != null) {
-      populateFields(rule, issue);
+  private static void fleshOutRule(IssueFetcher fetcher, Rule rule, JSONObject jsonRule) throws UnsupportedEncodingException, ParseException {
+    if (jsonRule != null) {
+      populateFields(rule, jsonRule);
 
-      Issue subIssue = getSubtask(fetcher, rule.getLanguage(), issue.getSubtasks());
+      JSONObject fields = (JSONObject)jsonRule.get("fields");
+      JSONArray subtasks = (JSONArray) fields.get("subtasks");
+
+      JSONObject subIssue = getSubtask(fetcher, rule.getLanguage(), subtasks);
       if (subIssue != null) {
 
         Rule subRule = new Rule(rule.getLanguage());
@@ -99,44 +93,46 @@ public class RuleMaker {
     }
   }
 
-  private static void populateFields(Rule rule, Issue issue) {
-    rule.setKey(issue.getKey());
-    rule.setStatus(issue.getStatus().getName());
+  private static void populateFields(Rule rule, JSONObject issue) {
+    rule.setKey(issue.get("key").toString());
+    rule.setStatus(getJsonFieldValue(issue, "status"));
 
     String tmp = getCustomFieldValue(issue, "Default Severity");
     if (tmp != null) {
-      rule.setSeverity(Rule.Severity.valueOf(pullValueFromJson(tmp).toUpperCase()));
+      rule.setSeverity(Rule.Severity.valueOf(tmp.toUpperCase()));
     }
-    rule.setDefaultActive("Yes".equals(pullValueFromJson(getFieldValue(issue,"Activated by default"))));
+
+    tmp = getCustomFieldValue(issue, "Activated by default");
+    if (tmp != null) {
+      rule.setDefaultActive("Yes".equals(tmp));
+    }
 
     rule.setLegacyKeys(getCustomFieldValueAsList(issue, "Legacy Key"));
 
-    rule.setTitle(issue.getSummary());
-    rule.setMessage(getFieldValue(issue,"Message"));
+    rule.setTitle(getJsonFieldValue(issue, "summary"));
+    rule.setMessage(getCustomFieldValue(issue, "Message"));
 
-    setDescription(rule, issue.getDescription());
+    setDescription(rule, getJsonFieldValue(issue, "description"));
 
-    Map<String,Object> sqaleCharMap = getMapFromJson(getCustomFieldValue(issue, "SQALE Characteristic"));
+    rule.setSqaleCharac(getCustomFieldValue(issue, "SQALE Characteristic"));
+    JSONObject sqaleCharMap = getJsonField(issue, "SQALE Characteristic");
     if (sqaleCharMap != null) {
-      rule.setSqaleCharac((String)sqaleCharMap.get(VALUE));
       Object o = sqaleCharMap.get("child");
       if (o instanceof Map) {
-        rule.setSqaleSubCharac(getValueFromMap((Map<String, Object>) o));
+        rule.setSqaleSubCharac((String)((Map<String, Object>) o).get(VALUE));
       }
     }
-    rule.setSqaleRemediationFunction(pullValueFromJson(getCustomFieldValue(issue, "SQALE Remediation Function")));
+    rule.setSqaleRemediationFunction(getCustomFieldValue(issue, "SQALE Remediation Function"));
     rule.setSqaleConstantCostOrLinearThreshold(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold"));
     rule.setSqaleLinearArg(getCustomFieldValue(issue,"SQALE Linear Argument"));
     rule.setSqaleLinearFactor(getCustomFieldValue(issue,"SQALE Linear Factor"));
     rule.setSqaleLinearOffset(getCustomFieldValue(issue,"SQALE Linear Offset"));
 
-    rule.setTemplate("Yes".equals(pullValueFromJson(getCustomFieldValue(issue, "Template Rule"))));
+    rule.setTemplate("Yes".equals(getCustomFieldValue(issue, "Template Rule")));
 
     rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters"), rule.getLanguage()));
-    rule.setTags(issue.getLabels());
 
-    rule.setExternalKeys(getCustomFieldValueAsList(issue,"External Keys"));
-    rule.setExternalRepositories(getValueListFromJson(getCustomFieldValue(issue, "External Repositories")));
+    rule.setTags(getListFromJsonFieldValue(issue, "labels"));
 
     rule.setFindbugs(getCustomFieldValueAsList(issue, "FindBugs"));
     rule.setPmd(getCustomFieldValueAsList(issue, "PMD"));
@@ -149,27 +145,14 @@ public class RuleMaker {
     rule.setOwasp(getCustomFieldValueAsList(issue, "OWASP"));
     rule.setPhpFig(getCustomFieldValueAsList(issue, "PHP-FIG"));
     rule.setCwe(getCustomFieldValueAsList(issue, "CWE"));
-
   }
 
-  private static Issue getSubtask(IssueFetcher fetcher, String language, Iterable<Subtask> tasks) {
+  private static JSONObject getSubtask(IssueFetcher fetcher, String language, JSONArray tasks) throws ParseException, UnsupportedEncodingException {
     if (tasks != null) {
-      Iterator<Subtask> itr = tasks.iterator();
-      while (itr.hasNext()) {
-        Subtask subt = itr.next();
-        if (isLanguageMatch(language, subt.getSummary().trim())) {
-          return fetcher.fetchIssueByKey(subt.getIssueKey());
+      for (JSONObject subt : (Iterable<JSONObject>) tasks) {
+        if (isLanguageMatch(language, getJsonFieldValue(subt, "summary").trim())) {
+          return fetcher.fetchIssueByKey(subt.get("key").toString());
         }
-      }
-    }
-    return null;
-  }
-
-  private static String getFieldValue(Issue issue, String fieldName) {
-    if (issue != null && fieldName != null) {
-      Field f = issue.getFieldByName(fieldName);
-      if (f != null && f.getValue() != null) {
-        return f.getValue().toString();
       }
     }
     return null;
@@ -182,11 +165,7 @@ public class RuleMaker {
     if (!candidate.startsWith(language)) {
       return false;
     }
-    if (candidate.matches(language + "\\W.*")) {
-      // Java vs Javascript
-      return true;
-    }
-    return false;
+    return candidate.matches(language + "\\W.*");
   }
 
   protected static List<Parameter> handleParameterList(String paramString, String language) {
@@ -239,8 +218,8 @@ public class RuleMaker {
     if (words.length == 1) {
       return true;
     }
-    for (int i = 0; i < words.length; i++) {
-      if (words[i].compareToIgnoreCase(language) == 0) {
+    for (String word : words) {
+      if (word.compareToIgnoreCase(language) == 0) {
         return true;
       }
     }
@@ -280,18 +259,56 @@ public class RuleMaker {
     return null;
   }
 
-  /**
-   * Custom field values are returned embedded in JSON strings.
-   * This convenience method pulls the "value" component out.
-   * @param json the JSON string
-   * @return  the value of the "value" key
-   */
-  protected static String pullValueFromJson(String json) {
-    if (json != null && json.length() > 0) {
-      Map<String, Object> m = getMapFromJson(json);
-      return getValueFromMap(m);
+  protected static String getJsonFieldValue(JSONObject jobj, String key) {
+    JSONObject fields = (JSONObject)jobj.get("fields");
+    if (fields != null && key != null) {
+      Object obj = fields.get(key);
+      if (obj instanceof String) {
+        return (String) obj;
+      }
+      if (obj instanceof JSONObject) {
+        JSONObject value = (JSONObject) obj;
+        if (value.containsKey("name")) {
+          return value.get("name").toString();
+        }
+        return value.get(VALUE).toString();
+      }
     }
     return null;
+  }
+
+  protected static JSONObject getJsonField(JSONObject jobj, String key) {
+    JSONObject fields = (JSONObject)jobj.get("fields");
+
+    if (fields != null && key != null) {
+      Object obj = fields.get(key);
+      if (obj == null) {
+        obj = fields.get(getCustomFieldKey(jobj, key));
+      }
+      if (obj instanceof JSONObject) {
+        return (JSONObject) obj;
+      }
+    }
+    return null;
+  }
+
+  protected static List<String> getListFromJsonFieldValue(JSONObject jobj, String key) {
+
+    List<String> list = new ArrayList<String>();
+
+    JSONObject fields = (JSONObject) jobj.get("fields");
+    if (fields != null) {
+
+      Object obj = fields.get(key);
+      if (obj instanceof JSONArray) {
+        JSONArray value = (JSONArray) obj;
+
+        for (Object aValue : value) {
+          list.add((String) aValue);
+        }
+      }
+    }
+    return list;
   }
 
   protected static String getValueFromMap(Map<String,Object> map) {
@@ -304,56 +321,6 @@ public class RuleMaker {
     return null;
   }
 
-  protected static Map<String,Object> getMapFromJson(String json) {
-    if (json != null) {
-      JSONParser jsonParser = new JSONParser();
-
-      try {
-        Object o = jsonParser.parse(json);
-        if (o instanceof JSONArray) {
-          o = ((JSONArray) o).get(0);
-        }
-        if (o instanceof Map) {
-          return (Map<String, Object>) o;
-        }
-      } catch (ParseException e) {
-        // nothing to see here
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Custom fields presented in Jira as multi-selects will
-   * return arrays. This method extracts the "value" from
-   * each array item and returns them as a list of Strings.
-   *
-   * @param json The JSON to parse
-   * @return the value of the "value" keys in each object.
-   */
-  protected static List<String> getValueListFromJson(String json) {
-    List<String> list = new ArrayList<String>();
-    if (json != null) {
-      JSONParser jsonParser = new JSONParser();
-
-      try {
-        Object o = jsonParser.parse(json);
-        if (o instanceof JSONArray) {
-          JSONArray arr = (JSONArray) o;
-          Iterator<JSONObject> itr = arr.iterator();
-          while (itr.hasNext()) {
-            JSONObject jsonObject = itr.next();
-            list.add((String)jsonObject.get(VALUE));
-          }
-        }
-      } catch (ParseException e) {
-        // nothing to see here
-      }
-    }
-    return list;
-
-  }
-
   /**
    * Handles all the steps to retrieve the value of a custom field
    *
@@ -361,17 +328,27 @@ public class RuleMaker {
    * @param name The exact name of the custom field
    * @return The field value returned in the issue
    */
-  protected static String getCustomFieldValue(Issue issue, String name) {
-    if (name != null) {
-      Field f = issue.getFieldByName(name);
-      if (f != null && f.getValue() != null) {
-        return f.getValue().toString();
+  protected static String getCustomFieldValue(JSONObject issue, String name) {
+
+    return getJsonFieldValue(issue, getCustomFieldKey(issue, name));
+  }
+
+  protected static String getCustomFieldKey(JSONObject issue, String name)  {
+    JSONObject names = (JSONObject)issue.get("names");
+
+    if (name != null && names != null) {
+
+      for (Map.Entry entry : (Iterable<Map.Entry>) names.entrySet()) {
+
+        if (entry.getValue().equals(name)) {
+          return (String) entry.getKey();
+        }
       }
     }
     return null;
   }
 
-  protected static List<String> getCustomFieldValueAsList(Issue issue, String name) {
+  protected static List<String> getCustomFieldValueAsList(JSONObject issue, String name) {
     String str = getCustomFieldValue(issue, name);
     return stringToList(str);
   }
@@ -381,8 +358,8 @@ public class RuleMaker {
     if (str != null) {
       String tmp = str.replace('&', ',');
       String[] pieces = tmp.split(",");
-      for (int i = 0; i < pieces.length; i++) {
-        String target = pieces[i].trim();
+      for (String piece : pieces) {
+        String target = piece.trim();
 
         if (target.length() > 0) {
           list.add(target);
@@ -428,16 +405,16 @@ public class RuleMaker {
     for (int i = 1; i < pieces.length; i++) {
 
       String piece = pieces[i];
-      if (piece.indexOf("Noncompliant Code Example") > -1) {
+      if (piece.contains("Noncompliant Code Example")) {
         rule.setNonCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
 
-      } else if (piece.indexOf("Compliant Solution") > -1) {
+      } else if (piece.contains("Compliant Solution")) {
         rule.setCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
 
-      } else if (piece.indexOf("Exceptions") > -1) {
+      } else if (piece.contains("Exceptions")) {
         rule.setExceptions(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
 
-      }  else if (piece.indexOf("See") > -1) {
+      }  else if (piece.contains("See")) {
         rule.setReferences(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
       }
     }
@@ -447,16 +424,16 @@ public class RuleMaker {
 
     rule.setDescription(pieces[0]);
     for (String piece : pieces) {
-      if (piece.indexOf("Noncompliant Code Example") > -1) {
+      if (piece.contains("Noncompliant Code Example")) {
         rule.setNonCompliant(HTML_H2 + piece);
 
-      } else if (piece.indexOf("Compliant Solution") > -1) {
+      } else if (piece.contains("Compliant Solution")) {
         rule.setCompliant(HTML_H2 + piece);
 
-      }  else if (piece.indexOf("Exceptions") > -1) {
+      }  else if (piece.contains("Exceptions")) {
         rule.setExceptions(HTML_H2 + piece);
 
-      } else if (piece.indexOf("See") > -1) {
+      } else if (piece.contains("See")) {
         rule.setReferences(HTML_H2 + piece);
       }
     }
