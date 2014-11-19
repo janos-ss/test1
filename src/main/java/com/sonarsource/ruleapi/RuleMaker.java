@@ -7,13 +7,12 @@ package com.sonarsource.ruleapi;
 
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.utilities.FetchException;
 import com.sonarsource.ruleapi.utilities.IssueFetcher;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -30,6 +29,7 @@ public class RuleMaker {
   private static final String MARKDOWN_H2 = "h2.";
   private static final String HTML_H2 = "<h2>";
   private static final String VALUE = "value";
+  private static final String FIELDS = "fields";
 
 
   private RuleMaker() {
@@ -45,7 +45,7 @@ public class RuleMaker {
    * @param language language of rule. Used to distinguish among language-specific options
    * @return rule fetched from Jira
    */
-  public static Rule getRuleByKey(String key, String language) throws ParseException, UnsupportedEncodingException {
+  public static Rule getRuleByKey(String key, String language) throws FetchException {
     IssueFetcher fetcher = new IssueFetcher();
 
     Rule rule = new Rule(language);
@@ -61,7 +61,7 @@ public class RuleMaker {
    * @param language the language sought. Not used in the query but used to populate rule members
    * @return a list of retrieved rules
    */
-  public static List<Rule> getRulesByJql(String query, String language) throws UnsupportedEncodingException, ParseException {
+  public static List<Rule> getRulesByJql(String query, String language) throws FetchException {
     List<Rule> rules = new ArrayList<Rule>();
 
     IssueFetcher fetcher = new IssueFetcher();
@@ -76,11 +76,11 @@ public class RuleMaker {
     return rules;
   }
 
-  private static void fleshOutRule(IssueFetcher fetcher, Rule rule, JSONObject jsonRule) throws UnsupportedEncodingException, ParseException {
+  private static void fleshOutRule(IssueFetcher fetcher, Rule rule, JSONObject jsonRule) throws FetchException {
     if (jsonRule != null) {
       populateFields(rule, jsonRule);
 
-      JSONObject fields = (JSONObject)jsonRule.get("fields");
+      JSONObject fields = (JSONObject)jsonRule.get(FIELDS);
       JSONArray subtasks = (JSONArray) fields.get("subtasks");
 
       JSONObject subIssue = getSubtask(fetcher, rule.getLanguage(), subtasks);
@@ -147,7 +147,7 @@ public class RuleMaker {
     rule.setCwe(getCustomFieldValueAsList(issue, "CWE"));
   }
 
-  private static JSONObject getSubtask(IssueFetcher fetcher, String language, JSONArray tasks) throws ParseException, UnsupportedEncodingException {
+  private static JSONObject getSubtask(IssueFetcher fetcher, String language, JSONArray tasks) throws FetchException {
     if (tasks != null) {
       for (JSONObject subt : (Iterable<JSONObject>) tasks) {
         if (isLanguageMatch(language, getJsonFieldValue(subt, "summary").trim())) {
@@ -260,7 +260,7 @@ public class RuleMaker {
   }
 
   protected static String getJsonFieldValue(JSONObject jobj, String key) {
-    JSONObject fields = (JSONObject)jobj.get("fields");
+    JSONObject fields = (JSONObject)jobj.get(FIELDS);
     if (fields != null && key != null) {
       Object obj = fields.get(key);
       if (obj instanceof String) {
@@ -278,7 +278,7 @@ public class RuleMaker {
   }
 
   protected static JSONObject getJsonField(JSONObject jobj, String key) {
-    JSONObject fields = (JSONObject)jobj.get("fields");
+    JSONObject fields = (JSONObject)jobj.get(FIELDS);
 
     if (fields != null && key != null) {
       Object obj = fields.get(key);
@@ -296,7 +296,7 @@ public class RuleMaker {
 
     List<String> list = new ArrayList<String>();
 
-    JSONObject fields = (JSONObject) jobj.get("fields");
+    JSONObject fields = (JSONObject) jobj.get(FIELDS);
     if (fields != null) {
 
       Object obj = fields.get(key);
@@ -309,16 +309,6 @@ public class RuleMaker {
       }
     }
     return list;
-  }
-
-  protected static String getValueFromMap(Map<String,Object> map) {
-    if (map != null) {
-      Object o = map.get(VALUE);
-      if (o instanceof String) {
-        return (String) o;
-      }
-    }
-    return null;
   }
 
   /**

@@ -187,19 +187,6 @@ public class RuleMakerTest {
   }
 
   @Test
-  public void testNullGetValueFromMap() {
-    assertThat(RuleMaker.getValueFromMap(null)).isNull();
-  }
-
-  @Test
-  public void testNonStringMapValueGetValueFromMap() {
-
-    Map<String, Object> map = new HashMap<String, Object>();
-    map.put("value", new Object());
-    assertThat(RuleMaker.getValueFromMap(map)).isNull();
-  }
-
-  @Test
   public void testStringToListNull() {
 
     assertThat(RuleMaker.stringToList(null)).hasSize(0);

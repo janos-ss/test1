@@ -49,7 +49,7 @@ public class IssueFetcher {
    * @param key the key to search by.
    * @return Populated Issue retrieved from Jira or null
    */
-  public JSONObject fetchIssueByKey(String key) throws ParseException, UnsupportedEncodingException {
+  public JSONObject fetchIssueByKey(String key) throws FetchException {
 
     JSONObject issue = null;
 
@@ -64,46 +64,55 @@ public class IssueFetcher {
     return issue;
   }
 
-  private JSONObject getIssueByKey(String issueKey) throws ParseException {
-      return getJsonFromUrl(BASE_URL + ISSUE + issueKey + EXPAND);
+  private JSONObject getIssueByKey(String issueKey) throws FetchException {
+    return getJsonFromUrl(BASE_URL + ISSUE + issueKey + EXPAND);
   }
 
-  private JSONObject getIssueByLegacyKey(String searchString) throws ParseException, UnsupportedEncodingException {
-    String searchStr = URLEncoder.encode(BASE_QUERY + searchString, "UTF-8").replaceAll("\\+","%20");
+  private JSONObject getIssueByLegacyKey(String searchString) throws FetchException {
+    try {
+      String searchStr = URLEncoder.encode(BASE_QUERY + searchString, "UTF-8").replaceAll("\\+", "%20");
 
-    JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
-    JSONArray issues = (JSONArray) sr.get("issues");
+      JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
+      JSONArray issues = (JSONArray) sr.get("issues");
 
-    if (issues.size() == 1) {
-      return getIssueByKey(((JSONObject) issues.get(0)).get("key").toString());
-    }
-    return null;
-  }
-
-  public List<JSONObject> fetchIssuesBySearch(String search) throws UnsupportedEncodingException, ParseException {
-
-    List<JSONObject> issues = new ArrayList<JSONObject>();
-
-    String searchStr = BASE_QUERY + search;
-    searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+","%20");
-
-    JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
-    JSONArray jIssues = (JSONArray) sr.get("issues");
-
-    Iterator<JSONObject> itr = jIssues.iterator();
-    while (itr.hasNext()) {
-      JSONObject jobj = itr.next();
-
-      JSONObject issue = getIssueByKey(jobj.get("key").toString());
-      if (issue != null) {
-        issues.add(issue);
+      if (issues.size() == 1) {
+        return getIssueByKey(((JSONObject) issues.get(0)).get("key").toString());
       }
+      return null;
+    } catch (UnsupportedEncodingException e) {
+      throw new FetchException(e.getMessage(), e.getCause());
     }
-
-    return issues;
   }
 
-  public JSONObject getJsonFromUrl(String url) throws ParseException {
+  public List<JSONObject> fetchIssuesBySearch(String search) throws FetchException {
+
+    try {
+
+      List<JSONObject> issues = new ArrayList<JSONObject>();
+
+      String searchStr = BASE_QUERY + search;
+      searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+", "%20");
+
+      JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
+      JSONArray jIssues = (JSONArray) sr.get("issues");
+
+      Iterator<JSONObject> itr = jIssues.iterator();
+      while (itr.hasNext()) {
+        JSONObject jobj = itr.next();
+
+        JSONObject issue = getIssueByKey(jobj.get("key").toString());
+        if (issue != null) {
+          issues.add(issue);
+        }
+      }
+
+      return issues;
+    } catch (UnsupportedEncodingException e) {
+      throw new FetchException(e.getMessage(), e.getCause());
+    }
+  }
+
+  public JSONObject getJsonFromUrl(String url) throws FetchException {
     Client client = ClientBuilder.newClient();
 
     WebTarget webResource = client.target(url);
@@ -112,7 +121,7 @@ public class IssueFetcher {
 
     int status = response.getStatus();
     if (status < 200 || status > 299) {
-      throw new RuntimeException("Failed : HTTP error code : "
+      throw new FetchException("Failed : HTTP error code : "
               + response.getStatus());
     }
 
@@ -120,6 +129,10 @@ public class IssueFetcher {
     response.close();
 
     JSONParser parser = new JSONParser();
-    return (JSONObject)parser.parse(responseStr);
+    try {
+      return (JSONObject)parser.parse(responseStr);
+    } catch (ParseException e) {
+      throw new FetchException(e.getMessage(), e.getCause());
+    }
   }
 }
