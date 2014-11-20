@@ -76,7 +76,7 @@ public class RuleMaker {
     return rules;
   }
 
-  private static void fleshOutRule(IssueFetcher fetcher, Rule rule, JSONObject jsonRule) throws FetchException {
+  protected static void fleshOutRule(IssueFetcher fetcher, Rule rule, JSONObject jsonRule) throws FetchException {
     if (jsonRule != null) {
       populateFields(rule, jsonRule);
 

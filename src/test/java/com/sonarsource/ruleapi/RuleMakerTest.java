@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi;
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.FetchException;
+import com.sonarsource.ruleapi.utilities.IssueFetcher;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.json.simple.parser.JSONParser;
@@ -233,20 +234,32 @@ public class RuleMakerTest {
   }
 
   @Test
-  public void testPopulateFieldsNulls(){
+  public void testFleshOutRuleNullIssue() {
+    Rule rule = new Rule("");
+    try {
+      RuleMaker.fleshOutRule(new IssueFetcher(), rule, null);
+    } catch (FetchException e) {
+      e.printStackTrace();
+    }
+    assertThat(rule.getTitle()).isNull();
+  }
+
+  @Test
+  public void testFleshOutRuleNullValues(){
     String json = "{\"id\":\"19078\",\"names\":{\"summary\":\"Summary\",\"issuetype\":\"Issue Type\",\"customfield_10243\":\"issueFunction\",\"customfield_10232\":\"Completeness\",\"customfield_10244\":\"FindBugs\",\"customfield_10245\":\"PMD\",\"customfield_10246\":\"Checkstyle\",\"customfield_10242\":\"Template Rule\",\"reporter\":\"Reporter\",\"customfield_10330\":\"Implementation details\",\"updated\":\"Updated\",\"created\":\"Created\",\"description\":\"Description\",\"customfield_10001\":\"Targeted languages\",\"issuelinks\":\"Linked Issues\",\"customfield_10004\":\"Covered Languages\",\"subtasks\":\"Sub-Tasks\",\"status\":\"Status\",\"customfield_10007\":\"Default Severity\",\"labels\":\"Labels\",\"customfield_10005\":\"List of parameters\",\"customfield_10256\":\"SQALE Linear Argument\",\"workratio\":\"Work Ratio\",\"customfield_10257\":\"FindSecBugs\",\"customfield_10255\":\"CERT\",\"customfield_10253\":\"OWASP\",\"customfield_10250\":\"PHP-FIG\",\"customfield_10251\":\"CWE\",\"project\":\"Project\",\"customfield_10249\":\"MISRA C++ 2008\",\"customfield_10248\":\"MISRA C 2004\",\"customfield_10014\":\"SQALE Linear Offset\",\"lastViewed\":\"Last Viewed\",\"customfield_10015\":\"Legacy Key\",\"customfield_10012\":\"SQALE Constant Cost or Linear Threshold\",\"customfield_10013\":\"SQALE Linear Factor\",\"comment\":\"Comment\",\"customfield_10010\":\"SQALE Characteristic\",\"customfield_10011\":\"SQALE Remediation Function\",\"votes\":\"Votes\",\"resolution\":\"Resolution\",\"resolutiondate\":\"Resolved\",\"creator\":\"Creator\",\"customfield_10258\":\"MISRA C 2012\",\"customfield_10021\":\"Activated by default\",\"watches\":\"Watchers\",\"assignee\":\"Assignee\",\"customfield_10131\":\"Applicability\",\"customfield_10130\":\"Outdated Languages\",\"customfield_10030\":\"Message\"},\"key\":\"RSPEC-2210\",\"fields\":{\"summary\":\"Anntest dummy rule asdf\",\"customfield_10244\":\"ASDF-PDQ\",\"customfield_10257\":\"findsecbuts\",\"customfield_10255\":\"cert...\",\"customfield_10253\":\"CWE-123\",\"customfield_10251\":\"CWE-123\",\"customfield_10249\":\"8.9\",\"customfield_10248\":\"0.0\",\"customfield_10258\":\"0-0-0\",\"customfield_10245\":\"pmd\",\"customfield_10246\":\"checkstyle\",\"customfield_10250\":\"mission-fig\"}}";
 
     Rule rule = new Rule("");
     try {
-      RuleMaker.populateFields(rule, (JSONObject)parser.parse(json));
+      RuleMaker.fleshOutRule(new IssueFetcher(), rule, (JSONObject) parser.parse(json));
     } catch (ParseException e) {
+      e.printStackTrace();
+    } catch (FetchException e) {
       e.printStackTrace();
     }
     assertThat(rule.getSeverity()).isNull();
     assertThat(rule.getSqaleCharac()).isNull();
     assertThat(rule.getSqaleSubCharac()).isNull();
     assertThat(rule.getDefaultActive()).isNull();
-
   }
 
   @Test
@@ -291,5 +304,21 @@ public class RuleMakerTest {
     assertThat(rule.getSqaleLinearArg()).isNull();
     assertThat(rule.getSqaleLinearFactor()).isNull();
     assertThat(rule.getSqaleLinearOffset()).isNull();
+  }
+
+  @Test
+  public void testPopulateFields() {
+
+    Rule rule = new Rule("");
+    try {
+      RuleMaker.populateFields(rule, (JSONObject)parser.parse(FULL_JSON));
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+
+    assertThat(rule.getSeverity()).isEqualTo(Rule.Severity.CRITICAL);
+    assertThat(rule.getDefaultActive()).isTrue();
+    assertThat(rule.getStatus()).isEqualTo("Active");
+    assertThat(rule.getTags()).containsExactly("bug");
   }
 }
