@@ -46,8 +46,6 @@ public class Rule {
   private List<Parameter> parameterList = new ArrayList<Parameter>();
   private List<String> tags = new ArrayList<String>();
 
-  private List<String> externalKeys;
-  private List<String> externalRepositories;
   private List<String> findbugs;
   private List<String> pmd;
   private List<String> checkstyle;
@@ -341,26 +339,6 @@ public class Rule {
   public void setTags(List<String> tags) {
 
     this.tags = tags;
-  }
-
-  public List<String> getExternalKeys() {
-
-    return externalKeys;
-  }
-
-  public void setExternalKeys(List<String> externalKeys) {
-
-    this.externalKeys = externalKeys;
-  }
-
-  public List<String> getExternalRepositories() {
-
-    return externalRepositories;
-  }
-
-  public void setExternalRepositories(List<String> externalRepositories) {
-
-    this.externalRepositories = externalRepositories;
   }
 
   public List<String> getFindbugs() {
