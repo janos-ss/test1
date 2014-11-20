@@ -344,6 +344,16 @@ public class RuleMakerTest {
   }
 
   @Test
+  public void testGetJsonField() {
+
+    try {
+      assertThat(RuleMaker.getJsonField((JSONObject)parser.parse(FULL_JSON),"SQALE Characteristic")).isNotNull();
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Test
   public void testGetJsonFieldSadPath() {
 
     try {
