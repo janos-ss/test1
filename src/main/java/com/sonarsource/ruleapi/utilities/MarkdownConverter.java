@@ -149,7 +149,7 @@ public class MarkdownConverter {
       String label = line.substring(hrefStart + 1, pos - 1);
       String lineBegin = line.substring(0, hrefStart);
       String lineEnd = "";
-      if (hrefEnd < line.length()) {
+      if (hrefEnd +1 < line.length()) {
         lineEnd = line.substring(hrefEnd+1, line.length());
       }
       line = lineBegin
