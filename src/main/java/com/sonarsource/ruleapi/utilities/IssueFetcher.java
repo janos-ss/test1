@@ -80,7 +80,7 @@ public class IssueFetcher {
       }
       return null;
     } catch (UnsupportedEncodingException e) {
-      throw new FetchException(e.getMessage(), e.getCause());
+      throw new FetchException(e);
     }
   }
 
@@ -108,7 +108,7 @@ public class IssueFetcher {
 
       return issues;
     } catch (UnsupportedEncodingException e) {
-      throw new FetchException(e.getMessage(), e.getCause());
+      throw new FetchException(e);
     }
   }
 
@@ -132,7 +132,7 @@ public class IssueFetcher {
     try {
       return (JSONObject)parser.parse(responseStr);
     } catch (ParseException e) {
-      throw new FetchException(e.getMessage(), e.getCause());
+      throw new FetchException(e);
     }
   }
 }

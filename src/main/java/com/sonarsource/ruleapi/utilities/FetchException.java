@@ -7,12 +7,14 @@
 package com.sonarsource.ruleapi.utilities;
 
 public class FetchException extends Exception {
-  public FetchException (String message, Throwable cause) {
-    super  (message, cause);
-  }
 
   public FetchException (String message) {
 
     super(message);
+  }
+
+  public FetchException (Exception e) {
+
+    super(e);
   }
 }

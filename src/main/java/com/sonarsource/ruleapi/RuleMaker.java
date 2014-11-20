@@ -93,7 +93,7 @@ public class RuleMaker {
     }
   }
 
-  private static void populateFields(Rule rule, JSONObject issue) {
+  protected static void populateFields(Rule rule, JSONObject issue) {
     rule.setKey(issue.get("key").toString());
     rule.setStatus(getJsonFieldValue(issue, "status"));
 
@@ -114,25 +114,18 @@ public class RuleMaker {
 
     setDescription(rule, getJsonFieldValue(issue, "description"));
 
-    rule.setSqaleCharac(getCustomFieldValue(issue, "SQALE Characteristic"));
-    JSONObject sqaleCharMap = getJsonField(issue, "SQALE Characteristic");
-    if (sqaleCharMap != null) {
-      Object o = sqaleCharMap.get("child");
-      if (o instanceof Map) {
-        rule.setSqaleSubCharac((String)((Map<String, Object>) o).get(VALUE));
-      }
-    }
-    rule.setSqaleRemediationFunction(getCustomFieldValue(issue, "SQALE Remediation Function"));
-    rule.setSqaleConstantCostOrLinearThreshold(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold"));
-    rule.setSqaleLinearArg(getCustomFieldValue(issue,"SQALE Linear Argument"));
-    rule.setSqaleLinearFactor(getCustomFieldValue(issue,"SQALE Linear Factor"));
-    rule.setSqaleLinearOffset(getCustomFieldValue(issue,"SQALE Linear Offset"));
+    setSqale(rule, issue);
 
     rule.setTemplate("Yes".equals(getCustomFieldValue(issue, "Template Rule")));
 
     rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters"), rule.getLanguage()));
 
     rule.setTags(getListFromJsonFieldValue(issue, "labels"));
+
+    setReferences(rule, issue);
+  }
+
+  protected static void setReferences(Rule rule, JSONObject issue) {
 
     rule.setFindbugs(getCustomFieldValueAsList(issue, "FindBugs"));
     rule.setPmd(getCustomFieldValueAsList(issue, "PMD"));
@@ -145,6 +138,24 @@ public class RuleMaker {
     rule.setOwasp(getCustomFieldValueAsList(issue, "OWASP"));
     rule.setPhpFig(getCustomFieldValueAsList(issue, "PHP-FIG"));
     rule.setCwe(getCustomFieldValueAsList(issue, "CWE"));
+  }
+
+  protected static void setSqale(Rule rule, JSONObject issue) {
+
+    rule.setSqaleCharac(getCustomFieldValue(issue, "SQALE Characteristic"));
+    JSONObject sqaleCharMap = getJsonField(issue, "SQALE Characteristic");
+    if (sqaleCharMap != null) {
+      Object o = sqaleCharMap.get("child");
+      if (o instanceof Map) {
+        rule.setSqaleSubCharac((String)((Map<String, Object>) o).get(VALUE));
+      }
+    }
+
+    rule.setSqaleRemediationFunction(getCustomFieldValue(issue, "SQALE Remediation Function"));
+    rule.setSqaleConstantCostOrLinearThreshold(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold"));
+    rule.setSqaleLinearArg(getCustomFieldValue(issue,"SQALE Linear Argument"));
+    rule.setSqaleLinearFactor(getCustomFieldValue(issue,"SQALE Linear Factor"));
+    rule.setSqaleLinearOffset(getCustomFieldValue(issue,"SQALE Linear Offset"));
   }
 
   private static JSONObject getSubtask(IssueFetcher fetcher, String language, JSONArray tasks) throws FetchException {
