@@ -272,17 +272,38 @@ public class RuleMakerTest {
     } catch (ParseException e) {
       e.printStackTrace();
     }
-    assertThat(rule.getCwe()).containsExactly("CWE-123");
-    assertThat(rule.getCert()).containsExactly("cert...");
-    assertThat(rule.getMisraC04()).containsExactly("0.0");
-    assertThat(rule.getMisraC12()).containsExactly("0-0-0");
-    assertThat(rule.getMisraCpp()).containsExactly("8.9");
-    assertThat(rule.getFindbugs()).containsExactly("ASDF-PDQ");
-    assertThat(rule.getFindSecBugs()).containsExactly("findsecbuts");
-    assertThat(rule.getOwasp()).containsExactly("CWE-123");
-    assertThat(rule.getPmd()).containsExactly("pmd");
-    assertThat(rule.getCheckstyle()).containsExactly("checkstyle");
-    assertThat(rule.getPhpFig()).containsExactly("mission-fig");
+    assertThat(rule.getCwe().size()).isEqualTo(1);
+    assertThat(rule.getCwe().get(0)).isEqualTo("CWE-123");
+
+    assertThat(rule.getCert().size()).isEqualTo(1);
+    assertThat(rule.getCert().get(0)).isEqualTo("cert...");
+
+    assertThat(rule.getMisraC04().size()).isEqualTo(1);
+    assertThat(rule.getMisraC04().get(0)).isEqualTo("0.0");
+
+    assertThat(rule.getMisraC12().size()).isEqualTo(1);
+    assertThat(rule.getMisraC12().get(0)).isEqualTo("0-0-0");
+
+    assertThat(rule.getMisraCpp().size()).isEqualTo(1);
+    assertThat(rule.getMisraCpp().get(0)).isEqualTo("8.9");
+
+    assertThat(rule.getFindbugs().size()).isEqualTo(1);
+    assertThat(rule.getFindbugs().get(0)).isEqualTo("ASDF-PDQ");
+
+    assertThat(rule.getFindSecBugs().size()).isEqualTo(1);
+    assertThat(rule.getFindSecBugs().get(0)).isEqualTo("findsecbuts");
+
+    assertThat(rule.getOwasp().size()).isEqualTo(1);
+    assertThat(rule.getOwasp().get(0)).isEqualTo("CWE-123");
+
+    assertThat(rule.getPmd().size()).isEqualTo(1);
+    assertThat(rule.getPmd().get(0)).isEqualTo("pmd");
+
+    assertThat(rule.getCheckstyle().size()).isEqualTo(1);
+    assertThat(rule.getCheckstyle().get(0)).isEqualTo("checkstyle");
+
+    assertThat(rule.getPhpFig().size()).isEqualTo(1);
+    assertThat(rule.getPhpFig().get(0)).isEqualTo("mission-fig");
   }
 
   @Test
@@ -318,7 +339,8 @@ public class RuleMakerTest {
     assertThat(rule.getSeverity()).isEqualTo(Rule.Severity.CRITICAL);
     assertThat(rule.getDefaultActive()).isTrue();
     assertThat(rule.getStatus()).isEqualTo("Active");
-    assertThat(rule.getTags()).containsExactly("bug");
+    assertThat(rule.getTags().size()).isEqualTo(1);
+    assertThat(rule.getTags().get(0)).isEqualTo("bug");
   }
 
   @Test
