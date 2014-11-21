@@ -3,8 +3,10 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.utilities;
+package com.sonarsource.ruleapi.get;
 
+import com.sonarsource.ruleapi.utilities.RuleException;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -23,19 +25,20 @@ import java.util.List;
 /**
  * Retrieves Issue from Jira by key
  */
-public class IssueFetcher {
+public class Fetcher {
+
+  public static final String BASE_URL = "http://jira.sonarsource.com/rest/api/latest/";
+  public static final String ISSUE = "issue/";
 
   private static final String RSPEC = "RSPEC-";
   private static final String LEGACY_SEARCH1 = "\"Legacy Key\"~\"";
   private static final String LEGACY_SEARCH2 = "\"";
 
-  private static final String BASE_URL = "http://jira.sonarsource.com/rest/api/latest/";
   private static final String SEARCH = "search?expand=names&maxResults=500&jql=";
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
-  private static final String ISSUE = "issue/";
   private static final String EXPAND = "?expand=names";
 
-  public IssueFetcher() {
+  public Fetcher() {
   }
 
   /**
@@ -49,7 +52,7 @@ public class IssueFetcher {
    * @param key the key to search by.
    * @return Populated Issue retrieved from Jira or null
    */
-  public JSONObject fetchIssueByKey(String key) throws FetchException {
+  public JSONObject fetchIssueByKey(String key) throws RuleException {
 
     JSONObject issue = null;
 
@@ -64,11 +67,11 @@ public class IssueFetcher {
     return issue;
   }
 
-  private JSONObject getIssueByKey(String issueKey) throws FetchException {
+  private JSONObject getIssueByKey(String issueKey) throws RuleException {
     return getJsonFromUrl(BASE_URL + ISSUE + issueKey + EXPAND);
   }
 
-  private JSONObject getIssueByLegacyKey(String searchString) throws FetchException {
+  private JSONObject getIssueByLegacyKey(String searchString) throws RuleException {
     try {
       String searchStr = URLEncoder.encode(BASE_QUERY + searchString, "UTF-8").replaceAll("\\+", "%20");
 
@@ -80,11 +83,11 @@ public class IssueFetcher {
       }
       return null;
     } catch (UnsupportedEncodingException e) {
-      throw new FetchException(e);
+      throw new RuleException(e);
     }
   }
 
-  public List<JSONObject> fetchIssuesBySearch(String search) throws FetchException {
+  public List<JSONObject> fetchIssuesBySearch(String search) throws RuleException {
 
     try {
 
@@ -108,12 +111,20 @@ public class IssueFetcher {
 
       return issues;
     } catch (UnsupportedEncodingException e) {
-      throw new FetchException(e);
+      throw new RuleException(e);
     }
   }
 
-  public JSONObject getJsonFromUrl(String url) throws FetchException {
+  public JSONObject getJsonFromUrl(String url) throws RuleException {
+
+    return getJsonFromUrl(url, null, null);
+  }
+
+  public JSONObject getJsonFromUrl(String url, String login, String password) throws RuleException {
     Client client = ClientBuilder.newClient();
+    if (login != null && password != null) {
+      client.register(HttpAuthenticationFeature.basic(login, password));
+    }
 
     WebTarget webResource = client.target(url);
 
@@ -121,18 +132,19 @@ public class IssueFetcher {
 
     int status = response.getStatus();
     if (status < 200 || status > 299) {
-      throw new FetchException("Failed : HTTP error code : "
+      throw new RuleException("Failed : HTTP error code : "
               + response.getStatus());
     }
 
     String responseStr = response.readEntity(String.class);
     response.close();
+    client.close();
 
     JSONParser parser = new JSONParser();
     try {
       return (JSONObject)parser.parse(responseStr);
     } catch (ParseException e) {
-      throw new FetchException(e);
+      throw new RuleException(e);
     }
   }
 }

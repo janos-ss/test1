@@ -3,4 +3,4 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.utilities;
+package com.sonarsource.ruleapi.update;

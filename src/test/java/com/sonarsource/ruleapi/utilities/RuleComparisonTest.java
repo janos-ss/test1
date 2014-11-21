@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.utilities;
 
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.utilities.RuleComparison;
 import org.junit.Test;
 
 import java.util.HashSet;

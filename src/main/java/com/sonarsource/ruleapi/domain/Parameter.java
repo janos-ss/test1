@@ -5,6 +5,8 @@
  */
 package com.sonarsource.ruleapi.domain;
 
+import com.google.common.base.Strings;
+
 public class Parameter implements Comparable<Parameter>{
   private String key;
   private String description;
@@ -56,6 +58,22 @@ public class Parameter implements Comparable<Parameter>{
       return result;
     }
     return defaultVal.compareTo(parameter.getDefaultVal());
+  }
+
+  public String toString() {
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("* key = ").append(key);
+    if (!Strings.isNullOrEmpty(description)) {
+      sb.append("\n* description = ").append(description);
+    }
+    if (!Strings.isNullOrEmpty(defaultVal)) {
+      sb.append("\n* default = ").append(defaultVal);
+    }
+    if (!Strings.isNullOrEmpty(type)) {
+      sb.append("\n* type = ").append(type);
+    }
+    return sb.toString();
   }
 
   @Override

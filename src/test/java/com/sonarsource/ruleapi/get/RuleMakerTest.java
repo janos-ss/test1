@@ -3,12 +3,11 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi;
+package com.sonarsource.ruleapi.get;
 
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.utilities.FetchException;
-import com.sonarsource.ruleapi.utilities.IssueFetcher;
+import com.sonarsource.ruleapi.utilities.RuleException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.json.simple.parser.JSONParser;
@@ -237,8 +236,8 @@ public class RuleMakerTest {
   public void testFleshOutRuleNullIssue() {
     Rule rule = new Rule("");
     try {
-      RuleMaker.fleshOutRule(new IssueFetcher(), rule, null);
-    } catch (FetchException e) {
+      RuleMaker.fleshOutRule(new Fetcher(), rule, null);
+    } catch (RuleException e) {
       e.printStackTrace();
     }
     assertThat(rule.getTitle()).isNull();
@@ -250,10 +249,10 @@ public class RuleMakerTest {
 
     Rule rule = new Rule("");
     try {
-      RuleMaker.fleshOutRule(new IssueFetcher(), rule, (JSONObject) parser.parse(json));
+      RuleMaker.fleshOutRule(new Fetcher(), rule, (JSONObject) parser.parse(json));
     } catch (ParseException e) {
       e.printStackTrace();
-    } catch (FetchException e) {
+    } catch (RuleException e) {
       e.printStackTrace();
     }
     assertThat(rule.getSeverity()).isNull();

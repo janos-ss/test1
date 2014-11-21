@@ -148,7 +148,7 @@ public class Rule {
    *
    * For most purposes, the setDescription method in RuleMaker should be used instead.
    *
-   * {@link com.sonarsource.ruleapi.RuleMaker#setDescription(Rule, String)}
+   * {@link com.sonarsource.ruleapi.get.RuleMaker#setDescription(Rule, String)}
    *
    * @param fullDescription the full rule description
    */

@@ -3,13 +3,11 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi;
+package com.sonarsource.ruleapi.get;
 
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.utilities.FetchException;
-import com.sonarsource.ruleapi.utilities.IssueFetcher;
-import com.sonarsource.ruleapi.utilities.MarkdownConverter;
+import com.sonarsource.ruleapi.utilities.RuleException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -45,8 +43,8 @@ public class RuleMaker {
    * @param language language of rule. Used to distinguish among language-specific options
    * @return rule fetched from Jira
    */
-  public static Rule getRuleByKey(String key, String language) throws FetchException {
-    IssueFetcher fetcher = new IssueFetcher();
+  public static Rule getRuleByKey(String key, String language) throws RuleException {
+    Fetcher fetcher = new Fetcher();
 
     Rule rule = new Rule(language);
     JSONObject jsonRule = fetcher.fetchIssueByKey(key);
@@ -61,10 +59,10 @@ public class RuleMaker {
    * @param language the language sought. Not used in the query but used to populate rule members
    * @return a list of retrieved rules
    */
-  public static List<Rule> getRulesByJql(String query, String language) throws FetchException {
+  public static List<Rule> getRulesByJql(String query, String language) throws RuleException {
     List<Rule> rules = new ArrayList<Rule>();
 
-    IssueFetcher fetcher = new IssueFetcher();
+    Fetcher fetcher = new Fetcher();
     List<JSONObject> issues = fetcher.fetchIssuesBySearch(query);
 
     for (JSONObject issue : issues) {
@@ -76,7 +74,7 @@ public class RuleMaker {
     return rules;
   }
 
-  protected static void fleshOutRule(IssueFetcher fetcher, Rule rule, JSONObject jsonRule) throws FetchException {
+  protected static void fleshOutRule(Fetcher fetcher, Rule rule, JSONObject jsonRule) throws RuleException {
     if (jsonRule != null) {
       populateFields(rule, jsonRule);
 
@@ -158,7 +156,7 @@ public class RuleMaker {
     rule.setSqaleLinearOffset(getCustomFieldValue(issue,"SQALE Linear Offset"));
   }
 
-  private static JSONObject getSubtask(IssueFetcher fetcher, String language, JSONArray tasks) throws FetchException {
+  private static JSONObject getSubtask(Fetcher fetcher, String language, JSONArray tasks) throws RuleException {
     if (tasks != null) {
       for (JSONObject subt : (Iterable<JSONObject>) tasks) {
         if (isLanguageMatch(language, getJsonFieldValue(subt, "summary").trim())) {
