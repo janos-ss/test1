@@ -16,14 +16,16 @@ import java.util.*;
 
 public class RuleUpdater {
 
+  private RuleUpdater() {
+    // hide utility class instantiation
+  }
+
 
   public static boolean updateRule(String ruleKey, Map<String,Object> fieldValuesToUpdate, String login, String password) throws RuleException {
 
     if (!ruleKey.matches("RSPEC-[0-9]+")) {
       return false;
     }
-
-    String url = Fetcher.BASE_URL + Fetcher.ISSUE + ruleKey + "/editmeta";
 
     Fetcher fetcher = new Fetcher();
     JSONObject jobj = fetcher.getJsonFromUrl(Fetcher.BASE_URL + Fetcher.ISSUE + ruleKey + "/editmeta", login, password);
@@ -46,7 +48,7 @@ public class RuleUpdater {
     for (Map.Entry<String, Object> entry : fieldValuesToUpdate.entrySet()) {
 
       String fieldId = fieldIds.get(entry.getKey());
-      HashMap<String,String> allowedValues = getAllowedValues(fieldsMeta, fieldId);
+      Map<String,String> allowedValues = getAllowedValues(fieldsMeta, fieldId);
       JSONObject fieldMeta = (JSONObject) fieldsMeta.get(fieldId);
       String fieldType = ((JSONObject)fieldMeta.get("schema")).get("type").toString();
 
@@ -63,7 +65,7 @@ public class RuleUpdater {
   }
 
 
-  protected static Object handleConstrainedValueList(Object obj, HashMap<String, String> allowedValues, String fieldId) throws RuleException {
+  protected static Object handleConstrainedValueList(Object obj, Map<String, String> allowedValues, String fieldId) throws RuleException {
     if (obj instanceof String) {
       String passedVal = (String) obj;
       return jsonObjectOrException(allowedValues, fieldId, passedVal);
@@ -77,7 +79,7 @@ public class RuleUpdater {
     return new JSONObject();
   }
 
-  private static JSONObject jsonObjectOrException(HashMap<String, String> allowedValues, String fieldId, String passedVal) throws RuleException {
+  private static JSONObject jsonObjectOrException(Map<String, String> allowedValues, String fieldId, String passedVal) throws RuleException {
 
     if (allowedValues.containsKey(passedVal)) {
       JSONObject jsonObject = new JSONObject();
@@ -98,11 +100,11 @@ public class RuleUpdater {
     return fields;
   }
 
-  protected static HashMap<String,String> getAllowedValues(JSONObject fields, String fieldId) {
+  protected static Map<String,String> getAllowedValues(JSONObject fields, String fieldId) {
 
     JSONObject jsonObject = (JSONObject) fields.get(fieldId);
     if (jsonObject.containsKey("allowedValues")) {
-      HashMap<String,String> allowedValues = new HashMap<String, String>();
+      Map<String,String> allowedValues = new HashMap<String, String>();
 
       JSONArray allowedJsonValues = (JSONArray) jsonObject.get("allowedValues");
       for (Object value : allowedJsonValues) {

@@ -28,11 +28,10 @@ public class Updater {
     Response response = target.request(MediaType.APPLICATION_JSON_TYPE)
             .put(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
 
-
     response.close();
     client.close();
 
-    if (response != null &&  response.getStatus() == 204) {
+    if (response.getStatus() == 204) {
       return true;
     }
 
