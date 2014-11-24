@@ -108,7 +108,8 @@ public class ParameterTest {
   public void testToStringNulls() {
     Parameter param = new Parameter();
     param.setKey("key");
+    param.setType("boolean");
 
-    assertThat(param.toString()).isEqualTo("* key = key");
+    assertThat(param.toString()).isEqualTo("* key = key\n* type = boolean");
   }
 }
