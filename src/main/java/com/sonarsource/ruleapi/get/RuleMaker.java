@@ -144,9 +144,7 @@ public class RuleMaker {
     JSONObject sqaleCharMap = getJsonField(issue, "SQALE Characteristic");
     if (sqaleCharMap != null) {
       Object o = sqaleCharMap.get("child");
-      if (o instanceof Map) {
-        rule.setSqaleSubCharac((String)((Map<String, Object>) o).get(VALUE));
-      }
+      rule.setSqaleSubCharac((String)((Map<String, Object>) o).get(VALUE));
     }
 
     rule.setSqaleRemediationFunction(getCustomFieldValue(issue, "SQALE Remediation Function"));

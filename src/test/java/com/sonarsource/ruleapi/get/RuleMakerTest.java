@@ -368,6 +368,7 @@ public class RuleMakerTest {
   public void testGetJsonField() {
 
     try {
+      assertThat(RuleMaker.getJsonField((JSONObject)parser.parse(FULL_JSON),"labels")).isNotNull();
       assertThat(RuleMaker.getJsonField((JSONObject)parser.parse(FULL_JSON),"SQALE Characteristic")).isNotNull();
     } catch (ParseException e) {
       e.printStackTrace();
@@ -396,4 +397,5 @@ public class RuleMakerTest {
       e.printStackTrace();
     }
   }
+
 }

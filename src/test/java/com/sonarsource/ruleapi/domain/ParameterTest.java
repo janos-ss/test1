@@ -44,8 +44,8 @@ public class ParameterTest {
   @Test
   public void testEqualsNeqKey() throws Exception {
     Parameter copy = new Parameter();
-    copy.setDefaultVal("copyKey");
-    copy.setKey(full.getKey());
+    copy.setDefaultVal(full.getDefaultVal());
+    copy.setKey("copyKey");
     copy.setDescription(full.getDescription());
 
     assertThat(full.equals(copy)).isFalse();
@@ -102,5 +102,13 @@ public class ParameterTest {
     copy.setDescription(full.getDescription());
 
     assertThat(copy.hashCode()).isEqualTo(-1130172670);
+  }
+
+  @Test
+  public void testToStringNulls() {
+    Parameter param = new Parameter();
+    param.setKey("key");
+
+    assertThat(param.toString()).isEqualTo("* key = key");
   }
 }
