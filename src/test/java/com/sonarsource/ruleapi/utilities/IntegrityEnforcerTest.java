@@ -174,4 +174,37 @@ public class IntegrityEnforcerTest {
 
     assertThat(updates).hasSize(2).isEqualTo(expectedUpdates);
   }
+
+  public void testGetCweUpdates2() {
+
+    Rule rule = new Rule("");
+    boolean tagPresent = true;
+    List<String> references = new ArrayList<String>();
+
+    List<String> cweField = new ArrayList<String>();
+
+    Map<String,Object> updates = enforcer.getCweUpdates(rule, tagPresent, references, cweField);
+
+    assertThat(updates).isEmpty();
+  }
+
+  public void testGetCweUpdates3() {
+    Rule rule = new Rule("");
+    boolean tagPresent = false;
+    List<String> references = new ArrayList<String>();
+    List<String> cweField = new ArrayList<String>();
+    cweField.add("CWE-789");
+
+    Map<String,Object> updates = enforcer.getCweUpdates(rule, tagPresent, references, cweField);
+
+    Map<String, Object> expectedUpdates = new HashMap<String, Object>();
+
+    List<String> tmp = new ArrayList<String>();
+    tmp.add("cwe");
+
+    expectedUpdates.put("Labels", tmp);
+
+    assertThat(updates).hasSize(1).isEqualTo(expectedUpdates);
+
+  }
 }
