@@ -51,7 +51,7 @@ public class IntegrityEnforcer {
     Map<String, Object> updates = new HashMap<String, Object>();
 
     List<String> cweFieldValues = cweField;
-    if (!isCweFieldEntryFormatValid(cweField, updates, rule)) {
+    if (!isCweFieldEntryFormatValid(cweFieldValues, updates, rule)) {
       cweFieldValues = rule.getCwe();
     }
 
@@ -102,9 +102,9 @@ public class IntegrityEnforcer {
     if (needUpdating) {
       rule.setCwe(replacements);
       updates.put(CWE, replacements);
-      return true;
+      return false;
     }
-    return false;
+    return true;
   }
 
   protected void addSeeToReferenceField(List<String> sees, List<String> referenceField, String fieldName,
