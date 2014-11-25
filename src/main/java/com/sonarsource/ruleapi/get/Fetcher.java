@@ -27,6 +27,8 @@ import java.util.List;
  */
 public class Fetcher {
 
+  // use start= for pagination. If first page was 50 results, start=51 for page 2.
+
   public static final String BASE_URL = "http://jira.sonarsource.com/rest/api/latest/";
   public static final String ISSUE = "issue/";
 
@@ -93,7 +95,7 @@ public class Fetcher {
 
       List<JSONObject> issues = new ArrayList<JSONObject>();
 
-      String searchStr = BASE_QUERY + search;
+      String searchStr = BASE_QUERY + "(" + search + ")";
       searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+", "%20");
 
       JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);

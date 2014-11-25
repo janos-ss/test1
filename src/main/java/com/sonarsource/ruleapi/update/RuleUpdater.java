@@ -13,8 +13,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class RuleUpdater {
+
+  private static final Logger LOGGER = Logger.getLogger(RuleUpdater.class.getName());
+
 
   private RuleUpdater() {
     // hide utility class instantiation
@@ -32,6 +36,7 @@ public class RuleUpdater {
     JSONObject fieldsMeta = (JSONObject)jobj.get("fields");
 
     JSONObject request = prepareRequest(fieldValuesToUpdate, fieldsMeta);
+    LOGGER.info("Update " + ruleKey + " : " + request.toJSONString());
 
     Updater updater = new Updater();
     return updater.updateIssue(login, password, ruleKey, request);
