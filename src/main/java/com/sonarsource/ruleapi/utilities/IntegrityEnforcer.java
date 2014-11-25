@@ -45,23 +45,25 @@ public class IntegrityEnforcer {
     }
   }
 
-  protected Map<String, Object> getCweUpdates(Rule rule, boolean tagPresent, List<String> references, List<String> cweField) {
+  protected Map<String, Object> getCweUpdates(Rule rule, boolean tagPresent, List<String> references,
+                                              List<String> cweField) {
 
     Map<String, Object> updates = new HashMap<String, Object>();
 
+    List<String> cweFieldValues = cweField;
     if (!isCweFieldEntryFormatValid(cweField, updates, rule)) {
-      cweField = rule.getCwe();
+      cweFieldValues = rule.getCwe();
     }
 
-    if (tagPresent && references.isEmpty() && cweField.isEmpty()) {
+    if (tagPresent && references.isEmpty() && cweFieldValues.isEmpty()) {
       LOGGER.warning(rule.getKey() + " - cwe found in tags but not See & Reference field.");
     } else {
       addTagIfMissing(rule, updates, CWE_TAG);
 
-      references = parseCweFromSeeSection(references);
+      List<String> sees = parseCweFromSeeSection(references);
 
-      addSeeToReferenceField(references, cweField, CWE, updates);
-      checkReferencesInSee(cweField, references, rule);
+      addSeeToReferenceField(sees, cweFieldValues, CWE, updates);
+      checkReferencesInSee(cweFieldValues, sees, rule);
     }
     return updates;
   }
@@ -92,7 +94,7 @@ public class IntegrityEnforcer {
       } else if (ref.matches(CWE_PATTERN)) {
         replacements.add(ref);
       } else {
-        System.out.println("Strange CWE reference found in " + rule.getKey() + ": " + ref);
+        LOGGER.warning("Strange CWE reference found in " + rule.getKey() + ": " + ref);
         needUpdating = false;
       }
     }
