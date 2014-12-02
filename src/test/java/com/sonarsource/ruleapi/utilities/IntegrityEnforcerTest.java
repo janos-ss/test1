@@ -175,6 +175,7 @@ public class IntegrityEnforcerTest {
     assertThat(updates).hasSize(2).isEqualTo(expectedUpdates);
   }
 
+  @Test
   public void testGetCweUpdates2() {
 
     Rule rule = new Rule("");
@@ -188,6 +189,7 @@ public class IntegrityEnforcerTest {
     assertThat(updates).isEmpty();
   }
 
+  @Test
   public void testGetCweUpdates3() {
     Rule rule = new Rule("");
     boolean tagPresent = false;
@@ -207,4 +209,5 @@ public class IntegrityEnforcerTest {
     assertThat(updates).hasSize(1).isEqualTo(expectedUpdates);
 
   }
+
 }
