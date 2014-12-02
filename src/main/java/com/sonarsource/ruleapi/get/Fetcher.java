@@ -117,6 +117,33 @@ public class Fetcher {
     }
   }
 
+  /**
+   * Retrieves raw JSON rules from a running SonarQube instance by query.
+   *
+   * @param instance base SonarQube instance address. E.G. http://nemo.sonarqube.org
+   * @param search query to execute in query string format (with '&amp;' separating parameters)
+   *               E. G. repositories=c
+   * @return list of retrieved JSON rules
+   */
+  public List<JSONObject> fetchRulesFromSonarQube(String instance, String search) throws RuleException {
+
+    List<JSONObject> result = new ArrayList<JSONObject>();
+
+    String path = "/api/rules/search?ps=1000&";
+
+    JSONObject rawResult = getJsonFromUrl(instance + path + search);
+    return (JSONArray)rawResult.get("rules");
+  }
+
+
+  public JSONObject fetchRuleFromSonarQube(String instance, String ruleKey) throws RuleException {
+
+    String path = "/api/rules/show?key=";
+
+    JSONObject rawResult = getJsonFromUrl(instance + path + ruleKey);
+    return (JSONObject) rawResult.get("rule");
+  }
+
   public JSONObject getJsonFromUrl(String url) throws RuleException {
 
     return getJsonFromUrl(url, null, null);

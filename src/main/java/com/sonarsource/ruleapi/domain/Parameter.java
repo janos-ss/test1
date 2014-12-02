@@ -18,7 +18,7 @@ public class Parameter implements Comparable<Parameter>{
   }
 
   public void setKey(String key) {
-    this.key = key.trim();
+    this.key = key;
   }
 
   public String getDescription() {
@@ -26,7 +26,7 @@ public class Parameter implements Comparable<Parameter>{
   }
 
   public void setDescription(String description) {
-    this.description = description.trim();
+    this.description = description;
   }
 
   public String getDefaultVal() {

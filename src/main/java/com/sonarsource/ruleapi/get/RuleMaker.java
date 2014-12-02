@@ -33,6 +33,14 @@ public class RuleMaker {
   private RuleMaker() {
   }
 
+  public static Rule getRuleFromSonarQubeByKey(String sonarQubeInstance, String ruleKey) throws RuleException {
+
+    Fetcher fetcher = new Fetcher();
+
+    JSONObject jsonRule = fetcher.fetchRuleFromSonarQube(sonarQubeInstance, ruleKey);
+    return populateFieldsFromSonarQube(jsonRule);
+  }
+
   /**
    * Given a rule key and a language (e.g. Java, ABAP, etc), fetches
    * Issue from Jira and creates from it a Rule. Rule population includes
@@ -51,6 +59,20 @@ public class RuleMaker {
     fleshOutRule(fetcher, rule, jsonRule);
 
     return rule;
+  }
+
+  public static List<Rule> getRulesFromSonarQubeByQuery(String instance, String query) throws RuleException {
+
+    List<Rule> rules = new ArrayList<Rule>();
+
+    Fetcher fetcher = new Fetcher();
+    List<JSONObject> jsonRules = fetcher.fetchRulesFromSonarQube(instance, query);
+
+    for (JSONObject jsonRule : jsonRules) {
+      rules.add(populateFieldsFromSonarQube(jsonRule));
+    }
+
+    return rules;
   }
 
   /**
@@ -89,6 +111,43 @@ public class RuleMaker {
         rule.merge(subRule);
       }
     }
+  }
+
+  protected static Rule populateFieldsFromSonarQube(JSONObject jsonRule) {
+    Rule rule = new Rule((String) jsonRule.get("langName"));
+
+    rule.setKey((String) jsonRule.get("internalKey"));
+    if (rule.getKey() == null) {
+      rule.setKey(((String) jsonRule.get("key")).split(":")[1]);
+    }
+
+    rule.setStatus((String) jsonRule.get("status"));
+    rule.setSeverity(Rule.Severity.valueOf((String) jsonRule.get("severity")));
+
+    rule.setTitle((String) jsonRule.get("name"));
+    rule.setDescription((String) jsonRule.get("htmlDesc"));
+
+    rule.setSqaleCharac((String) jsonRule.get("defaultDebtChar"));
+    rule.setSqaleSubCharac((String) jsonRule.get("defaultDebtSubChar"));
+    rule.setSqaleRemediationFunction((String) jsonRule.get("defaultDebtRemFnType"));
+    rule.setSqaleConstantCostOrLinearThreshold((String) jsonRule.get("defaultDebtRemFnCoeff"));
+    rule.setSqaleLinearOffset((String) jsonRule.get("defaultDebtRemFnOffset"));
+
+    rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
+
+    rule.setTemplate((Boolean) jsonRule.get("isTemplate"));
+
+    JSONArray jsonParams = (JSONArray) jsonRule.get("params");
+    for (JSONObject obj : (List<JSONObject>)jsonParams) {
+      Parameter param = new Parameter();
+      param.setKey((String) obj.get("key"));
+      param.setDescription((String) obj.get("htmlDesc"));
+      param.setDefaultVal((String) obj.get("defaultValue"));
+      param.setType((String) obj.get("type"));
+      rule.getParameterList().add(param);
+    }
+
+    return rule;
   }
 
   protected static void populateFields(Rule rule, JSONObject issue) {
