@@ -127,8 +127,6 @@ public class Fetcher {
    */
   public List<JSONObject> fetchRulesFromSonarQube(String instance, String search) throws RuleException {
 
-    List<JSONObject> result = new ArrayList<JSONObject>();
-
     String path = "/api/rules/search?ps=1000&";
 
     JSONObject rawResult = getJsonFromUrl(instance + path + search);
