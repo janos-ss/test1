@@ -159,8 +159,8 @@ public class Fetcher {
 
     int status = response.getStatus();
     if (status < 200 || status > 299) {
-      throw new RuleException("Failed : HTTP error code : "
-              + response.getStatus());
+      throw new RuleException("Failed : HTTP error code: "
+              + response.getStatus() + " for " + url);
     }
 
     String responseStr = response.readEntity(String.class);
