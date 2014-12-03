@@ -343,6 +343,7 @@ public class RuleMakerTest {
     assertThat(rule.getStatus()).isEqualTo("Active");
     assertThat(rule.getTags().size()).isEqualTo(1);
     assertThat(rule.getTags().get(0)).isEqualTo("bug");
+    assertThat(rule.getTargetedLanguages()).hasSize(1);
   }
 
   @Test
@@ -427,7 +428,7 @@ public class RuleMakerTest {
 
       Rule rule = RuleMaker.populateFieldsFromSonarQube(jsonRule);
 
-      assertThat(rule.getKey()).isEqualTo("S1996");
+      assertThat(rule.getKey()).isEqualTo("RSPEC-1996");
       assertThat(rule.getSeverity()).isEqualTo(Rule.Severity.MAJOR);
     } catch (ParseException e) {
       e.printStackTrace();

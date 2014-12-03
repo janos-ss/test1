@@ -120,6 +120,9 @@ public class RuleMaker {
     if (rule.getKey() == null) {
       rule.setKey(((String) jsonRule.get("key")).split(":")[1]);
     }
+    if (rule.getKey().matches("S?[0-9]+")) {
+      rule.setKey(rule.getKey().replace("S","RSPEC-"));
+    }
 
     rule.setStatus((String) jsonRule.get("status"));
     rule.setSeverity(Rule.Severity.valueOf((String) jsonRule.get("severity")));
@@ -165,6 +168,10 @@ public class RuleMaker {
     }
 
     rule.setLegacyKeys(getCustomFieldValueAsList(issue, "Legacy Key"));
+
+    rule.setTargetedLanguages(getCustomFieldStoredAsList(issue, "Targeted languages"));
+    rule.setCoveredLanguages(getCustomFieldStoredAsList(issue, "Covered Languages"));
+    rule.setOutdatedLanguages(getCustomFieldStoredAsList(issue, "Outdated Languages"));
 
     rule.setTitle(getJsonFieldValue(issue, "summary"));
     rule.setMessage(getCustomFieldValue(issue, "Message"));
@@ -329,6 +336,7 @@ public class RuleMaker {
     JSONObject fields = (JSONObject)jobj.get(FIELDS);
     if (fields != null && key != null) {
       Object obj = fields.get(key);
+
       if (obj instanceof String) {
         return (String) obj;
       }
@@ -407,6 +415,26 @@ public class RuleMaker {
   protected static List<String> getCustomFieldValueAsList(JSONObject issue, String name) {
     String str = getCustomFieldValue(issue, name);
     return stringToList(str);
+  }
+
+  protected static List<String> getCustomFieldStoredAsList(JSONObject issue, String name) {
+    String key = getCustomFieldKey(issue,name);
+
+    List<String> list = new ArrayList<String>();
+
+    JSONObject fields = (JSONObject) issue.get(FIELDS);
+    if (fields != null) {
+
+      Object obj = fields.get(key);
+      if (obj instanceof JSONArray) {
+        List<JSONObject> value = (List<JSONObject>) obj;
+
+        for (JSONObject aValue : value) {
+          list.add((String) aValue.get("value"));
+        }
+      }
+    }
+    return list;
   }
 
   protected static List<String> stringToList(String str) {

@@ -46,6 +46,10 @@ public class Rule {
   private List<Parameter> parameterList = new ArrayList<Parameter>();
   private List<String> tags = new ArrayList<String>();
 
+  private List<String> targetedLanguages = new ArrayList<String>();
+  private List<String> coveredLanguages = new ArrayList<String>();
+  private List<String> outdatedLanguages = new ArrayList<String>();
+
   private List<String> findbugs;
   private List<String> pmd;
   private List<String> checkstyle;
@@ -449,5 +453,35 @@ public class Rule {
   public void setCwe(List<String> cwe) {
 
     this.cwe = cwe;
+  }
+
+  public List<String> getTargetedLanguages() {
+
+    return targetedLanguages;
+  }
+
+  public void setTargetedLanguages(List<String> targetedLanguages) {
+
+    this.targetedLanguages = targetedLanguages;
+  }
+
+  public List<String> getCoveredLanguages() {
+
+    return coveredLanguages;
+  }
+
+  public void setCoveredLanguages(List<String> coveredLanguages) {
+
+    this.coveredLanguages = coveredLanguages;
+  }
+
+  public List<String> getOutdatedLanguages() {
+
+    return outdatedLanguages;
+  }
+
+  public void setOutdatedLanguages(List<String> outdatedLanguages) {
+
+    this.outdatedLanguages = outdatedLanguages;
   }
 }
