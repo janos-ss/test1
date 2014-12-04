@@ -7,7 +7,6 @@ package com.sonarsource.ruleapi.utilities;
 
 import com.sonarsource.ruleapi.domain.Rule;
 import org.junit.Test;
-import org.fest.assertions.api.Assertions;
 
 import java.util.*;
 
@@ -17,12 +16,6 @@ import static org.fest.assertions.Assertions.assertThat;
 public class IntegrityEnforcerTest {
 
   IntegrityEnforcer enforcer = new IntegrityEnforcer();
-
-//  @Test
-//  public void testHandleArrayTypeString() {
-//    JSONArray jobj = RuleUpdater.handleArrayType("blah");
-//    assertThat(jobj.toJSONString()).isEqualTo("[\"blah\"]");
-//  }
 
   @Test
   public void testStripHtml() {
@@ -207,6 +200,49 @@ public class IntegrityEnforcerTest {
     expectedUpdates.put("Labels", tmp);
 
     assertThat(updates).hasSize(1).isEqualTo(expectedUpdates);
+
+  }
+
+  @Test
+  public void testIsKeyNormal () {
+    assertThat(enforcer.isKeyNormal("blue")).isFalse();
+    assertThat(enforcer.isKeyNormal("RSPEC-1")).isTrue();
+  }
+
+  @Test
+  public void testDropCovered() {
+
+    String language = "Yellow";
+
+    Rule rule = new Rule("");
+    rule.getCoveredLanguages().add(language);
+    rule.getOutdatedLanguages().add(language);
+    Map<String, Rule> rspecRules = new HashMap<String, Rule>();
+    rspecRules.put("key", rule);
+
+    Map<String, Rule> needsUpdating = new HashMap<String, Rule>();
+
+    enforcer.dropCoveredForNonNemoRules(language, rspecRules, needsUpdating);
+
+    assertThat(needsUpdating).hasSize(1);
+    assertThat(rule.getCoveredLanguages()).isEmpty();
+    assertThat(rule.getOutdatedLanguages()).isEmpty();
+    assertThat(rule.getTargetedLanguages()).hasSize(1);
+  }
+
+  @Test
+  public void testAddCovered() {
+    String language = "Yellow";
+
+    Rule rule = new Rule("");
+    rule.getTargetedLanguages().add(language);
+
+    Map<String, Rule> needsUpdating = new HashMap<String, Rule>();
+
+    enforcer.addCoveredForNemoRules(language,needsUpdating,rule);
+
+    assertThat(rule.getTargetedLanguages()).isEmpty();
+    assertThat(rule.getCoveredLanguages()).hasSize(1);
 
   }
 

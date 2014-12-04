@@ -36,7 +36,7 @@ public class RuleUpdater {
     JSONObject fieldsMeta = (JSONObject)jobj.get("fields");
 
     JSONObject request = prepareRequest(fieldValuesToUpdate, fieldsMeta);
-    LOGGER.info("Update " + ruleKey + " : " + request.toJSONString());
+    LOGGER.fine("Update " + ruleKey + " : " + request.toJSONString());
 
     Updater updater = new Updater();
     return updater.updateIssue(login, password, ruleKey, request);

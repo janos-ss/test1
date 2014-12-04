@@ -23,7 +23,100 @@ public class IntegrityEnforcer {
   private static final String CWE = "CWE";
   private static final String CWE_TAG = "cwe";
   private static final String CWE_PATTERN = "CWE-\\d+";
+  public static final String NEMO = "http://nemo.sonarqube.org";
 
+
+  public void setCoveredLanguages(String login, String password) throws RuleException {
+
+    for (Language lang : Language.values()) {
+      if (!lang.update) {
+        LOGGER.warning("Update disabled for " + lang.sq + "/" + lang.rspec);
+      }
+      setCoveredForLanguage(login,password,lang);
+    }
+  }
+
+
+  protected void setCoveredForLanguage(String login, String password, Language language) throws RuleException {
+    String rspecLanguage = language.rspec;
+    String sqRepo = language.sq;
+
+    List<Rule> rspec = RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + rspecLanguage + "\"", rspecLanguage);
+
+    Map<String, Rule> rspecRules = new HashMap<String, Rule>();
+    for (Rule rule : rspec) {
+      rspecRules.put(rule.getKey(), rule);
+    }
+
+    Map<String,Rule> needsUpdating = new HashMap<String, Rule>();
+
+    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeByQuery(NEMO, "repositories=" + sqRepo);
+    for (Rule sqRule : sqCovered) {
+      String key = sqRule.getKey();
+
+      if (!isKeyNormal(key)) {
+        Rule freshFetch = RuleMaker.getRuleByKey(key, rspecLanguage);
+        key = freshFetch.getKey();
+        if (key == null) {
+          LOGGER.warning("Legacy key not found for "
+                  + rspecLanguage + "/" + sqRepo + ": " + sqRule.getKey());
+          continue;
+        }
+      }
+
+      if (language.update) {
+        Rule rspecRule = rspecRules.remove(key);
+        if (rspecRule == null) {
+          rspecRule = RuleMaker.getRuleByKey(key, "");
+        }
+
+        addCoveredForNemoRules(rspecLanguage, needsUpdating, rspecRule);
+      }
+    }
+
+
+    if (language.update) {
+      dropCoveredForNonNemoRules(rspecLanguage, rspecRules, needsUpdating);
+      for (Rule rule : needsUpdating.values()) {
+        Map<String, Object> updates = new HashMap<String, Object>();
+        updates.put("Covered Languages", rule.getCoveredLanguages());
+        updates.put("Targeted languages", rule.getTargetedLanguages());
+        updates.put("Outdated Languages", rule.getOutdatedLanguages());
+        RuleUpdater.updateRule(rule.getKey(), updates, login, password);
+      }
+    }
+  }
+
+  protected void dropCoveredForNonNemoRules(String rspecLanguage, Map<String, Rule> rspecRules, Map<String, Rule> needsUpdating) {
+
+    for (Rule rspecRule : rspecRules.values()) {
+      rspecRule.getCoveredLanguages().remove(rspecLanguage);
+      rspecRule.getOutdatedLanguages().remove(rspecLanguage);
+
+      rspecRule.getTargetedLanguages().add(rspecLanguage);
+      LOGGER.info(rspecLanguage + " " + rspecRule.getKey() + " moving from covered to targeted");
+
+      needsUpdating.put(rspecRule.getKey(), rspecRule);
+    }
+  }
+
+  protected void addCoveredForNemoRules(String rspecLanguage, Map<String, Rule> needsUpdating, Rule rspecRule) {
+
+    if (! rspecRule.getCoveredLanguages().contains(rspecLanguage)) {
+      rspecRule.getCoveredLanguages().add(rspecLanguage);
+      needsUpdating.put(rspecRule.getKey(), rspecRule);
+      LOGGER.info(rspecLanguage + " " + rspecRule.getKey() + " adding covered");
+    }
+    if (rspecRule.getTargetedLanguages().remove(rspecLanguage) && ! needsUpdating.containsKey(rspecRule.getKey())) {
+      needsUpdating.put(rspecRule.getKey(), rspecRule);
+      LOGGER.info(rspecLanguage + " " + rspecRule.getKey() + " removing targeted");
+    }
+  }
+
+  protected boolean isKeyNormal(String key) {
+
+    return key.matches("RSPEC-\\d+");
+  }
 
   public void enforceCwe(String login, String password) throws RuleException {
 
@@ -166,6 +259,37 @@ public class IntegrityEnforcer {
 
   protected String stripHtml(String source) {
     return source.replaceAll("<[^>]+>","");
+  }
+
+  private enum Language {
+    ABAP  ("abap",        "ABAP",       true),
+    C     ("c",           "C",          true),
+    COBOL ("cobol",       "Cobol",      false),
+    CPP   ("cpp",         "C++",        true),
+    CSH   ("csharpsquid", "C#",         true),
+    FLEX  ("flex",        "Flex",       true),
+    JAVA  ("squid",       "Java",       true),
+    JS    ("javascript",  "JavaScript", true),
+    OBJC  ("objc",        "Objective-C",true),
+    PHP   ("php",         "PHP",        true),
+    PLI   ("pli",         "PL/I",       true),
+    PLSQL ("plsql",       "PL/SQL",     false),
+    PY    ("python",      "Python",     true),
+    RPG   ("rpg",         "RPG",        true),
+    VB    ("vb",          "VB6",        true),
+    VBNET ("vbnet",       "VB.NET",     false),
+    XML   ("xml",         "XML",        true);
+
+    private final String sq;
+    private final String rspec;
+    private final boolean update;
+
+    Language(String sq, String rspec, boolean update) {
+
+      this.sq = sq;
+      this.rspec = rspec;
+      this.update = update;
+    }
   }
 
 }
