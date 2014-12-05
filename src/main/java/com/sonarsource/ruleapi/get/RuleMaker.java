@@ -128,7 +128,7 @@ public class RuleMaker {
     rule.setSeverity(Rule.Severity.valueOf((String) jsonRule.get("severity")));
 
     rule.setTitle((String) jsonRule.get("name"));
-    rule.setDescription((String) jsonRule.get("htmlDesc"));
+    setDescription(rule, (String) jsonRule.get("htmlDesc"), false);
 
     rule.setSqaleCharac((String) jsonRule.get("defaultDebtChar"));
     rule.setSqaleSubCharac((String) jsonRule.get("defaultDebtSubChar"));
@@ -176,7 +176,7 @@ public class RuleMaker {
     rule.setTitle(getJsonFieldValue(issue, "summary"));
     rule.setMessage(getCustomFieldValue(issue, "Message"));
 
-    setDescription(rule, getJsonFieldValue(issue, "description"));
+    setDescription(rule, getJsonFieldValue(issue, "description"),true);
 
     setSqale(rule, issue);
 
@@ -466,14 +466,14 @@ public class RuleMaker {
    * @param rule the rule to be populated
    * @param fullDescription the text from which to populate it.
    */
-  public static void setDescription(Rule rule, String fullDescription) {
+  public static void setDescription(Rule rule, String fullDescription, boolean isMarkdown) {
 
     rule.setFullDescription(fullDescription);
     if (fullDescription != null && fullDescription.length() > 0) {
       String[] markdownPieces = fullDescription.split(MARKDOWN_H2_MATCH);
       String[] htmlPieces = fullDescription.split(HTML_H2);
 
-      if (markdownPieces.length > 1 || htmlPieces.length == 1) {
+      if (isMarkdown) {
         handleMarkdown(rule, markdownPieces);
       } else {
         handleHtml(rule, htmlPieces);
@@ -506,7 +506,7 @@ public class RuleMaker {
 
   private static void handleHtml(Rule rule, String[] pieces) {
 
-    rule.setDescription(pieces[0]);
+    rule.setDescription(pieces[0].replaceAll("&lt;", "<").replaceAll("&gt;", ">"));
     for (String piece : pieces) {
       if (piece.contains("Noncompliant Code Example")) {
         rule.setNonCompliant(HTML_H2 + piece);
@@ -514,7 +514,7 @@ public class RuleMaker {
       } else if (piece.contains("Compliant Solution")) {
         rule.setCompliant(HTML_H2 + piece);
 
-      }  else if (piece.contains("Exceptions")) {
+      } else if (piece.contains("Exceptions")) {
         rule.setExceptions(HTML_H2 + piece);
 
       } else if (piece.contains("See")) {

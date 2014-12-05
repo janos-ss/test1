@@ -20,30 +20,32 @@ import static org.fest.assertions.Assertions.assertThat;
 public class RuleComparisonTest {
 
   private static final String LANG = "Java";
+  private static final RuleComparison blankComparison = new RuleComparison(new Rule(""),new Rule(""));
+
 
   @Test
   public void testIsTextFunctionallyEquivalentEasy() throws Exception {
     String ruleTitle = "Methods should not be empty";
 
-    assertThat(RuleComparison.isTextFunctionallyEquivalent(ruleTitle, ruleTitle)).isTrue();
+    assertThat(RuleComparison.isTextFunctionallyEquivalent(ruleTitle, ruleTitle, true)).isTrue();
   }
 
   @Test
   public void testIsTextFunctionallyEquivalentBothNull () throws Exception {
 
-    assertThat(RuleComparison.isTextFunctionallyEquivalent(null, null)).isTrue();
+    assertThat(RuleComparison.isTextFunctionallyEquivalent(null, null, true)).isTrue();
   }
 
   @Test
   public void testIsTextFunctionallyEquivalentOneNull () throws Exception {
 
-    assertThat(RuleComparison.isTextFunctionallyEquivalent("test", null)).isFalse();
+    assertThat(RuleComparison.isTextFunctionallyEquivalent("test", null, true)).isFalse();
   }
 
   @Test
   public void testIsTextFunctionallyEquivalentOtherNull () throws Exception {
 
-    assertThat(RuleComparison.isTextFunctionallyEquivalent(null, "test")).isFalse();
+    assertThat(RuleComparison.isTextFunctionallyEquivalent(null, "test", true)).isFalse();
   }
 
   @Test
@@ -51,7 +53,7 @@ public class RuleComparisonTest {
     String ruleTitle = "Methods should not be empty";
     String specTitle = "[Methods|functions|procedures] should not be empty";
 
-    assertThat(RuleComparison.isTextFunctionallyEquivalent(ruleTitle, specTitle)).isTrue();
+    assertThat(RuleComparison.isTextFunctionallyEquivalent(ruleTitle, specTitle, true)).isTrue();
   }
 
   @Test
@@ -65,12 +67,12 @@ public class RuleComparisonTest {
             "Above a specific threshold, it is strongly advised to refactor into smaller module which focus on well-defined tasks.\n" +
             "Those smaller module will not only be easier to understand, but also probably easier to test.";
 
-    assertThat(RuleComparison.isTextFunctionallyEquivalent(specDescription, ruleDescription)).isTrue();
+    assertThat(RuleComparison.isTextFunctionallyEquivalent(specDescription, ruleDescription, true)).isTrue();
   }
 
   @Test
   public void testIsTextFunctionallyEquivalentFalse() throws Exception {
-    assertThat(RuleComparison.isTextFunctionallyEquivalent("Now is the time", "Four score and seven years ago")).isFalse();
+    assertThat(RuleComparison.isTextFunctionallyEquivalent("Now is the time", "Four score and seven years ago", true)).isFalse();
   }
 
   @Test
@@ -936,6 +938,20 @@ public class RuleComparisonTest {
     spec.setSqaleLinearFactor(str);
 
     assertThat(rc.toString()).isEqualTo("Differences: SQALE linear factor, ");
+  }
+
+  @Test
+  public void testTextIdenticalButForLinebreaks() {
+
+    String s1 = "<p>Content that doesn't change or that doesn't change often should be included using a mechanism which won't try to interpret it. Specifically, <code>&lt;%@ include file=\"...\" %&gt;</code>, which includes the file in the JSP servlet translation phase (i.e. it happens once), should be used instead of <code>&lt;jsp:include page=\"...\" /&gt;</code>, which includes the page on the file, when the content is being served to the user.</p>";
+    String s2 = "<p>\n" +
+            "  Content that doesn't change or that doesn't change often should be included using a mechanism which won't try to interpret it.\n" +
+            "  Specifically, <code>&lt;%@ include file=\"...\" %&gt;</code>, which includes the file in the JSP servlet translation phase (i.e. it happens once),\n" +
+            "  should be used instead of <code>&lt;jsp:include page=\"...\" /&gt;</code>, which includes the page on the file, when the content is being served to the user.\n" +
+            "</p>";
+
+    assertThat(blankComparison.isTextFunctionallyEquivalent(s1, s2, true)).isTrue();
+    assertThat(blankComparison.isTextFunctionallyEquivalent(s1, s2, false)).isFalse();
   }
 
 }

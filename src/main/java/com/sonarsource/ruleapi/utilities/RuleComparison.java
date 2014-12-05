@@ -287,15 +287,15 @@ public class RuleComparison{
   }
 
   protected int compareTitle() {
-    return compareTextFunctionalEquivalence(spec.getTitle(), impl.getTitle());
+    return compareTextFunctionalEquivalence(spec.getTitle(), impl.getTitle(), true);
   }
 
   protected int compareMessage() {
-    return compareTextFunctionalEquivalence(spec.getMessage(), impl.getMessage());
+    return compareTextFunctionalEquivalence(spec.getMessage(), impl.getMessage(), false);
   }
 
   protected int compareDescription() {
-    return compareTextFunctionalEquivalence(spec.getDescription(), impl.getDescription());
+    return compareTextFunctionalEquivalence(spec.getDescription(), impl.getDescription(), true);
   }
 
   protected int compareNoncompliant() {
@@ -399,10 +399,7 @@ public class RuleComparison{
     return 0;
   }
 
-  protected static int compareTextFunctionalEquivalence(String a, String b) {
-    if (isTextFunctionallyEquivalent(a, b)) {
-      return 0;
-    }
+  protected static int compareTextFunctionalEquivalence(String a, String b, boolean ignoreWhitespace) {
     if (a == null && b == null) {
       return 0;
     }
@@ -412,20 +409,36 @@ public class RuleComparison{
     if (b == null) {
       return -1;
     }
+    if (isTextFunctionallyEquivalent(a, b, ignoreWhitespace)) {
+      return 0;
+    }
     return a.compareTo(b);
   }
 
-  protected static boolean isTextFunctionallyEquivalent(String a, String b){
+  protected static boolean isTextFunctionallyEquivalent(String a, String b, boolean ignoreWhitespace) {
     if (a == null && b == null) {
       return true;
     }
     if (a == null || b == null) {
       return false;
     }
-    if (a.equals(b)) {
+
+    String aPrime = a;
+    String bPrime = b;
+
+    if (ignoreWhitespace) {
+      String linebreaks = "[\\r\\n]+";
+      String html = "(<[^>]+>)";
+      String pTags = "</?p>";
+
+      aPrime = a.replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(html, " $1 ").replaceAll(" +"," ");
+      bPrime = b.replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(html, " $1 ").replaceAll(" +"," ");
+    }
+
+    if (aPrime.equals(bPrime)) {
       return true;
     }
-    return hasEquivalentTokens(a, b);
+    return hasEquivalentTokens(aPrime, bPrime);
   }
 
   private static boolean hasEquivalentTokens(String a, String b) {

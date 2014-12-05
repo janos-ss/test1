@@ -98,7 +98,7 @@ public class RuleMakerTest {
   @Test
   public void testSetFullDescriptionNull() throws Exception {
     Rule rule = new Rule("Java");
-    RuleMaker.setDescription(rule, null);
+    RuleMaker.setDescription(rule, null, true);
     assertThat(rule.getFullDescription()).isNull();
   }
 
@@ -108,7 +108,7 @@ public class RuleMakerTest {
     String html = "<p>Even if all browsers are fault-tolerant, HTML tags should be closed to prevent any unexpected behavior.</p>\n";
 
     Rule rule = new Rule("HTML");
-    RuleMaker.setDescription(rule, markdown);
+    RuleMaker.setDescription(rule, markdown, true);
     assertThat(rule.getDescription()).isEqualTo(html);
   }
 
@@ -118,7 +118,7 @@ public class RuleMakerTest {
     String html = "<h2>Noncompliant Code Example</h2>\n\n<pre>\n&lt;html&gt;\n  &lt;head&gt;\n    &lt;title&gt;Test Page    &lt;!-- Noncompliant; title not closed --&gt;\n  &lt;!-- Noncompliant; head not closed --&gt;\n  &lt;body&gt;\n    &lt;em&gt;Emphasized Text  &lt;!-- Noncompliant; em not closed --&gt;\n  &lt;!-- Noncompliant; body not closed --&gt;\n&lt;/html&gt;\n</pre>\n";
 
     Rule rule = new Rule("HTML");
-    RuleMaker.setDescription(rule, markdown);
+    RuleMaker.setDescription(rule, markdown, true);
 
     assertThat(rule.getNonCompliant()).isEqualTo(html);
   }
@@ -129,7 +129,7 @@ public class RuleMakerTest {
     String html = "<h2>Compliant Solution</h2>\n\n<pre>\n&lt;html&gt;\n  &lt;head&gt;\n    &lt;title&gt;Test Page&lt;/title&gt;\n  &lt;/head&gt;\n  &lt;body&gt;\n    &lt;em&gt;Emphasized Text&lt;/em&gt;\n  &lt;/body&gt;\n&lt;/html&gt;\n</pre>\n";
 
     Rule rule = new Rule("HTML");
-    RuleMaker.setDescription(rule, markdown);
+    RuleMaker.setDescription(rule, markdown,true);
 
     assertThat(rule.getCompliant()).isEqualTo(html);
   }
@@ -140,7 +140,7 @@ public class RuleMakerTest {
     String html = "<h2>Exceptions</h2>\n\n<p><code>InterruptedException</code>, <code>NumberFormatException</code>, <code>ParseException</code> and <code>MalformedURLException</code> exceptions are arguably used to indicate nonexceptional outcomes.</p>\n<p>Because they are part of Java, developers have no choice but to deal with them. This rule does not verify that those particular exceptions are correctly handled.</p>\n<pre>\nint myInteger;\ntry {\n  myInteger = Integer.parseInt(myString);\n} catch (NumberFormatException e) {\n  // It is perfectly acceptable to not handle \"e\" here\n  myInteger = 0;\n}\n</pre>\n";
 
     Rule rule = new Rule("Java");
-    RuleMaker.setDescription(rule, markdown);
+    RuleMaker.setDescription(rule, markdown,true);
 
     assertThat(rule.getExceptions()).isEqualTo(html);
   }
@@ -151,7 +151,7 @@ public class RuleMakerTest {
     String html = "<h2>See</h2>\n\n<ul>\n<li> MISRA C++:2008, 2-13-4 </li>\n<li> MISRA C:2012, 7.3</li>\n</ul>\n";
 
     Rule rule = new Rule("C");
-    RuleMaker.setDescription(rule, markdown);
+    RuleMaker.setDescription(rule, markdown,true);
 
     assertThat(rule.getReferences()).isEqualTo(html);
   }
@@ -162,7 +162,7 @@ public class RuleMakerTest {
     String html = "<p>Even if all browsers are fault-tolerant, HTML tags should be closed to prevent any unexpected behavior.</p>\n";
 
     Rule rule = new Rule("HTML");
-    RuleMaker.setDescription(rule, markdown);
+    RuleMaker.setDescription(rule, markdown,true);
 
     assertThat(rule.getHtmlDescription()).isEqualTo(html);
   }
@@ -173,7 +173,7 @@ public class RuleMakerTest {
     String html = new java.util.Scanner(new File(url.getPath() + "/FullDescriptionHtml.html"),"UTF8").useDelimiter("\\Z").next();
 
     Rule rule = new Rule("Java");
-    RuleMaker.setDescription(rule, html);
+    RuleMaker.setDescription(rule, html,true);
 
     assertThat(rule.getHtmlDescription()).isEqualTo(html);
   }
@@ -181,14 +181,14 @@ public class RuleMakerTest {
   @Test
   public void testEmptyDescription() {
     Rule rule = new Rule("Java");
-    RuleMaker.setDescription(rule, "");
+    RuleMaker.setDescription(rule, "",true);
     assertThat(rule.getDescription()).hasSize(0);
   }
 
   @Test
   public void testNullDescription() {
     Rule rule = new Rule("Java");
-    RuleMaker.setDescription(rule, null);
+    RuleMaker.setDescription(rule, null,true);
     assertThat(rule.getDescription()).hasSize(0);
   }
 
