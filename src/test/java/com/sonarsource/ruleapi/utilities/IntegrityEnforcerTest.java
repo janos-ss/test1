@@ -243,7 +243,31 @@ public class IntegrityEnforcerTest {
 
     assertThat(rule.getTargetedLanguages()).isEmpty();
     assertThat(rule.getCoveredLanguages()).hasSize(1);
+  }
 
+  @Test
+  public void testAddCovered2() {
+    String language = "Yellow";
+
+    Rule rule = new Rule("");
+    rule.getCoveredLanguages().add(language);
+    rule.getTargetedLanguages().add(language);
+
+    Map<String, Rule> needsUpdating = new HashMap<String, Rule>();
+
+    enforcer.addCoveredForNemoRules(language,needsUpdating,rule);
+
+    assertThat(rule.getTargetedLanguages()).isEmpty();
+    assertThat(rule.getCoveredLanguages()).hasSize(1);
+  }
+
+  @Test
+  public void testLanguagesEnum() {
+
+    assertThat(IntegrityEnforcer.Language.values().length).isEqualTo(17);
+    assertThat(IntegrityEnforcer.Language.ABAP.sq).isEqualTo("abap");
+    assertThat(IntegrityEnforcer.Language.ABAP.rspec).isEqualTo("ABAP");
+    assertThat(IntegrityEnforcer.Language.ABAP.update).isTrue();
   }
 
 }

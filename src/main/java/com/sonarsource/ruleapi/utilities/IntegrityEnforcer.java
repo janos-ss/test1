@@ -261,7 +261,7 @@ public class IntegrityEnforcer {
     return source.replaceAll("<[^>]+>","");
   }
 
-  private enum Language {
+  public enum Language {
     ABAP  ("abap",        "ABAP",       true),
     C     ("c",           "C",          true),
     COBOL ("cobol",       "Cobol",      false),
@@ -280,9 +280,9 @@ public class IntegrityEnforcer {
     VBNET ("vbnet",       "VB.NET",     false),
     XML   ("xml",         "XML",        true);
 
-    private final String sq;
-    private final String rspec;
-    private final boolean update;
+    public final String sq;
+    public final String rspec;
+    public final boolean update;
 
     Language(String sq, String rspec, boolean update) {
 
