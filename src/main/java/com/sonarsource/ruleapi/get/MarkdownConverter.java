@@ -17,6 +17,7 @@ public class MarkdownConverter {
   private boolean tableOpen = false;
   private boolean wrongLanguage = false;
   private boolean paragraph = true;
+  private boolean quoteOpen = false;
   private LinkedList<String> listCloses;
 
   public MarkdownConverter() {
@@ -35,6 +36,7 @@ public class MarkdownConverter {
     if (markdown != null && markdown.length() > 0) {
       codeOpen = false;
       tableOpen = false;
+      quoteOpen = false;
       wrongLanguage = false;
       paragraph = true;
       listCloses = new LinkedList<String>();
@@ -65,6 +67,7 @@ public class MarkdownConverter {
             lines[i] = handleList(sb, lines[i]);
             lines[i] = handleBold(lines[i]);
             lines[i] = handleItal(lines[i]);
+            lines[i] = handleQuoteTag(lines[i]);
           }
         }
         handleParagraph(sb, lines[i]);
@@ -96,7 +99,9 @@ public class MarkdownConverter {
   }
 
   protected boolean isPTagNeeded(String line) {
-    return paragraph && !codeOpen && listCloses.isEmpty() && line.length() >0;
+    String htmlTag = "<[^>]+>";
+    return paragraph && listCloses.isEmpty() && line.length() >0
+            && !(codeOpen || line.matches(htmlTag));
   }
 
   /**
@@ -126,6 +131,9 @@ public class MarkdownConverter {
     }
     if (tableOpen) {
       sb.append("</table>\n");
+    }
+    if (quoteOpen) {
+      sb.append("</blockquote>\n");
     }
 
   }
@@ -166,6 +174,20 @@ public class MarkdownConverter {
     if (line.startsWith("bq. ")) {
       line = "<blockquote>" + line.substring(4) + "</blockquote>";
       paragraph = false;
+    }
+    return line;
+  }
+
+  protected String handleQuoteTag(String arg) {
+    String line = arg;
+    if (line.contains("{quote}")) {
+      if (quoteOpen) {
+        line = line.replace("{quote}", "</blockquote>");
+        quoteOpen = false;
+      } else {
+        line = line.replace("{quote}", "<blockquote>");
+        quoteOpen = true;
+      }
     }
     return line;
   }
@@ -271,12 +293,12 @@ public class MarkdownConverter {
   protected String handleBold(String arg) {
     String line = arg;
     boolean boldOpen = false;
-    while (line.contains("*")) {
+    while (line.matches(".*(\\b\\*|\\*\\b).*")) {
       if (boldOpen) {
-        line = line.replaceFirst("\\*", "</strong>");
+        line = line.replaceFirst("(\\b)\\*", "</strong>$1");
         boldOpen = false;
       } else {
-        line = line.replaceFirst("\\*", "<strong>");
+        line = line.replaceFirst("\\*(\\b)", "$1<strong>");
         boldOpen = true;
       }
     }

@@ -105,6 +105,15 @@ public class MarkdownConverterTest {
   }
 
   @Test
+  public void testNotBold() {
+
+    String markdown = "{{SELECT *}} should be avoided because it releases control of the returned columns and could therefore lead to errors and potentially to performance issues.";
+    String html = "<p><code>SELECT *</code> should be avoided because it releases control of the returned columns and could therefore lead to errors and potentially to performance issues.</p>\n";
+
+    assertThat(mc.transform(markdown, "")).isEqualTo(html);
+  }
+
+  @Test
   public void testItal() throws Exception {
     String markdown = "_Now_ is the time for _all_ good people to come to the _aid_ of their _country_";
     String html = "<em>Now</em> is the time for <em>all</em> good people to come to the <em>aid</em> of their <em>country</em>";
@@ -208,6 +217,24 @@ public class MarkdownConverterTest {
     String html = "<blockquote>Now is the time for all good men to come to the aid of their country.</blockquote>";
 
     assertThat(mc.handleBq(markdown)).isEqualTo(html);
+  }
+
+  @Test
+  public void testQuoteTag()
+  {
+    String markdown = "According to the SAP documentation:\n" +
+            "{quote}\n" +
+            "System functions are only intended for internal usage. Incompatible changes and further development is possible at any time and without warning or notice.\n" +
+            "{quote}\n" +
+            "\n" +
+            "So calling system C functions using a {{CALL}} statement should be avoided.\n";
+    String html = "<p>According to the SAP documentation:</p>\n" +
+            "<blockquote>\n" +
+            "<p>System functions are only intended for internal usage. Incompatible changes and further development is possible at any time and without warning or notice.</p>\n" +
+            "</blockquote>\n" +
+            "<p>So calling system C functions using a <code>CALL</code> statement should be avoided.</p>\n";
+
+    assertThat(mc.transform(markdown, "")).isEqualTo(html);
   }
 
 }
