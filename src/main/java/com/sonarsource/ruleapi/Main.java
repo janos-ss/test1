@@ -17,23 +17,16 @@ public class Main {
   private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
 
-  public static void main(String [] args)
-  {
+  public static void main(String [] args) throws RuleException {
     if (args.length < 2) {
       LOGGER.severe("Username, password required as first, second arguments.");
-      System.exit(-1);
-    }
-    String login = args[0];
-    String password = args[1];
+    } else {
+      String login = args[0];
+      String password = args[1];
 
-
-    IntegrityEnforcer enforcer = new IntegrityEnforcer();
-    try {
+      IntegrityEnforcer enforcer = new IntegrityEnforcer();
       enforcer.setCoveredLanguages(login, password);
-      enforcer.enforceCwe(login,password);
-    } catch (RuleException e) {
-      LOGGER.severe(e.getMessage());
-      LOGGER.severe(e.getStackTrace().toString());
+      enforcer.enforceCwe(login, password);
     }
   }
 
