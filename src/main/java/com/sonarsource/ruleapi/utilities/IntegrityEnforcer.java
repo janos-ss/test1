@@ -36,7 +36,6 @@ public class IntegrityEnforcer {
     }
   }
 
-
   protected void setCoveredForLanguage(String login, String password, Language language) throws RuleException {
     String rspecLanguage = language.rspec;
     String sqRepo = language.sq;
@@ -280,9 +279,9 @@ public class IntegrityEnforcer {
     VBNET ("vbnet",       "VB.NET",     false),
     XML   ("xml",         "XML",        true);
 
-    public final String sq;
-    public final String rspec;
-    public final boolean update;
+    protected final String sq;
+    protected final String rspec;
+    protected final boolean update;
 
     Language(String sq, String rspec, boolean update) {
 
