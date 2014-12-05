@@ -16,11 +16,16 @@ public class Main {
 
   private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
+  private Main() {
+    // utility class private constructor
+  }
 
   public static void main(String [] args) throws RuleException {
+
     if (args.length < 2) {
       LOGGER.severe("Username, password required as first, second arguments.");
     } else {
+
       String login = args[0];
       String password = args[1];
 
