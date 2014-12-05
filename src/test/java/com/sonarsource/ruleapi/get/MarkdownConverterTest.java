@@ -113,6 +113,17 @@ public class MarkdownConverterTest {
   }
 
   @Test
+  public void testNoItalInCode() {
+    String markdown = "Because {{CX_ROOT}} is the _base_ exception type, catching it directly probably casts a wider net than you intended. Catching {{CX_ROOT}} could mask far more serious system errors that your {{CATCH}} logic was intended to deal with.\n" +
+            "\n" +
+            "Some smaller, more specific exception type should be caught instead.";
+    String html = "<p>Because <code>CX_ROOT</code> is the <em>base</em> exception type, catching it directly probably casts a wider net than you intended. Catching <code>CX_ROOT</code> could mask far more serious system errors that your <code>CATCH</code> logic was intended to deal with.</p>\n" +
+            "<p>Some smaller, more specific exception type should be caught instead.</p>\n";
+
+    assertThat(mc.transform(markdown,"")).isEqualTo(html);
+  }
+
+  @Test
   public void testSimpleUl() throws Exception {
     String markdown = "* a\r\n* b\r\n* c\r\n";
     String html = "<ul>\n<li> a</li>\n<li> b</li>\n<li> c</li>\n</ul>\n";
@@ -165,7 +176,7 @@ public class MarkdownConverterTest {
     String markdown = "This is {{code}}, isn't it?";
     String html = "This is <code>code</code>, isn't it?";
 
-    assertThat(mc.handleTt(markdown)).isEqualTo(html);
+    assertThat(mc.handleDoubleCurly(markdown)).isEqualTo(html);
   }
 
   @Test
@@ -198,4 +209,5 @@ public class MarkdownConverterTest {
 
     assertThat(mc.handleBq(markdown)).isEqualTo(html);
   }
+
 }

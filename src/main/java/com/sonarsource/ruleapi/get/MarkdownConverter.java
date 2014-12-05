@@ -6,6 +6,8 @@
 package com.sonarsource.ruleapi.get;
 
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Converts Jira markdown to HTML
@@ -59,7 +61,7 @@ public class MarkdownConverter {
             lines[i] = handleHref(lines[i]);
             lines[i] = handleHeading(lines[i]);
             lines[i] = handleBq(lines[i]);
-            lines[i] = handleTt(lines[i]);
+            lines[i] = handleDoubleCurly(lines[i]);
             lines[i] = handleList(sb, lines[i]);
             lines[i] = handleBold(lines[i]);
             lines[i] = handleItal(lines[i]);
@@ -168,7 +170,7 @@ public class MarkdownConverter {
     return line;
   }
 
-  protected String handleTt(String arg) {
+  protected String handleDoubleCurly(String arg) {
     String line = arg;
     if (line.contains("{{")) {
       line = line.replaceAll("\\{\\{", "<code>");
@@ -284,12 +286,13 @@ public class MarkdownConverter {
   protected String handleItal(String arg) {
     String line = arg;
     boolean italOpen = false;
-    while (line.contains("_")) {
+
+    while (line.matches(".*(\\b_|_\\b).*")) {
       if (italOpen) {
-        line = line.replaceFirst("_", "</em>");
+        line = line.replaceFirst("_(\\b)", "</em>$1");
         italOpen = false;
       } else {
-        line = line.replaceFirst("_", "<em>");
+        line = line.replaceFirst("(\\b)_", "$1<em>");
         italOpen = true;
       }
     }
