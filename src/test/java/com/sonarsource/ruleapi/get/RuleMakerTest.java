@@ -173,7 +173,7 @@ public class RuleMakerTest {
     String html = new java.util.Scanner(new File(url.getPath() + "/FullDescriptionHtml.html"),"UTF8").useDelimiter("\\Z").next();
 
     Rule rule = new Rule("Java");
-    RuleMaker.setDescription(rule, html,true);
+    RuleMaker.setDescription(rule, html,false);
 
     assertThat(rule.getHtmlDescription()).isEqualTo(html);
   }
