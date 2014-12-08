@@ -187,10 +187,6 @@ public class RuleComparison{
       sb.append("template, ");
     }
 
-    if (compareMessage() != 0) {
-      sb.append("message, ");
-    }
-
     sb.append(toStringForDescription());
 
     sb.append(toStringForSqale());
@@ -556,7 +552,7 @@ public class RuleComparison{
     }
 
     if (a != null && b != null) {
-      return a.compareTo(b);
+      return a.compareToIgnoreCase(b);
     }
     if (a == null) {
       return -1;
