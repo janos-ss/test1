@@ -658,29 +658,6 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void testToStringMessageNeq() throws Exception {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    spec.setMessage("message");
-    impl.setMessage("a message");
-
-    assertThat(rc.toString()).isEqualTo("Differences: message, ");
-  }
-
-  @Test
-  public void testToStringMessageNeqWithNull() throws Exception {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    spec.setMessage("message");
-
-    assertThat(rc.toString()).isEqualTo("Differences: message, ");
-  }
-
-  @Test
   public void differentDescription() {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
