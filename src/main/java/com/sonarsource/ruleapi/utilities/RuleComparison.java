@@ -515,7 +515,7 @@ public class RuleComparison{
 
     if (rspecTok.matches("^[(\\[].*") && !rspecTok.matches(".*[\\])]$")) {
       StringBuilder sb = new StringBuilder(rspecTok);
-      while (!sb.toString().contains("]")) {
+      while (!sb.toString().contains("]") && !rspecTokens.isEmpty()) {
         sb.append(" ").append(rspecTokens.remove(0));
       }
       rspecTok = sb.toString();
