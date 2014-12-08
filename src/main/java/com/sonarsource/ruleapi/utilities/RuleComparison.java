@@ -432,9 +432,10 @@ public class RuleComparison{
       String linebreaks = "[\\r\\n]+";
       String html = "(<[^>]+>)";
       String pTags = "</?p>";
+      String brTags = "<br ?/>";
 
-      aPrime = a.replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(html, " $1 ").replaceAll(" +"," ");
-      bPrime = b.replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(html, " $1 ").replaceAll(" +"," ");
+      aPrime = a.replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(brTags,"").replaceAll(html, " $1 ").replaceAll(" +"," ");
+      bPrime = b.replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(brTags,"").replaceAll(html, " $1 ").replaceAll(" +"," ");
     }
 
     if (aPrime.equals(bPrime)) {
@@ -450,8 +451,8 @@ public class RuleComparison{
       return false;
     }
 
-    String rspec = aString.toUpperCase().replaceAll("\\.", "");
-    String impl = bString.toUpperCase().replaceAll("\\.", "");
+    String rspec = aString.toUpperCase().replaceAll("[.,;]", "");
+    String impl = bString.toUpperCase().replaceAll("[.,;]", "");
     if (impl.matches(indicatesOptions)) {
       rspec = bString;
       impl = aString;

@@ -978,4 +978,53 @@ public class RuleComparisonTest {
     assertThat(blankComparison.isTextFunctionallyEquivalent(rspec, wrong, true)).isFalse();
   }
 
+  @Test
+  public void punctiationDifference() {
+    String rspec = "<p>This rule applies whenever an <code>[if|IF]</code> statement is followed by one or </p>\n" +
+            "<p>more <code>[else if|ELSEIF|ELSIF]</code> statements, the final <code>[else if|ELSEIF|ELSIF]</code> shall be followed by an <code>[else|ELSE]</code> statement.</p>\n" +
+            "<p>The requirement for a final <code>[else|ELSE]</code> statement is defensive programming. </p>\n" +
+            "<p>The <code>[else|ELSE]</code> statement should either take appropriate action or contain </p>\n" +
+            "<p>a suitable comment as to why no action is taken. This is consistent with the </p>\n" +
+            "<p>requirement to have a final <code>[default|OTHERS|ELSE]</code> clause in a <code>[switch|CASE]</code></p>\n" +
+            "<p>statement. </p>";
+    String impl = "<p>This rule applies whenever an <code>IF</code> statement is followed by one or \n" +
+            "more <code>ELSEIF</code> statements; the final <code>ELSEIF</code> shall be \n" +
+            "followed by an <code>ELSE</code> statement.</p>\n" +
+            "\n" +
+            "<p>The requirement for a final <code>ELSE</code> statement is defensive programming. \n" +
+            "The <code>ELSE</code> statement should either take appropriate action or contain \n" +
+            "a suitable comment as to why no action is taken. This is consistent with the \n" +
+            "requirement to have a final <code>OTHERS</code> clause in a <code>CASE</code>\n" +
+            "statement.</p>";
+
+    assertThat(blankComparison.isTextFunctionallyEquivalent(rspec,impl, true)).isTrue();
+
+  }
+
+  @Test
+  public void ignoreBreakTags() {
+    String rspec = "<p>The ABAP documentation is pretty clear on this subject :</p>\n" +
+            "<blockquote>\n" +
+            "<p>This statement is only for </p>\n" +
+            "<p>!!! Internal use in SAP Basis development !!! </p>\n" +
+            "<p>Even within SAP Basis, it may only be used in programs within the ABAP+GUI development group. </p>\n" +
+            "<p>Its use is subject to various restrictions, not all of which may be listed in the documentation. This documentation is intended for internal SAP use within the Basis development group ABAP+GUI. </p>\n" +
+            "<p>Changes and further development, which may be incompatible, may occur at any time, without warning or notice! </p>\n" +
+            "</blockquote>\n";
+    String impl = "<p>The ABAP documentation is pretty clear on this subject :</p>\n" +
+            "<blockquote>\n" +
+            "This statement is only for\n" +
+            "<br/>\n" +
+            "!!! Internal use in SAP Basis development !!!\n" +
+            "<br/>\n" +
+            "Even within SAP Basis, it may only be used in programs within the ABAP+GUI development group.\n" +
+            "<br/>\n" +
+            "Its use is subject to various restrictions, not all of which may be listed in the documentation. This documentation is intended for internal SAP use within the Basis development group ABAP+GUI.\n" +
+            "<br/>\n" +
+            "Changes and further development, which may be incompatible, may occur at any time, without warning or notice!\n" +
+            "</blockquote>";
+
+    assertThat(blankComparison.isTextFunctionallyEquivalent(rspec,impl, true)).isTrue();
+  }
+
 }
