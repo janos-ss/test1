@@ -954,4 +954,18 @@ public class RuleComparisonTest {
     assertThat(blankComparison.isTextFunctionallyEquivalent(s1, s2, false)).isFalse();
   }
 
+  @Test
+  public void optionalWords() {
+    String rspec = "[Local] Variables should not be (declared|set) and then immediately returned [or thrown].";
+    String with = "Local variables should not be declared and then immediately returned or thrown.";
+    String without = "Variables should not be declared and then immediately returned.";
+    String tooLong = "Variables should not be declared and then immediately returned on Sundays.";
+    String different = "Vars should not be set and then immediately returned.";
+
+    assertThat(blankComparison.isTextFunctionallyEquivalent(rspec, with, true)).isTrue();
+    assertThat(blankComparison.isTextFunctionallyEquivalent(rspec, without, true)).isTrue();
+    assertThat(blankComparison.isTextFunctionallyEquivalent(rspec, tooLong, true)).isFalse();
+    assertThat(blankComparison.isTextFunctionallyEquivalent(rspec, different, true)).isFalse();
+  }
+
 }

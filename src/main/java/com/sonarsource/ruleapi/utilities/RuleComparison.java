@@ -8,6 +8,8 @@ package com.sonarsource.ruleapi.utilities;
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -441,22 +443,90 @@ public class RuleComparison{
     return hasEquivalentTokens(aPrime, bPrime);
   }
 
-  private static boolean hasEquivalentTokens(String a, String b) {
-    if (a.contains("|") || b.contains("|")){
-      String [] aTokens = a.split(" ");
-      String [] bTokens = b.split(" ");
+  private static boolean hasEquivalentTokens(String aString, String bString) {
 
-      for (int i=0; i<aTokens.length && i<bTokens.length; i++) {
-        String aTok = aTokens[i];
-        String bTok = bTokens[i];
-        if (! (aTok.equals(bTok) || aTok.contains(bTok) || bTok.contains(aTok))) {
+    String indicatesOptions = ".*[|\\[(].+";
+    if (! (aString.matches(indicatesOptions) || bString.matches(indicatesOptions))) {
+      return false;
+    }
+
+    String rspec = aString.toUpperCase().replaceAll("\\.", "");
+    String impl = bString.toUpperCase().replaceAll("\\.", "");
+    if (impl.matches(indicatesOptions)) {
+      rspec = bString;
+      impl = aString;
+    }
+
+    List<String> rspecTokens = new ArrayList<String>(Arrays.asList(rspec.split(" ")));
+    List<String> implTokens = new ArrayList<String>(Arrays.asList(impl.split(" ")));
+
+    while (!rspecTokens.isEmpty() && !implTokens.isEmpty()) {
+      boolean optional = false;
+      String rspecTok = rspecTokens.remove(0);
+      String implTok = implTokens.remove(0);
+
+      rspecTok = assembleExtendedRspecToken(rspecTokens, rspecTok);
+      if (rspecTok.contains(" ")) {
+        implTok = assembleExtendedImplToken(implTokens, implTok,  rspecTok.split(" ").length);
+      }
+
+      if (! (rspecTok.equals(implTok) || rspecTok.contains(implTok) || implTok.contains(rspecTok))) {
+        if (isOptional(rspecTok)) {
+          disassembleExtendedImplToken(implTokens, implTok);
+        } else {
           return false;
         }
       }
-      return true;
     }
-    return false;
+    if (! implTokens.isEmpty()) {
+      return false;
+    } else if (! rspecTokens.isEmpty()){
+      String rspecTok = assembleExtendedRspecToken(rspecTokens, "");
+       return isOptional(rspecTok);
+    }
+
+    return true;
   }
+
+  private static void disassembleExtendedImplToken(List<String> implTokens, String implTok) {
+
+    String[] pieces = implTok.split(" ");
+    for (int i = pieces.length-1; i >=0; i--) {
+      implTokens.add(0, pieces[i]);
+    }
+  }
+
+  private static String assembleExtendedImplToken(List<String> implTokens, String implTok, int phraseLength) {
+
+    StringBuilder sb = new StringBuilder(implTok);
+    for (int j = 1; j < phraseLength && !implTokens.isEmpty(); j++) {
+      sb.append(" ").append(implTokens.remove(0));
+    }
+    implTok = sb.toString();
+    return implTok;
+  }
+
+  private static boolean isOptional(String rspecTok) {
+
+    return !rspecTok.contains("|");
+  }
+
+  private static String assembleExtendedRspecToken(List<String> rspecTokens, String rspecTok) {
+
+    if (rspecTok.matches("^[(\\[].*") && !rspecTok.matches(".*[\\])]$")) {
+      StringBuilder sb = new StringBuilder(rspecTok);
+      while (!sb.toString().contains("]")) {
+        sb.append(" ").append(rspecTokens.remove(0));
+      }
+      rspecTok = sb.toString();
+    }
+
+    if (rspecTok.matches("^\\[.*\\]$") || rspecTok.matches("^\\(.*\\)$")){
+      rspecTok = rspecTok.substring(1, rspecTok.length() - 1);
+    }
+    return rspecTok;
+  }
+
 
   private static int compareStrings(String a, String b) {
     if (a == null && b == null){
