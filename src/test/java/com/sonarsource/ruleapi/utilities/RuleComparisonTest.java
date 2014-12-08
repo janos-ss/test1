@@ -968,4 +968,14 @@ public class RuleComparisonTest {
     assertThat(blankComparison.isTextFunctionallyEquivalent(rspec, different, true)).isFalse();
   }
 
+  @Test
+  public void phraseChoices() {
+    String rspec = "Nested [<code>if</code>, <code>for</code>, <code>while</code>, <code>switch</code> and <code>try</code>|<code>IF</code>, <code>CASE</code>, <code>DO</code>, <code>LOOP</code>, <code>SELECT</code>, <code>WHILE</code> and <code>PROVIDE</code>] statements is a key ingredient for making what's known as \"Spaghetti code\".";
+    String match = "Nested <code>IF</code>, <code>CASE</code>, <code>DO</code>, <code>LOOP</code>, <code>SELECT</code>, <code>WHILE</code> and <code>PROVIDE</code> statements is a key ingredient for making what's known as \"Spaghetti code\".";
+    String wrong = "Nested <code>IF</code>, <code>CASE</code>, <code>DO</code>, <code>LOOP</code>, <code>SELECT</code>, and <code>PROVIDE</code> statements is a key ingredient for making what's known as \"Spaghetti code\".";
+
+    assertThat(blankComparison.isTextFunctionallyEquivalent(rspec, match, true)).isTrue();
+    assertThat(blankComparison.isTextFunctionallyEquivalent(rspec, wrong, true)).isFalse();
+  }
+
 }

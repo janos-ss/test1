@@ -466,11 +466,13 @@ public class RuleComparison{
       String implTok = implTokens.remove(0);
 
       rspecTok = assembleExtendedRspecToken(rspecTokens, rspecTok);
-      if (rspecTok.contains(" ")) {
-        implTok = assembleExtendedImplToken(implTokens, implTok,  rspecTok.split(" ").length);
+      if (rspecTok.contains(" ") && !rspecTok.contains("|")) {
+        implTok = assembleExtendedImplToken(implTokens, implTok, rspecTok);
       }
 
-      if (! (rspecTok.equals(implTok) || rspecTok.contains(implTok) || implTok.contains(rspecTok))) {
+      if (rspecTok.contains("|") && rspecTok.contains(" ") && ! isPhraseInOptions(rspecTok,implTok,implTokens)) {
+        return false;
+      } else if (! (rspecTok.equals(implTok) || rspecTok.contains(implTok) || implTok.contains(rspecTok))) {
         if (isOptional(rspecTok)) {
           disassembleExtendedImplToken(implTokens, implTok);
         } else {
@@ -478,6 +480,7 @@ public class RuleComparison{
         }
       }
     }
+
     if (! implTokens.isEmpty()) {
       return false;
     } else if (! rspecTokens.isEmpty()){
@@ -488,6 +491,22 @@ public class RuleComparison{
     return true;
   }
 
+  private static boolean isPhraseInOptions(String rspecTok, String implTok, List<String> implTokens){
+    String [] phrases = rspecTok.split("\\|");
+
+    for(String phrase : phrases) {
+      phrase = phrase.trim();
+      implTok = assembleExtendedImplToken(implTokens, implTok , phrase);
+      if (implTok.equals(phrase)) {
+        return true;
+      } else {
+        disassembleExtendedImplToken(implTokens, implTok);
+        implTok = implTokens.remove(0);
+      }
+    }
+    return false;
+  }
+
   private static void disassembleExtendedImplToken(List<String> implTokens, String implTok) {
 
     String[] pieces = implTok.split(" ");
@@ -496,7 +515,9 @@ public class RuleComparison{
     }
   }
 
-  private static String assembleExtendedImplToken(List<String> implTokens, String implTok, int phraseLength) {
+  private static String assembleExtendedImplToken(List<String> implTokens, String implTok, String phraseToMatch) {
+
+    int phraseLength = phraseToMatch.split(" ").length;
 
     StringBuilder sb = new StringBuilder(implTok);
     for (int j = 1; j < phraseLength && !implTokens.isEmpty(); j++) {
@@ -524,7 +545,7 @@ public class RuleComparison{
     if (rspecTok.matches("^\\[.*\\]$") || rspecTok.matches("^\\(.*\\)$")){
       rspecTok = rspecTok.substring(1, rspecTok.length() - 1);
     }
-    return rspecTok;
+    return rspecTok.trim();
   }
 
 
