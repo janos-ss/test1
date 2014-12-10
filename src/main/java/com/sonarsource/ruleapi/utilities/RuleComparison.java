@@ -195,17 +195,8 @@ public class RuleComparison{
     sb.append(toStringForSqale());
 
     if (compareParameterList() != 0) {
-      sb.append("parameter list").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(separator);
-        for (Parameter param : spec.getParameterList()) {
-          sb.append(param.toString()).append(separator);
-        }
-        sb.append(imp).append(separator);
-        for (Parameter param : impl.getParameterList()) {
-          sb.append(param.toString()).append(separator);
-        }
-      }
+      logDifference(sb, "parameter list",
+              parameterListToString(spec.getParameterList()), parameterListToString(impl.getParameterList()));
     }
 
     if (compareTags() != 0) {
@@ -217,6 +208,15 @@ public class RuleComparison{
     }
 
     return "";
+  }
+
+  private String parameterListToString(List<Parameter> list) {
+
+    StringBuilder sb = new StringBuilder();
+    for (Parameter param : spec.getParameterList()) {
+      sb.append(param.toString()).append(separator);
+    }
+    return sb.toString();
   }
 
   private String toStringForSqale() {
@@ -256,24 +256,24 @@ public class RuleComparison{
 
     StringBuilder sb = new StringBuilder();
     if (compareDescription() != 0) {
-      logDifference(sb,"description text",spec.getDescription(),impl.getDescription());
+      logDifference(sb, "description text", spec.getDescription(), impl.getDescription());
     }
 
     if (compareNoncompliant() != 0) {
-      logDifference(sb,"noncompliant code example",spec.getNonCompliant(),impl.getNonCompliant());
+      logDifference(sb, "noncompliant code example", spec.getNonCompliant(), impl.getNonCompliant());
     }
 
     if (compareCompliant() != 0) {
-      logDifference(sb,"compliant solution",spec.getCompliant(),impl.getCompliant());
+      logDifference(sb, "compliant solution", spec.getCompliant(), impl.getCompliant());
     }
 
     if (compareException() != 0) {
-      logDifference(sb,"exceptions",spec.getExceptions(),impl.getExceptions());
+      logDifference(sb, "exceptions", spec.getExceptions(), impl.getExceptions());
 
     }
 
     if (compareReference() != 0) {
-      logDifference(sb,"references",spec.getReferences(),impl.getReferences());
+      logDifference(sb, "references", spec.getReferences(), impl.getReferences());
     }
     return sb.toString();
   }
