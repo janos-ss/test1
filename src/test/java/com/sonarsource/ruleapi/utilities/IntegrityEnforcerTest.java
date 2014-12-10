@@ -270,4 +270,15 @@ public class IntegrityEnforcerTest {
     assertThat(IntegrityEnforcer.Language.ABAP.update).isTrue();
   }
 
+
+//  @Test
+//  public void testtest() {
+//
+//    try {
+//      enforcer.tmp();
+//    } catch (RuleException e) {
+//      e.printStackTrace();
+//    }
+//  }
+
 }
