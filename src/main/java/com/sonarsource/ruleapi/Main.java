@@ -36,7 +36,7 @@ public class Main {
       enforcer.setCoveredLanguages(login, password);
       enforcer.enforceCwe(login, password);
     } catch (RuleException e) {
-      LOGGER.log(Level.SEVERE, e.getMessage(), e.getStackTrace());
+      LOGGER.log(Level.SEVERE, e.getMessage(), e);
     }
   }
 
