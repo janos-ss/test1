@@ -6,8 +6,6 @@
 package com.sonarsource.ruleapi.get;
 
 import java.util.LinkedList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Converts Jira markdown to HTML
@@ -100,8 +98,9 @@ public class MarkdownConverter {
 
   protected boolean isPTagNeeded(String line) {
     String htmlTag = "<[^>]+>";
+    boolean inCodeOrOnlyHtml = codeOpen || line.matches(htmlTag);
     return paragraph && listCloses.isEmpty() && line.length() >0
-            && !(codeOpen || line.matches(htmlTag));
+            && !inCodeOrOnlyHtml;
   }
 
   /**
@@ -180,12 +179,13 @@ public class MarkdownConverter {
 
   protected String handleQuoteTag(String arg) {
     String line = arg;
-    if (line.contains("{quote}")) {
+    String quote = "{quote}";
+    if (line.contains(quote)) {
       if (quoteOpen) {
-        line = line.replace("{quote}", "</blockquote>");
+        line = line.replace(quote, "</blockquote>");
         quoteOpen = false;
       } else {
-        line = line.replace("{quote}", "<blockquote>");
+        line = line.replace(quote, "<blockquote>");
         quoteOpen = true;
       }
     }
