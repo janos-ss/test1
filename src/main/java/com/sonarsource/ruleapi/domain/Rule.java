@@ -17,6 +17,61 @@ public class Rule {
     INFO, MINOR, MAJOR, CRITICAL, BLOCKER
   }
 
+  public enum Subcharacteristic {
+    // Portability
+    COMPILER_RELATED_PORTABILITY ("Compiler related portability"),
+    HARDWARE_RELATED_PORTABILITY ("Hardware related portability"),
+    LANGUAGE_RELATED_PORTABILITY ("Language related portability"),
+    OS_RELATED_PORTABILITY ("OS related portability"),
+    SOFTWARE_RELATED_PORTABILITY ("Software related portability"),
+    TIME_ZONE_RELATED_PORTABILITY ("Time zone related portability"),
+
+    // Maintainability
+    READABILITY ("Readability"),
+    UNDERSTANDABILITY ("Understandability"),
+
+    // Security
+    API_ABUSE ("API abuse"),
+    ERRORS ("Errors"),
+    INPUT_VALIDATION_AND_REPRESENTATION ("Input validation and representation"),
+    SECURITY_FEATURES ("Security features"),
+
+    // Efficiency
+    CPU_EFFICIENCY ("Processor use"),
+    MEMORY_EFFICIENCY ("Memory use"),
+
+    // Changability
+    ARCHITECTURE_CHANGEABILITY ("Architecture related changeability"),
+    DATA_CHANGEABILITY ("Data related changeability"),
+    LOGIC_CHANGEABILITY ("Logic related changeability"),
+
+    // Reliability
+    ARCHITECTURE_RELIABILITY ("Architecture related reliability"),
+    DATA_RELIABILITY ("Data related reliability"),
+    EXCEPTION_HANDLING ("Exception handling"),
+    FAULT_TOLERANCE ("Fault tolerance"),
+    INSTRUCTION_RELIABILITY ("Instruction related reliability"),
+    LOGIC_RELIABILITY ("Logic related reliability"),
+    RESOURCE_RELIABILITY ("Resource related reliability"),
+    SYNCHRONIZATION_RELIABILITY ("Synchronization related reliability"),
+    UNIT_TESTS ("Unit tests"),
+
+    // Testability
+    INTEGRATION_TESTABILITY ("Integration level testability"),
+    UNIT_TESTABILITY ("Unit level testability");
+
+
+    protected final String rspecName;
+
+    Subcharacteristic(String rspecName) {
+      this.rspecName = rspecName;
+    }
+
+    public String getRspecName () {
+      return this.rspecName;
+    }
+  }
+
   private String language = null;
   private String key = null;
   private String status = null;
@@ -36,7 +91,7 @@ public class Rule {
   private String references = "";
 
   private String sqaleCharac = null;
-  private String sqaleSubCharac = null;
+  private Subcharacteristic sqaleSubCharac = null;
   private String sqaleRemediationFunction = null;
   private String sqaleConstantCostOrLinearThreshold = null;
   private String sqaleLinearArg = null;
@@ -71,7 +126,6 @@ public class Rule {
     if (subRule.title == null) {
       return;
     }
-
     mergeTitle(subRule);
 
     if (subRule.message != null) {
@@ -151,8 +205,6 @@ public class Rule {
    * Set the full rule description (description, noncompliant, compliant &etc.)
    *
    * For most purposes, the setDescription method in RuleMaker should be used instead.
-   *
-   * {@link com.sonarsource.ruleapi.get.RuleMaker#setDescription(Rule, String)}
    *
    * @param fullDescription the full rule description
    */
@@ -330,12 +382,12 @@ public class Rule {
     this.template = isTemplate;
   }
 
-  public String getSqaleSubCharac() {
+  public Subcharacteristic getSqaleSubCharac() {
 
     return sqaleSubCharac;
   }
 
-  public void setSqaleSubCharac(String sqaleSubCharac) {
+  public void setSqaleSubCharac(Subcharacteristic sqaleSubCharac) {
 
     this.sqaleSubCharac = sqaleSubCharac;
   }
