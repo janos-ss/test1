@@ -7,10 +7,7 @@ package com.sonarsource.ruleapi.utilities;
 
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.get.MarkdownConverter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -179,34 +176,18 @@ public class RuleComparison{
 
 
     if (compareTitle() != 0) {
-      sb.append("title").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(spec.getTitle()).append(separator);
-        sb.append(imp).append(impl.getTitle()).append(separator);
-      }
+      logDifference(sb, "title", spec.getTitle(), impl.getTitle());
     }
     if (compareSeverity() != 0) {
-      sb.append("severity").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(spec.getSeverity()).append(separator);
-        sb.append(imp).append(impl.getSeverity()).append(separator);
-      }
+      logDifference(sb, "severity", spec.getSeverity(), impl.getSeverity());
     }
 
     if (compareDefaultActive() != 0) {
-      sb.append("default active").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(spec.getDefaultActive()).append(separator);
-        sb.append(imp).append(impl.getDefaultActive()).append(separator);
-      }
+      logDifference(sb, "default active", spec.getDefaultActive(),impl.getDefaultActive());
     }
 
     if (compareTemplate() != 0) {
-      sb.append("template").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(spec.isTemplate()).append(separator);
-        sb.append(imp).append(impl.isTemplate()).append(separator);
-      }
+      logDifference(sb, "template", spec.isTemplate(),impl.isTemplate());
     }
 
     sb.append(toStringForDescription());
@@ -228,11 +209,7 @@ public class RuleComparison{
     }
 
     if (compareTags() != 0) {
-      sb.append("tags").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(listToString(spec.getTags())).append(separator);
-        sb.append(imp).append(listToString(impl.getTags())).append(separator);
-      }
+      logDifference(sb,"tags", listToString(spec.getTags()), listToString(impl.getTags()));
     }
 
     if (sb.length() > 0) {
@@ -246,59 +223,31 @@ public class RuleComparison{
 
     StringBuilder sb = new StringBuilder();
     if (compareSqaleCharacteristic() != 0) {
-      sb.append("SQALE characteristic").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(spec.getSqaleCharac()).append(separator);
-        sb.append(imp).append(impl.getSqaleCharac()).append(separator);
-      }
+      logDifference(sb, "SQALE characteristic", spec.getSqaleCharac(), impl.getSqaleCharac());
     }
 
     if (compareSqaleSubcharacertistic() != 0) {
-      sb.append("SQALE sub-characteristic").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(spec.getSqaleSubCharac()).append(separator);
-        sb.append(imp).append(impl.getSqaleSubCharac()).append(separator);
-      }
+      logDifference(sb, "SQALE sub-characteristic", spec.getSqaleSubCharac(), impl.getSqaleSubCharac());
     }
 
     if (compareSqaleRemediationFunction() != 0) {
-      sb.append("SQALE remediation function").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(spec.getSqaleRemediationFunction()).append(separator);
-        sb.append(imp).append(impl.getSqaleRemediationFunction()).append(separator);
-      }
+      logDifference(sb, "SQALE remediation function", spec.getSqaleRemediationFunction(), impl.getSqaleRemediationFunction());
     }
 
     if (compareSqaleConstantCost() != 0) {
-      sb.append("SQALE constant cost or linear threshold").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(spec.getSqaleConstantCostOrLinearThreshold()).append(separator);
-        sb.append(imp).append(impl.getSqaleConstantCostOrLinearThreshold()).append(separator);
-      }
+      logDifference(sb, "SQALE constant cost or linear threshold", spec.getSqaleConstantCostOrLinearThreshold(), impl.getSqaleConstantCostOrLinearThreshold());
     }
 
     if (compareSqaleLinearArg() != 0) {
-      sb.append("SQALE linear argument").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(spec.getSqaleLinearArg()).append(separator);
-        sb.append(imp).append(impl.getSqaleLinearArg()).append(separator);
-      }
+      logDifference(sb, "SQALE linear argument", spec.getSqaleLinearArg(), impl.getSqaleLinearArg());
     }
 
     if (compareSqaleLinearFactor() != 0) {
-      sb.append("SQALE linear factor").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(spec.getSqaleLinearFactor()).append(separator);
-        sb.append(imp).append(impl.getSqaleLinearFactor()).append(separator);
-      }
+      logDifference(sb, "SQALE linear factor", spec.getSqaleLinearFactor(), impl.getSqaleLinearFactor());
     }
 
     if (compareSqaleLinearOffset() != 0) {
-      sb.append("SQALE linear offset").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(spec.getSqaleLinearOffset()).append(separator);
-        sb.append(imp).append(impl.getSqaleLinearOffset()).append(separator);
-      }
+      logDifference(sb, "SQALE linear offset", spec.getSqaleLinearOffset(), impl.getSqaleLinearOffset());
     }
     return sb.toString();
   }
@@ -307,46 +256,35 @@ public class RuleComparison{
 
     StringBuilder sb = new StringBuilder();
     if (compareDescription() != 0) {
-      sb.append("description text").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(separator).append(spec.getDescription()).append(separator);
-        sb.append(imp).append(separator).append(impl.getDescription()).append(separator);
-      }
+      logDifference(sb,"description text",spec.getDescription(),impl.getDescription());
     }
 
     if (compareNoncompliant() != 0) {
-      sb.append("noncompliant code example").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(separator).append(spec.getNonCompliant()).append(separator);
-        sb.append(imp).append(separator).append(impl.getNonCompliant()).append(separator);
-      }
+      logDifference(sb,"noncompliant code example",spec.getNonCompliant(),impl.getNonCompliant());
     }
 
     if (compareCompliant() != 0) {
-      sb.append("compliant solution").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(separator).append(spec.getCompliant()).append(separator);
-        sb.append(imp).append(separator).append(impl.getCompliant()).append(separator);
-      }
+      logDifference(sb,"compliant solution",spec.getCompliant(),impl.getCompliant());
     }
 
     if (compareException() != 0) {
-      sb.append("exceptions").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(separator).append(spec.getExceptions()).append(separator);
-        sb.append(imp).append(separator).append(impl.getExceptions()).append(separator);
-      }
+      logDifference(sb,"exceptions",spec.getExceptions(),impl.getExceptions());
 
     }
 
     if (compareReference() != 0) {
-      sb.append("references").append(separator);
-      if (detailedReport){
-        sb.append(spc).append(separator).append(spec.getReferences()).append(separator);
-        sb.append(imp).append(separator).append(impl.getReferences()).append(separator);
-      }
+      logDifference(sb,"references",spec.getReferences(),impl.getReferences());
     }
     return sb.toString();
+  }
+
+  private void logDifference(StringBuilder sb, String differenceTitle, Object specValue, Object implValue) {
+    sb.append(differenceTitle).append(separator);
+    if (detailedReport){
+      sb.append(spc).append(specValue).append(separator);
+      sb.append(imp).append(implValue).append(separator);
+    }
+
   }
 
   protected int compareSeverity() {
