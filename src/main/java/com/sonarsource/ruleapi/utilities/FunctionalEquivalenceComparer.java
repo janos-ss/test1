@@ -103,7 +103,7 @@ public class FunctionalEquivalenceComparer {
 
   private static boolean isTokenCheckingIndicated(String aString, String bString) {
 
-    return (aString.matches(INICATES_OPTIONS_ENTITIES) || bString.matches(INICATES_OPTIONS_ENTITIES));
+    return aString.matches(INICATES_OPTIONS_ENTITIES) || bString.matches(INICATES_OPTIONS_ENTITIES);
   }
 
   private static boolean neitherListIsEmpty(List<String> rspecTokens, List<String> implTokens) {
