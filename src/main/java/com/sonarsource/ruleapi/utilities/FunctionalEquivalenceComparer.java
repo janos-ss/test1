@@ -14,6 +14,9 @@ import java.util.List;
 
 public class FunctionalEquivalenceComparer {
 
+  private static String INICATES_OPTIONS_ENTITIES = ".*[|\\[(&\"<>].+";
+
+
   private FunctionalEquivalenceComparer() {
     // private constructor
   }
@@ -50,14 +53,14 @@ public class FunctionalEquivalenceComparer {
 
   private static boolean hasEquivalentTokens(String aString, String bString) {
 
-    String indicatesOptionsEntities = ".*[|\\[(&\"<>].+";
-    if (! (aString.matches(indicatesOptionsEntities) || bString.matches(indicatesOptionsEntities))) {
+    if (!isTokenCheckingIndicated(aString, bString)) {
       return aString.equals(bString);
     }
 
     String rspec = aString.toUpperCase().replaceAll("[.,]", "");
     String impl  = bString.toUpperCase().replaceAll("[.,]", "");
-    if (impl.matches(indicatesOptionsEntities) && !rspec.matches(indicatesOptionsEntities)) {
+
+    if (shouldStringsBeSwapped(rspec, impl)) {
       rspec = bString;
       impl = aString;
     }
@@ -66,13 +69,13 @@ public class FunctionalEquivalenceComparer {
     List<String> implTokens  = new ArrayList<String>(Arrays.asList(impl.split(" ")));
 
     boolean isEquivalent = true;
-    while (!rspecTokens.isEmpty() && !implTokens.isEmpty() && isEquivalent) {
+    while (isEquivalent && neitherListIsEmpty(rspecTokens, implTokens)) {
       String rspecTok = rspecTokens.remove(0);
       rspecTok = assembleExtendedRspecToken(rspecTokens, rspecTok);
 
       String implTok = getImplTok(implTokens, rspecTok);
 
-      if (rspecTok.contains(" ") && rspecTok.contains("|") && ! isPhraseInOptions(rspecTok,implTok,implTokens)) {
+      if (arePhraseOptionsPresent(rspecTok) && !isPhraseInOptions(rspecTok, implTok, implTokens)) {
         isEquivalent = false;
       } else if (! isEquivalent(implTok,rspecTok)) {
         if (isOptional(rspecTok)) {
@@ -91,6 +94,26 @@ public class FunctionalEquivalenceComparer {
     }
 
     return isEquivalent;
+  }
+
+  private static boolean shouldStringsBeSwapped(String rspec, String impl) {
+
+    return impl.matches(INICATES_OPTIONS_ENTITIES) && !rspec.matches(INICATES_OPTIONS_ENTITIES);
+  }
+
+  private static boolean isTokenCheckingIndicated(String aString, String bString) {
+
+    return (aString.matches(INICATES_OPTIONS_ENTITIES) || bString.matches(INICATES_OPTIONS_ENTITIES));
+  }
+
+  private static boolean neitherListIsEmpty(List<String> rspecTokens, List<String> implTokens) {
+
+    return !rspecTokens.isEmpty() && !implTokens.isEmpty();
+  }
+
+  private static boolean arePhraseOptionsPresent(String rspecTok) {
+
+    return rspecTok.contains(" ") && rspecTok.contains("|");
   }
 
   private static String getImplTok(List<String> implTokens, String rspecTok) {
