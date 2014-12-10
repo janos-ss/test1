@@ -115,10 +115,18 @@ public class MarkdownConverterTest {
 
   @Test
   public void testItal() throws Exception {
-    String markdown = "_Now_ is the time for _all_ good people to come to the _aid_ of their _country_";
-    String html = "<em>Now</em> is the time for <em>all</em> good people to come to the <em>aid</em> of their <em>country</em>";
+    String markdown1 = "_Now_ is the time for _all_ good people to come to the _aid_ of their _country_";
+    String html1 = "<em>Now</em> is the time for <em>all</em> good people to come to the <em>aid</em> of their <em>country</em>";
 
-    assertThat(mc.handleItal(markdown)).isEqualTo(html);
+    String markdown2 = "_Now_ is the time.";
+    String html2 = "<em>Now</em> is the time.";
+
+    String regex = "^([A-Z0-9_]*|[a-z0-9_]*)$";
+
+    assertThat(mc.handleItal(markdown1)).isEqualTo(html1);
+    assertThat(mc.handleItal(markdown2)).isEqualTo(html2);
+    assertThat(mc.handleItal(regex)).isEqualTo(regex);
+
   }
 
   @Test

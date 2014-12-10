@@ -320,7 +320,7 @@ public class RuleMakerTest {
     }
 
     assertThat(rule.getSqaleCharac()).isEqualTo("Portability");
-    assertThat(rule.getSqaleSubCharac()).isEqualTo("Compiler related portability");
+    assertThat(rule.getSqaleSubCharac()).isEqualTo(Rule.Subcharacteristic.COMPILER_RELATED_PORTABILITY);
     assertThat(rule.getSqaleRemediationFunction()).isEqualTo("Constant/Issue");
     assertThat(rule.getSqaleConstantCostOrLinearThreshold()).isEqualTo("2d");
     assertThat(rule.getSqaleLinearArg()).isNull();

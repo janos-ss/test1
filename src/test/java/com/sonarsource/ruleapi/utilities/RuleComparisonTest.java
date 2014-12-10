@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.utilities;
 
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.RuleComparison;
 import org.junit.Test;
 
@@ -819,11 +820,11 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    String str = "this is a test";
+    String str = "Processor use";
 
-    spec.setSqaleSubCharac(str);
+    RuleMaker.setSubcharacteristic(spec, str);
 
-    assertThat(rc.compare()).isEqualTo(1);
+    assertThat(rc.compare()).isEqualTo(-1);
   }
 
   @Test
@@ -832,9 +833,9 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    String str = "this is a test";
+    String str = "Memory use";
 
-    spec.setSqaleSubCharac(str);
+    RuleMaker.setSubcharacteristic(spec, str);
 
     assertThat(rc.toString()).isEqualTo("Differences: SQALE sub-characteristic, ");
   }
@@ -901,7 +902,19 @@ public class RuleComparisonTest {
 
     spec.setSqaleLinearFactor(str);
 
-    assertThat(rc.compare()).isEqualTo(1);
+    assertThat(rc.compare()).isEqualTo(-1);
+  }
+
+  @Test
+  public void differentButEqualSqaleLinearFactor() {
+    Rule spec = new Rule(LANG);
+    Rule impl = new Rule(LANG);
+    RuleComparison rc = new RuleComparison(spec, impl);
+
+    spec.setSqaleLinearFactor("5min");
+    impl.setSqaleLinearFactor("5mn");
+
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
   @Test
@@ -956,29 +969,6 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void punctiationDifference() {
-    String rspec = "<p>This rule applies whenever an <code>[if|IF]</code> statement is followed by one or </p>\n" +
-            "<p>more <code>[else if|ELSEIF|ELSIF]</code> statements, the final <code>[else if|ELSEIF|ELSIF]</code> shall be followed by an <code>[else|ELSE]</code> statement.</p>\n" +
-            "<p>The requirement for a final <code>[else|ELSE]</code> statement is defensive programming. </p>\n" +
-            "<p>The <code>[else|ELSE]</code> statement should either take appropriate action or contain </p>\n" +
-            "<p>a suitable comment as to why no action is taken. This is consistent with the </p>\n" +
-            "<p>requirement to have a final <code>[default|OTHERS|ELSE]</code> clause in a <code>[switch|CASE]</code></p>\n" +
-            "<p>statement. </p>";
-    String impl = "<p>This rule applies whenever an <code>IF</code> statement is followed by one or \n" +
-            "more <code>ELSEIF</code> statements; the final <code>ELSEIF</code> shall be \n" +
-            "followed by an <code>ELSE</code> statement.</p>\n" +
-            "\n" +
-            "<p>The requirement for a final <code>ELSE</code> statement is defensive programming. \n" +
-            "The <code>ELSE</code> statement should either take appropriate action or contain \n" +
-            "a suitable comment as to why no action is taken. This is consistent with the \n" +
-            "requirement to have a final <code>OTHERS</code> clause in a <code>CASE</code>\n" +
-            "statement.</p>";
-
-    assertThat(blankComparison.isTextFunctionallyEquivalent(rspec,impl, true)).isTrue();
-
-  }
-
-  @Test
   public void ignoreBreakTags() {
     String rspec = "<p>The ABAP documentation is pretty clear on this subject :</p>\n" +
             "<blockquote>\n" +
@@ -1002,6 +992,88 @@ public class RuleComparisonTest {
             "</blockquote>";
 
     assertThat(blankComparison.isTextFunctionallyEquivalent(rspec,impl, true)).isTrue();
+  }
+
+  @Test
+  public void handleEntities() {
+
+    String rspec = "<h2>Compliant Solution</h2>\n" +
+            "\n" +
+            "<pre>\n" +
+            "  try.\n" +
+            "    if ABS( NUMBER ) &gt; 100.\n" +
+            "      write / 'Number is large'.\n" +
+            "    endif.\n" +
+            "  catch CX_SY_ARITHMETIC_ERROR into OREF.\n" +
+            "    write / OREF-&gt;GET_TEXT( ).\n" +
+            "  endtry.\n" +
+            "</pre>\n";
+    String impl = "<h2>Compliant Solution</h2>\n" +
+            "<pre>\n" +
+            "  try.\n" +
+            "    if ABS( NUMBER ) > 100.\n" +
+            "      write / 'Number is large'.\n" +
+            "    endif.\n" +
+            "  catch CX_SY_ARITHMETIC_ERROR into OREF.\n" +
+            "    write / OREF->GET_TEXT( ).\n" +
+            "  endtry.\n" +
+            "</pre>\n";
+
+    assertThat(blankComparison.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+  }
+
+  @Test
+  public void handleEntitiesAndAmpersands() {
+
+    String rspec = "<h2>Compliant Solution</h2>\n" +
+            "\n" +
+            "<pre>\n" +
+            "NEW cl_sql_statement( )-&gt;execute_ddl(\n" +
+            "      `CREATE TABLE ` &amp;&amp; dbname   &amp;&amp;\n" +
+            "      `( val1 char(10) NOT NULL,` &amp;&amp;\n" +
+            "      `  val2 char(10) NOT NULL,` &amp;&amp;\n" +
+            "      `  PRIMARY KEY (val1) )` ).\n" +
+            "</pre>\n";
+
+    String impl = "<h2>Compliant Solution</h2>\n" +
+            "<pre>\n" +
+            "NEW cl_sql_statement( )->execute_ddl(\n" +
+            "      `CREATE TABLE ` && dbname   &&\n" +
+            "      `( val1 char(10) NOT NULL,` &&\n" +
+            "      `  val2 char(10) NOT NULL,` &&\n" +
+            "      `  PRIMARY KEY (val1) )` ).\n" +
+            "</pre>\n";
+
+    assertThat(blankComparison.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+  }
+
+  @Test
+  public void testTitle() {
+
+    Rule one = new Rule("");
+    Rule two = new Rule("");
+    RuleComparison rc = new RuleComparison(one, two);
+
+    String a1 = "SQL EXISTS subqueries should not be used ";
+    String a2 = "SQL EXISTS subqueries should not be used";
+
+    String b1 = "\"[if ... else if|IF ELSEIF|IF ... ELSIF]\" constructs shall be terminated with an \"[else|ELSE]\" clause";
+    String b2 = "\"IF ELSEIF\" constructs shall be terminated with an \"ELSE\" clause";
+
+    String c1 = "[Report/]Program names should comply with a naming convention";
+    String c2 = "Report/Program names should comply with a naming convention";
+
+    one.setTitle(a1);
+    two.setTitle(a2);
+    assertThat(rc.compareTitle()).isEqualTo(0);
+
+    one.setTitle(b1);
+    two.setTitle(b2);
+    assertThat(rc.compareTitle()).isEqualTo(0);
+
+    one.setTitle(c1);
+    two.setTitle(c2);
+    assertThat(rc.compareTitle()).isEqualTo(0);
   }
 
 }
