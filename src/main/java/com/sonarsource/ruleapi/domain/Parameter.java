@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.domain;
 
 import com.google.common.base.Strings;
+import com.sonarsource.ruleapi.utilities.RuleComparison;
 
 public class Parameter implements Comparable<Parameter>{
   private String key;
@@ -34,7 +35,7 @@ public class Parameter implements Comparable<Parameter>{
   }
 
   public void setDefaultVal(String defaultVal) {
-    this.defaultVal = defaultVal.trim();
+    this.defaultVal = defaultVal;
   }
 
   public String getType() {
@@ -53,7 +54,7 @@ public class Parameter implements Comparable<Parameter>{
     if (result != 0) {
       return result;
     }
-    result = description.compareTo(parameter.getDescription());
+    result = RuleComparison.compareTextFunctionalEquivalence(description, parameter.getDescription(), true);
     if (result != 0) {
       return result;
     }
@@ -92,7 +93,7 @@ public class Parameter implements Comparable<Parameter>{
     if (defaultVal != null ? !defaultVal.equals(parameter.defaultVal) : parameter.defaultVal != null) {
       return false;
     }
-    if (!description.equals(parameter.description)) {
+    if (!RuleComparison.isTextFunctionallyEquivalent(description, parameter.description, true)) {
       return false;
     }
     if (!key.equals(parameter.key)) {
