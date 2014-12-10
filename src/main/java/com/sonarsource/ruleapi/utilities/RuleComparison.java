@@ -214,7 +214,7 @@ public class RuleComparison{
   protected String parameterListToString(List<Parameter> list) {
 
     StringBuilder sb = new StringBuilder();
-    for (Parameter param : spec.getParameterList()) {
+    for (Parameter param : list) {
       sb.append(param.toString()).append(separator);
     }
     return sb.toString();
