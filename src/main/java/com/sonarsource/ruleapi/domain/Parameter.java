@@ -6,7 +6,7 @@
 package com.sonarsource.ruleapi.domain;
 
 import com.google.common.base.Strings;
-import com.sonarsource.ruleapi.utilities.FunctionalEquivalenceComparer;
+import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.RuleComparison;
 
 public class Parameter implements Comparable<Parameter>{
@@ -55,11 +55,11 @@ public class Parameter implements Comparable<Parameter>{
     if (result != 0) {
       return result;
     }
-    result = RuleComparison.compareTextFunctionalEquivalence(description, parameter.getDescription(), true);
+    result = ComparisonUtilities.compareTextFunctionalEquivalence(description, parameter.getDescription(), true);
     if (result != 0) {
       return result;
     }
-    return defaultVal.compareTo(parameter.getDefaultVal());
+    return ComparisonUtilities.compareStrings(defaultVal, parameter.getDefaultVal());
   }
 
   @Override
@@ -94,7 +94,7 @@ public class Parameter implements Comparable<Parameter>{
     if (defaultVal != null ? !defaultVal.equals(parameter.defaultVal) : parameter.defaultVal != null) {
       return false;
     }
-    if (!FunctionalEquivalenceComparer.isTextFunctionallyEquivalent(description, parameter.description, true)) {
+    if (!ComparisonUtilities.isTextFunctionallyEquivalent(description, parameter.description, true)) {
       return false;
     }
     if (!key.equals(parameter.key)) {

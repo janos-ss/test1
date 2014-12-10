@@ -924,20 +924,4 @@ public class RuleComparisonTest {
             "  impl: Rule2 title\n");
 
   }
-
-  @Test
-  public void testCompareStrings() {
-
-    String test = "test";
-    assertThat(blankComparison.compareStrings(test, test)).isEqualTo(0);
-    assertThat(blankComparison.compareStrings(null, test)).isEqualTo(-1);
-  }
-
-  @Test
-  public void testCompareFunctionalEquivalence() {
-
-    String test = "test";
-    assertThat(blankComparison.compareTextFunctionalEquivalence(null, test, true)).isEqualTo(1);
-  }
-
 }

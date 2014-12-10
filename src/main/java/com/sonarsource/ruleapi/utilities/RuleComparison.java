@@ -200,7 +200,8 @@ public class RuleComparison{
     }
 
     if (compareTags() != 0) {
-      logDifference(sb,"tags", listToString(spec.getTags()), listToString(impl.getTags()));
+      logDifference(sb,"tags",
+              ComparisonUtilities.listToString(spec.getTags()), ComparisonUtilities.listToString(impl.getTags()));
     }
 
     if (sb.length() > 0) {
@@ -308,35 +309,35 @@ public class RuleComparison{
   }
 
   protected int compareTitle() {
-    return compareTextFunctionalEquivalence(spec.getTitle(), impl.getTitle(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getTitle(), impl.getTitle(), true);
   }
 
   protected int compareMessage() {
-    return compareTextFunctionalEquivalence(spec.getMessage(), impl.getMessage(), false);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getMessage(), impl.getMessage(), false);
   }
 
   protected int compareDescription() {
-    return compareTextFunctionalEquivalence(spec.getDescription(), impl.getDescription(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getDescription(), impl.getDescription(), true);
   }
 
   protected int compareNoncompliant() {
-    return compareTextFunctionalEquivalence(spec.getNonCompliant(), impl.getNonCompliant(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getNonCompliant(), impl.getNonCompliant(), true);
   }
 
   protected int compareCompliant() {
-    return compareTextFunctionalEquivalence(spec.getCompliant(), impl.getCompliant(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getCompliant(), impl.getCompliant(), true);
   }
 
   protected int compareException() {
-    return compareTextFunctionalEquivalence(spec.getExceptions(), impl.getExceptions(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getExceptions(), impl.getExceptions(), true);
   }
 
   protected int compareReference() {
-    return compareTextFunctionalEquivalence(spec.getReferences(), impl.getReferences(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getReferences(), impl.getReferences(), true);
   }
 
   protected int compareSqaleCharacteristic() {
-    return compareStrings(spec.getSqaleCharac(), impl.getSqaleCharac());
+    return ComparisonUtilities.compareStrings(spec.getSqaleCharac(), impl.getSqaleCharac());
   }
 
   protected int compareSqaleSubcharacertistic() {
@@ -348,11 +349,11 @@ public class RuleComparison{
   }
 
   protected int compareSqaleRemediationFunction() {
-    return compareStrings(spec.getSqaleRemediationFunction(), impl.getSqaleRemediationFunction());
+    return ComparisonUtilities.compareStrings(spec.getSqaleRemediationFunction(), impl.getSqaleRemediationFunction());
   }
 
   protected int compareSqaleLinearArg() {
-    return compareStrings(spec.getSqaleLinearArg(), impl.getSqaleLinearArg());
+    return ComparisonUtilities.compareStrings(spec.getSqaleLinearArg(), impl.getSqaleLinearArg());
   }
 
   protected int compareSqaleLinearFactor() {
@@ -434,49 +435,6 @@ public class RuleComparison{
       }
     }
     return 0;
-  }
-
-  public static int compareTextFunctionalEquivalence(String a, String b, boolean ignoreWhitespace) {
-    if (a == null && b == null) {
-      return 0;
-    }
-    if (a == null) {
-      return 1;
-    }
-    if (b == null) {
-      return -1;
-    }
-    if (FunctionalEquivalenceComparer.isTextFunctionallyEquivalent(a, b, ignoreWhitespace)) {
-      return 0;
-    }
-    return a.compareTo(b);
-  }
-
-
-  protected static int compareStrings(String a, String b) {
-    if (a == null && b == null){
-      return 0;
-    }
-
-    if (a != null && b != null) {
-      return a.compareToIgnoreCase(b);
-    }
-    if (a == null) {
-      return -1;
-    }
-    return 1;
-  }
-
-  public static String listToString(List<String> list) {
-
-    StringBuilder sb = new StringBuilder();
-    for (String str : list) {
-      if (sb.length() > 0) {
-        sb.append(", ");
-      }
-      sb.append(str);
-    }
-    return sb.toString();
   }
 
   public boolean isDetailedReport() {

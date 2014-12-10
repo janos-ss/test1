@@ -12,15 +12,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FunctionalEquivalenceComparer {
+public class ComparisonUtilities {
 
   private static String INICATES_OPTIONS_ENTITIES = ".*[|\\[(&\"<>].+";
 
 
-  private FunctionalEquivalenceComparer() {
+  private ComparisonUtilities() {
     // private constructor
   }
 
+
+  public static int compareTextFunctionalEquivalence(String a, String b, boolean ignoreWhitespace) {
+    if (a == null && b == null) {
+      return 0;
+    }
+    if (a == null) {
+      return 1;
+    }
+    if (b == null) {
+      return -1;
+    }
+    if (ComparisonUtilities.isTextFunctionallyEquivalent(a, b, ignoreWhitespace)) {
+      return 0;
+    }
+    return a.compareTo(b);
+  }
 
   public static boolean isTextFunctionallyEquivalent(String a, String b, boolean ignoreWhitespace) {
     if (a == null && b == null) {
@@ -203,6 +219,33 @@ public class FunctionalEquivalenceComparer {
       tok = tok.substring(1, tok.length() - 1);
     }
     return tok.trim();
+  }
+
+
+  public static int compareStrings(String a, String b) {
+    if (a == null && b == null){
+      return 0;
+    }
+
+    if (a != null && b != null) {
+      return a.compareToIgnoreCase(b);
+    }
+    if (a == null) {
+      return -1;
+    }
+    return 1;
+  }
+
+  public static String listToString(List<String> list) {
+
+    StringBuilder sb = new StringBuilder();
+    for (String str : list) {
+      if (sb.length() > 0) {
+        sb.append(", ");
+      }
+      sb.append(str);
+    }
+    return sb.toString();
   }
 
 }

@@ -271,14 +271,14 @@ public class IntegrityEnforcerTest {
   }
 
 
-//  @Test
-//  public void testtest() {
-//
-//    try {
-//      enforcer.tmp();
-//    } catch (RuleException e) {
-//      e.printStackTrace();
-//    }
-//  }
+  @Test
+  public void testtest() {
+
+    try {
+      enforcer.tmp();
+    } catch (RuleException e) {
+      e.printStackTrace();
+    }
+  }
 
 }
