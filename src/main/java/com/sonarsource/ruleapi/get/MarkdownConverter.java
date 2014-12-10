@@ -112,7 +112,7 @@ public class MarkdownConverter {
     return line.replaceAll("<code>","{{").replaceAll("</code>","}}");
   }
 
-  protected String handleEntities(String line) {
+  public static String handleEntities(String line) {
     String l2 = line.replaceAll("&","&amp;");
     l2 = l2.replaceAll("<","&lt;");
     l2 = l2.replaceAll(">","&gt;");
@@ -309,15 +309,19 @@ public class MarkdownConverter {
     String line = arg;
     boolean italOpen = false;
 
-    while (line.matches(".*(\\b_|_\\b).*")) {
+    while (line.matches(".*([ .>]_|_[ .<]).*")) {
       if (italOpen) {
-        line = line.replaceFirst("_(\\b)", "</em>$1");
+        line = line.replaceFirst("_([ .<])", "</em>$1");
         italOpen = false;
       } else {
-        line = line.replaceFirst("(\\b)_", "$1<em>");
+        line = line.replaceFirst("([ .>])_", "$1<em>");
         italOpen = true;
       }
     }
+
+    line = line.replaceAll("^_", "<em>");
+    line = line.replaceAll("_$", "</em>");
+
     return line;
   }
 
