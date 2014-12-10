@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.get;
 
+import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.RuleException;
@@ -28,17 +29,28 @@ public class RuleMaker {
   private static final String HTML_H2 = "<h2>";
   private static final String VALUE = "value";
   private static final String FIELDS = "fields";
+  public static final String SONARQUBE_PROFILE_QUERY = "activation=true&qprofile=";
 
 
   private RuleMaker() {
   }
 
-  public static Rule getRuleFromSonarQubeByKey(String sonarQubeInstance, String ruleKey) throws RuleException {
+  public static Rule getRuleFromSonarQubeByKey(String sonarQubeInstance, String ruleKey, String sonarQubeDefaultProfileKey) throws RuleException {
 
     Fetcher fetcher = new Fetcher();
 
     JSONObject jsonRule = fetcher.fetchRuleFromSonarQube(sonarQubeInstance, ruleKey);
-    return populateFieldsFromSonarQube(jsonRule);
+    Rule rule =  populateFieldsFromSonarQube(jsonRule);
+
+    List<JSONObject> jsonList = fetcher.fetchRulesFromSonarQube(sonarQubeInstance,
+            SONARQUBE_PROFILE_QUERY + sonarQubeDefaultProfileKey + "&rule_key=" + rule.getLegacyKeys().get(0));
+    if (jsonList.size() == 1) {
+      rule.setDefaultActive(Boolean.TRUE);
+    } else {
+      rule.setDefaultActive(Boolean.FALSE);
+    }
+
+    return rule;
   }
 
   /**
@@ -61,7 +73,7 @@ public class RuleMaker {
     return rule;
   }
 
-  public static List<Rule> getRulesFromSonarQubeByQuery(String instance, String query) throws RuleException {
+  public static List<Rule> getRulesFromSonarQubeByQuery(String instance, String query, String sonarQubeDefaultProfileKey) throws RuleException {
 
     List<Rule> rules = new ArrayList<Rule>();
 
@@ -70,6 +82,26 @@ public class RuleMaker {
 
     for (JSONObject jsonRule : jsonRules) {
       rules.add(populateFieldsFromSonarQube(jsonRule));
+    }
+
+    if ( ! Strings.isNullOrEmpty(sonarQubeDefaultProfileKey)) {
+      Map<String, Rule> ruleMap = new HashMap<String, Rule>();
+      for (Rule rule : rules) {
+        ruleMap.put(rule.getKey(), rule);
+      }
+
+      List<JSONObject> jsonActiveRules = fetcher.fetchRulesFromSonarQube(instance, SONARQUBE_PROFILE_QUERY + sonarQubeDefaultProfileKey);
+      for (JSONObject jsonRule : jsonActiveRules) {
+        String key = normalizeKey((String) jsonRule.get("internalKey"));
+
+        Rule rule = ruleMap.remove(key);
+        if (rule != null) {
+          rule.setDefaultActive(Boolean.TRUE);
+        }
+      }
+      for (Rule rule : ruleMap.values()) {
+        rule.setDefaultActive(Boolean.FALSE);
+      }
     }
 
     return rules;
@@ -116,13 +148,11 @@ public class RuleMaker {
   protected static Rule populateFieldsFromSonarQube(JSONObject jsonRule) {
     Rule rule = new Rule((String) jsonRule.get("langName"));
 
-    rule.setKey((String) jsonRule.get("internalKey"));
-    if (rule.getKey() == null) {
-      rule.setKey(((String) jsonRule.get("key")).split(":")[1]);
-    }
-    if (rule.getKey().matches("S?[0-9]+")) {
-      rule.setKey(rule.getKey().replace("S","RSPEC-"));
-    }
+    String rawKey = (String) jsonRule.get("key");
+    rule.setKey(normalizeKey(rawKey.split(":")[1]));
+
+    rule.setLegacyKeys(new ArrayList<String>());
+    rule.getLegacyKeys().add(rawKey);
 
     rule.setStatus((String) jsonRule.get("status"));
     rule.setSeverity(Rule.Severity.valueOf((String) jsonRule.get("severity")));
@@ -131,10 +161,12 @@ public class RuleMaker {
     setDescription(rule, (String) jsonRule.get("htmlDesc"), false);
 
     rule.setSqaleCharac((String) jsonRule.get("defaultDebtChar"));
-    rule.setSqaleSubCharac((String) jsonRule.get("defaultDebtSubChar"));
+    setSubcharacteristic(rule, (String) jsonRule.get("defaultDebtSubChar"));
     rule.setSqaleRemediationFunction((String) jsonRule.get("defaultDebtRemFnType"));
-    rule.setSqaleConstantCostOrLinearThreshold((String) jsonRule.get("defaultDebtRemFnCoeff"));
+    rule.setSqaleLinearFactor((String) jsonRule.get("defaultDebtRemFnCoeff"));
     rule.setSqaleLinearOffset((String) jsonRule.get("defaultDebtRemFnOffset"));
+    rule.setSqaleConstantCostOrLinearThreshold((String) jsonRule.get("defaultDebtRemFnCoeff"));
+    rule.setSqaleLinearArg((String) jsonRule.get("effortToFixDescription"));
 
     rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
 
@@ -210,7 +242,7 @@ public class RuleMaker {
     JSONObject sqaleCharMap = getJsonField(issue, "SQALE Characteristic");
     if (sqaleCharMap != null) {
       Object o = sqaleCharMap.get("child");
-      rule.setSqaleSubCharac((String)((Map<String, Object>) o).get(VALUE));
+      setSubcharacteristic(rule, (String) ((Map<String, Object>) o).get(VALUE));
     }
 
     rule.setSqaleRemediationFunction(getCustomFieldValue(issue, "SQALE Remediation Function"));
@@ -218,6 +250,16 @@ public class RuleMaker {
     rule.setSqaleLinearArg(getCustomFieldValue(issue,"SQALE Linear Argument"));
     rule.setSqaleLinearFactor(getCustomFieldValue(issue,"SQALE Linear Factor"));
     rule.setSqaleLinearOffset(getCustomFieldValue(issue,"SQALE Linear Offset"));
+  }
+
+  public static void setSubcharacteristic(Rule rule, String candidate) {
+
+    for (Rule.Subcharacteristic subchar : Rule.Subcharacteristic.values()) {
+      if (subchar.name().equals(candidate) || subchar.getRspecName().equals(candidate)) {
+        rule.setSqaleSubCharac(subchar);
+        break;
+      }
+    }
   }
 
   private static JSONObject getSubtask(Fetcher fetcher, String language, JSONArray tasks) throws RuleException {
@@ -231,6 +273,11 @@ public class RuleMaker {
     return null;
   }
 
+  protected static String normalizeKey(String key) {
+
+    return key.replace("S", "RSPEC-");
+  }
+
   protected static boolean isLanguageMatch(String language, String candidate) {
     if (language.equals(candidate)) {
       return true;
@@ -241,7 +288,7 @@ public class RuleMaker {
     return candidate.matches(language + "\\W.*");
   }
 
-  protected static List<Parameter> handleParameterList(String paramString, String language) {
+  public static List<Parameter> handleParameterList(String paramString, String language) {
     List<Parameter> list = new ArrayList<Parameter>();
     if (paramString == null) {
       return list;
