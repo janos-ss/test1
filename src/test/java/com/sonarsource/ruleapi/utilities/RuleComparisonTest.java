@@ -906,4 +906,38 @@ public class RuleComparisonTest {
     assertThat(rc.compareTitle()).isEqualTo(0);
   }
 
+  @Test
+  public void testLogDifference() {
+
+    Rule rule1 = new Rule("");
+    rule1.setTitle("Rule1 title");
+    Rule rule2 = new Rule("");
+    rule2.setTitle("Rule2 title");
+
+    RuleComparison rc = new RuleComparison(rule1, rule2);
+    rc.setDetailedReport(true);
+
+    StringBuilder sb = new StringBuilder();
+    rc.logDifference(sb, "Title", rule1.getTitle(), rule2.getTitle());
+    assertThat(sb.toString()).isEqualTo("Title\n" +
+            "  spec: Rule1 title\n" +
+            "  impl: Rule2 title\n");
+
+  }
+
+  @Test
+  public void testCompareStrings() {
+
+    String test = "test";
+    assertThat(blankComparison.compareStrings(test, test)).isEqualTo(0);
+    assertThat(blankComparison.compareStrings(null, test)).isEqualTo(-1);
+  }
+
+  @Test
+  public void testCompareFunctionalEquivalence() {
+
+    String test = "test";
+    assertThat(blankComparison.compareTextFunctionalEquivalence(null, test, true)).isEqualTo(1);
+  }
+
 }

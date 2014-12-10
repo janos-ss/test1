@@ -210,7 +210,7 @@ public class RuleComparison{
     return "";
   }
 
-  private String parameterListToString(List<Parameter> list) {
+  protected String parameterListToString(List<Parameter> list) {
 
     StringBuilder sb = new StringBuilder();
     for (Parameter param : spec.getParameterList()) {
@@ -278,7 +278,7 @@ public class RuleComparison{
     return sb.toString();
   }
 
-  private void logDifference(StringBuilder sb, String differenceTitle, Object specValue, Object implValue) {
+  protected void logDifference(StringBuilder sb, String differenceTitle, Object specValue, Object implValue) {
     sb.append(differenceTitle).append(separator);
     if (detailedReport){
       sb.append(spc).append(specValue).append(separator);
@@ -453,7 +453,7 @@ public class RuleComparison{
   }
 
 
-  private static int compareStrings(String a, String b) {
+  protected static int compareStrings(String a, String b) {
     if (a == null && b == null){
       return 0;
     }
