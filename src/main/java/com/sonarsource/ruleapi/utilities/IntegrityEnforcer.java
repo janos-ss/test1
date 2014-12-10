@@ -26,6 +26,8 @@ public class IntegrityEnforcer {
   public static final String NEMO = "http://nemo.sonarqube.org";
 
 
+
+
   public void setCoveredLanguages(String login, String password) throws RuleException {
 
     for (Language lang : Language.values()) {
@@ -49,7 +51,7 @@ public class IntegrityEnforcer {
 
     Map<String,Rule> needsUpdating = new HashMap<String, Rule>();
 
-    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeByQuery(NEMO, "repositories=" + sqRepo, language.sqKey);
+    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeByQuery(NEMO, "repositories=" + sqRepo, language.sqProfileKey);
     for (Rule sqRule : sqCovered) {
       String key = sqRule.getKey();
 
@@ -281,14 +283,14 @@ public class IntegrityEnforcer {
 
     protected final String sq;
     protected final String rspec;
-    protected final String sqKey;
+    protected final String sqProfileKey;
     protected final boolean update;
 
     Language(String sq, String rspec, String sqKey, boolean update) {
 
       this.sq = sq;
       this.rspec = rspec;
-      this.sqKey = sqKey;
+      this.sqProfileKey = sqKey;
       this.update = update;
     }
   }
