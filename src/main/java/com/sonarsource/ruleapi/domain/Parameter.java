@@ -7,7 +7,7 @@ package com.sonarsource.ruleapi.domain;
 
 import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
-import com.sonarsource.ruleapi.utilities.RuleComparison;
+
 
 public class Parameter implements Comparable<Parameter>{
   private String key;
