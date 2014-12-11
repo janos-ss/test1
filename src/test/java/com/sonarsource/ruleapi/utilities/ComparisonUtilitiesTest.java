@@ -197,4 +197,129 @@ public class ComparisonUtilitiesTest {
     assertThat(ComparisonUtilities.compareTextFunctionalEquivalence(null, test, true)).isEqualTo(1);
   }
 
+  @Test
+  public void testConservativeTokenExpansionInPre() {
+    String rspec = "<h2>Noncompliant Code Example</h2>\n" +
+            "\n" +
+            "<pre>\n" +
+            "for (int i = 1; i &lt;= 10; i++) {     // Noncompliant - 2 continue - one might be tempted to add some logic in between\n" +
+            "  if (i % 2 == 0) {\n" +
+            "    continue;\n" +
+            "  }\n" +
+            "\n" +
+            "  if (i % 3 == 0) {\n" +
+            "    continue;\n" +
+            "  }\n" +
+            "\n" +
+            "  System.out.println(\"i = \" + i);\n" +
+            "}\n" +
+            "</pre>";
+    String impl = "<h2>Noncompliant Code Example</h2>\n" +
+            "\n" +
+            "<pre>\n" +
+            "for (int i = 1; i <= 10; i++) {     // Noncompliant - 2 continue - one might be tempted to add some logic in between\n" +
+            "  if (i % 2 == 0) {\n" +
+            "    continue;\n" +
+            "  }\n" +
+            "\n" +
+            "  if (i % 3 == 0) {\n" +
+            "    continue;\n" +
+            "  }\n" +
+            "\n" +
+            "  System.out.println(\"i = \" + i);\n" +
+            "}\n" +
+            "</pre>";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+
+  }
+
+  @Test
+  public void testSpacesAfterTags() {
+
+    String rspec = "<p>Hardcoding an IP address into source code is a bad idea for several reasons:</p>\n" +
+            "<ul>\n" +
+            "<li> a recompile is required if the address changes</li>\n" +
+            "<li> it forces the same address to be used in every environment (dev, sys, qa, prod)</li>\n" +
+            "<li> it places the responsibility of setting the value to use in production on the shoulders of the developer</li>\n" +
+            "</ul>";
+    String impl = "<p>Hardcoding an IP address into source code is a bad idea for several reasons:</p>\n" +
+            "\n" +
+            "<ul>\n" +
+            "  <li>a recompile is required if the address changes</li>\n" +
+            "  <li>it forces the same address to be used in every environment (dev, sys, qa, prod)</li>\n" +
+            "  <li>it places the responsibility of setting the value to use in production on the shoulders of the developer</li>\n" +
+            "</ul>\n";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+  }
+
+  @Test
+  public void testLinebreakInHeading() {
+    String rspec = "<h2>Compliant Solution</h2>\n" +
+            "\n" +
+            "<pre>\n" +
+            "switch (myVariable) {\n" +
+            "  case 1:                              \n" +
+            "    foo();\n" +
+            "    break;\n" +
+            "  case 2: \n" +
+            "    doSomething();\n" +
+            "    break;\n" +
+            "  default:                               \n" +
+            "    doSomethingElse();\n" +
+            "    break;\n" +
+            "}\n" +
+            "</pre>";
+    String impl = "<h2>\n" +
+            "Compliant Solution\n" +
+            "</h2>\n" +
+            "\n" +
+            "<pre>\n" +
+            "switch (myVariable) {\n" +
+            "  case 1:                              \n" +
+            "    foo();\n" +
+            "    break;\n" +
+            "  case 2: \n" +
+            "    doSomething();\n" +
+            "    break;\n" +
+            "  default:                               \n" +
+            "    doSomethingElse();\n" +
+            "    break;\n" +
+            "}\n" +
+            "</pre>";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+
+  }
+
+  @Test
+  public void testNoParagraph() {
+
+    String rspec = "<p>Having a class and some of its methods sharing the same name is misleading, and leaves others to wonder whether it was done that way on purpose, or was the methods supposed to be a constructor.</p>\n";
+    String impl = "Having a class and some of its methods sharing the same name is misleading, and leaves others to wonder whether it was done that way on purpose, or was the methods supposed to be a constructor.\n";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+  }
+
+  @Test
+  public void testOptionsInParens() {
+
+    String rspec = "Unused (private fields|variables) should be removed";
+    String impl = "Unused private fields should be removed";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+  }
+
+  @Test
+  public void testtest() {
+
+    String rspec = "<p>Using <code>Collection.size()</code> to test for emptiness works, but using <code>Collection.isEmpty()</code> makes the code more readable and can be more performant. The time complexity of any <code>isEmpty()</code> method implementation should be <code>O(1)</code> whereas some implementations of <code>size()</code> can be <code>O\\(n)</code>.</p>\n";
+    String impl = "<p>\n" +
+            "Using <code>Collection.size()</code> to test for emptiness works, but using <code>Collection.isEmpty()</code> makes the code more readable and can be more performant. The time complexity of any <code>isEmpty()</code> method implementation should be <code>O(1)</code> whereas some implementations of <code>size()</code> method can be <code>O(n)</code>.\n" +
+            "\n" +
+            "</p>";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+  }
 }

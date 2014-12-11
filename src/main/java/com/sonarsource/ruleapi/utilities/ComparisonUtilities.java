@@ -51,14 +51,16 @@ public class ComparisonUtilities {
 
     if (ignoreWhitespace) {
       String linebreaks = "[\\r\\n]+";
-      String html = "(<[^>]+>)";
+      String htmlTags = "(</?(code|th|td|li|h\\d)>)";
       String pTags = "</?p>";
       String brTags = "<br ?/>";
 
-      aPrime = a.trim().replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(brTags,"").replaceAll(html, " $1 ")
-              .replaceAll("\""," \" ").replaceAll(" +"," ");
-      bPrime = b.trim().replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(brTags,"").replaceAll(html, " $1 ")
-              .replaceAll("\""," \" ").replaceAll(" +"," ");
+      aPrime = a.replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(brTags," ")
+              .replaceAll(htmlTags, " $1 ").replaceAll("\""," \" ")
+              .replaceAll(" +"," ").trim();
+      bPrime = b.replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(brTags," ")
+              .replaceAll(htmlTags, " $1 ").replaceAll("\""," \" ")
+              .replaceAll(" +"," ").trim();
     }
 
     if (aPrime.equals(bPrime)) {
@@ -85,15 +87,19 @@ public class ComparisonUtilities {
     List<String> implTokens  = new ArrayList<String>(Arrays.asList(impl.split(" ")));
 
     boolean isEquivalent = true;
+    boolean inRspecPre = false;
     while (isEquivalent && neitherListIsEmpty(rspecTokens, implTokens)) {
       String rspecTok = rspecTokens.remove(0);
-      rspecTok = assembleExtendedRspecToken(rspecTokens, rspecTok);
+      if (rspecTok.matches(".*</?PRE>.*")) {
+        inRspecPre = !inRspecPre;
+      }
+      rspecTok = assembleExtendedRspecToken(rspecTokens, rspecTok, inRspecPre);
 
       String implTok = getImplTok(implTokens, rspecTok);
 
       if (arePhraseOptionsPresent(rspecTok) && !isPhraseInOptions(rspecTok, implTok, implTokens)) {
         isEquivalent = false;
-      } else if (! isEquivalent(implTok,rspecTok)) {
+      } else if (! isEquivalentToken(implTok, rspecTok)) {
         if (isOptional(rspecTok)) {
           disassembleExtendedImplToken(implTokens, implTok);
         } else {
@@ -105,7 +111,7 @@ public class ComparisonUtilities {
     if (! implTokens.isEmpty()) {
       isEquivalent = false;
     } else if (! rspecTokens.isEmpty()){
-      String rspecTok = assembleExtendedRspecToken(rspecTokens, "");
+      String rspecTok = assembleExtendedRspecToken(rspecTokens, "", inRspecPre);
       isEquivalent = isOptional(rspecTok);
     }
 
@@ -141,7 +147,7 @@ public class ComparisonUtilities {
     return implTok;
   }
 
-  private static boolean isEquivalent(String implTok, String rspecTok) {
+  private static boolean isEquivalentToken(String implTok, String rspecTok) {
     return rspecTok.equals(implTok) || rspecTok.contains(implTok) || implTok.contains(rspecTok)
             || isEquivalentEntityIgnoreBrackets(rspecTok, implTok);
   }
@@ -158,8 +164,9 @@ public class ComparisonUtilities {
     if (!b.matches(hasEntities)) {
       b = MarkdownConverter.handleEntities(b);
     }
-    a = a.replaceAll("[\\[\\]]","");
-    b = b.replaceAll("[\\[\\]]","");
+
+    a = a.replaceAll("[\\[\\]()]","");
+    b = b.replaceAll("[\\[\\]()]","");
     return a.equalsIgnoreCase(b);
   }
 
@@ -204,19 +211,21 @@ public class ComparisonUtilities {
     return !rspecTok.contains("|");
   }
 
-  private static String assembleExtendedRspecToken(List<String> rspecTokens, String rspecTok) {
+  private static String assembleExtendedRspecToken(List<String> rspecTokens, String rspecTok, boolean inPre) {
 
     String tok = rspecTok;
-    if (rspecTok.matches("^[(\\[].*") && !rspecTok.matches(".*[\\])]$")) {
-      StringBuilder sb = new StringBuilder(rspecTok);
-      while (!sb.toString().contains("]") && !rspecTokens.isEmpty()) {
-        sb.append(" ").append(rspecTokens.remove(0));
+    if (! inPre) {
+      if (rspecTok.matches("^[(\\[].*") && !rspecTok.matches(".*[\\])]$")) {
+        StringBuilder sb = new StringBuilder(rspecTok);
+        while (!sb.toString().matches(".*[\\])]") && !rspecTokens.isEmpty()) {
+          sb.append(" ").append(rspecTokens.remove(0));
+        }
+        tok = sb.toString();
       }
-      tok = sb.toString();
-    }
 
-    if (tok.matches("^\\[.*\\]$") || tok.matches("^\\(.*\\)$")){
-      tok = tok.substring(1, tok.length() - 1);
+      if (tok.matches("^\\[.*\\]$") || tok.matches("^\\(.*\\)$")) {
+        tok = tok.substring(1, tok.length() - 1);
+      }
     }
     return tok.trim();
   }
