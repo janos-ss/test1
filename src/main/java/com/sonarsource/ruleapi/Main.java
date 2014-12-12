@@ -33,7 +33,7 @@ public class Main {
 
     IntegrityEnforcer enforcer = new IntegrityEnforcer();
     try {
-      enforcer.setCoveredLanguages(login, password);
+      enforcer.setCoveredAndOutdatedLanguages(login, password);
       enforcer.enforceCwe(login, password);
     } catch (RuleException e) {
       LOGGER.log(Level.SEVERE, e.getMessage(), e);

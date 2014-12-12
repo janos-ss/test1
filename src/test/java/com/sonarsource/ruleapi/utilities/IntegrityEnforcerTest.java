@@ -204,12 +204,6 @@ public class IntegrityEnforcerTest {
   }
 
   @Test
-  public void testIsKeyNormal () {
-    assertThat(enforcer.isKeyNormal("blue")).isFalse();
-    assertThat(enforcer.isKeyNormal("RSPEC-1")).isTrue();
-  }
-
-  @Test
   public void testDropCovered() {
 
     String language = "Yellow";

@@ -26,43 +26,62 @@ public class IntegrityEnforcer {
   public static final String NEMO = "http://nemo.sonarqube.org";
 
 
+  public void getOutdatedRulesReport(Language language) throws RuleException {
 
+    List<Rule> rspec = getCoveredRulesForLangauge(language);
+    Map<String, Rule> rspecRules = mapRulesByKey(rspec);
 
-  public void setCoveredLanguages(String login, String password) throws RuleException {
+    List<Rule> sqCovered = getImplementedRulesForLanguage(language);
+
+    int notAlike = 0;
+    for (Rule sqRule : sqCovered) {
+      String key = sqRule.getKey();
+
+      key = getEnsureKeyIsNormal(key, language);
+      if (key == null) {
+        continue;
+      }
+
+      Rule rspecRule = rspecRules.remove(key);
+      if (rspecRule != null) {
+        RuleComparison rc = new RuleComparison(rspecRule, sqRule);
+        rc.setDetailedReport(true);
+        if (rc.compare() != 0) {
+          notAlike++;
+          LOGGER.warning("\n" + sqRule.getKey() + "\n" + rc.toString());
+        }
+      }
+    }
+    LOGGER.warning("\n\n" + notAlike + " different out of " + sqCovered.size());
+
+  }
+
+  public void setCoveredAndOutdatedLanguages(String login, String password) throws RuleException {
 
     for (Language lang : Language.values()) {
       if (!lang.update) {
         LOGGER.warning("Update disabled for " + lang.sq + "/" + lang.rspec);
       }
-      setCoveredForLanguage(login,password,lang);
+      setCoveredAndOutdatedForLanguage(login, password, lang);
     }
   }
 
-  protected void setCoveredForLanguage(String login, String password, Language language) throws RuleException {
+  protected void setCoveredAndOutdatedForLanguage(String login, String password, Language language) throws RuleException {
     String rspecLanguage = language.rspec;
     String sqRepo = language.sq;
 
-    List<Rule> rspec = RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + rspecLanguage + "\"", rspecLanguage);
-
-    Map<String, Rule> rspecRules = new HashMap<String, Rule>();
-    for (Rule rule : rspec) {
-      rspecRules.put(rule.getKey(), rule);
-    }
+    List<Rule> rspec = getCoveredRulesForLangauge(language);
+    Map<String, Rule> rspecRules = mapRulesByKey(rspec);
 
     Map<String,Rule> needsUpdating = new HashMap<String, Rule>();
 
-    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeByQuery(NEMO, "repositories=" + sqRepo, language.sqProfileKey);
+    List<Rule> sqCovered = getImplementedRulesForLanguage(language);
     for (Rule sqRule : sqCovered) {
       String key = sqRule.getKey();
 
-      if (!isKeyNormal(key)) {
-        Rule freshFetch = RuleMaker.getRuleByKey(key, rspecLanguage);
-        key = freshFetch.getKey();
-        if (key == null) {
-          LOGGER.warning("Legacy key not found for "
-                  + rspecLanguage + "/" + sqRepo + ": " + sqRule.getKey());
-          continue;
-        }
+      key = getEnsureKeyIsNormal(key, language);
+      if (key == null) {
+        continue;
       }
 
       if (language.update) {
@@ -72,9 +91,9 @@ public class IntegrityEnforcer {
         }
 
         addCoveredForNemoRules(rspecLanguage, needsUpdating, rspecRule);
+        setOutdatedForNemoRules(rspecLanguage, needsUpdating, rspecRule, sqRule);
       }
     }
-
 
     if (language.update) {
       dropCoveredForNonNemoRules(rspecLanguage, rspecRules, needsUpdating);
@@ -85,6 +104,21 @@ public class IntegrityEnforcer {
         updates.put("Outdated Languages", rule.getOutdatedLanguages());
         RuleUpdater.updateRule(rule.getKey(), updates, login, password);
       }
+    }
+  }
+
+  protected void setOutdatedForNemoRules(String rspecLanguage, Map<String, Rule> needsUpdating, Rule rspec, Rule nemo) {
+    RuleComparison rc = new RuleComparison(rspec, nemo);
+    int result = rc.compare();
+    List<String> outdatedLanguages = rspec.getOutdatedLanguages();
+
+    if (result != 0 && outdatedLanguages.contains(rspecLanguage)) {
+      outdatedLanguages.add(rspecLanguage);
+      needsUpdating.put(rspec.getKey(), rspec);
+      LOGGER.info(rspecLanguage + " " + rspec.getKey() + " setting outdated");
+    } else  if (result == 0 && outdatedLanguages.remove(rspecLanguage)) {
+      needsUpdating.put(rspec.getKey(), rspec);
+      LOGGER.info(rspecLanguage + " " + rspec.getKey() + " UNsetting outdated");
     }
   }
 
@@ -112,11 +146,6 @@ public class IntegrityEnforcer {
       needsUpdating.put(rspecRule.getKey(), rspecRule);
       LOGGER.info(rspecLanguage + " " + rspecRule.getKey() + " removing targeted");
     }
-  }
-
-  protected boolean isKeyNormal(String key) {
-
-    return key.matches("RSPEC-\\d+");
   }
 
   public void enforceCwe(String login, String password) throws RuleException {
@@ -259,7 +288,37 @@ public class IntegrityEnforcer {
   }
 
   protected String stripHtml(String source) {
-    return source.replaceAll("<[^>]+>","");
+    return source.replaceAll("<[^>]+>", "");
+  }
+
+  protected List<Rule> getCoveredRulesForLangauge(Language language) throws RuleException {
+    return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.rspec + "\"", language.rspec);
+  }
+
+  protected List<Rule> getImplementedRulesForLanguage(Language language) throws RuleException {
+    return RuleMaker.getRulesFromSonarQubeByQuery(NEMO, "repositories=" + language.sq, language.sqProfileKey);
+  }
+
+  protected Map<String,Rule> mapRulesByKey(List<Rule> rules) {
+
+    Map<String, Rule> map = new HashMap<String, Rule>();
+    for (Rule rule : rules) {
+      map.put(rule.getKey(), rule);
+    }
+    return map;
+  }
+
+  protected String getEnsureKeyIsNormal(String legacyKey, Language language) throws RuleException {
+    String key = legacyKey;
+    if (! legacyKey.matches("RSPEC-\\d+")) {
+
+      Rule freshFetch = RuleMaker.getRuleByKey(legacyKey, language.rspec);
+      key = freshFetch.getKey();
+      if (key == null) {
+        LOGGER.warning("Legacy key not found for " + language.rspec + "/" + language.sq + ": " + legacyKey);
+      }
+    }
+    return key;
   }
 
   public enum Language {
@@ -286,11 +345,11 @@ public class IntegrityEnforcer {
     protected final String sqProfileKey;
     protected final boolean update;
 
-    Language(String sq, String rspec, String sqKey, boolean update) {
+    Language(String sq, String rspec, String sqProfileKey, boolean update) {
 
       this.sq = sq;
       this.rspec = rspec;
-      this.sqProfileKey = sqKey;
+      this.sqProfileKey = sqProfileKey;
       this.update = update;
     }
   }
