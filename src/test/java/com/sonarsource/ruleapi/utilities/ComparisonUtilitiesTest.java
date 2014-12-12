@@ -311,15 +311,4 @@ public class ComparisonUtilitiesTest {
     assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
   }
 
-  @Test
-  public void testtest() {
-
-    String rspec = "<p>Using <code>Collection.size()</code> to test for emptiness works, but using <code>Collection.isEmpty()</code> makes the code more readable and can be more performant. The time complexity of any <code>isEmpty()</code> method implementation should be <code>O(1)</code> whereas some implementations of <code>size()</code> can be <code>O\\(n)</code>.</p>\n";
-    String impl = "<p>\n" +
-            "Using <code>Collection.size()</code> to test for emptiness works, but using <code>Collection.isEmpty()</code> makes the code more readable and can be more performant. The time complexity of any <code>isEmpty()</code> method implementation should be <code>O(1)</code> whereas some implementations of <code>size()</code> method can be <code>O(n)</code>.\n" +
-            "\n" +
-            "</p>";
-
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
-  }
 }
