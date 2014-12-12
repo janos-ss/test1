@@ -54,7 +54,7 @@ public class MarkdownConverter {
 
           lines[i] = handleCodeTags(lines[i]);
           lines[i] = handleEntities(lines[i]);
-          lines[i] = handleCode(hasLangCodeSample, language, lines[i]);
+          lines[i] = handleCode(hasLangCodeSample, language, lines[i], sb);
 
           if (!codeOpen) {
             lines[i] = handleTable(lines[i], sb);
@@ -70,7 +70,7 @@ public class MarkdownConverter {
         }
         handleParagraph(sb, lines[i]);
       }
-      closeWhatsOpenEOD(sb);
+      closeWhatsOpen(sb);
       return sb.toString();
     }
     return markdown;
@@ -121,7 +121,7 @@ public class MarkdownConverter {
   /**
    * Should only be called at End Of Document
    */
-  protected void closeWhatsOpenEOD(StringBuilder sb) {
+  protected void closeWhatsOpen(StringBuilder sb) {
     while ( ! listCloses.isEmpty()) {
       sb.append(listCloses.pop());
     }
@@ -228,7 +228,8 @@ public class MarkdownConverter {
     return line;
   }
 
-  protected String handleCode(boolean hasLanguageCodeSample, String language, String arg) {
+  protected String handleCode(boolean hasLanguageCodeSample, String language, String arg, StringBuilder sb) {
+
     // Java vs Javascript...?
     String line = arg;
     if (line.contains("{code")) {
@@ -237,6 +238,8 @@ public class MarkdownConverter {
         codeOpen = false;
         paragraph = false;
       }else if (isCodeLanguageMatch(hasLanguageCodeSample, language, line)) {
+        closeWhatsOpen(sb);
+
         wrongLanguage = false;
         codeOpen = true;
         line = line.replaceFirst("\\{code.*\\}", "<pre>");

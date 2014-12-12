@@ -228,8 +228,7 @@ public class MarkdownConverterTest {
   }
 
   @Test
-  public void testQuoteTag()
-  {
+  public void testQuoteTag() {
     String markdown = "According to the SAP documentation:\n" +
             "{quote}\n" +
             "System functions are only intended for internal usage. Incompatible changes and further development is possible at any time and without warning or notice.\n" +
@@ -243,6 +242,76 @@ public class MarkdownConverterTest {
             "<p>So calling system C functions using a <code>CALL</code> statement should be avoided.</p>\n";
 
     assertThat(mc.transform(markdown, "")).isEqualTo(html);
+  }
+
+  @Test
+  public void testNoGapAfterList() {
+
+    String markdown = "h2. Exceptions\n" +
+            "The following cases are ignored\n" +
+            "* overriding methods.\n" +
+            "* all methods in classes implementing one or more interfaces.\n" +
+            "* methods which are empty or where the body consists of a single comment or a single {{throw}} statement (i.e. where the intention is apparently to simulate an abstract class).\n" +
+            "\n" +
+            "\n" +
+            "{code:title=Flex}\n" +
+            "override function doSomething(a:int):void {    // ignored\n" +
+            "  compute(a);\n" +
+            "}\n" +
+            "\n" +
+            "...\n" +
+            "\n" +
+            "class AbstractSomething {\n" +
+            "  public function doSomething(a:int) {  // ignored\n" +
+            "    throw new IllegalOperationError(\"doSomething() is abstract\");\n" +
+            "  }\n" +
+            "\n" +
+            "...\n" +
+            "\n" +
+            "interface I {\n" +
+            "  function action(a:int, b:int);\n" +
+            "}\n" +
+            "\n" +
+            "class C extends I {\n" +
+            "  function action(a:int, b:int) { // ignored\n" +
+            "    return doSomethignWith(a);\n" +
+            "  }\n" +
+            "}\n" +
+            "{code}";
+    String html = "<h2>Exceptions</h2>\n" +
+            "\n" +
+            "<p>The following cases are ignored</p>\n" +
+            "<ul>\n" +
+            "<li> overriding methods.</li>\n" +
+            "<li> all methods in classes implementing one or more interfaces.</li>\n" +
+            "<li> methods which are empty or where the body consists of a single comment or a single <code>throw</code> statement (i.e. where the intention is apparently to simulate an abstract class).</li>\n" +
+            "</ul>\n" +
+            "<pre>\n" +
+            "override function doSomething(a:int):void {    // ignored\n" +
+            "  compute(a);\n" +
+            "}\n" +
+            "\n" +
+            "...\n" +
+            "\n" +
+            "class AbstractSomething {\n" +
+            "  public function doSomething(a:int) {  // ignored\n" +
+            "    throw new IllegalOperationError(\"doSomething() is abstract\");\n" +
+            "  }\n" +
+            "\n" +
+            "...\n" +
+            "\n" +
+            "interface I {\n" +
+            "  function action(a:int, b:int);\n" +
+            "}\n" +
+            "\n" +
+            "class C extends I {\n" +
+            "  function action(a:int, b:int) { // ignored\n" +
+            "    return doSomethignWith(a);\n" +
+            "  }\n" +
+            "}\n" +
+            "</pre>\n";
+
+    assertThat(mc.transform(markdown, "Flex")).isEqualTo(html);
   }
 
 }

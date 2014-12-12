@@ -795,7 +795,7 @@ public class RuleComparisonTest {
 
     spec.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
 
-    assertThat(rc.compare()).isEqualTo(1);
+    assertThat(rc.compare()).isEqualTo(-1);
   }
 
   @Test
