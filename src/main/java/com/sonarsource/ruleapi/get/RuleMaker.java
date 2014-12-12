@@ -162,7 +162,7 @@ public class RuleMaker {
 
     rule.setSqaleCharac((String) jsonRule.get("defaultDebtChar"));
     setSubcharacteristic(rule, (String) jsonRule.get("defaultDebtSubChar"));
-    rule.setSqaleRemediationFunction((String) jsonRule.get("defaultDebtRemFnType"));
+    setRemediationFunction(rule, (String) jsonRule.get("defaultDebtRemFnType"));
     rule.setSqaleLinearFactor((String) jsonRule.get("defaultDebtRemFnCoeff"));
     rule.setSqaleLinearOffset((String) jsonRule.get("defaultDebtRemFnOffset"));
     rule.setSqaleConstantCostOrLinearThreshold((String) jsonRule.get("defaultDebtRemFnCoeff"));
@@ -245,19 +245,31 @@ public class RuleMaker {
       setSubcharacteristic(rule, (String) ((Map<String, Object>) o).get(VALUE));
     }
 
-    rule.setSqaleRemediationFunction(getCustomFieldValue(issue, "SQALE Remediation Function"));
+    setRemediationFunction(rule, getCustomFieldValue(issue, "SQALE Remediation Function"));
     rule.setSqaleConstantCostOrLinearThreshold(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold"));
     rule.setSqaleLinearArg(getCustomFieldValue(issue,"SQALE Linear Argument"));
     rule.setSqaleLinearFactor(getCustomFieldValue(issue,"SQALE Linear Factor"));
     rule.setSqaleLinearOffset(getCustomFieldValue(issue,"SQALE Linear Offset"));
   }
 
-  public static void setSubcharacteristic(Rule rule, String candidate) {
+  public static void setRemediationFunction(Rule rule, String candidate) {
+    if (! Strings.isNullOrEmpty(candidate)) {
+      for (Rule.RemediationFunction fcn: Rule.RemediationFunction.values()) {
+        if (fcn.name().equals(candidate) || fcn.getFunctionName().equals(candidate)) {
+          rule.setSqaleRemediationFunction(fcn);
+          return;
+        }
+      }
+    }
+  }
 
-    for (Rule.Subcharacteristic subchar : Rule.Subcharacteristic.values()) {
-      if (subchar.name().equals(candidate) || subchar.getRspecName().equals(candidate)) {
-        rule.setSqaleSubCharac(subchar);
-        break;
+  public static void setSubcharacteristic(Rule rule, String candidate) {
+    if (! Strings.isNullOrEmpty(candidate)) {
+      for (Rule.Subcharacteristic subchar : Rule.Subcharacteristic.values()) {
+        if (subchar.name().equals(candidate) || subchar.getRspecName().equals(candidate)) {
+          rule.setSqaleSubCharac(subchar);
+          return;
+        }
       }
     }
   }

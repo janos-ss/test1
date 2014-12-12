@@ -793,9 +793,7 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    String str = "this is a test";
-
-    spec.setSqaleRemediationFunction(str);
+    spec.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
 
     assertThat(rc.compare()).isEqualTo(1);
   }
@@ -806,9 +804,7 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    String str = "this is a test";
-
-    spec.setSqaleRemediationFunction(str);
+    spec.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
 
     assertThat(rc.toString()).isEqualTo("Differences: SQALE remediation function, ");
   }

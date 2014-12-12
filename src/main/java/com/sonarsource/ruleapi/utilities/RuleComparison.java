@@ -349,7 +349,11 @@ public class RuleComparison{
   }
 
   protected int compareSqaleRemediationFunction() {
-    return ComparisonUtilities.compareStrings(spec.getSqaleRemediationFunction(), impl.getSqaleRemediationFunction());
+    int result = checkForNulls(spec.getSqaleRemediationFunction(), impl.getSqaleRemediationFunction());
+    if (result != 0 || spec.getSqaleRemediationFunction() == null) {
+      return result;
+    }
+    return spec.getSqaleRemediationFunction().compareTo(impl.getSqaleRemediationFunction());
   }
 
   protected int compareSqaleLinearArg() {

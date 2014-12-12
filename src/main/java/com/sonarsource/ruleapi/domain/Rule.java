@@ -17,6 +17,23 @@ public class Rule {
     INFO, MINOR, MAJOR, CRITICAL, BLOCKER
   }
 
+  public enum RemediationFunction {
+    CONSTANT_ISSUE("Constant/Issue"),
+    LINEAR        ("Linear"),
+    LINEAR_OFFSET ("Linear with offset");
+
+    protected final String functionName;
+
+    RemediationFunction(String functionName) {
+      this.functionName = functionName;
+    }
+
+    public String getFunctionName() {
+
+      return functionName;
+    }
+  }
+
   public enum Subcharacteristic {
     // Portability
     COMPILER_RELATED_PORTABILITY ("Compiler related portability"),
@@ -92,7 +109,7 @@ public class Rule {
 
   private String sqaleCharac = null;
   private Subcharacteristic sqaleSubCharac = null;
-  private String sqaleRemediationFunction = null;
+  private RemediationFunction sqaleRemediationFunction = null;
   private String sqaleConstantCostOrLinearThreshold = null;
   private String sqaleLinearArg = null;
   private String sqaleLinearFactor = null;
@@ -212,11 +229,11 @@ public class Rule {
     this.fullDescription = fullDescription;
   }
 
-  public String getSqaleRemediationFunction() {
+  public RemediationFunction getSqaleRemediationFunction() {
     return sqaleRemediationFunction;
   }
 
-  public void setSqaleRemediationFunction(String sqaleRemediationFunction) {
+  public void setSqaleRemediationFunction(RemediationFunction sqaleRemediationFunction) {
     this.sqaleRemediationFunction = sqaleRemediationFunction;
   }
 
