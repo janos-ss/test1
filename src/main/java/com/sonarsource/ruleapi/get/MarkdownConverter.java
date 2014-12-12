@@ -257,7 +257,7 @@ public class MarkdownConverter {
       return ! hasLanguageCodeSample;
     }
 
-    return line.matches("\\{code:title=" + language + "[, }].*");
+    return line.matches("\\{code:title=\"?" + language + "\"?[, }].*");
   }
 
   protected String handleList(StringBuilder sb, String line) {

@@ -314,4 +314,10 @@ public class MarkdownConverterTest {
     assertThat(mc.transform(markdown, "Flex")).isEqualTo(html);
   }
 
+  @Test
+  public void testLanguageInQuotes() {
+    String title = "{code:title=\"Java\"}";
+    assertThat(mc.isCodeLanguageMatch(false, "Java", title)).isTrue();
+  }
+
 }
