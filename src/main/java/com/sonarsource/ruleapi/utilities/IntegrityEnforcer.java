@@ -68,7 +68,6 @@ public class IntegrityEnforcer {
 
   protected void setCoveredAndOutdatedForLanguage(String login, String password, Language language) throws RuleException {
     String rspecLanguage = language.rspec;
-    String sqRepo = language.sq;
 
     List<Rule> rspec = getCoveredRulesForLangauge(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
