@@ -78,7 +78,7 @@ public class IntegrityEnforcer {
 
     Map<String,Rule> needsUpdating = new HashMap<String, Rule>();
 
-    List<Rule> sqCovered = getImplementedRulesForLanguage(language);
+    List<Rule> sqCovered = getImplementedRulesForLanguage(language, NEMO);
     for (Rule sqRule : sqCovered) {
       String key = sqRule.getKey();
 
