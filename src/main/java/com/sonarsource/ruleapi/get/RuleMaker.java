@@ -287,7 +287,7 @@ public class RuleMaker {
 
   protected static String normalizeKey(String key) {
 
-    return key.replace("S", "RSPEC-");
+    return key.replaceAll("^S(\\d+)$", "RSPEC-$1");
   }
 
   protected static boolean isLanguageMatch(String language, String candidate) {
