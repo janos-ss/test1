@@ -26,12 +26,16 @@ public class IntegrityEnforcer {
   public static final String NEMO = "http://nemo.sonarqube.org";
 
 
-  public void getOutdatedRulesReport(Language language) throws RuleException {
+  public void getOutdatedRulesReport(Language language, boolean detailedReport) throws RuleException {
+    getOutdatedRulesReport(language, detailedReport, NEMO);
+  }
+
+  public void getOutdatedRulesReport(Language language, boolean detailedReport, String instance) throws RuleException {
 
     List<Rule> rspec = getCoveredRulesForLangauge(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
 
-    List<Rule> sqCovered = getImplementedRulesForLanguage(language);
+    List<Rule> sqCovered = getImplementedRulesForLanguage(language, instance);
 
     int notAlike = 0;
     for (Rule sqRule : sqCovered) {
@@ -45,7 +49,7 @@ public class IntegrityEnforcer {
       Rule rspecRule = rspecRules.remove(key);
       if (rspecRule != null) {
         RuleComparison rc = new RuleComparison(rspecRule, sqRule);
-        rc.setDetailedReport(true);
+        rc.setDetailedReport(detailedReport);
         if (rc.compare() != 0) {
           notAlike++;
           LOGGER.warning("\n" + sqRule.getKey() + "\n" + rc.toString());
@@ -294,8 +298,8 @@ public class IntegrityEnforcer {
     return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.rspec + "\"", language.rspec);
   }
 
-  protected List<Rule> getImplementedRulesForLanguage(Language language) throws RuleException {
-    return RuleMaker.getRulesFromSonarQubeByQuery(NEMO, "repositories=" + language.sq, language.sqProfileKey);
+  protected List<Rule> getImplementedRulesForLanguage(Language language, String instance) throws RuleException {
+    return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.sq, language.sqProfileKey);
   }
 
   protected Map<String,Rule> mapRulesByKey(List<Rule> rules) {
