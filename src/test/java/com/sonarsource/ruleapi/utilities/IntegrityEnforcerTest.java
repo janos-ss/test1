@@ -255,13 +255,4 @@ public class IntegrityEnforcerTest {
     assertThat(rule.getCoveredLanguages()).hasSize(1);
   }
 
-  @Test
-  public void testLanguagesEnum() {
-
-    assertThat(IntegrityEnforcer.Language.values().length).isEqualTo(17);
-    assertThat(IntegrityEnforcer.Language.ABAP.sq).isEqualTo("abap");
-    assertThat(IntegrityEnforcer.Language.ABAP.rspec).isEqualTo("ABAP");
-    assertThat(IntegrityEnforcer.Language.ABAP.update).isTrue();
-  }
-
 }
