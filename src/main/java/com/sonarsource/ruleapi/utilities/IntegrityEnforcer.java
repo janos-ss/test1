@@ -82,7 +82,7 @@ public class IntegrityEnforcer extends RuleManager {
     int result = rc.compare();
     List<String> outdatedLanguages = rspec.getOutdatedLanguages();
 
-    if (result != 0 && outdatedLanguages.contains(rspecLanguage)) {
+    if (result != 0 && !outdatedLanguages.contains(rspecLanguage)) {
       outdatedLanguages.add(rspecLanguage);
       needsUpdating.put(rspec.getKey(), rspec);
       LOGGER.info(rspecLanguage + " " + rspec.getKey() + " setting outdated");
