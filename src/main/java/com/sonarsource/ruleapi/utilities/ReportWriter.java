@@ -55,7 +55,7 @@ public class ReportWriter extends RuleManager {
 
     int count = FindBugs.values().length;
 
-    LOGGER.info("FindBugs:\n" +
+    LOGGER.info("\nFindBugs:\n" +
             "  implementable:     " + implementable + " " + ((float)implementable/count)*100 + "%\n" +
             "  rejected:          " + skipped + " " + ((float)skipped/count)*100 + "%\n" +
             "  specified:         " + fbSpecified.size() + " " + ((float)fbSpecified.size()/count)*100 + "%\n" +
@@ -97,6 +97,7 @@ public class ReportWriter extends RuleManager {
     List<Rule> specNotFoundForLegacyKey = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);
 
     int notAlike = 0;
+    StringBuilder sb = new StringBuilder();
     for (Rule sqRule : sqCovered) {
 
       if (specNotFoundForLegacyKey.contains(sqRule)) {
@@ -112,12 +113,17 @@ public class ReportWriter extends RuleManager {
         RuleComparison rc = new RuleComparison(rspecRule, sqRule);
         if (rc.compare() != 0) {
           notAlike++;
-          LOGGER.warning("\n" + rc.toString());
+          sb.append("\n").append(rc);
         }
       }
     }
-    LOGGER.warning("\n\n" + notAlike + " different out of " + sqCovered.size());
-
+    if (sb.length() > 0 && notAlike > 0) {
+      sb.append("\n\n").append(notAlike).append(" different out of ").append(sqCovered.size());
+      sb.insert(0,"\nDifferences Found:\n");
+      LOGGER.warning(sb.toString());
+    } else {
+      LOGGER.info("No differences found");
+    }
   }
 
 }
