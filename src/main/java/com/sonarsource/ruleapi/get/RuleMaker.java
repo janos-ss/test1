@@ -151,8 +151,10 @@ public class RuleMaker {
     String rawKey = (String) jsonRule.get("key");
     rule.setKey(normalizeKey(rawKey.split(":")[1]));
 
-    rule.setLegacyKeys(new ArrayList<String>());
-    rule.getLegacyKeys().add(rawKey);
+    if (!isKeyNormal(rule.getKey())) {
+      rule.setLegacyKeys(new ArrayList<String>());
+      rule.getLegacyKeys().add(rule.getKey());
+    }
 
     rule.setStatus((String) jsonRule.get("status"));
     rule.setSeverity(Rule.Severity.valueOf((String) jsonRule.get("severity")));
@@ -208,7 +210,7 @@ public class RuleMaker {
     rule.setTitle(getJsonFieldValue(issue, "summary"));
     rule.setMessage(getCustomFieldValue(issue, "Message"));
 
-    setDescription(rule, getJsonFieldValue(issue, "description"),true);
+    setDescription(rule, getJsonFieldValue(issue, "description"), true);
 
     setSqale(rule, issue);
 
@@ -247,9 +249,9 @@ public class RuleMaker {
 
     setRemediationFunction(rule, getCustomFieldValue(issue, "SQALE Remediation Function"));
     rule.setSqaleConstantCostOrLinearThreshold(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold"));
-    rule.setSqaleLinearArg(getCustomFieldValue(issue,"SQALE Linear Argument"));
-    rule.setSqaleLinearFactor(getCustomFieldValue(issue,"SQALE Linear Factor"));
-    rule.setSqaleLinearOffset(getCustomFieldValue(issue,"SQALE Linear Offset"));
+    rule.setSqaleLinearArg(getCustomFieldValue(issue, "SQALE Linear Argument"));
+    rule.setSqaleLinearFactor(getCustomFieldValue(issue, "SQALE Linear Factor"));
+    rule.setSqaleLinearOffset(getCustomFieldValue(issue, "SQALE Linear Offset"));
   }
 
   public static void setRemediationFunction(Rule rule, String candidate) {
@@ -275,7 +277,7 @@ public class RuleMaker {
   }
 
   private static JSONObject getSubtask(Fetcher fetcher, String language, JSONArray tasks) throws RuleException {
-    if (tasks != null) {
+    if (tasks != null && ! Strings.isNullOrEmpty(language)) {
       for (JSONObject subt : (Iterable<JSONObject>) tasks) {
         if (isLanguageMatch(language, getJsonFieldValue(subt, "summary").trim())) {
           return fetcher.fetchIssueByKey(subt.get("key").toString());
@@ -287,7 +289,11 @@ public class RuleMaker {
 
   protected static String normalizeKey(String key) {
 
-    return key.replaceAll("^S(\\d+)$", "RSPEC-$1");
+    return key.replaceAll("^S0*(\\d+)$", "RSPEC-$1");
+  }
+
+  protected static boolean isKeyNormal(String key) {
+    return key.matches("RSPEC-\\d+");
   }
 
   protected static boolean isLanguageMatch(String language, String candidate) {

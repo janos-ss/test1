@@ -439,9 +439,11 @@ public class RuleMakerTest {
   public void testNormalizeKeyNoAction() {
     String key1 = "StrictMode";
     String key2 = "S1111";
+    String key3 = "S000109";
 
     assertThat(RuleMaker.normalizeKey(key1)).isEqualTo(key1);
     assertThat(RuleMaker.normalizeKey(key2)).isEqualTo("RSPEC-1111");
+    assertThat(RuleMaker.normalizeKey(key3)).isEqualTo("RSPEC-109");
   }
 
 }
