@@ -91,7 +91,10 @@ public class RuleComparisonTest {
 
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    assertThat(rc.toString()).isEqualTo("Differences: tags, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  tags\n" +
+            "    spec: clumsy, java8\n" +
+            "    impl: bug, performance\n");
   }
 
   @Test
@@ -192,7 +195,13 @@ public class RuleComparisonTest {
 
     specList.add(p);
 
-    assertThat(rc.toString()).isEqualTo("Differences: parameter list, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  parameter list\n" +
+            "    spec: * key = aParam\n" +
+            "* description = a param\n" +
+            "* default = blah\n" +
+            "\n" +
+            "    impl: \n");
   }
 
   @Test
@@ -506,7 +515,10 @@ public class RuleComparisonTest {
     spec.setTitle("title");
     impl.setTitle("a title");
 
-    assertThat(rc.toString()).isEqualTo("Differences: title, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  title\n" +
+            "    spec: title\n" +
+            "    impl: a title\n");
   }
 
   @Test
@@ -530,7 +542,10 @@ public class RuleComparisonTest {
     spec.setSeverity(Rule.Severity.CRITICAL);
     impl.setSeverity(Rule.Severity.MAJOR);
 
-    assertThat(rc.toString()).isEqualTo("Differences: severity, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  severity\n" +
+            "    spec: CRITICAL\n" +
+            "    impl: MAJOR\n");
   }
 
   @Test
@@ -555,7 +570,10 @@ public class RuleComparisonTest {
     spec.setDefaultActive(Boolean.TRUE);
     impl.setDefaultActive(Boolean.FALSE);
 
-    assertThat(rc.toString()).isEqualTo("Differences: default active, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  default active\n" +
+            "    spec: true\n" +
+            "    impl: false\n");
   }
 
   @Test
@@ -566,7 +584,10 @@ public class RuleComparisonTest {
 
     spec.setDefaultActive(Boolean.TRUE);
 
-    assertThat(rc.toString()).isEqualTo("Differences: default active, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  default active\n" +
+            "    spec: true\n" +
+            "    impl: null\n");
   }
 
   @Test
@@ -590,7 +611,10 @@ public class RuleComparisonTest {
     spec.setTemplate(false);
     impl.setTemplate(true);
 
-    assertThat(rc.toString()).isEqualTo("Differences: template, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  template\n" +
+            "    spec: false\n" +
+            "    impl: true\n");
   }
 
   @Test
@@ -628,7 +652,8 @@ public class RuleComparisonTest {
 
     spec.setDescription(desc);
 
-    assertThat(rc.toString()).isEqualTo("Differences: description text, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  description text\n");
   }
 
   @Test
@@ -654,7 +679,8 @@ public class RuleComparisonTest {
 
     spec.setNonCompliant(str);
 
-    assertThat(rc.toString()).isEqualTo("Differences: noncompliant code example, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  noncompliant code example\n");
   }
 
   @Test
@@ -680,7 +706,8 @@ public class RuleComparisonTest {
 
     spec.setCompliant(str);
 
-    assertThat(rc.toString()).isEqualTo("Differences: compliant solution, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  compliant solution\n");
   }
 
   @Test
@@ -706,7 +733,8 @@ public class RuleComparisonTest {
 
     spec.setReferences(str);
 
-    assertThat(rc.toString()).isEqualTo("Differences: references, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  references\n");
   }
 
   @Test
@@ -732,7 +760,8 @@ public class RuleComparisonTest {
 
     spec.setExceptions(str);
 
-    assertThat(rc.toString()).isEqualTo("Differences: exceptions, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  exceptions\n");
   }
 
   @Test
@@ -758,7 +787,10 @@ public class RuleComparisonTest {
 
     spec.setSqaleCharac(str);
 
-    assertThat(rc.toString()).isEqualTo("Differences: SQALE characteristic, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  SQALE characteristic\n" +
+            "    spec: this is a test\n" +
+            "    impl: null\n");
   }
 
   @Test
@@ -784,7 +816,10 @@ public class RuleComparisonTest {
 
     RuleMaker.setSubcharacteristic(spec, str);
 
-    assertThat(rc.toString()).isEqualTo("Differences: SQALE sub-characteristic, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  SQALE sub-characteristic\n" +
+            "    spec: MEMORY_EFFICIENCY\n" +
+            "    impl: null\n");
   }
 
   @Test
@@ -806,7 +841,10 @@ public class RuleComparisonTest {
 
     spec.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
 
-    assertThat(rc.toString()).isEqualTo("Differences: SQALE remediation function, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  SQALE remediation function\n" +
+            "    spec: CONSTANT_ISSUE\n" +
+            "    impl: null\n");
   }
 
   @Test
@@ -832,7 +870,10 @@ public class RuleComparisonTest {
 
     spec.setSqaleLinearArg(str);
 
-    assertThat(rc.toString()).isEqualTo("Differences: SQALE linear argument, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  SQALE linear argument\n" +
+            "    spec: this is a test\n" +
+            "    impl: null\n");
   }
 
   @Test
@@ -870,7 +911,10 @@ public class RuleComparisonTest {
 
     spec.setSqaleLinearFactor(str);
 
-    assertThat(rc.toString()).isEqualTo("Differences: SQALE linear factor, ");
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  SQALE linear factor\n" +
+            "    spec: this is a test\n" +
+            "    impl: null\n");
   }
 
   @Test
@@ -911,13 +955,12 @@ public class RuleComparisonTest {
     rule2.setTitle("Rule2 title");
 
     RuleComparison rc = new RuleComparison(rule1, rule2);
-    rc.setDetailedReport(true);
 
     StringBuilder sb = new StringBuilder();
     rc.logDifference(sb, "Title", rule1.getTitle(), rule2.getTitle());
-    assertThat(sb.toString()).isEqualTo("Title\n" +
-            "  spec: Rule1 title\n" +
-            "  impl: Rule2 title\n");
+    assertThat(sb.toString()).isEqualTo("  Title\n" +
+            "    spec: Rule1 title\n" +
+            "    impl: Rule2 title\n");
 
   }
 }

@@ -56,7 +56,7 @@ public class ReportWriter extends RuleManager {
     int count = FindBugs.values().length;
 
     LOGGER.info("FindBugs:\n" +
-            "  implementable:     " +  implementable + " " + ((float)implementable/count)*100 + "%\n" +
+            "  implementable:     " + implementable + " " + ((float)implementable/count)*100 + "%\n" +
             "  rejected:          " + skipped + " " + ((float)skipped/count)*100 + "%\n" +
             "  specified:         " + fbSpecified.size() + " " + ((float)fbSpecified.size()/count)*100 + "%\n" +
             "  implemented:       " + fbImplemented.size() + " " + ((float)fbImplemented.size()/count)*100 + "%");
@@ -84,33 +84,35 @@ public class ReportWriter extends RuleManager {
   }
 
 
-  public void getOutdatedRulesReport(Language language, boolean detailedReport) throws RuleException {
-    getOutdatedRulesReport(language, detailedReport, NEMO);
+  public void getOutdatedRulesReport(Language language) throws RuleException {
+    getOutdatedRulesReport(language, NEMO);
   }
 
-  public void getOutdatedRulesReport(Language language, boolean detailedReport, String instance) throws RuleException {
+  public void getOutdatedRulesReport(Language language, String instance) throws RuleException {
 
     List<Rule> rspec = getCoveredRulesForLangauge(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
 
     List<Rule> sqCovered = getImplementedRulesForLanguage(language, instance);
+    List<Rule> specNotFoundForLegacyKey = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);
 
     int notAlike = 0;
     for (Rule sqRule : sqCovered) {
-      String key = sqRule.getKey();
 
-      key = getNormalKey(key, language);
-      if (key == null) {
+      if (specNotFoundForLegacyKey.contains(sqRule)) {
         continue;
       }
 
+      String key = sqRule.getKey();
       Rule rspecRule = rspecRules.remove(key);
+      if (rspecRule == null) {
+        rspecRule = RuleMaker.getRuleByKey(key, language.rspec);
+      }
       if (rspecRule != null) {
         RuleComparison rc = new RuleComparison(rspecRule, sqRule);
-        rc.setDetailedReport(detailedReport);
         if (rc.compare() != 0) {
           notAlike++;
-          LOGGER.warning("\n" + sqRule.getKey() + "\n" + rc.toString());
+          LOGGER.warning("\n" + rc.toString());
         }
       }
     }

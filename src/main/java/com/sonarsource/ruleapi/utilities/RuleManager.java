@@ -9,6 +9,7 @@ package com.sonarsource.ruleapi.utilities;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,5 +49,21 @@ public class RuleManager {
       }
     }
     return key;
+  }
+
+  protected List<Rule> standardizeKeysAndIdentifyMissingSpecs(Language language, List<Rule> sqCovered) throws RuleException {
+
+    List<Rule> specNotFound = new ArrayList<Rule>(sqCovered.size()/2);
+    for (Rule sqRule : sqCovered) {
+      String key = sqRule.getKey();
+
+      key = getNormalKey(key, language);
+      if (key == null) {
+        specNotFound.add(sqRule);
+        continue;
+      }
+      sqRule.setKey(key);
+    }
+    return specNotFound;
   }
 }

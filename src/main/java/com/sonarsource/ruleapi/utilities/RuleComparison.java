@@ -22,11 +22,7 @@ public class RuleComparison{
 
   private Rule spec;
   private Rule impl;
-  private boolean detailedReport = false;
-  private String spc = "  spec: ";
-  private String imp = "  impl: ";
-
-  private String separator = ", ";
+  private String separator = "\n";
 
   /**
    * Initializes comparison with 2 rules to be compared
@@ -205,7 +201,14 @@ public class RuleComparison{
     }
 
     if (sb.length() > 0) {
-      return "Differences: " + sb.toString();
+      sb.insert(0,separator);
+      List<String> legacyKeys = impl.getLegacyKeys();
+      if (legacyKeys != null && !legacyKeys.isEmpty()) {
+        sb.insert(0, legacyKeys.get(0)).insert(0," - legacy key: ");
+      }
+      sb.insert(0, spec.getKey());
+
+      return sb.toString();
     }
 
     return "";
@@ -257,33 +260,36 @@ public class RuleComparison{
 
     StringBuilder sb = new StringBuilder();
     if (compareDescription() != 0) {
-      logDifference(sb, "description text", spec.getDescription(), impl.getDescription());
+      logDifference(sb, "description text", null, null);
     }
 
     if (compareNoncompliant() != 0) {
-      logDifference(sb, "noncompliant code example", spec.getNonCompliant(), impl.getNonCompliant());
+      logDifference(sb, "noncompliant code example", null, null);
     }
 
     if (compareCompliant() != 0) {
-      logDifference(sb, "compliant solution", spec.getCompliant(), impl.getCompliant());
+      logDifference(sb, "compliant solution", null, null);
     }
 
     if (compareException() != 0) {
-      logDifference(sb, "exceptions", spec.getExceptions(), impl.getExceptions());
+      logDifference(sb, "exceptions", null, null);
 
     }
 
     if (compareReference() != 0) {
-      logDifference(sb, "references", spec.getReferences(), impl.getReferences());
+      logDifference(sb, "references", null, null);
     }
     return sb.toString();
   }
 
   protected void logDifference(StringBuilder sb, String differenceTitle, Object specValue, Object implValue) {
-    sb.append(differenceTitle).append(separator);
-    if (detailedReport){
-      sb.append(spc).append(specValue).append(separator);
-      sb.append(imp).append(implValue).append(separator);
+    String specTitle = "    spec: ";
+    String implTitle = "    impl: ";
+
+    sb.append("  ").append(differenceTitle).append(separator);
+    if (specValue != null || implValue != null){
+      sb.append(specTitle).append(specValue).append(separator);
+      sb.append(implTitle).append(implValue).append(separator);
     }
 
   }
@@ -305,7 +311,7 @@ public class RuleComparison{
   }
 
   protected int compareTemplate() {
-    return Boolean.valueOf(spec.isTemplate()).compareTo(Boolean.valueOf(impl.isTemplate()));
+    return Boolean.valueOf(spec.isTemplate()).compareTo(impl.isTemplate());
   }
 
   protected int compareTitle() {
@@ -396,7 +402,7 @@ public class RuleComparison{
     }
 
     if (aUnit.compareTo(bUnit) == 0) {
-      return Integer.valueOf(aVal).compareTo(Integer.valueOf(bVal));
+      return Integer.valueOf(aVal).compareTo(bVal);
     }
     return aUnit.compareTo(bUnit);
   }
@@ -406,7 +412,7 @@ public class RuleComparison{
     List<Parameter> bList = impl.getParameterList();
 
     if (aList.size() != bList.size()) {
-      return Integer.valueOf(aList.size()).compareTo(Integer.valueOf(bList.size()));
+      return Integer.valueOf(aList.size()).compareTo(bList.size());
     }
 
     java.util.Collections.sort(aList);
@@ -426,7 +432,7 @@ public class RuleComparison{
     List<String> bList = impl.getTags();
 
     if (aList.size() != bList.size()) {
-      return Integer.valueOf(aList.size()).compareTo(Integer.valueOf(bList.size()));
+      return Integer.valueOf(aList.size()).compareTo(bList.size());
     }
 
     java.util.Collections.sort(aList);
@@ -439,19 +445,6 @@ public class RuleComparison{
       }
     }
     return 0;
-  }
-
-  public boolean isDetailedReport() {
-
-    return detailedReport;
-  }
-
-  public void setDetailedReport(boolean detailedReport) {
-
-    this.detailedReport = detailedReport;
-    if (detailedReport) {
-      separator = "\n";
-    }
   }
 
 }

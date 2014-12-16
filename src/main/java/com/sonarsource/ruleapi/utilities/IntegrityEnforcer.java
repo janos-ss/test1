@@ -45,18 +45,19 @@ public class IntegrityEnforcer extends RuleManager {
     Map<String,Rule> needsUpdating = new HashMap<String, Rule>();
 
     List<Rule> sqCovered = getImplementedRulesForLanguage(language, NEMO);
-    for (Rule sqRule : sqCovered) {
-      String key = sqRule.getKey();
+    List<Rule> specNotFound = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);
 
-      key = getNormalKey(key, language);
-      if (key == null) {
+    for (Rule sqRule : sqCovered) {
+
+      if (specNotFound.contains(sqRule)) {
         continue;
       }
 
       if (language.update) {
+        String key = sqRule.getKey();
         Rule rspecRule = rspecRules.remove(key);
         if (rspecRule == null) {
-          rspecRule = RuleMaker.getRuleByKey(key, "");
+          rspecRule = RuleMaker.getRuleByKey(key, language.rspec);
         }
 
         addCoveredForNemoRules(rspecLanguage, needsUpdating, rspecRule);
