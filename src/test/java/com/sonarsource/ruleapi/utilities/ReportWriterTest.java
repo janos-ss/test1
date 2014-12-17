@@ -60,7 +60,8 @@ public class ReportWriterTest {
   @Test
   public void testFormatLine() {
 
-    assertThat(writer.formatLine("yo", 9, (float)37.671293)).isEqualTo("  yo                9   37.67%\n");
+    String result = String.format("  yo                9   37.67%%%n");
+    assertThat(writer.formatLine("yo", 9, (float)37.671293)).isEqualTo(result);
   }
 
 }
