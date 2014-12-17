@@ -56,4 +56,11 @@ public class ReportWriterTest {
 
     assertThat(map.size()).isEqualTo(0);
   }
+
+  @Test
+  public void testFormatLine() {
+
+    assertThat(writer.formatLine("yo", 9, (float)37.671293)).isEqualTo("  yo                9   37.67%\n");
+  }
+
 }

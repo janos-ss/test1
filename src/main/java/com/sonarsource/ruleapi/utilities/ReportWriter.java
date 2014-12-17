@@ -54,13 +54,20 @@ public class ReportWriter extends RuleManager {
     }
 
     int count = FindBugs.values().length;
+    int unspecified = FindBugs.values().length - fbSpecified.size() - skipped;
 
     LOGGER.info("\nFindBugs:\n" +
-            "  implementable:     " + implementable + " " + ((float)implementable/count)*100 + "%\n" +
-            "  rejected:          " + skipped + " " + ((float)skipped/count)*100 + "%\n" +
-            "  specified:         " + fbSpecified.size() + " " + ((float)fbSpecified.size()/count)*100 + "%\n" +
-            "  implemented:       " + fbImplemented.size() + " " + ((float)fbImplemented.size()/count)*100 + "%");
+            formatLine("FB rule count:", count, 100) +
+            formatLine("rejected:", skipped, ((float)skipped/count)*100) +
+            formatLine("implementable:", implementable, ((float)implementable/count)*100) +
+            formatLine("unspecified:", unspecified, ((float)unspecified/count)*100) +
+            formatLine("specified:", fbSpecified.size(), ((float)fbSpecified.size()/count)*100) +
+            formatLine("implemented:", fbImplemented.size(), ((float)fbImplemented.size()/count)*100));
 
+  }
+
+  protected String formatLine(String label, int count, float percentage) {
+    return String.format("  %-15s %3d  %6.2f%%%n", label, count, percentage);
   }
 
   protected void mapFindBugsRules(Map<FindBugs, List<Rule>> fbMap, Rule rspec) {
