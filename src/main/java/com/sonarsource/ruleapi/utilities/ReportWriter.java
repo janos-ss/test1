@@ -23,6 +23,10 @@ public class ReportWriter extends RuleManager {
 
 
   public void getFindBugsCoverageReport() throws RuleException {
+    getFindBugsCoverageReport(NEMO);
+  }
+
+  public void getFindBugsCoverageReport(String instance) throws RuleException {
 
     Language java = Language.JAVA;
 
@@ -33,7 +37,7 @@ public class ReportWriter extends RuleManager {
     }
 
     Map<FindBugs, List<Rule>> fbImplemented = new HashMap<FindBugs, List<Rule>>();
-    List<Rule> impls = getImplementedRulesForLanguage(java, NEMO);
+    List<Rule> impls = getImplementedRulesForLanguage(java, instance);
     for (Rule impl : impls) {
       String key = getNormalKey(impl.getKey(), java);
       if (key != null) {
@@ -60,9 +64,10 @@ public class ReportWriter extends RuleManager {
             formatLine("FB rule count:", count, 100) +
             formatLine("rejected:", skipped, ((float)skipped/count)*100) +
             formatLine("implementable:", implementable, ((float)implementable/count)*100) +
-            formatLine("unspecified:", unspecified, ((float)unspecified/count)*100) +
-            formatLine("specified:", fbSpecified.size(), ((float)fbSpecified.size()/count)*100) +
-            formatLine("implemented:", fbImplemented.size(), ((float)fbImplemented.size()/count)*100));
+            "\nOf Implementable rules:\n" +
+            formatLine("unspecified:", unspecified, ((float)unspecified/implementable)*100) +
+            formatLine("specified:", fbSpecified.size(), ((float)fbSpecified.size()/implementable)*100) +
+            formatLine("implemented:", fbImplemented.size(), ((float)fbImplemented.size()/implementable)*100));
 
   }
 
