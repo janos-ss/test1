@@ -19,8 +19,8 @@ public class Rule {
 
   public enum RemediationFunction {
     CONSTANT_ISSUE("Constant/Issue"),
-    LINEAR        ("Linear"),
-    LINEAR_OFFSET ("Linear with offset");
+    LINEAR("Linear"),
+    LINEAR_OFFSET("Linear with offset");
 
     protected final String functionName;
 
@@ -29,54 +29,52 @@ public class Rule {
     }
 
     public String getFunctionName() {
-
       return functionName;
     }
   }
 
   public enum Subcharacteristic {
     // Portability
-    COMPILER_RELATED_PORTABILITY ("Compiler related portability"),
-    HARDWARE_RELATED_PORTABILITY ("Hardware related portability"),
-    LANGUAGE_RELATED_PORTABILITY ("Language related portability"),
-    OS_RELATED_PORTABILITY ("OS related portability"),
-    SOFTWARE_RELATED_PORTABILITY ("Software related portability"),
-    TIME_ZONE_RELATED_PORTABILITY ("Time zone related portability"),
+    COMPILER_RELATED_PORTABILITY("Compiler related portability"),
+    HARDWARE_RELATED_PORTABILITY("Hardware related portability"),
+    LANGUAGE_RELATED_PORTABILITY("Language related portability"),
+    OS_RELATED_PORTABILITY("OS related portability"),
+    SOFTWARE_RELATED_PORTABILITY("Software related portability"),
+    TIME_ZONE_RELATED_PORTABILITY("Time zone related portability"),
 
     // Maintainability
-    READABILITY ("Readability"),
-    UNDERSTANDABILITY ("Understandability"),
+    READABILITY("Readability"),
+    UNDERSTANDABILITY("Understandability"),
 
     // Security
-    API_ABUSE ("API abuse"),
-    ERRORS ("Errors"),
-    INPUT_VALIDATION_AND_REPRESENTATION ("Input validation and representation"),
-    SECURITY_FEATURES ("Security features"),
+    API_ABUSE("API abuse"),
+    ERRORS("Errors"),
+    INPUT_VALIDATION_AND_REPRESENTATION("Input validation and representation"),
+    SECURITY_FEATURES("Security features"),
 
     // Efficiency
-    CPU_EFFICIENCY ("Processor use"),
-    MEMORY_EFFICIENCY ("Memory use"),
+    CPU_EFFICIENCY("Processor use"),
+    MEMORY_EFFICIENCY("Memory use"),
 
     // Changability
-    ARCHITECTURE_CHANGEABILITY ("Architecture related changeability"),
-    DATA_CHANGEABILITY ("Data related changeability"),
-    LOGIC_CHANGEABILITY ("Logic related changeability"),
+    ARCHITECTURE_CHANGEABILITY("Architecture related changeability"),
+    DATA_CHANGEABILITY("Data related changeability"),
+    LOGIC_CHANGEABILITY("Logic related changeability"),
 
     // Reliability
-    ARCHITECTURE_RELIABILITY ("Architecture related reliability"),
-    DATA_RELIABILITY ("Data related reliability"),
-    EXCEPTION_HANDLING ("Exception handling"),
-    FAULT_TOLERANCE ("Fault tolerance"),
-    INSTRUCTION_RELIABILITY ("Instruction related reliability"),
-    LOGIC_RELIABILITY ("Logic related reliability"),
-    RESOURCE_RELIABILITY ("Resource related reliability"),
-    SYNCHRONIZATION_RELIABILITY ("Synchronization related reliability"),
-    UNIT_TESTS ("Unit tests"),
+    ARCHITECTURE_RELIABILITY("Architecture related reliability"),
+    DATA_RELIABILITY("Data related reliability"),
+    EXCEPTION_HANDLING("Exception handling"),
+    FAULT_TOLERANCE("Fault tolerance"),
+    INSTRUCTION_RELIABILITY("Instruction related reliability"),
+    LOGIC_RELIABILITY("Logic related reliability"),
+    RESOURCE_RELIABILITY("Resource related reliability"),
+    SYNCHRONIZATION_RELIABILITY("Synchronization related reliability"),
+    UNIT_TESTS("Unit tests"),
 
     // Testability
-    INTEGRATION_TESTABILITY ("Integration level testability"),
-    UNIT_TESTABILITY ("Unit level testability");
-
+    INTEGRATION_TESTABILITY("Integration level testability"),
+    UNIT_TESTABILITY("Unit level testability");
 
     protected final String rspecName;
 
@@ -84,7 +82,7 @@ public class Rule {
       this.rspecName = rspecName;
     }
 
-    public String getRspecName () {
+    public String getRspecName() {
       return this.rspecName;
     }
   }
@@ -134,7 +132,6 @@ public class Rule {
   private List<String> phpFig;
   private List<String> cwe;
 
-
   public Rule(String language) {
     this.language = language;
   }
@@ -158,7 +155,7 @@ public class Rule {
     if (Strings.isNullOrEmpty(message)) {
       this.message = subRule.message;
     }
-    if (subRule.parameterList != null && ! subRule.parameterList.isEmpty()) {
+    if (subRule.parameterList != null && !subRule.parameterList.isEmpty()) {
       this.parameterList = subRule.parameterList;
     }
     mergeDescriptionPieces(subRule);

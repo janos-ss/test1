@@ -9,12 +9,10 @@ package com.sonarsource.ruleapi.utilities;
 public class RuleException extends Exception {
 
   public RuleException(String message) {
-
     super(message);
   }
 
   public RuleException(Exception e) {
-
     super(e);
   }
 }
