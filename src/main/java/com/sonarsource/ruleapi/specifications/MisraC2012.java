@@ -8,13 +8,13 @@ package com.sonarsource.ruleapi.specifications;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sonarsource.ruleapi.domain.AbstractCodingStandardRulesRepository;
+import com.sonarsource.ruleapi.domain.AbstractCodingStandardRuleRepository;
 import com.sonarsource.ruleapi.domain.CodingStandardRule;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.RuleException;
 
-public class MisraC2012 extends AbstractCodingStandardRulesRepository {
+public class MisraC2012 extends AbstractCodingStandardRuleRepository {
 
   private static final List<CodingStandardRule> RULES = new ArrayList<CodingStandardRule>();
 
@@ -192,19 +192,19 @@ public class MisraC2012 extends AbstractCodingStandardRulesRepository {
   }
 
   @Override
-  public List<Rule> getRSpectRulesCoveringLanguage() throws RuleException {
+  public List<Rule> getRSpecRulesCoveringLanguage() throws RuleException {
     String query = "project = RSPEC and 'Covered Languages' = 'C' and 'MISRA C 2012' is not EMPTY ";
     return RuleMaker.getRulesByJql(query, "C");
   }
 
   @Override
-  public List<Rule> getRSpectRules() throws RuleException {
+  public List<Rule> getRSpecRules() throws RuleException {
     String query = "project = RSPEC and 'MISRA C 2012' is not EMPTY ";
     return RuleMaker.getRulesByJql(query, "C");
   }
 
   @Override
-  public List<String> getFieldFromRSpecRule(Rule rule) {
+  public List<String> getStandardIdsFromRSpecRule(Rule rule) {
     return rule.getMisraC04();
   }
 

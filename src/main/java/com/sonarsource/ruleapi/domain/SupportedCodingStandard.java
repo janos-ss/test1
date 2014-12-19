@@ -24,15 +24,15 @@ public enum SupportedCodingStandard {
   private String rspecLabel;
   private String rspecReference;
 
-  private AbstractCodingStandardRulesRepository rulesRepository;
+  private AbstractCodingStandardRuleRepository rulesRepository;
 
-  private SupportedCodingStandard(String name, String rspecLabel, String rspecReference, AbstractCodingStandardRulesRepository rulesRepository) {
+  private SupportedCodingStandard(String name, String rspecLabel, String rspecReference, AbstractCodingStandardRuleRepository rulesRepository) {
     this.name = name;
     this.rspecLabel = rspecLabel;
     this.rspecReference = rspecReference;
     this.rulesRepository = rulesRepository;
   }
-  
+
   public String getName() {
     return name;
   }
@@ -45,7 +45,7 @@ public enum SupportedCodingStandard {
     return rspecReference;
   }
 
-  public AbstractCodingStandardRulesRepository getRulesRepository() {
+  public AbstractCodingStandardRuleRepository getRulesRepository() {
     return rulesRepository;
   }
 

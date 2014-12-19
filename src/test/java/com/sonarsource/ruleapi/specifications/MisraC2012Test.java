@@ -19,7 +19,7 @@ public class MisraC2012Test {
 
   @Test
   public void numberOfRSpecRulesGreaterThan0() throws Exception {
-    assertThat(new MisraC2012().getRSpectRulesCoveringLanguage().size()).isGreaterThan(0);
+    assertThat(new MisraC2012().getRSpecRulesCoveringLanguage().size()).isGreaterThan(0);
   }
 
 }

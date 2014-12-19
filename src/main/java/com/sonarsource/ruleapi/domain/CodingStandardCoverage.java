@@ -7,7 +7,6 @@ package com.sonarsource.ruleapi.domain;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -42,14 +41,14 @@ public class CodingStandardCoverage {
   private void initCoverageResults() throws RuleException {
     LOGGER.info("Init Specifications Rules");
     rulesCoverage = new HashMap<String, CodingStandardRuleCoverage>();
-    List<Rule> rspecRules = codingStandard.getRulesRepository().getRSpectRules();
+    List<Rule> rspecRules = codingStandard.getRulesRepository().getRSpecRules();
 
     for (CodingStandardRule rule : codingStandard.getRulesRepository().getCodingStandardRules()) {
       CodingStandardRuleCoverage cov = new CodingStandardRuleCoverage();
       cov.setRule(rule);
 
       for (Rule rspecRule : rspecRules) {
-        List<String> rspecField = codingStandard.getRulesRepository().getFieldFromRSpecRule(rspecRule);
+        List<String> rspecField = codingStandard.getRulesRepository().getStandardIdsFromRSpecRule(rspecRule);
         if (rspecField != null) {
           for (String ruleKey : rspecField) {
             if (StringUtils.equals(ruleKey, rule.getKey())) {
@@ -69,7 +68,7 @@ public class CodingStandardCoverage {
 
   public void computeCoverage() throws RuleException {
     LOGGER.info("Computing Coverage from RSpec Rules");
-    List<Rule> rspecRules = codingStandard.getRulesRepository().getRSpectRulesCoveringLanguage();
+    List<Rule> rspecRules = codingStandard.getRulesRepository().getRSpecRulesCoveringLanguage();
 
     computeCoverageOfMandatoryRules(rspecRules);
     computeCoverageOfOptionalRules(rspecRules);
@@ -81,7 +80,7 @@ public class CodingStandardCoverage {
     int rulesCovered = 0;
 
     for (Rule rule : rules) {
-      List<String> rspecField = codingStandard.getRulesRepository().getFieldFromRSpecRule(rule);
+      List<String> rspecField = codingStandard.getRulesRepository().getStandardIdsFromRSpecRule(rule);
       if (rspecField != null) {
         for (String ruleKey : rspecField) {
           if (codingStandard.getRulesRepository().isRuleKeyInCodingStandardRules(ruleKey) && codingStandard.getRulesRepository().isRuleMandatory(ruleKey)) {
@@ -105,7 +104,7 @@ public class CodingStandardCoverage {
     int rulesCovered = 0;
 
     for (Rule rule : rules) {
-      List<String> rspecField = codingStandard.getRulesRepository().getFieldFromRSpecRule(rule);
+      List<String> rspecField = codingStandard.getRulesRepository().getStandardIdsFromRSpecRule(rule);
       if (rspecField != null) {
         for (String ruleKey : rspecField) {
           if (codingStandard.getRulesRepository().isRuleKeyInCodingStandardRules(ruleKey) && !codingStandard.getRulesRepository().isRuleMandatory(ruleKey)) {

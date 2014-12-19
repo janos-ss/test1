@@ -11,15 +11,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.sonarsource.ruleapi.utilities.RuleException;
 
-public abstract class AbstractCodingStandardRulesRepository {
+public abstract class AbstractCodingStandardRuleRepository {
 
   public abstract List<CodingStandardRule> getCodingStandardRules();
 
-  public abstract List<Rule> getRSpectRulesCoveringLanguage() throws RuleException;
+  public abstract List<Rule> getRSpecRulesCoveringLanguage() throws RuleException;
 
-  public abstract List<Rule> getRSpectRules() throws RuleException;
+  public abstract List<Rule> getRSpecRules() throws RuleException;
 
-  public abstract List<String> getFieldFromRSpecRule(Rule rule);
+  public abstract List<String> getStandardIdsFromRSpecRule(Rule rule);
 
   public boolean isRuleKeyInCodingStandardRules(String ruleKey) {
     for (CodingStandardRule rule : getCodingStandardRules()) {
