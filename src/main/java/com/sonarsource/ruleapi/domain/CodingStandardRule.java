@@ -44,17 +44,11 @@ public class CodingStandardRule {
   public static class Builder {
 
     private String key;
-    private String description;
     private boolean isMandatory;
     private boolean canBeCoveredByStaticAnalysis;
 
     public Builder(String key) {
       this.key = key;
-    }
-
-    public Builder description(String description) {
-      this.description = description;
-      return this;
     }
 
     public Builder isMandatory(boolean isMandatory) {

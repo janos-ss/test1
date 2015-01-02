@@ -6,11 +6,11 @@
 package com.sonarsource.ruleapi.utilities;
 
 
-import com.sonarsource.ruleapi.get.MarkdownConverter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.sonarsource.ruleapi.get.MarkdownConverter;
 
 public class ComparisonUtilities {
 

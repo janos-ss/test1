@@ -5,10 +5,10 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
+import java.util.List;
+
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
-
-import java.util.List;
 
 /**
  * Provides nuanced comparison between rules, taking into account

@@ -31,10 +31,22 @@ public enum Language {
   protected final boolean update;
 
   Language(String sq, String rspec, String sqProfileKey, boolean update) {
-
     this.sq = sq;
     this.rspec = rspec;
     this.sqProfileKey = sqProfileKey;
     this.update = update;
   }
+  
+  public String getSq() {
+    return sq;
+  }
+  
+  public String getRspec() {
+    return rspec;
+  }
+
+  public String getSqProfileKey() {
+    return sqProfileKey;
+  }
+  
 }

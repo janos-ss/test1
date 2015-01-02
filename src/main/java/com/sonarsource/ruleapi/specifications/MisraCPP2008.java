@@ -12,7 +12,9 @@ import com.sonarsource.ruleapi.domain.AbstractCodingStandardRuleRepository;
 import com.sonarsource.ruleapi.domain.CodingStandardRule;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.RuleException;
+import com.sonarsource.ruleapi.utilities.RuleManager;
 
 public class MisraCPP2008 extends AbstractCodingStandardRuleRepository {
 
@@ -338,6 +340,16 @@ public class MisraCPP2008 extends AbstractCodingStandardRuleRepository {
   @Override
   public List<String> getStandardIdsFromRSpecRule(Rule rule) {
     return rule.getMisraCpp();
+  }
+
+  @Override
+  public List<Rule> getImplementedRules() throws RuleException {
+    return RuleMaker.getRulesFromSonarQubeByQuery(RuleManager.NEMO, "repositories=" + getLanguage().getSq(), getLanguage().getSqProfileKey());
+  }
+
+  @Override
+  public Language getLanguage() {
+    return Language.CPP;
   }
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.RuleException;
 
 public abstract class AbstractCodingStandardRuleRepository {
@@ -20,6 +21,10 @@ public abstract class AbstractCodingStandardRuleRepository {
   public abstract List<Rule> getRSpecRules() throws RuleException;
 
   public abstract List<String> getStandardIdsFromRSpecRule(Rule rule);
+
+  public abstract List<Rule> getImplementedRules() throws RuleException;
+
+  public abstract Language getLanguage();
 
   public boolean isRuleKeyInCodingStandardRules(String ruleKey) {
     for (CodingStandardRule rule : getCodingStandardRules()) {

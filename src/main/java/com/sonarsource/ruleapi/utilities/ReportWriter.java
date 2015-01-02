@@ -6,16 +6,16 @@
 
 package com.sonarsource.ruleapi.utilities;
 
-import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.get.RuleMaker;
-import com.sonarsource.ruleapi.specifications.FindBugs;
-import com.sonarsource.ruleapi.specifications.Implementability;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.specifications.FindBugs;
+import com.sonarsource.ruleapi.specifications.Implementability;
 
 public class ReportWriter extends RuleManager {
 

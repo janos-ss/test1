@@ -9,6 +9,11 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.junit.Test;
 
+import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.RuleException;
+
 public class MisraC2004Test {
 
   @Test
@@ -22,4 +27,9 @@ public class MisraC2004Test {
     assertThat(new MisraC2004().getRSpecRulesCoveringLanguage().size()).isGreaterThan(0);
   }
 
+  @Test
+  public void checkLegacyKeyCommentedCode() throws RuleException {
+    Rule rule = RuleMaker.getRuleByKey("CommentedCode", Language.C.getSq());
+    assertThat(rule.getKey()).isEqualTo("RSPEC-125");
+  }
 }

@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.RuleException;
 
 public class CodingStandardCoverage {
@@ -33,13 +34,15 @@ public class CodingStandardCoverage {
   private int optionalRulesToCover = 0;
   private int optionalRulesCovered = 0;
 
+  private int implementedRules = 0;
+
   public CodingStandardCoverage(SupportedCodingStandard codingStandard) throws RuleException {
     this.codingStandard = codingStandard;
     initCoverageResults();
   }
 
   private void initCoverageResults() throws RuleException {
-    LOGGER.info("Init Specifications Rules");
+    LOGGER.info("Init Coverage Results");
     rulesCoverage = new HashMap<String, CodingStandardRuleCoverage>();
     List<Rule> rspecRules = codingStandard.getRulesRepository().getRSpecRules();
 
@@ -72,6 +75,32 @@ public class CodingStandardCoverage {
 
     computeCoverageOfMandatoryRules(rspecRules);
     computeCoverageOfOptionalRules(rspecRules);
+
+    computeImplementedByPlugin();
+  }
+
+  private void computeImplementedByPlugin() throws RuleException {
+    LOGGER.info("computeImplementedByPlugin");
+    int rulesCovered = 0;
+
+    List<Rule> sqCovered = codingStandard.getRulesRepository().getImplementedRules();
+
+    for (Rule sqRule : sqCovered) {
+      String key = sqRule.getKey();
+      Rule rspecRule = RuleMaker.getRuleByKey(key, codingStandard.getRulesRepository().getLanguage().getSq());
+      List<String> ruleIDs = codingStandard.getRulesRepository().getStandardIdsFromRSpecRule(rspecRule);
+      if (ruleIDs != null) {
+        for (String ruleID : ruleIDs) {
+          if (codingStandard.getRulesRepository().isRuleKeyInCodingStandardRules(ruleID)) {
+            CodingStandardRuleCoverage cov = rulesCoverage.get(ruleID);
+            cov.setImplemented(Boolean.TRUE);
+            rulesCovered++;
+            break;
+          }
+        }
+      }
+    }
+    implementedRules = rulesCovered;
   }
 
   private void computeCoverageOfMandatoryRules(List<Rule> rules) throws RuleException {
@@ -80,12 +109,12 @@ public class CodingStandardCoverage {
     int rulesCovered = 0;
 
     for (Rule rule : rules) {
-      List<String> rspecField = codingStandard.getRulesRepository().getStandardIdsFromRSpecRule(rule);
-      if (rspecField != null) {
-        for (String ruleKey : rspecField) {
-          if (codingStandard.getRulesRepository().isRuleKeyInCodingStandardRules(ruleKey) && codingStandard.getRulesRepository().isRuleMandatory(ruleKey)) {
+      List<String> ruleIDs = codingStandard.getRulesRepository().getStandardIdsFromRSpecRule(rule);
+      if (ruleIDs != null) {
+        for (String ruleID : ruleIDs) {
+          if (codingStandard.getRulesRepository().isRuleKeyInCodingStandardRules(ruleID) && codingStandard.getRulesRepository().isRuleMandatory(ruleID)) {
             rulesCovered++;
-            CodingStandardRuleCoverage cov = rulesCoverage.get(ruleKey);
+            CodingStandardRuleCoverage cov = rulesCoverage.get(ruleID);
             cov.setCoveredBy(rule);
             break;
           }
@@ -177,6 +206,10 @@ public class CodingStandardCoverage {
     return mandatoryRulesCovered + optionalRulesToCover;
   }
 
+  public int getImplementedRules() {
+    return implementedRules;
+  }
+
   public float getMandatoryCoveragePercent() {
     if (getMandatoryRulesToCover() != 0) {
       return round(getMandatoryRulesCovered() * 100.0f / getMandatoryRulesToCover(), 2);
@@ -196,6 +229,14 @@ public class CodingStandardCoverage {
   public float getTotalCoveragePercent() {
     if (getTotalRulesToCover() != 0) {
       return round(getTotalRulesCovered() * PERCENT_FACTOR / getTotalRulesToCover(), DEFAULT_ROUNDING);
+    } else {
+      return 0.0f;
+    }
+  }
+
+  public float getImplementedCoveragePercent() {
+    if (getTotalRulesToCover() != 0) {
+      return round(getImplementedRules() * 100.0f / getTotalRulesToCover(), 2);
     } else {
       return 0.0f;
     }
@@ -221,12 +262,12 @@ public class CodingStandardCoverage {
       if (coverage.getSpecifiedBy() != null) {
         buff = buff.append("\tS: ").append(coverage.getSpecifiedBy().getKey());
       } else {
-        buff = buff.append("\tS: NA ");
+        buff = buff.append("\tS: NA\t");
       }
       if (coverage.getCoveredBy() != null) {
         buff = buff.append("\tC: ").append(coverage.getCoveredBy().getKey());
       } else {
-        buff = buff.append("\tC: NA ");
+        buff = buff.append("\tC: NA\t");
       }
       if (coverage.isImplemented()) {
         buff = buff.append("\tI: Y");
@@ -239,13 +280,13 @@ public class CodingStandardCoverage {
     buff = buff.append("S = Specified | C = Covered in RSpec | I = Implemented in Plugin\n\n");
 
     if (getOptionalRulesToCover() > 0) {
-      buff = buff.append("Mandatory: ToCover: ").append(getMandatoryRulesToCover()).append(" Cov. in RSpec: ").append(getMandatoryRulesCovered()).append(" = ")
+      buff = buff.append("Mandatory:\tToCover: ").append(getMandatoryRulesToCover()).append("\tCov. in RSpec: ").append(getMandatoryRulesCovered()).append("\t=> ")
         .append(getMandatoryCoveragePercent()).append("%\n");
-      buff = buff.append("Optional: ToCover: ").append(getOptionalRulesToCover()).append(" Cov. in RSpec: ").append(getOptionalRulesCovered()).append(" = ")
+      buff = buff.append("Optional:\tToCover: ").append(getOptionalRulesToCover()).append("\tCov. in RSpec: ").append(getOptionalRulesCovered()).append("\t=> ")
         .append(getOptionalCoveragePercent()).append("%\n");
     }
-    buff = buff.append("Total: ToCover: ").append(getTotalRulesToCover()).append(" Cov. in RSpec: ").append(getTotalRulesCovered()).append(" = ")
-      .append(getTotalCoveragePercent()).append("%\n");
+    buff = buff.append("Total:\t\tToCover: ").append(getTotalRulesToCover()).append("\tCov. in RSpec: ").append(getTotalRulesCovered()).append("\t=> ")
+      .append(getTotalCoveragePercent()).append("%\tImplemented: ").append(getImplementedCoveragePercent()).append("%\n");
 
     System.out.println(buff.toString());
   }
