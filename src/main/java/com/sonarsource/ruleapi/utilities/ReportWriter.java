@@ -78,7 +78,10 @@ public class ReportWriter extends RuleManager {
   protected void mapFindBugsRules(Map<FindBugs, List<Rule>> fbMap, Rule rspec) {
 
     if (rspec != null && rspec.getFindbugs() != null) {
-      for (String key : rspec.getFindbugs()) {
+
+      List<String> expandedKeyList = getExpandedFindBugsKeyList(rspec.getFindbugs());
+
+      for (String key : expandedKeyList) {
         try {
           FindBugs fb = FindBugs.valueOf(key);
           List<Rule> fbRules = fbMap.get(fb);
@@ -93,6 +96,26 @@ public class ReportWriter extends RuleManager {
         }
       }
     }
+  }
+
+  protected List<String> getExpandedFindBugsKeyList(List<String> rspecList) {
+
+    List<String> expandedKeyList = new ArrayList<String>();
+
+    for (String key : rspecList) {
+      if (!key.matches(".*[.*+ ?]+.*")) {
+        expandedKeyList.add(key);
+        continue;
+      }
+
+      for (FindBugs fb : FindBugs.values()) {
+        if (fb.name().matches(key)) {
+          expandedKeyList.add(fb.name());
+        }
+      }
+    }
+
+    return expandedKeyList;
   }
 
 
