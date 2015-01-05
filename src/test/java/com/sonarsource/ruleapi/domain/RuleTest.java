@@ -17,6 +17,41 @@ public class RuleTest {
   private static final String LANG = "Java";
 
   @Test
+  public void testMergeSqale() {
+
+    Rule r1 = new Rule("Java");
+    Rule r2 = new Rule("Java");
+
+    r2.setSqaleCharac("Blue");
+    r2.setSqaleSubCharac(Rule.Subcharacteristic.DATA_CHANGEABILITY);
+    r2.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
+    r2.setSqaleConstantCostOrLinearThreshold("10min");
+
+    r2.mergeSqalePieces(r2);
+
+    assertThat(r1.equals(r2));
+  }
+
+  @Test
+  public void testMergeSqaleNulls() {
+    Rule r1 = new Rule("Java");
+    Rule r2 = new Rule("Java");
+
+    r1.setSqaleCharac("Blue");
+    r1.setSqaleSubCharac(Rule.Subcharacteristic.DATA_CHANGEABILITY);
+    r1.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
+    r1.setSqaleConstantCostOrLinearThreshold("10min");
+
+    r1.mergeSqalePieces(r2);
+
+    assertThat(r1.getSqaleCharac()).isEqualTo("Blue");
+    assertThat(r1.getSqaleSubCharac()).isEqualTo(Rule.Subcharacteristic.DATA_CHANGEABILITY);
+    assertThat(r1.getSqaleRemediationFunction()).isEqualTo(Rule.RemediationFunction.CONSTANT_ISSUE);
+    assertThat(r1.getSqaleConstantCostOrLinearThreshold()).isEqualTo("10min");
+
+  }
+
+  @Test
   public void testMergeNullTitle() throws Exception {
     String title = "Rule title 1";
     Rule rule = new Rule(LANG);

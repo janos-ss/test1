@@ -159,6 +159,37 @@ public class Rule {
       this.parameterList = subRule.parameterList;
     }
     mergeDescriptionPieces(subRule);
+    mergeSqalePieces(subRule);
+  }
+
+  protected void mergeSqalePieces(Rule subRule) {
+    if (!Strings.isNullOrEmpty(subRule.sqaleCharac)) {
+      this.sqaleCharac = subRule.getSqaleCharac();
+    }
+
+    if (subRule.sqaleSubCharac != null) {
+      this.sqaleSubCharac = subRule.sqaleSubCharac;
+    }
+
+    if (subRule.sqaleRemediationFunction != null) {
+      this.sqaleRemediationFunction = subRule.sqaleRemediationFunction;
+    }
+
+    if (!Strings.isNullOrEmpty(subRule.sqaleConstantCostOrLinearThreshold)) {
+      this.sqaleConstantCostOrLinearThreshold = subRule.sqaleConstantCostOrLinearThreshold;
+    }
+
+    if (!Strings.isNullOrEmpty(subRule.sqaleLinearArg)) {
+      this.sqaleLinearArg = subRule.sqaleLinearArg;
+    }
+
+    if (!Strings.isNullOrEmpty(subRule.sqaleLinearFactor)) {
+      this.sqaleLinearFactor = subRule.sqaleLinearFactor;
+    }
+
+    if (!Strings.isNullOrEmpty(subRule.sqaleLinearOffset)) {
+      this.sqaleLinearOffset = subRule.sqaleLinearOffset;
+    }
   }
 
   private void mergeTitle(Rule subRule) {
