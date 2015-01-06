@@ -87,7 +87,7 @@ public class ComparisonUtilities {
 
       implTok = getImplTok(implTokens, rspecTok);
 
-      isEquivalent = areTokensEquivalent(implTokens, rspecTok, implTok, isEquivalent);
+      isEquivalent = areTokensEquivalent(implTokens, rspecTok, implTok);
     }
 
     if (isEquivalent) {
@@ -112,8 +112,9 @@ public class ComparisonUtilities {
     return new String[]{rspecTok, implTok};
   }
 
-  protected static boolean areTokensEquivalent(List<String> implTokens, String rspecTok, String implTok, boolean isEquivalent) {
+  protected static boolean areTokensEquivalent(List<String> implTokens, String rspecTok, String implTok) {
 
+    boolean isEquivalent = true;
     if (arePhraseOptionsPresent(rspecTok) && !isPhraseInOptions(rspecTok, implTok, implTokens)) {
       isEquivalent = false;
     } else if (! isEquivalentToken(implTok, rspecTok)) {
