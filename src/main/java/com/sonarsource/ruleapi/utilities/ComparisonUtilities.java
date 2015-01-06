@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.sonarsource.ruleapi.get.MarkdownConverter;
+import org.fest.util.Strings;
 
 public class ComparisonUtilities {
 
@@ -32,7 +33,7 @@ public class ComparisonUtilities {
     if (b == null) {
       return -1;
     }
-    if (ComparisonUtilities.isTextFunctionallyEquivalent(a, b, ignoreWhitespace)) {
+    if (isTextFunctionallyEquivalent(a, b, ignoreWhitespace)) {
       return 0;
     }
     return a.compareTo(b);
@@ -50,52 +51,39 @@ public class ComparisonUtilities {
     String bPrime = b;
 
     if (ignoreWhitespace) {
-      String linebreaks = "[\\r\\n]+";
-      String htmlTags = "(</?(code|th|td|li|h\\d)>)";
-      String pTags = "</?p>";
-      String brTags = "<br ?/>";
-
-      aPrime = a.replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(brTags," ")
-              .replaceAll(htmlTags, " $1 ").replaceAll("\""," \" ")
-              .replaceAll(" +"," ").trim();
-      bPrime = b.replaceAll(linebreaks, " ").replaceAll(pTags," ").replaceAll(brTags," ")
-              .replaceAll(htmlTags, " $1 ").replaceAll("\""," \" ")
-              .replaceAll(" +"," ").trim();
+      aPrime = spaceOutHtmlAndCollapseWhitespace(aPrime);
+      bPrime = spaceOutHtmlAndCollapseWhitespace(bPrime);
     }
 
     if (aPrime.equals(bPrime)) {
       return true;
     }
-    return hasEquivalentTokens(aPrime, bPrime);
+
+    if (isTokenCheckingIndicated(aPrime, bPrime)) {
+      return getFirstDifferingToken(aPrime, bPrime) == null;
+    }
+
+    return aPrime.equals(bPrime);
   }
 
-  private static boolean hasEquivalentTokens(String aString, String bString) {
-
-    if (!isTokenCheckingIndicated(aString, bString)) {
-      return aString.equals(bString);
-    }
-
-    String rspec = aString.toUpperCase().replaceAll("[.,]", "");
-    String impl  = bString.toUpperCase().replaceAll("[.,]", "");
-
-    if (shouldStringsBeSwapped(rspec, impl)) {
-      rspec = bString;
-      impl = aString;
-    }
+  public static String[] getFirstDifferingToken(String rspec, String impl) {
 
     List<String> rspecTokens = new ArrayList<String>(Arrays.asList(rspec.split(" ")));
     List<String> implTokens  = new ArrayList<String>(Arrays.asList(impl.split(" ")));
 
+    String rspecTok = null;
+    String implTok = null;
+
     boolean isEquivalent = true;
     boolean inRspecPre = false;
     while (isEquivalent && neitherListIsEmpty(rspecTokens, implTokens)) {
-      String rspecTok = rspecTokens.remove(0);
-      if (rspecTok.matches(".*</?PRE>.*")) {
+      rspecTok = rspecTokens.remove(0);
+      if (rspecTok.matches(".*</?pre>.*")) {
         inRspecPre = !inRspecPre;
       }
       rspecTok = assembleExtendedRspecToken(rspecTokens, rspecTok, inRspecPre);
 
-      String implTok = getImplTok(implTokens, rspecTok);
+      implTok = getImplTok(implTokens, rspecTok);
 
       if (arePhraseOptionsPresent(rspecTok) && !isPhraseInOptions(rspecTok, implTok, implTokens)) {
         isEquivalent = false;
@@ -108,19 +96,37 @@ public class ComparisonUtilities {
       }
     }
 
-    if (! implTokens.isEmpty()) {
-      isEquivalent = false;
-    } else if (! rspecTokens.isEmpty()){
-      String rspecTok = assembleExtendedRspecToken(rspecTokens, "", inRspecPre);
-      isEquivalent = isOptional(rspecTok);
+    if (isEquivalent) {
+      if (!implTokens.isEmpty()) {
+        rspecTok = "";
+        implTok = listToString(implTokens, false);
+        isEquivalent = false;
+      } else if (!rspecTokens.isEmpty()) {
+        rspecTok = assembleExtendedRspecToken(rspecTokens, rspecTokens.remove(0), inRspecPre);
+        isEquivalent = isOptional(rspecTok);
+
+        implTok = "";
+        rspecTokens.add(0, rspecTok);
+        rspecTok = listToString(rspecTokens, false);
+      }
     }
 
-    return isEquivalent;
+    if (isEquivalent) {
+      return null;
+    }
+
+    return new String[]{rspecTok, implTok};
   }
 
-  private static boolean shouldStringsBeSwapped(String rspec, String impl) {
+  protected static String spaceOutHtmlAndCollapseWhitespace(String a) {
+    String unneededWhitespace = "[\\r\\n\\t]+";
+    String pTags = "</?p>";
+    String brTags = "<br ?/>";
+    String htmlTags = "(</?(code|th|td|li|h\\d)>)";
 
-    return impl.matches(INICATES_OPTIONS_ENTITIES) && !rspec.matches(INICATES_OPTIONS_ENTITIES);
+    return a.replaceAll(unneededWhitespace, " ").replaceAll(pTags, " ").replaceAll(brTags," ")
+            .replaceAll(htmlTags, " $1 ").replaceAll("\"", " \" ")
+            .replaceAll("[.,]", "").replaceAll(" +", " ").trim();
   }
 
   private static boolean isTokenCheckingIndicated(String aString, String bString) {
@@ -148,6 +154,10 @@ public class ComparisonUtilities {
   }
 
   private static boolean isEquivalentToken(String implTok, String rspecTok) {
+    if (Strings.isNullOrEmpty(implTok) != Strings.isNullOrEmpty(rspecTok)) {
+      return false;
+    }
+
     return rspecTok.equals(implTok) || rspecTok.contains(implTok) || implTok.contains(rspecTok)
             || isEquivalentEntityIgnoreBrackets(rspecTok, implTok);
   }
@@ -171,7 +181,13 @@ public class ComparisonUtilities {
   }
 
   private static boolean isPhraseInOptions(String rspecTok, String implTok, List<String> implTokens){
-    String [] phrases = rspecTok.split("\\|");
+
+    String rTok = rspecTok;
+    if (rTok.matches("^\\[.*\\]$") || rTok.matches("^\\(.*\\)$")) {
+      rTok = rTok.substring(1, rTok.length() - 1);
+    }
+
+    String [] phrases = rTok.split("\\|");
     String tok = implTok;
 
     for(String phrase : phrases) {
@@ -208,7 +224,7 @@ public class ComparisonUtilities {
 
   private static boolean isOptional(String rspecTok) {
 
-    return !rspecTok.contains("|");
+    return rspecTok.matches("[\\[(].*[\\])]") && !rspecTok.contains("|");
   }
 
   private static String assembleExtendedRspecToken(List<String> rspecTokens, String rspecTok, boolean inPre) {
@@ -222,14 +238,9 @@ public class ComparisonUtilities {
         }
         tok = sb.toString();
       }
-
-      if (tok.matches("^\\[.*\\]$") || tok.matches("^\\(.*\\)$")) {
-        tok = tok.substring(1, tok.length() - 1);
-      }
     }
     return tok.trim();
   }
-
 
   public static int compareStrings(String a, String b) {
     if (a == null && b == null){
@@ -245,12 +256,16 @@ public class ComparisonUtilities {
     return 1;
   }
 
-  public static String listToString(List<String> list) {
+  public static String listToString(List<String> list, boolean doCommas) {
 
     StringBuilder sb = new StringBuilder();
     for (String str : list) {
       if (sb.length() > 0) {
-        sb.append(", ");
+        if (doCommas) {
+          sb.append(",");
+        }
+        sb.append(" ");
+
       }
       sb.append(str);
     }

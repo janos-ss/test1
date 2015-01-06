@@ -653,7 +653,9 @@ public class RuleComparisonTest {
     spec.setDescription(desc);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
-            "  description text\n");
+            "  description text\n" +
+            "    spec: this\n" +
+            "    impl: \n");
   }
 
   @Test
@@ -680,7 +682,9 @@ public class RuleComparisonTest {
     spec.setNonCompliant(str);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
-            "  noncompliant code example\n");
+            "  noncompliant code example\n" +
+            "    spec: this\n" +
+            "    impl: \n");
   }
 
   @Test
@@ -707,7 +711,9 @@ public class RuleComparisonTest {
     spec.setCompliant(str);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
-            "  compliant solution\n");
+            "  compliant solution\n" +
+            "    spec: this\n" +
+            "    impl: \n");
   }
 
   @Test
@@ -734,7 +740,9 @@ public class RuleComparisonTest {
     spec.setReferences(str);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
-            "  references\n");
+            "  references\n" +
+            "    spec: this\n" +
+            "    impl: \n");
   }
 
   @Test
@@ -761,7 +769,9 @@ public class RuleComparisonTest {
     spec.setExceptions(str);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
-            "  exceptions\n");
+            "  exceptions\n" +
+            "    spec: this\n" +
+            "    impl: \n");
   }
 
   @Test

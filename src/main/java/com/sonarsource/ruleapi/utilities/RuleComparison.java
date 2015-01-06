@@ -197,7 +197,7 @@ public class RuleComparison{
 
     if (compareTags() != 0) {
       logDifference(sb,"tags",
-              ComparisonUtilities.listToString(spec.getTags()), ComparisonUtilities.listToString(impl.getTags()));
+              ComparisonUtilities.listToString(spec.getTags(), true), ComparisonUtilities.listToString(impl.getTags(), true));
     }
 
     if (sb.length() > 0) {
@@ -259,27 +259,29 @@ public class RuleComparison{
   private String toStringForDescription() {
 
     StringBuilder sb = new StringBuilder();
-    if (compareDescription() != 0) {
-      logDifference(sb, "description text", null, null);
-    }
 
-    if (compareNoncompliant() != 0) {
-      logDifference(sb, "noncompliant code example", null, null);
-    }
+    logDifference(sb, "description text",
+            ComparisonUtilities.getFirstDifferingToken(spec.getDescription(), impl.getDescription()));
 
-    if (compareCompliant() != 0) {
-      logDifference(sb, "compliant solution", null, null);
-    }
+    logDifference(sb, "noncompliant code example",
+            ComparisonUtilities.getFirstDifferingToken(spec.getNonCompliant(), impl.getNonCompliant()));
 
-    if (compareException() != 0) {
-      logDifference(sb, "exceptions", null, null);
+    logDifference(sb, "compliant solution",
+            ComparisonUtilities.getFirstDifferingToken(spec.getCompliant(), impl.getCompliant()));
 
-    }
+    logDifference(sb, "exceptions",
+            ComparisonUtilities.getFirstDifferingToken(spec.getExceptions(), impl.getExceptions()));
 
-    if (compareReference() != 0) {
-      logDifference(sb, "references", null, null);
-    }
+    logDifference(sb, "references",
+            ComparisonUtilities.getFirstDifferingToken(spec.getReferences(), impl.getReferences()));
+
     return sb.toString();
+  }
+
+  protected void logDifference(StringBuilder sb, String differenceTitle, String[] differentTokens) {
+    if (differentTokens != null && differentTokens.length == 2) {
+      logDifference(sb, differenceTitle, differentTokens[0], differentTokens[1]);
+    }
   }
 
   protected void logDifference(StringBuilder sb, String differenceTitle, Object specValue, Object implValue) {
