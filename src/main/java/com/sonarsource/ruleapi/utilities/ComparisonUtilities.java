@@ -15,9 +15,6 @@ import org.fest.util.Strings;
 
 public class ComparisonUtilities {
 
-  private static String INICATES_OPTIONS_ENTITIES = ".*[|\\[(&\"<>].+";
-
-
   private ComparisonUtilities() {
     // private constructor
   }
@@ -40,6 +37,7 @@ public class ComparisonUtilities {
   }
 
   public static boolean isTextFunctionallyEquivalent(String a, String b, boolean ignoreWhitespace) {
+
     if (a == null && b == null) {
       return true;
     }
@@ -47,6 +45,10 @@ public class ComparisonUtilities {
       return false;
     }
 
+    return testTextFunctionalEquivalence(a, b, ignoreWhitespace);
+  }
+
+  private static boolean testTextFunctionalEquivalence(String a, String b, boolean ignoreWhitespace) {
     String aPrime = a;
     String bPrime = b;
 
@@ -60,7 +62,7 @@ public class ComparisonUtilities {
     }
 
     if (isTokenCheckingIndicated(aPrime, bPrime)) {
-      return getFirstDifferingToken(aPrime, bPrime) == null;
+      return getFirstDifferingToken(aPrime, bPrime).length == 0;
     }
 
     return aPrime.equals(bPrime);
@@ -85,15 +87,7 @@ public class ComparisonUtilities {
 
       implTok = getImplTok(implTokens, rspecTok);
 
-      if (arePhraseOptionsPresent(rspecTok) && !isPhraseInOptions(rspecTok, implTok, implTokens)) {
-        isEquivalent = false;
-      } else if (! isEquivalentToken(implTok, rspecTok)) {
-        if (isOptional(rspecTok)) {
-          disassembleExtendedImplToken(implTokens, implTok);
-        } else {
-          isEquivalent = false;
-        }
-      }
+      isEquivalent = areTokensEquivalent(implTokens, rspecTok, implTok, isEquivalent);
     }
 
     if (isEquivalent) {
@@ -112,10 +106,24 @@ public class ComparisonUtilities {
     }
 
     if (isEquivalent) {
-      return null;
+      return new String[0];
     }
 
     return new String[]{rspecTok, implTok};
+  }
+
+  protected static boolean areTokensEquivalent(List<String> implTokens, String rspecTok, String implTok, boolean isEquivalent) {
+
+    if (arePhraseOptionsPresent(rspecTok) && !isPhraseInOptions(rspecTok, implTok, implTokens)) {
+      isEquivalent = false;
+    } else if (! isEquivalentToken(implTok, rspecTok)) {
+      if (isOptional(rspecTok)) {
+        disassembleExtendedImplToken(implTokens, implTok);
+      } else {
+        isEquivalent = false;
+      }
+    }
+    return isEquivalent;
   }
 
   protected static String spaceOutHtmlAndCollapseWhitespace(String a) {
@@ -130,8 +138,9 @@ public class ComparisonUtilities {
   }
 
   private static boolean isTokenCheckingIndicated(String aString, String bString) {
+    String indicatesOptionsEntities = ".*[|\\[(&\"<>].+";
 
-    return aString.matches(INICATES_OPTIONS_ENTITIES) || bString.matches(INICATES_OPTIONS_ENTITIES);
+    return aString.matches(indicatesOptionsEntities) || bString.matches(indicatesOptionsEntities);
   }
 
   private static boolean neitherListIsEmpty(List<String> rspecTokens, List<String> implTokens) {
@@ -230,14 +239,12 @@ public class ComparisonUtilities {
   private static String assembleExtendedRspecToken(List<String> rspecTokens, String rspecTok, boolean inPre) {
 
     String tok = rspecTok;
-    if (! inPre) {
-      if (rspecTok.matches("^[(\\[].*") && !rspecTok.matches(".*[\\])]$")) {
-        StringBuilder sb = new StringBuilder(rspecTok);
-        while (!sb.toString().matches(".*[\\])]") && !rspecTokens.isEmpty()) {
-          sb.append(" ").append(rspecTokens.remove(0));
-        }
-        tok = sb.toString();
+    if (! inPre && rspecTok.matches("^[(\\[].*") && !rspecTok.matches(".*[\\])]$")) {
+      StringBuilder sb = new StringBuilder(rspecTok);
+      while (!sb.toString().matches(".*[\\])]") && !rspecTokens.isEmpty()) {
+        sb.append(" ").append(rspecTokens.remove(0));
       }
+      tok = sb.toString();
     }
     return tok.trim();
   }
