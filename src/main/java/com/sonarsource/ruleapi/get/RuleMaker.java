@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.get;
 import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.RuleException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -35,15 +36,17 @@ public class RuleMaker {
   private RuleMaker() {
   }
 
-  public static Rule getRuleFromSonarQubeByKey(String sonarQubeInstance, String ruleKey, String sonarQubeDefaultProfileKey) throws RuleException {
+  public static Rule getRuleFromSonarQubeByKey(String sonarQubeInstance, String ruleKey, Language language) throws RuleException {
 
     Fetcher fetcher = new Fetcher();
 
-    JSONObject jsonRule = fetcher.fetchRuleFromSonarQube(sonarQubeInstance, ruleKey);
+    String extendedKey = language.getSq() + ":" + ruleKey;
+
+    JSONObject jsonRule = fetcher.fetchRuleFromSonarQube(sonarQubeInstance, extendedKey);
     Rule rule =  populateFieldsFromSonarQube(jsonRule);
 
     List<JSONObject> jsonList = fetcher.fetchRulesFromSonarQube(sonarQubeInstance,
-            SONARQUBE_PROFILE_QUERY + sonarQubeDefaultProfileKey + "&rule_key=" + rule.getLegacyKeys().get(0));
+            SONARQUBE_PROFILE_QUERY + language.getSqProfileKey() + "&rule_key=" + extendedKey);
     if (jsonList.size() == 1) {
       rule.setDefaultActive(Boolean.TRUE);
     } else {
