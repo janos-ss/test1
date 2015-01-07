@@ -22,7 +22,7 @@ public enum Language {
   PY    ("python",      "Python",      "py-sonar-way-67511",    true),
   RPG   ("rpg",         "RPG",         "rpg-sonar-way-64226",   true),
   VB    ("vb",          "VB6",         "vb-sonar-way-21338",    true),
-  VBNET ("vbnet",       "VB.NET",      "vbnet-sonar-way-31082", false),
+  VBNET ("vbnet",       "VB.Net",      "vbnet-sonar-way-31082", true),
   XML   ("xml",         "XML",         "web-sonar-way-50375",   true);
 
   protected final String sq;
@@ -36,11 +36,11 @@ public enum Language {
     this.sqProfileKey = sqProfileKey;
     this.update = update;
   }
-  
+
   public String getSq() {
     return sq;
   }
-  
+
   public String getRspec() {
     return rspec;
   }
@@ -48,5 +48,5 @@ public enum Language {
   public String getSqProfileKey() {
     return sqProfileKey;
   }
-  
+
 }

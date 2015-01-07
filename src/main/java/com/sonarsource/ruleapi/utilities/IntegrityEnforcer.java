@@ -36,7 +36,7 @@ public class IntegrityEnforcer extends RuleManager {
     }
   }
 
-  protected void setCoveredAndOutdatedForLanguage(String login, String password, Language language) throws RuleException {
+  public void setCoveredAndOutdatedForLanguage(String login, String password, Language language) throws RuleException {
     String rspecLanguage = language.rspec;
 
     List<Rule> rspec = getCoveredRulesForLangauge(language);
