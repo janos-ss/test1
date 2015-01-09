@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.specifications;
+package com.sonarsource.ruleapi.externalRuleSpecifications;
 
 public enum Implementability {
   IMPLEMENTABLE, NOT_IMPLEMENTABLE, REJECTED;

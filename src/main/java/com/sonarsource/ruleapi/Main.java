@@ -6,7 +6,7 @@
 
 package com.sonarsource.ruleapi;
 
-import com.sonarsource.ruleapi.utilities.IntegrityEnforcer;
+import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.utilities.RuleException;
 
 import java.util.logging.Level;
@@ -31,7 +31,7 @@ public class Main {
     String login = args[0];
     String password = args[1];
 
-    IntegrityEnforcer enforcer = new IntegrityEnforcer();
+    IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
     try {
       enforcer.setCoveredAndOutdatedLanguages(login, password);
       enforcer.enforceCwe(login, password);

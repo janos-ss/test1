@@ -49,4 +49,8 @@ public enum Language {
     return sqProfileKey;
   }
 
+  public boolean doUpdate() {
+    return update;
+  }
+
 }

@@ -3,9 +3,10 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.utilities;
+package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import org.junit.Test;
 
 import java.util.*;
@@ -13,9 +14,9 @@ import java.util.*;
 import static org.fest.assertions.Assertions.assertThat;
 
 
-public class IntegrityEnforcerTest {
+public class IntegrityEnforcementServiceTest {
 
-  IntegrityEnforcer enforcer = new IntegrityEnforcer();
+  IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
 
   @Test
   public void testStripHtml() {

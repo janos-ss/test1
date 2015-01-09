@@ -8,10 +8,9 @@ package com.sonarsource.ruleapi.domain;
 
 public class CodingStandardRuleCoverage {
 
-  private CodingStandardRule rule;
-  private Rule specifiedBy;
-  private Rule coveredBy;
-  private boolean implementedInPlugin = Boolean.FALSE;
+  private String codingStandardRuleId = null;
+  private Rule specifiedBy = null;
+  private Rule implementedBy = null;
 
   public Rule getSpecifiedBy() {
     return specifiedBy;
@@ -21,32 +20,20 @@ public class CodingStandardRuleCoverage {
     this.specifiedBy = specifiedBy;
   }
 
-  public Boolean isCovered() {
-    return coveredBy != null;
+  public String getRule() {
+    return codingStandardRuleId;
   }
 
-  public boolean isImplemented() {
-    return implementedInPlugin;
+  public void setRule(String rule) {
+    this.codingStandardRuleId = rule;
   }
 
-  public void setImplemented(boolean implemented) {
-    this.implementedInPlugin = implemented;
+  public Rule getImplementedBy() {
+    return implementedBy;
   }
 
-  public CodingStandardRule getRule() {
-    return rule;
-  }
-
-  public void setRule(CodingStandardRule rule) {
-    this.rule = rule;
-  }
-
-  public Rule getCoveredBy() {
-    return coveredBy;
-  }
-
-  public void setCoveredBy(Rule coveredBy) {
-    this.coveredBy = coveredBy;
+  public void setImplementedBy(Rule implementedBy) {
+    this.implementedBy = implementedBy;
   }
 
 }

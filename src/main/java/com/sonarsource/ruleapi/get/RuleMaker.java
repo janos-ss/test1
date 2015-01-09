@@ -36,6 +36,11 @@ public class RuleMaker {
   private RuleMaker() {
   }
 
+  public static List<Rule> getRulesFromSonarQubeForLanguage(Language language, String instance) throws RuleException {
+    return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq(),
+            language.getSqProfileKey());
+  }
+
   public static Rule getRuleFromSonarQubeByKey(String sonarQubeInstance, String ruleKey, Language language) throws RuleException {
 
     Fetcher fetcher = new Fetcher();

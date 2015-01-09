@@ -4,7 +4,7 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.ruleapi.utilities;
+package com.sonarsource.ruleapi.services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,11 +15,15 @@ import java.util.logging.Logger;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
+import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.RuleComparison;
+import com.sonarsource.ruleapi.utilities.RuleException;
+import com.sonarsource.ruleapi.utilities.RuleManager;
 
 
-public class IntegrityEnforcer extends RuleManager {
+public class IntegrityEnforcementService extends RuleManager {
 
-  private static final Logger LOGGER = Logger.getLogger(IntegrityEnforcer.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(IntegrityEnforcementService.class.getName());
 
   private static final String CWE = "CWE";
   private static final String CWE_TAG = "cwe";
@@ -29,15 +33,15 @@ public class IntegrityEnforcer extends RuleManager {
   public void setCoveredAndOutdatedLanguages(String login, String password) throws RuleException {
 
     for (Language lang : Language.values()) {
-      if (!lang.update) {
-        LOGGER.warning("Update disabled for " + lang.sq + "/" + lang.rspec);
+      if (!lang.doUpdate()) {
+        LOGGER.warning("Update disabled for " + lang.getSq() + "/" + lang.getRspec());
       }
       setCoveredAndOutdatedForLanguage(login, password, lang);
     }
   }
 
   public void setCoveredAndOutdatedForLanguage(String login, String password, Language language) throws RuleException {
-    String rspecLanguage = language.rspec;
+    String rspecLanguage = language.getRspec();
 
     List<Rule> rspec = getCoveredRulesForLangauge(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
@@ -53,11 +57,11 @@ public class IntegrityEnforcer extends RuleManager {
         continue;
       }
 
-      if (language.update) {
+      if (language.doUpdate()) {
         String key = sqRule.getKey();
         Rule rspecRule = rspecRules.remove(key);
         if (rspecRule == null) {
-          rspecRule = RuleMaker.getRuleByKey(key, language.rspec);
+          rspecRule = RuleMaker.getRuleByKey(key, language.getRspec());
         }
 
         addCoveredForNemoRules(rspecLanguage, needsUpdating, rspecRule);
@@ -65,7 +69,7 @@ public class IntegrityEnforcer extends RuleManager {
       }
     }
 
-    if (language.update) {
+    if (language.doUpdate()) {
       dropCoveredForNonNemoRules(rspecLanguage, rspecRules, needsUpdating);
       for (Rule rule : needsUpdating.values()) {
         Map<String, Object> updates = new HashMap<String, Object>();

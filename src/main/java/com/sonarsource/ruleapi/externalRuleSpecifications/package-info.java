@@ -7,4 +7,4 @@
 /**
  * Created by ganncamp on 12/15/14.
  */
-package com.sonarsource.ruleapi.specifications;
+package com.sonarsource.ruleapi.externalRuleSpecifications;
