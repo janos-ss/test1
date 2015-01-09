@@ -29,9 +29,11 @@ public class ReportService extends RuleManager {
 
   public void getSummaryCoverageReports() throws RuleException {
 
+    StringBuilder sb = new StringBuilder();
     for (SupportedCodingStandard standard : SupportedCodingStandard.values()) {
-      LOGGER.info(standard.getCodingStandard().getSummaryReport());
+      sb.append(standard.getCodingStandard().getSummaryReport()).append("\n\n");
     }
+    LOGGER.info(sb.toString());
   }
 
   public void getFindBugsCoverageReport() throws RuleException {
