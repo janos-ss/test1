@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.externalRuleSpecifications;
+package com.sonarsource.ruleapi.external_rule_specifications;
 
 import java.util.*;
 

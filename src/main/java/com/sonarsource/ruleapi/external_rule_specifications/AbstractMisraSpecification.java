@@ -4,7 +4,7 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.ruleapi.externalRuleSpecifications;
+package com.sonarsource.ruleapi.external_rule_specifications;
 
 import com.sonarsource.ruleapi.domain.*;
 import com.sonarsource.ruleapi.utilities.RuleException;
@@ -64,7 +64,6 @@ public abstract class AbstractMisraSpecification extends AbstractCodingStandard 
 
     buff.append("Total:");
     appendSummaryLine(buff, getCodingStandardRules().length, totalRulesImplemented, getTotalCoveragePercent(), indent, "");
-    buff.append(indent).append("Implemented: ").append(getImplementedCoveragePercent()).append("%").append(linebreak);
 
     return buff.toString();
   }

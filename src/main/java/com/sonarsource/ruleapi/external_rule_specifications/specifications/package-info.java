@@ -5,6 +5,6 @@
  */
 
 /**
- * Created by ganncamp on 12/15/14.
+ * Created by ganncamp on 1/9/15.
  */
-package com.sonarsource.ruleapi.externalRuleSpecifications;
+package com.sonarsource.ruleapi.external_rule_specifications.specifications;

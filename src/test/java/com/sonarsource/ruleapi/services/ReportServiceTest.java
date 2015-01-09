@@ -5,10 +5,6 @@
  */
 package com.sonarsource.ruleapi.services;
 
-import com.sonarsource.ruleapi.externalRuleSpecifications.specifications.MisraCPP2008;
-import com.sonarsource.ruleapi.utilities.RuleException;
-import org.junit.Test;
-
 import static org.fest.assertions.Assertions.assertThat;
 
 

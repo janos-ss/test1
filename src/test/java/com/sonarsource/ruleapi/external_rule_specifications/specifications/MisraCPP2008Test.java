@@ -3,11 +3,10 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.externalRuleSpecifications.specifications;
+package com.sonarsource.ruleapi.external_rule_specifications.specifications;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import com.sonarsource.ruleapi.externalRuleSpecifications.specifications.MisraCPP2008;
 import org.junit.Test;
 
 public class MisraCPP2008Test {

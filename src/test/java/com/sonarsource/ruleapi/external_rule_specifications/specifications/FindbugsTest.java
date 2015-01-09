@@ -4,7 +4,7 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.ruleapi.externalRuleSpecifications.specifications;
+package com.sonarsource.ruleapi.external_rule_specifications.specifications;
 
 import org.junit.Test;
 

@@ -11,12 +11,12 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalRuleSpecifications.specifications.FindBugs;
-import com.sonarsource.ruleapi.externalRuleSpecifications.specifications.MisraC2004;
-import com.sonarsource.ruleapi.externalRuleSpecifications.specifications.MisraC2012;
-import com.sonarsource.ruleapi.externalRuleSpecifications.specifications.MisraCPP2008;
+import com.sonarsource.ruleapi.external_rule_specifications.specifications.FindBugs;
+import com.sonarsource.ruleapi.external_rule_specifications.specifications.MisraC2004;
+import com.sonarsource.ruleapi.external_rule_specifications.specifications.MisraC2012;
+import com.sonarsource.ruleapi.external_rule_specifications.specifications.MisraCPP2008;
 import com.sonarsource.ruleapi.get.RuleMaker;
-import com.sonarsource.ruleapi.externalRuleSpecifications.*;
+import com.sonarsource.ruleapi.external_rule_specifications.*;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.RuleComparison;
 import com.sonarsource.ruleapi.utilities.RuleException;

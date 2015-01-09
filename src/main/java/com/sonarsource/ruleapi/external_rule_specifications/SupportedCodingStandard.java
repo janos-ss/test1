@@ -3,12 +3,12 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.externalRuleSpecifications;
+package com.sonarsource.ruleapi.external_rule_specifications;
 
-import com.sonarsource.ruleapi.externalRuleSpecifications.specifications.FindBugs;
-import com.sonarsource.ruleapi.externalRuleSpecifications.specifications.MisraC2004;
-import com.sonarsource.ruleapi.externalRuleSpecifications.specifications.MisraC2012;
-import com.sonarsource.ruleapi.externalRuleSpecifications.specifications.MisraCPP2008;
+import com.sonarsource.ruleapi.external_rule_specifications.specifications.FindBugs;
+import com.sonarsource.ruleapi.external_rule_specifications.specifications.MisraC2004;
+import com.sonarsource.ruleapi.external_rule_specifications.specifications.MisraC2012;
+import com.sonarsource.ruleapi.external_rule_specifications.specifications.MisraCPP2008;
 
 public enum SupportedCodingStandard {
 
