@@ -4,7 +4,7 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.ruleapi.external_rule_specifications;
+package com.sonarsource.ruleapi.externalspecifications;
 
 import com.sonarsource.ruleapi.domain.*;
 import com.sonarsource.ruleapi.utilities.RuleException;

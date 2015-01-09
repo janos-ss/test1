@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.external_rule_specifications;
+package com.sonarsource.ruleapi.externalspecifications;
 
 import java.util.*;
 
@@ -106,7 +106,7 @@ public abstract class AbstractCodingStandard {
 
   protected void setCodingStandardRuleCoverageSpecified(Rule rspecRule, List<String> ids) {
 
-    if (ids != null & ! ids.isEmpty()) {
+    if (ids != null && ! ids.isEmpty()) {
       for (String id : ids) {
         CodingStandardRuleCoverage cov = getRulesCoverage().get(id);
         if (cov != null) {

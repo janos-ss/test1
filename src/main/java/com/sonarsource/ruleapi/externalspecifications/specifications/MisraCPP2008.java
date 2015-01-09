@@ -3,13 +3,13 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.external_rule_specifications.specifications;
+package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import java.util.List;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.external_rule_specifications.AbstractMisraSpecification;
-import com.sonarsource.ruleapi.external_rule_specifications.CodingStandardRule;
+import com.sonarsource.ruleapi.externalspecifications.AbstractMisraSpecification;
+import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.fest.util.Strings;
 
