@@ -12,10 +12,5 @@ import org.junit.Test;
 
 public class CodingStandardRuleCoverageTest {
 
-  @Test
-  public void checkDefaultCodingStandardRuleCoverageNotImplemented() {
-    CodingStandardRuleCoverage ruleCoverage = new CodingStandardRuleCoverage();
 
-    assertThat(ruleCoverage.getImplementedBy()).isNotNull();
-  }
 }

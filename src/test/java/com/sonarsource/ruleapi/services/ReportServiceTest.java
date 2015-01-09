@@ -17,14 +17,4 @@ public class ReportServiceTest {
   private ReportService writer = new ReportService();
 
 
-  @Test
-  public void testtest(){
-    try {
-
-      writer.getSummaryCoverageReports();
-    } catch (RuleException e) {
-      e.printStackTrace();
-    }
-  }
-
 }
