@@ -21,7 +21,6 @@ public class MisraC2004 extends AbstractMisraSpecification {
 
   private int mandatoryRulesToCover = 0;
   private int optionalRulesToCover = 0;
-  private int totalRulesToCover = 0;
 
   public enum Rules implements CodingStandardRule {
     MISRAC2004_1POINT1 ("1.1", Boolean.TRUE, Boolean.TRUE),
@@ -196,13 +195,13 @@ public class MisraC2004 extends AbstractMisraSpecification {
       this.isCoverable = isCoverable;
     }
 
+    @Override
     public String getCodingStandardRuleId() {
       return name;
     }
   }
 
   public MisraC2004(){
-    totalRulesToCover = Rules.values().length;
 
     for (Rules rule : Rules.values()) {
       if (rule.isMandatory) {

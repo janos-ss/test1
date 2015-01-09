@@ -460,6 +460,7 @@ public class FindBugs extends AbstractCodingStandard {
       return this.ability;
     }
 
+    @Override
     public String getCodingStandardRuleId() {
 
       return this.name();
@@ -502,7 +503,6 @@ public class FindBugs extends AbstractCodingStandard {
       }
     }
 
-    String indent = "\t";
     String linebreak = String.format("%n");
 
     int count = Rules.values().length;

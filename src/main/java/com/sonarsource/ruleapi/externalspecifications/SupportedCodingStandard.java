@@ -17,8 +17,6 @@ public enum SupportedCodingStandard {
   MISRA_CPP_2008(new MisraCPP2008()),
   FINDBUGS(new FindBugs());
 
-  // CWE("CWE - Common Weakness Enumeration", "cwe", "CWE"),
-  // CERT_C("CERT C", "cert", "CERT");
 
   private AbstractCodingStandard codingStandard;
 

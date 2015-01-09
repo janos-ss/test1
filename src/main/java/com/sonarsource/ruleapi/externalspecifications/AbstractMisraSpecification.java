@@ -48,7 +48,6 @@ public abstract class AbstractMisraSpecification extends AbstractCodingStandard 
 
   private final String generateSummary() {
     StringBuilder buff = new StringBuilder();
-    String na = "NA\t";
     String indent = "\t";
     String linebreak = String.format("%n");
 
