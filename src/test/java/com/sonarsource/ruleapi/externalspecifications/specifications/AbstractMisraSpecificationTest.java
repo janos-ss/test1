@@ -31,9 +31,10 @@ public class AbstractMisraSpecificationTest {
       e.printStackTrace();
     }
 
-    String expected = "MISRA C 2004\n" +
-            "Mandatory:\tSpecified: 121\tImplemented: 0\t=> 0.0%\n" +
-            "Optional:\tSpecified: 20\tImplemented: 0\t=> 0.0%\n" +
+    String linebreak = String.format("%n");
+    String expected = "MISRA C 2004" + linebreak +
+            "Mandatory:\tSpecified: 121\tImplemented: 0\t=> 0.0%" + linebreak +
+            "Optional:\tSpecified: 20\tImplemented: 0\t=> 0.0%" + linebreak +
             "Total:\tSpecified: 141\tImplemented: 0\t=> 0.0%";
 
     assertThat(summaryReport).isEqualTo(expected);
@@ -62,9 +63,11 @@ public class AbstractMisraSpecificationTest {
       e.printStackTrace();
     }
 
-    String expected = "MISRA C 2004\n" +
-            "Mandatory:\tSpecified: 121\tImplemented: 2\t=> 1.65%\n" +
-            "Optional:\tSpecified: 20\tImplemented: 2\t=> 10.0%\n" +
+    String linebreak = String.format("%n");
+
+    String expected = "MISRA C 2004" + linebreak +
+            "Mandatory:\tSpecified: 121\tImplemented: 2\t=> 1.65%" + linebreak +
+            "Optional:\tSpecified: 20\tImplemented: 2\t=> 10.0%" + linebreak +
             "Total:\tSpecified: 141\tImplemented: 4\t=> 2.84%";
 
     assertThat(summaryReport).isEqualTo(expected);
