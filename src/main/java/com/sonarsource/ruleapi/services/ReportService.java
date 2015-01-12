@@ -11,10 +11,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.specifications.FindBugs;
-import com.sonarsource.ruleapi.externalspecifications.specifications.MisraC2004;
-import com.sonarsource.ruleapi.externalspecifications.specifications.MisraC2012;
-import com.sonarsource.ruleapi.externalspecifications.specifications.MisraCPP2008;
+import com.sonarsource.ruleapi.externalspecifications.specifications.*;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.externalspecifications.*;
 import com.sonarsource.ruleapi.utilities.Language;
@@ -27,7 +24,7 @@ public class ReportService extends RuleManager {
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
 
 
-  public void getSummaryCoverageReports() throws RuleException {
+  public static void getSummaryCoverageReports() throws RuleException {
 
     StringBuilder sb = new StringBuilder();
     for (SupportedCodingStandard standard : SupportedCodingStandard.values()) {
@@ -36,28 +33,29 @@ public class ReportService extends RuleManager {
     LOGGER.info(sb.toString());
   }
 
-  public void getFindBugsCoverageReport() throws RuleException {
-    FindBugs fb = new FindBugs();
+  public static void getFindBugsCoverageReport() throws RuleException {
 
-    LOGGER.info(fb.getReport());
+    LOGGER.info(SupportedCodingStandard.FINDBUGS.getCodingStandard().getReport());
   }
 
-  public void getMisraC2004CoverageReport() throws RuleException {
+  public static void getFindBugsDeprecationReport() throws RuleException {
 
-    MisraC2004 misraC2004 = new MisraC2004();
-    LOGGER.info(misraC2004.getReport());
+    LOGGER.info(((ExternalTool)SupportedCodingStandard.FINDBUGS.getCodingStandard()).getDeprecationReport());
   }
 
-  public void getMisraC2012CoverageReport() throws RuleException {
+  public static void getMisraC2004CoverageReport() throws RuleException {
 
-    MisraC2012 misraC2012 = new MisraC2012();
-    LOGGER.info(misraC2012.getReport());
+    LOGGER.info(SupportedCodingStandard.MISRA_C_2004.getCodingStandard().getReport());
   }
 
-  public void getMisraCpp2008CoverageReport() throws RuleException {
+  public static void getMisraC2012CoverageReport() throws RuleException {
 
-    MisraCPP2008 misraCPP2008 = new MisraCPP2008();
-    LOGGER.info(misraCPP2008.getReport());
+    LOGGER.info(SupportedCodingStandard.MISRA_C_2012.getCodingStandard().getReport());
+  }
+
+  public static void getMisraCpp2008CoverageReport() throws RuleException {
+
+    LOGGER.info(SupportedCodingStandard.MISRA_CPP_2008.getCodingStandard().getReport());
   }
 
   public void getOutdatedRulesReport(Language language) throws RuleException {

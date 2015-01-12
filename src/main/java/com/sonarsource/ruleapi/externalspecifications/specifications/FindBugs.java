@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public class FindBugs extends AbstractCodingStandard {
+public class FindBugs extends AbstractCodingStandard implements ExternalTool {
 
   private String standardName = "FindBugs";
   private String rspecFieldName = "FindBugs";
@@ -481,7 +481,6 @@ public class FindBugs extends AbstractCodingStandard {
   public String getSummaryReport() throws RuleException {
 
     initCoverageResults();
-
     computeCoverage();
 
     String linebreak = String.format("%n");
@@ -559,6 +558,23 @@ public class FindBugs extends AbstractCodingStandard {
   public CodingStandardRule[] getCodingStandardRules() {
 
     return Rules.values();
+  }
+
+  public String getDeprecationReport() throws RuleException {
+
+    initCoverageResults();
+    StringBuilder sb = new StringBuilder();
+
+    for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
+      if (cov.getImplementedBy() != null) {
+        if (sb.length() > 0) {
+          sb.append(", ");
+        }
+        sb.append(cov.getRule());
+      }
+    }
+
+    return sb.toString();
   }
 
 }
