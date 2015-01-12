@@ -8,7 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.*;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
-import com.sonarsource.ruleapi.utilities.RuleException;
+import com.sonarsource.ruleapi.domain.RuleException;
 
 import java.math.BigDecimal;
 

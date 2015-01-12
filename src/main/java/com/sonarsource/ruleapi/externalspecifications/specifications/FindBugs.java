@@ -10,7 +10,7 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.Language;
-import com.sonarsource.ruleapi.utilities.RuleException;
+import com.sonarsource.ruleapi.domain.RuleException;
 
 import java.util.Iterator;
 import java.util.List;

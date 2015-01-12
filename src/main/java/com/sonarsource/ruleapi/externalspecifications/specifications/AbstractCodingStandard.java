@@ -11,10 +11,10 @@ import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.get.RuleMaker;
-import com.sonarsource.ruleapi.utilities.RuleManager;
+import com.sonarsource.ruleapi.services.RuleManager;
 
 import com.sonarsource.ruleapi.utilities.Language;
-import com.sonarsource.ruleapi.utilities.RuleException;
+import com.sonarsource.ruleapi.domain.RuleException;
 
 public abstract class AbstractCodingStandard {
 

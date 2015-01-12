@@ -7,7 +7,7 @@
 package com.sonarsource.ruleapi;
 
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
-import com.sonarsource.ruleapi.utilities.RuleException;
+import com.sonarsource.ruleapi.domain.RuleException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

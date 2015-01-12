@@ -7,7 +7,7 @@ package com.sonarsource.ruleapi.get;
 
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.utilities.RuleException;
+import com.sonarsource.ruleapi.domain.RuleException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.json.simple.parser.JSONParser;

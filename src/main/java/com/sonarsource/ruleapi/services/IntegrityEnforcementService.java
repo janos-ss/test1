@@ -16,9 +16,8 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.Language;
-import com.sonarsource.ruleapi.utilities.RuleComparison;
-import com.sonarsource.ruleapi.utilities.RuleException;
-import com.sonarsource.ruleapi.utilities.RuleManager;
+import com.sonarsource.ruleapi.domain.RuleComparison;
+import com.sonarsource.ruleapi.domain.RuleException;
 
 
 public class IntegrityEnforcementService extends RuleManager {

@@ -5,7 +5,7 @@
  */
 package com.sonarsource.ruleapi.get;
 
-import com.sonarsource.ruleapi.utilities.RuleException;
+import com.sonarsource.ruleapi.domain.RuleException;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

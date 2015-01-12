@@ -3,9 +3,11 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.utilities;
+package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.services.RuleManager;
+import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -24,11 +26,11 @@ public class RuleManagerTest {
 
     List<Rule> rules = new ArrayList<Rule>();
 
-    Rule r1 = new Rule(Language.JAVA.rspec);
+    Rule r1 = new Rule(Language.JAVA.getRspec());
     r1.setKey("key1");
     rules.add(r1);
 
-    Rule r2 = new Rule(Language.JAVA.rspec);
+    Rule r2 = new Rule(Language.JAVA.getRspec());
     r2.setKey("key2");
     rules.add(r2);
 

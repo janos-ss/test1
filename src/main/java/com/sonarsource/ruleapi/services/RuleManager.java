@@ -4,10 +4,12 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.ruleapi.utilities;
+package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.utilities.Language;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,11 +24,11 @@ public class RuleManager {
   public static final String NEMO = "http://nemo.sonarqube.org";
 
   protected List<Rule> getCoveredRulesForLangauge(Language language) throws RuleException {
-    return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.rspec + "\"", language.rspec);
+    return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec() + "\"", language.getRspec());
   }
 
   protected List<Rule> getImplementedRulesForLanguage(Language language, String instance) throws RuleException {
-    return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.sq, language.sqProfileKey);
+    return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq(), language.getSqProfileKey());
   }
 
   protected Map<String,Rule> mapRulesByKey(List<Rule> rules) {
@@ -42,10 +44,10 @@ public class RuleManager {
     String key = legacyKey;
     if (! legacyKey.matches("RSPEC-\\d+")) {
 
-      Rule freshFetch = RuleMaker.getRuleByKey(legacyKey, language.rspec);
+      Rule freshFetch = RuleMaker.getRuleByKey(legacyKey, language.getRspec());
       key = freshFetch.getKey();
       if (key == null) {
-        LOGGER.warning("Legacy key not found for " + language.rspec + "/" + language.sq + ": " + legacyKey);
+        LOGGER.warning("Legacy key not found for " + language.getRspec() + "/" + language.getSq() + ": " + legacyKey);
       }
     }
     return key;

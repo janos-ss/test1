@@ -5,7 +5,7 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
-import com.sonarsource.ruleapi.utilities.RuleException;
+import com.sonarsource.ruleapi.domain.RuleException;
 
 public interface ExternalTool {
 

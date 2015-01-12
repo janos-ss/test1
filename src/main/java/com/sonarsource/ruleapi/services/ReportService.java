@@ -15,9 +15,8 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.*;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.externalspecifications.*;
 import com.sonarsource.ruleapi.utilities.Language;
-import com.sonarsource.ruleapi.utilities.RuleComparison;
-import com.sonarsource.ruleapi.utilities.RuleException;
-import com.sonarsource.ruleapi.utilities.RuleManager;
+import com.sonarsource.ruleapi.domain.RuleComparison;
+import com.sonarsource.ruleapi.domain.RuleException;
 
 public class ReportService extends RuleManager {
 

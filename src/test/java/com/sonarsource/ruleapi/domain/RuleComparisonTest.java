@@ -4,10 +4,11 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.ruleapi.utilities;
+package com.sonarsource.ruleapi.domain;
 
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.domain.RuleComparison;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import org.junit.Test;
 

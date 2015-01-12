@@ -6,8 +6,7 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.specifications.MisraC2004;
-import com.sonarsource.ruleapi.utilities.RuleException;
+import com.sonarsource.ruleapi.domain.RuleException;
 import org.junit.Test;
 
 import java.util.ArrayList;
