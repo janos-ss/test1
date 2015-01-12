@@ -19,29 +19,34 @@ import static org.fest.assertions.Assertions.assertThat;
 public class AbstractMisraSpecificationTest {
 
   @Test
-  public void testSummaryEmpty() {
+  public void testReportsEmpty() {
 
     MisraC2004 c4 = new MisraC2004();
     c4.populateRulesCoverageMap();
 
     String summaryReport = "";
+    String report = "";
     try {
       summaryReport = c4.getSummaryReport();
+      report = c4.getReport();
     } catch (RuleException e) {
       e.printStackTrace();
     }
 
     String linebreak = String.format("%n");
-    String expected = "MISRA C 2004" + linebreak +
+    String expectedSummary = "MISRA C 2004" + linebreak +
             "Mandatory:\tSpecified: 121\tImplemented: 0\t=> 0.0%" + linebreak +
             "Optional:\tSpecified: 20\tImplemented: 0\t=> 0.0%" + linebreak +
             "Total:\tSpecified: 141\tImplemented: 0\t=> 0.0%";
 
-    assertThat(summaryReport).isEqualTo(expected);
+    assertThat(summaryReport).isEqualTo(expectedSummary);
+    assertThat(report).endsWith(summaryReport);
+    assertThat(report).contains("1.1\tS: NA\t\tC: NA\t\tI: N");
+
   }
 
   @Test
-  public void testSummaryNonEmpty() {
+  public void testReportsNonEmpty() {
 
     MisraC2004 c4 = new MisraC2004();
     c4.populateRulesCoverageMap();
@@ -57,30 +62,24 @@ public class AbstractMisraSpecificationTest {
     c4.computeCoverage();
 
     String summaryReport = "";
+    String report = "";
     try {
       summaryReport = c4.getSummaryReport();
+      report = c4.getReport();
     } catch (RuleException e) {
       e.printStackTrace();
     }
 
     String linebreak = String.format("%n");
 
-    String expected = "MISRA C 2004" + linebreak +
-            "Mandatory:\tSpecified: 121\tImplemented: 2\t=> 1.65%" + linebreak +
-            "Optional:\tSpecified: 20\tImplemented: 2\t=> 10.0%" + linebreak +
-            "Total:\tSpecified: 141\tImplemented: 4\t=> 2.84%";
+    String expectedSummary = "MISRA C 2004" + linebreak +
+            "Mandatory:\tSpecified: 121\tImplemented: 1\t=> 0.83%" + linebreak +
+            "Optional:\tSpecified: 20\tImplemented: 1\t=> 5.0%" + linebreak +
+            "Total:\tSpecified: 141\tImplemented: 2\t=> 1.42%";
 
-    assertThat(summaryReport).isEqualTo(expected);
-  }
-
-  @Test
-  public void testSummary() {
-
-    MisraC2004 c4 = new MisraC2004();
-    c4.populateRulesCoverageMap();
-
-    Rule rule = new Rule("C");
-    rule.setMisraC04(new ArrayList<String>());
+    assertThat(summaryReport).isEqualTo(expectedSummary);
+    assertThat(report).contains(expectedSummary);
+    assertThat(report).contains("1.4\tS: null\tC: null\tI: Y");
 
   }
 

@@ -47,7 +47,7 @@ public class AbstractCodingStandardTest {
   }
 
   @Test
-  public void testFindSpecifiedInRspec() {
+  public void testSetCodingStandardRuleCoverageSpecifiedBy() {
 
     List<Rule> rspecRules = new ArrayList<Rule>();
     Rule rule = new Rule("Java");

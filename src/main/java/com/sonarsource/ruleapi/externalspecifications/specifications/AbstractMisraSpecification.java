@@ -8,7 +8,6 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.*;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
-import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractCodingStandard;
 import com.sonarsource.ruleapi.utilities.RuleException;
 
 import java.math.BigDecimal;
@@ -116,6 +115,10 @@ public abstract class AbstractMisraSpecification extends AbstractCodingStandard 
 
   protected void computeCoverage() {
 
+    if (totalRulesImplemented > 0) {
+      return;
+    }
+
     for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
       if (cov.getImplementedBy() != null) {
         if (isRuleMandatory(cov.getRule())) {
@@ -130,27 +133,15 @@ public abstract class AbstractMisraSpecification extends AbstractCodingStandard 
   }
 
   public float getMandatoryCoveragePercent() {
-    if (getMandatoryRulesToCoverCount() != 0) {
-      return round(mandatoryRulesImplemented * 100.0f / getMandatoryRulesToCoverCount());
-    } else {
-      return 0.0f;
-    }
+    return round(mandatoryRulesImplemented * 100.0f / getMandatoryRulesToCoverCount());
   }
 
   public float getOptionalCoveragePercent() {
-    if (getOptionalRulesToCoverCount() != 0) {
-      return round(optionalRulesImplemented * 100.0f / getOptionalRulesToCoverCount());
-    } else {
-      return 0.0f;
-    }
+    return round(optionalRulesImplemented * 100.0f / getOptionalRulesToCoverCount());
   }
 
   public float getTotalCoveragePercent() {
-    if (getCodingStandardRules().length != 0) {
-      return round(totalRulesImplemented * PERCENT_FACTOR / getCodingStandardRules().length);
-    } else {
-      return 0.0f;
-    }
+    return round(totalRulesImplemented * PERCENT_FACTOR / getCodingStandardRules().length);
   }
 
   public static float round(float d) {
