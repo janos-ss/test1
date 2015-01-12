@@ -4,13 +4,10 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.ruleapi.externalspecifications;
+package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.specifications.FindBugs;
-import com.sonarsource.ruleapi.externalspecifications.specifications.MisraC2004;
-import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
 import java.util.ArrayList;

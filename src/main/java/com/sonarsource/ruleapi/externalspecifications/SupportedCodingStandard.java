@@ -5,10 +5,7 @@
  */
 package com.sonarsource.ruleapi.externalspecifications;
 
-import com.sonarsource.ruleapi.externalspecifications.specifications.FindBugs;
-import com.sonarsource.ruleapi.externalspecifications.specifications.MisraC2004;
-import com.sonarsource.ruleapi.externalspecifications.specifications.MisraC2012;
-import com.sonarsource.ruleapi.externalspecifications.specifications.MisraCPP2008;
+import com.sonarsource.ruleapi.externalspecifications.specifications.*;
 
 public enum SupportedCodingStandard {
 

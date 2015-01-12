@@ -18,4 +18,14 @@ public class MisraC2004Test {
     assertThat(MisraC2004.Rules.values().length).isEqualTo(141);
   }
 
+  @Test
+  public void testIsRuleMandatory() {
+
+    MisraC2004 m4 = new MisraC2004();
+
+    assertThat(m4.isRuleMandatory(null)).isFalse();
+    assertThat(m4.isRuleMandatory("1.5")).isFalse();
+    assertThat(m4.isRuleMandatory("1.4")).isTrue();
+  }
+
 }

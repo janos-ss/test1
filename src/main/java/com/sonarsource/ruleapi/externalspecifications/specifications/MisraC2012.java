@@ -8,7 +8,6 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import java.util.List;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.AbstractMisraSpecification;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.fest.util.Strings;

@@ -7,7 +7,6 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.AbstractCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.Language;
@@ -22,6 +21,12 @@ public class FindBugs extends AbstractCodingStandard {
   private String standardName = "FindBugs";
   private String rspecFieldName = "FindBugs";
   private Language language = Language.JAVA;
+
+  protected int implementable = 0;
+  protected int skipped = 0;
+  protected int specified = 0;
+  protected int implemented = 0;
+
 
   public enum Rules implements CodingStandardRule {
     AM_CREATES_EMPTY_JAR_FILE_ENTRY(Implementability.REJECTED),
@@ -477,10 +482,27 @@ public class FindBugs extends AbstractCodingStandard {
 
     initCoverageResults();
 
-    int implementable = 0;
-    int skipped = 0;
-    int specified = 0;
-    int implemented = 0;
+    computeCoverage();
+
+    String linebreak = String.format("%n");
+
+    int count = Rules.values().length;
+    int unspecified = count - specified - skipped;
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(linebreak).append(standardName).append(linebreak);
+    sb.append(formatLine("FB rule count:", count, 100));
+    sb.append(formatLine("rejected:", skipped, ((float)skipped/count)*100));
+    sb.append(formatLine("implementable:", implementable, ((float)implementable/count)*100));
+    sb.append(linebreak).append("Of Implementable rules:").append(linebreak);
+    sb.append(formatLine("unspecified:", unspecified, ((float)unspecified/implementable)*100));
+    sb.append(formatLine("specified:", specified, ((float)specified/implementable)*100));
+    sb.append(formatLine("implemented:", implemented, ((float)implemented/implementable)*100));
+
+    return sb.toString();
+  }
+
+  protected void computeCoverage() {
 
     for (Rules rule : Rules.values()) {
       Implementability impl = rule.getImplementability();
@@ -502,23 +524,6 @@ public class FindBugs extends AbstractCodingStandard {
         specified ++;
       }
     }
-
-    String linebreak = String.format("%n");
-
-    int count = Rules.values().length;
-    int unspecified = count - specified - skipped;
-
-    StringBuilder sb = new StringBuilder();
-    sb.append(linebreak).append(standardName).append(linebreak);
-    sb.append(formatLine("FB rule count:", count, 100));
-    sb.append(formatLine("rejected:", skipped, ((float)skipped/count)*100));
-    sb.append(formatLine("implementable:", implementable, ((float)implementable/count)*100));
-    sb.append(linebreak).append("Of Implementable rules:").append(linebreak);
-    sb.append(formatLine("unspecified:", unspecified, ((float)unspecified/implementable)*100));
-    sb.append(formatLine("specified:", specified, ((float)specified/implementable)*100));
-    sb.append(formatLine("implemented:", implemented, ((float)implemented/implementable)*100));
-
-    return sb.toString();
   }
 
   protected String formatLine(String label, int count, float percentage) {

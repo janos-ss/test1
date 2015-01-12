@@ -4,9 +4,11 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.ruleapi.externalspecifications;
+package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.*;
+import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
+import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractCodingStandard;
 import com.sonarsource.ruleapi.utilities.RuleException;
 
 import java.math.BigDecimal;

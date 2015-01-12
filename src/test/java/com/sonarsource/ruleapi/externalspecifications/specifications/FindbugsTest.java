@@ -6,6 +6,8 @@
 
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.get.Fetcher;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -16,13 +18,39 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class FindbugsTest {
 
-  FindBugs fb = new FindBugs();
+  private static String FB_ID = "BC_IMPOSSIBLE_CAST";
 
   @Test
   public void testFormatLine() {
+
+    FindBugs fb = new FindBugs();
 
     String result = String.format("  yo                9   37.67%%%n");
     assertThat(fb.formatLine("yo", 9, (float)37.671293)).isEqualTo(result);
   }
 
+  @Test
+  public void testComputeCoverage(){
+    FindBugs fb = new FindBugs();
+
+    fb.populateRulesCoverageMap();
+    fb.computeCoverage();
+
+    assertThat(fb.implementable).isEqualTo(400);
+    assertThat(fb.skipped).isEqualTo(23);
+    assertThat(fb.specified).isEqualTo(0);
+    assertThat(fb.implemented).isEqualTo(0);
+
+    Rule rule = new Rule("Java");
+    List<String> ids = new ArrayList<String>();
+    ids.add(FB_ID);
+
+    fb.setCodingStandardRuleCoverageImplemented(ids,rule);
+    fb.setCodingStandardRuleCoverageSpecifiedBy(rule, ids);
+
+    fb.computeCoverage();
+    assertThat(fb.specified).isEqualTo(1);
+    assertThat(fb.implemented).isEqualTo(1);
+
+  }
 }

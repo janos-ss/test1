@@ -17,4 +17,13 @@ public class MisraC2012Test {
     assertThat(MisraC2012.Rules.values().length).isEqualTo(143);
   }
 
+  @Test
+  public void testIsRuleMandatory() {
+
+    MisraC2012 m12 = new MisraC2012();
+
+    assertThat(m12.isRuleMandatory(null)).isFalse();
+    assertThat(m12.isRuleMandatory("1.1")).isTrue();
+    assertThat(m12.isRuleMandatory("1.2")).isFalse();
+  }
 }

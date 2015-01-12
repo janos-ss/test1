@@ -17,4 +17,13 @@ public class MisraCPP2008Test {
     assertThat(MisraCPP2008.Rules.values().length).isEqualTo(228);
   }
 
+  @Test
+  public void testIsRuleMandatory() {
+
+    MisraCPP2008 m8 = new MisraCPP2008();
+
+    assertThat(m8.isRuleMandatory(null)).isFalse();
+    assertThat(m8.isRuleMandatory("0-3-1")).isFalse();
+    assertThat(m8.isRuleMandatory("0-1-1")).isTrue();
+  }
 }
