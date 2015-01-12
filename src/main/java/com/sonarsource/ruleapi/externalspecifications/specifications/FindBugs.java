@@ -350,7 +350,7 @@ public class FindBugs extends AbstractCodingStandard {
     SC_START_IN_CTOR(Implementability.IMPLEMENTABLE),
     SE_BAD_FIELD(Implementability.IMPLEMENTABLE),
     SE_BAD_FIELD_INNER_CLASS(Implementability.IMPLEMENTABLE),
-    SE_BAD_FIELD_STORE(Implementability.IMPLEMENTABLE),
+    SE_BAD_FIELD_STORE(Implementability.REJECTED),
     SE_COMPARATOR_SHOULD_BE_SERIALIZABLE(Implementability.IMPLEMENTABLE),
     SE_INNER_CLASS(Implementability.IMPLEMENTABLE),
     SE_METHOD_MUST_BE_PRIVATE(Implementability.IMPLEMENTABLE),
