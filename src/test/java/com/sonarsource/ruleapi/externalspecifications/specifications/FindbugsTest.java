@@ -25,12 +25,4 @@ public class FindbugsTest {
     assertThat(fb.formatLine("yo", 9, (float)37.671293)).isEqualTo(result);
   }
 
-  @Test
-  public void testFindBugsRegexKey() {
-
-    List<String> list = new ArrayList<String>();
-    list.add("DMI.*");
-
-    assertThat(fb.getExpandedStandardKeyList(list)).hasSize(26);
-  }
 }

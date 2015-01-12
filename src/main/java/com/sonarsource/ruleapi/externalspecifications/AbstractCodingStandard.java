@@ -57,17 +57,22 @@ public abstract class AbstractCodingStandard {
   protected void initCoverageResults() throws RuleException {
     if (rulesCoverage == null) {
 
-      rulesCoverage = new HashMap<String, CodingStandardRuleCoverage>();
+      populateRulesCoverageMap();
 
-      for (CodingStandardRule rule : getCodingStandardRules()) {
-        CodingStandardRuleCoverage cov = new CodingStandardRuleCoverage();
-        cov.setRule(rule.getCodingStandardRuleId());
-        rulesCoverage.put(rule.getCodingStandardRuleId(), cov);
-      }
-
-      findSpecifiedInRspec();
+      findSpecifiedInRspec(getRSpecRulesReferencingStandard());
 
       findImplementedByPlugin();
+    }
+  }
+
+  protected void populateRulesCoverageMap() {
+
+    rulesCoverage = new HashMap<String, CodingStandardRuleCoverage>();
+
+    for (CodingStandardRule rule : getCodingStandardRules()) {
+      CodingStandardRuleCoverage cov = new CodingStandardRuleCoverage();
+      cov.setRule(rule.getCodingStandardRuleId());
+      rulesCoverage.put(rule.getCodingStandardRuleId(), cov);
     }
   }
 
@@ -95,16 +100,15 @@ public abstract class AbstractCodingStandard {
     return expandedKeyList;
   }
 
-  protected void findSpecifiedInRspec() throws RuleException {
+  protected void findSpecifiedInRspec(List<Rule> rspecRules) throws RuleException {
 
-    List<Rule> rspecRules = getRSpecRulesReferencingStandard();
     for (Rule rspecRule : rspecRules) {
       List<String> ids = getStandardIdsFromRSpecRule(rspecRule);
-      setCodingStandardRuleCoverageSpecified(rspecRule, ids);
+      setCodingStandardRuleCoverageSpecifiedBy(rspecRule, ids);
     }
   }
 
-  protected void setCodingStandardRuleCoverageSpecified(Rule rspecRule, List<String> ids) {
+  protected void setCodingStandardRuleCoverageSpecifiedBy(Rule rspecRule, List<String> ids) {
 
     if (ids != null && ! ids.isEmpty()) {
       for (String id : ids) {
@@ -116,7 +120,7 @@ public abstract class AbstractCodingStandard {
     }
   }
 
-  private void findImplementedByPlugin() throws RuleException {
+  protected void findImplementedByPlugin() throws RuleException {
 
     List<Rule> sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(getLanguage(), RuleManager.NEMO);
 
@@ -130,7 +134,7 @@ public abstract class AbstractCodingStandard {
     }
   }
 
-  private void setCodingStandardRuleCoverageImplemented(List<String> ids, Rule rule) {
+  protected void setCodingStandardRuleCoverageImplemented(List<String> ids, Rule rule) {
 
     if (ids != null && ! ids.isEmpty()) {
       for (String id : ids) {

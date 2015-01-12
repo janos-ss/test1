@@ -53,13 +53,11 @@ public abstract class AbstractMisraSpecification extends AbstractCodingStandard 
 
     buff.append(getStandardName()).append(linebreak);
 
-    if (getOptionalRulesToCoverCount() > 0) {
-      buff.append("Mandatory:");
-      appendSummaryLine(buff, getMandatoryRulesToCoverCount(), mandatoryRulesImplemented, getMandatoryCoveragePercent(), indent, linebreak);
+    buff.append("Mandatory:");
+    appendSummaryLine(buff, getMandatoryRulesToCoverCount(), mandatoryRulesImplemented, getMandatoryCoveragePercent(), indent, linebreak);
 
-      buff.append("Optional:");
-      appendSummaryLine(buff, getOptionalRulesToCoverCount(), optionalRulesImplemented, getOptionalCoveragePercent(), indent, linebreak);
-    }
+    buff.append("Optional:");
+    appendSummaryLine(buff, getOptionalRulesToCoverCount(), optionalRulesImplemented, getOptionalCoveragePercent(), indent, linebreak);
 
     buff.append("Total:");
     appendSummaryLine(buff, getCodingStandardRules().length, totalRulesImplemented, getTotalCoveragePercent(), indent, "");
@@ -114,7 +112,7 @@ public abstract class AbstractMisraSpecification extends AbstractCodingStandard 
             .append(linebreak);
   }
 
-  private void computeCoverage() {
+  protected void computeCoverage() {
 
     for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
       if (cov.getImplementedBy() != null) {
@@ -148,14 +146,6 @@ public abstract class AbstractMisraSpecification extends AbstractCodingStandard 
   public float getTotalCoveragePercent() {
     if (getCodingStandardRules().length != 0) {
       return round(totalRulesImplemented * PERCENT_FACTOR / getCodingStandardRules().length);
-    } else {
-      return 0.0f;
-    }
-  }
-
-  public float getImplementedCoveragePercent() {
-    if (getCodingStandardRules().length != 0) {
-      return round(totalRulesImplemented * 100.0f / getCodingStandardRules().length);
     } else {
       return 0.0f;
     }
