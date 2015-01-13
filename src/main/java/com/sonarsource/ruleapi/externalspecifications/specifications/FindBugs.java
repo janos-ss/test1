@@ -123,8 +123,8 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
     DMI_USELESS_SUBSTRING(Implementability.IMPLEMENTABLE),
     DMI_USING_REMOVEALL_TO_CLEAR_COLLECTION(Implementability.IMPLEMENTABLE),
     DMI_VACUOUS_SELF_COLLECTION_CALL(Implementability.IMPLEMENTABLE),
-    DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED(Implementability.IMPLEMENTABLE),
-    DP_DO_INSIDE_DO_PRIVILEGED(Implementability.IMPLEMENTABLE),
+    DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED(Implementability.REJECTED),
+    DP_DO_INSIDE_DO_PRIVILEGED(Implementability.REJECTED),
     EC_ARRAY_AND_NONARRAY(Implementability.IMPLEMENTABLE),
     EC_BAD_ARRAY_COMPARE(Implementability.IMPLEMENTABLE),
     EC_INCOMPATIBLE_ARRAY_COMPARE(Implementability.IMPLEMENTABLE),
@@ -200,7 +200,7 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
     IL_CONTAINER_ADDED_TO_ITSELF(Implementability.IMPLEMENTABLE),
     IL_INFINITE_LOOP(Implementability.IMPLEMENTABLE),
     IL_INFINITE_RECURSIVE_LOOP(Implementability.IMPLEMENTABLE),
-    IM_AVERAGE_COMPUTATION_COULD_OVERFLOW(Implementability.IMPLEMENTABLE),
+    IM_AVERAGE_COMPUTATION_COULD_OVERFLOW(Implementability.REJECTED),
     IM_BAD_CHECK_FOR_ODD(Implementability.IMPLEMENTABLE),
     IM_MULTIPLYING_RESULT_OF_IREM(Implementability.IMPLEMENTABLE),
     IMA_INEFFICIENT_MEMBER_ACCESS(Implementability.REJECTED),
@@ -560,6 +560,7 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
     return Rules.values();
   }
 
+  @Override
   public String getDeprecationReport() throws RuleException {
 
     initCoverageResults();
