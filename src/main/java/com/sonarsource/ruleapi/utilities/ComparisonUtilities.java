@@ -20,7 +20,7 @@ public class ComparisonUtilities {
   }
 
 
-  public static int compareTextFunctionalEquivalence(String a, String b, boolean ignoreWhitespace) {
+  public static int compareTextFunctionalEquivalence(String a, String b) {
     if (a == null && b == null) {
       return 0;
     }
@@ -30,13 +30,13 @@ public class ComparisonUtilities {
     if (b == null) {
       return -1;
     }
-    if (isTextFunctionallyEquivalent(a, b, ignoreWhitespace)) {
+    if (isTextFunctionallyEquivalent(a, b)) {
       return 0;
     }
     return a.compareTo(b);
   }
 
-  public static boolean isTextFunctionallyEquivalent(String a, String b, boolean ignoreWhitespace) {
+  public static boolean isTextFunctionallyEquivalent(String a, String b) {
 
     if (a == null && b == null) {
       return true;
@@ -45,17 +45,13 @@ public class ComparisonUtilities {
       return false;
     }
 
-    return testTextFunctionalEquivalence(a, b, ignoreWhitespace);
+    return testTextFunctionalEquivalence(a, b);
   }
 
-  private static boolean testTextFunctionalEquivalence(String a, String b, boolean ignoreWhitespace) {
-    String aPrime = a;
-    String bPrime = b;
+  private static boolean testTextFunctionalEquivalence(String a, String b) {
 
-    if (ignoreWhitespace) {
-      aPrime = spaceOutHtmlAndCollapseWhitespace(aPrime);
-      bPrime = spaceOutHtmlAndCollapseWhitespace(bPrime);
-    }
+    String aPrime = spaceOutHtmlAndCollapseWhitespace(a);
+    String bPrime = spaceOutHtmlAndCollapseWhitespace(b);
 
     if (aPrime.equals(bPrime)) {
       return true;
@@ -65,10 +61,13 @@ public class ComparisonUtilities {
       return getFirstDifferingToken(aPrime, bPrime).length == 0;
     }
 
-    return aPrime.equals(bPrime);
+    return false;
   }
 
-  public static String[] getFirstDifferingToken(String rspec, String impl) {
+  public static String[] getFirstDifferingToken(String a, String b) {
+
+    String rspec = spaceOutHtmlAndCollapseWhitespace(a);
+    String impl = spaceOutHtmlAndCollapseWhitespace(b);
 
     List<String> rspecTokens = new ArrayList<String>(Arrays.asList(rspec.split(" ")));
     List<String> implTokens  = new ArrayList<String>(Arrays.asList(impl.split(" ")));
@@ -140,7 +139,8 @@ public class ComparisonUtilities {
 
   private static boolean isTokenCheckingIndicated(String aString, String bString) {
     String indicatesOptionsEntities = ".*[|\\[(&\"<>].+";
-
+boolean b1 = aString.matches(indicatesOptionsEntities);
+boolean b2 = bString.matches(indicatesOptionsEntities);
     return aString.matches(indicatesOptionsEntities) || bString.matches(indicatesOptionsEntities);
   }
 

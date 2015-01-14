@@ -316,31 +316,31 @@ public class RuleComparison{
   }
 
   protected int compareTitle() {
-    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getTitle(), impl.getTitle(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getTitle(), impl.getTitle());
   }
 
   protected int compareMessage() {
-    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getMessage(), impl.getMessage(), false);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getMessage(), impl.getMessage());
   }
 
   protected int compareDescription() {
-    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getDescription(), impl.getDescription(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getDescription(), impl.getDescription());
   }
 
   protected int compareNoncompliant() {
-    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getNonCompliant(), impl.getNonCompliant(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getNonCompliant(), impl.getNonCompliant());
   }
 
   protected int compareCompliant() {
-    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getCompliant(), impl.getCompliant(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getCompliant(), impl.getCompliant());
   }
 
   protected int compareException() {
-    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getExceptions(), impl.getExceptions(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getExceptions(), impl.getExceptions());
   }
 
   protected int compareReference() {
-    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getReferences(), impl.getReferences(), true);
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getReferences(), impl.getReferences());
   }
 
   protected int compareSqaleCharacteristic() {

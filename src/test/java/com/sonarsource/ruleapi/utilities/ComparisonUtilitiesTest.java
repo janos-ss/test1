@@ -16,25 +16,25 @@ public class ComparisonUtilitiesTest {
   public void testIsTextFunctionallyEquivalentEasy() throws Exception {
     String ruleTitle = "Methods should not be empty";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(ruleTitle, ruleTitle, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(ruleTitle, ruleTitle)).isTrue();
   }
 
   @Test
   public void testIsTextFunctionallyEquivalentBothNull () throws Exception {
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(null, null, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(null, null)).isTrue();
   }
 
   @Test
   public void testIsTextFunctionallyEquivalentOneNull () throws Exception {
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent("test", null, true)).isFalse();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent("test", null)).isFalse();
   }
 
   @Test
   public void testIsTextFunctionallyEquivalentOtherNull () throws Exception {
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(null, "test", true)).isFalse();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(null, "test")).isFalse();
   }
 
 
@@ -43,7 +43,7 @@ public class ComparisonUtilitiesTest {
     String ruleTitle = "Methods should not be empty";
     String specTitle = "[Methods|functions|procedures] should not be empty";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(ruleTitle, specTitle, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(ruleTitle, specTitle)).isTrue();
   }
 
   @Test
@@ -57,12 +57,12 @@ public class ComparisonUtilitiesTest {
             "Above a specific threshold, it is strongly advised to refactor into smaller module which focus on well-defined tasks.\n" +
             "Those smaller module will not only be easier to understand, but also probably easier to test.";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(specDescription, ruleDescription, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(specDescription, ruleDescription)).isTrue();
   }
 
   @Test
   public void testIsTextFunctionallyEquivalentFalse() throws Exception {
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent("Now is the time", "Four score and seven years ago", true)).isFalse();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent("Now is the time", "Four score and seven years ago")).isFalse();
   }
 
   @Test
@@ -75,8 +75,7 @@ public class ComparisonUtilitiesTest {
             "  should be used instead of <code>&lt;jsp:include page=\"...\" /&gt;</code>, which includes the page on the file, when the content is being served to the user.\n" +
             "</p>";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(s1, s2, true)).isTrue();
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(s1, s2, false)).isFalse();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(s1, s2)).isTrue();
   }
 
   @Test
@@ -87,10 +86,10 @@ public class ComparisonUtilitiesTest {
     String tooLong = "Variables should not be declared and then immediately returned on Sundays.";
     String different = "Vars should not be set and then immediately returned.";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, with, true)).isTrue();
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, without, true)).isTrue();
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, tooLong, true)).isFalse();
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, different, true)).isFalse();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, with)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, without)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, tooLong)).isFalse();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, different)).isFalse();
   }
 
   @Test
@@ -99,8 +98,8 @@ public class ComparisonUtilitiesTest {
     String match = "Nested <code>IF</code>, <code>CASE</code>, <code>DO</code>, <code>LOOP</code>, <code>SELECT</code>, <code>WHILE</code> and <code>PROVIDE</code> statements is a key ingredient for making what's known as \"Spaghetti code\".";
     String wrong = "Nested <code>IF</code>, <code>CASE</code>, <code>DO</code>, <code>LOOP</code>, <code>SELECT</code>, and <code>PROVIDE</code> statements is a key ingredient for making what's known as \"Spaghetti code\".";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, match, true)).isTrue();
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, wrong, true)).isFalse();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, match)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, wrong)).isFalse();
   }
 
   @Test
@@ -126,7 +125,7 @@ public class ComparisonUtilitiesTest {
             "Changes and further development, which may be incompatible, may occur at any time, without warning or notice!\n" +
             "</blockquote>";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl)).isTrue();
   }
 
   @Test
@@ -154,7 +153,7 @@ public class ComparisonUtilitiesTest {
             "  endtry.\n" +
             "</pre>\n";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl)).isTrue();
   }
 
   @Test
@@ -179,7 +178,7 @@ public class ComparisonUtilitiesTest {
             "      `  PRIMARY KEY (val1) )` ).\n" +
             "</pre>\n";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl)).isTrue();
   }
 
   @Test
@@ -194,7 +193,7 @@ public class ComparisonUtilitiesTest {
   public void testCompareFunctionalEquivalence() {
 
     String test = "test";
-    assertThat(ComparisonUtilities.compareTextFunctionalEquivalence(null, test, true)).isEqualTo(1);
+    assertThat(ComparisonUtilities.compareTextFunctionalEquivalence(null, test)).isEqualTo(1);
   }
 
   @Test
@@ -230,7 +229,7 @@ public class ComparisonUtilitiesTest {
             "}\n" +
             "</pre>";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl)).isTrue();
 
   }
 
@@ -251,7 +250,7 @@ public class ComparisonUtilitiesTest {
             "  <li>it places the responsibility of setting the value to use in production on the shoulders of the developer</li>\n" +
             "</ul>\n";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl)).isTrue();
   }
 
   @Test
@@ -289,7 +288,7 @@ public class ComparisonUtilitiesTest {
             "}\n" +
             "</pre>";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl)).isTrue();
 
   }
 
@@ -299,7 +298,7 @@ public class ComparisonUtilitiesTest {
     String rspec = "<p>Having a class and some of its methods sharing the same name is misleading, and leaves others to wonder whether it was done that way on purpose, or was the methods supposed to be a constructor.</p>\n";
     String impl = "Having a class and some of its methods sharing the same name is misleading, and leaves others to wonder whether it was done that way on purpose, or was the methods supposed to be a constructor.\n";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl)).isTrue();
   }
 
   @Test
@@ -308,7 +307,7 @@ public class ComparisonUtilitiesTest {
     String rspec = "Unused (private fields|variables) should be removed";
     String impl = "Unused private fields should be removed";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl, true)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl)).isTrue();
   }
 
 }

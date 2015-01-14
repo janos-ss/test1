@@ -6,7 +6,6 @@
 package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import org.junit.Test;
 
 import java.util.*;

@@ -54,7 +54,7 @@ public class Parameter implements Comparable<Parameter> {
     if (result != 0) {
       return result;
     }
-    result = ComparisonUtilities.compareTextFunctionalEquivalence(description, parameter.getDescription(), true);
+    result = ComparisonUtilities.compareTextFunctionalEquivalence(description, parameter.getDescription());
     if (result != 0) {
       return result;
     }
@@ -93,7 +93,7 @@ public class Parameter implements Comparable<Parameter> {
     if (defaultVal != null ? !defaultVal.equals(parameter.defaultVal) : parameter.defaultVal != null) {
       return false;
     }
-    if (!ComparisonUtilities.isTextFunctionallyEquivalent(description, parameter.description, true)) {
+    if (!ComparisonUtilities.isTextFunctionallyEquivalent(description, parameter.description)) {
       return false;
     }
     if (!key.equals(parameter.key)) {
