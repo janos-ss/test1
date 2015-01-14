@@ -9,6 +9,7 @@ import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
+import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.domain.RuleException;
 
@@ -478,9 +479,21 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
   }
 
   @Override
+  public String getReport(String instance) throws RuleException {
+
+    return getReport(instance);
+  }
+
+  @Override
   public String getSummaryReport() throws RuleException {
 
-    initCoverageResults();
+    return getSummaryReport(RuleManager.NEMO);
+  }
+
+  @Override
+  public String getSummaryReport(String instance) throws RuleException {
+
+    initCoverageResults(instance);
     computeCoverage();
 
     String linebreak = String.format("%n");
@@ -563,7 +576,13 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
   @Override
   public String getDeprecationReport() throws RuleException {
 
-    initCoverageResults();
+    return getDeprecationReport(RuleManager.NEMO);
+  }
+
+  @Override
+  public String getDeprecationReport(String instance) throws RuleException {
+
+    initCoverageResults(instance);
     StringBuilder sb = new StringBuilder();
 
     for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {

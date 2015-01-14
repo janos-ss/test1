@@ -11,16 +11,20 @@ import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.get.RuleMaker;
-import com.sonarsource.ruleapi.services.RuleManager;
 
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.domain.RuleException;
+import org.fest.util.Strings;
 
 public abstract class AbstractCodingStandard {
 
   public abstract String getReport() throws RuleException;
 
+  public abstract String getReport(String instance) throws RuleException;
+
   public abstract String getSummaryReport() throws RuleException;
+
+  public abstract String getSummaryReport(String instance) throws RuleException;
 
   public abstract String getStandardName();
 
@@ -36,6 +40,7 @@ public abstract class AbstractCodingStandard {
 
 
   private Map<String, CodingStandardRuleCoverage> rulesCoverage = null;
+  private String lastInstance = null;
 
 
   public List<Rule> getRSpecRulesReferencingStandard() throws RuleException {
@@ -55,14 +60,15 @@ public abstract class AbstractCodingStandard {
     return rulesCoverage;
   }
 
-  protected void initCoverageResults() throws RuleException {
-    if (rulesCoverage == null) {
+  protected void initCoverageResults(String instance) throws RuleException {
+    if (rulesCoverage == null || !(Strings.isNullOrEmpty(instance) || instance.equals(this.lastInstance))) {
+      this.lastInstance = instance;
 
       populateRulesCoverageMap();
 
       findSpecifiedInRspec(getRSpecRulesReferencingStandard());
 
-      findImplementedByPlugin();
+      findImplementedByPlugin(instance);
     }
   }
 
@@ -121,17 +127,20 @@ public abstract class AbstractCodingStandard {
     }
   }
 
-  protected void findImplementedByPlugin() throws RuleException {
+  protected void findImplementedByPlugin(String instance) throws RuleException {
 
-    List<Rule> sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(getLanguage(), RuleManager.NEMO);
+    if (instance != null) {
 
-    for (Rule sqRule : sqImplemented) {
-      String key = sqRule.getKey();
+      List<Rule> sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(getLanguage(), instance);
 
-      Rule rspecRule = RuleMaker.getRuleByKey(key, getLanguage().getSq());
-      List<String> ids = getExpandedStandardKeyList(getStandardIdsFromRSpecRule(rspecRule));
+      for (Rule sqRule : sqImplemented) {
+        String key = sqRule.getKey();
 
-      setCodingStandardRuleCoverageImplemented(ids, sqRule);
+        Rule rspecRule = RuleMaker.getRuleByKey(key, getLanguage().getSq());
+        List<String> ids = getExpandedStandardKeyList(getStandardIdsFromRSpecRule(rspecRule));
+
+        setCodingStandardRuleCoverageImplemented(ids, sqRule);
+      }
     }
   }
 

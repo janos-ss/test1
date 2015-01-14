@@ -9,6 +9,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.*;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.domain.RuleException;
+import com.sonarsource.ruleapi.services.RuleManager;
 
 import java.math.BigDecimal;
 
@@ -34,7 +35,13 @@ public abstract class AbstractMisraSpecification extends AbstractCodingStandard 
   @Override
   public String getReport() throws RuleException {
 
-    initCoverageResults();
+    return getReport(RuleManager.NEMO);
+  }
+
+  @Override
+  public String getReport(String instance) throws RuleException {
+
+    initCoverageResults(instance);
     computeCoverage();
     return generateReport();
   }
@@ -42,7 +49,13 @@ public abstract class AbstractMisraSpecification extends AbstractCodingStandard 
   @Override
   public String getSummaryReport() throws RuleException {
 
-    initCoverageResults();
+    return getSummaryReport(RuleManager.NEMO);
+  }
+
+  @Override
+  public String getSummaryReport(String instance) throws RuleException {
+
+    initCoverageResults(instance);
     computeCoverage();
     return generateSummary();
   }

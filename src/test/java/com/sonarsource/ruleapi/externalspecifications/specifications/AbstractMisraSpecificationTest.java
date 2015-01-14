@@ -26,8 +26,8 @@ public class AbstractMisraSpecificationTest {
     String summaryReport = "";
     String report = "";
     try {
-      summaryReport = c4.getSummaryReport();
-      report = c4.getReport();
+      summaryReport = c4.getSummaryReport(null);
+      report = c4.getReport(null);
     } catch (RuleException e) {
       e.printStackTrace();
     }
@@ -63,8 +63,8 @@ public class AbstractMisraSpecificationTest {
     String summaryReport = "";
     String report = "";
     try {
-      summaryReport = c4.getSummaryReport();
-      report = c4.getReport();
+      summaryReport = c4.getSummaryReport(null);
+      report = c4.getReport(null);
     } catch (RuleException e) {
       e.printStackTrace();
     }
