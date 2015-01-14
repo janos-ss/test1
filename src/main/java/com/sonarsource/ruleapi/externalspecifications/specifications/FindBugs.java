@@ -481,7 +481,7 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
   @Override
   public String getReport(String instance) throws RuleException {
 
-    return getReport(instance);
+    return getSummaryReport(instance);
   }
 
   @Override
