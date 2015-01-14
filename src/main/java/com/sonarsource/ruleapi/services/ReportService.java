@@ -23,7 +23,7 @@ public class ReportService extends RuleManager {
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
 
 
-  public static void getSummaryCoverageReports() throws RuleException {
+  public void getSummaryCoverageReports() throws RuleException {
 
     StringBuilder sb = new StringBuilder();
     for (SupportedCodingStandard standard : SupportedCodingStandard.values()) {
@@ -32,27 +32,27 @@ public class ReportService extends RuleManager {
     LOGGER.info(sb.toString());
   }
 
-  public static void getFindBugsCoverageReport() throws RuleException {
+  public void getFindBugsCoverageReport() throws RuleException {
 
     LOGGER.info(SupportedCodingStandard.FINDBUGS.getCodingStandard().getReport());
   }
 
-  public static void getFindBugsDeprecationReport() throws RuleException {
+  public void getFindBugsDeprecationReport() throws RuleException {
 
     LOGGER.info(((ExternalTool)SupportedCodingStandard.FINDBUGS.getCodingStandard()).getDeprecationReport());
   }
 
-  public static void getMisraC2004CoverageReport() throws RuleException {
+  public void getMisraC2004CoverageReport() throws RuleException {
 
     LOGGER.info(SupportedCodingStandard.MISRA_C_2004.getCodingStandard().getReport());
   }
 
-  public static void getMisraC2012CoverageReport() throws RuleException {
+  public void getMisraC2012CoverageReport() throws RuleException {
 
     LOGGER.info(SupportedCodingStandard.MISRA_C_2012.getCodingStandard().getReport());
   }
 
-  public static void getMisraCpp2008CoverageReport() throws RuleException {
+  public void getMisraCpp2008CoverageReport() throws RuleException {
 
     LOGGER.info(SupportedCodingStandard.MISRA_CPP_2008.getCodingStandard().getReport());
   }
