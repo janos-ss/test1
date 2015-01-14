@@ -139,8 +139,6 @@ public class ComparisonUtilities {
 
   private static boolean isTokenCheckingIndicated(String aString, String bString) {
     String indicatesOptionsEntities = ".*[|\\[(&\"<>].+";
-boolean b1 = aString.matches(indicatesOptionsEntities);
-boolean b2 = bString.matches(indicatesOptionsEntities);
     return aString.matches(indicatesOptionsEntities) || bString.matches(indicatesOptionsEntities);
   }
 
