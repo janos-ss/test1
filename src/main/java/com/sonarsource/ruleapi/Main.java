@@ -34,22 +34,38 @@ public class Main {
     Settings settings = new Settings();
     new JCommander(settings, args);
 
-    List<Option> options = new ArrayList<Option>();
-    for (String str : settings.option) {
-
-      Option option = Option.fromString(str);
-      if (option == null) {
-        option = Option.REPORTS;
-      }
-      if (! options.contains(option)) {
-        options.add(option);
-      }
+    if (settings.help) {
+      printHelpMessage();
+      return;
     }
 
-    for (Option option : options) {
-      doRequestedOption(option, settings);
+    if (settings.option != null && !settings.option.isEmpty()){
 
+      List<Option> options = new ArrayList<Option>();
+      for (String str : settings.option) {
+
+        Option option = Option.fromString(str);
+        if (! options.contains(option)) {
+          options.add(option);
+        }
+      }
+
+      for (Option option : options) {
+        doRequestedOption(option, settings);
+
+      }
     }
+  }
+
+  protected static void printHelpMessage() {
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("\nUSAGE: option [-parameter paramValue]\n\n");
+    sb.append("OPTIONS:\n");
+    for (Option option : Option.values()) {
+      sb.append("  ").append(option.name().toLowerCase()).append(": ").append(option.description).append("\n");
+    }
+    LOGGER.info(sb.toString());
   }
 
   protected static void doRequestedOption(Option option, Settings settings) {
@@ -59,7 +75,8 @@ public class Main {
     if (option != Option.REPORTS) {
 
       if (Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password)) {
-        throw new ParameterException("-login and -password required for integrity option");
+        printHelpMessage();
+        return;
       }
       enforcer = new IntegrityEnforcementService();
     }
@@ -75,9 +92,12 @@ public class Main {
           break;
 
         case REPORTS:
-        default:
           ReportService rs = new ReportService();
           rs.getReports(settings.instance);
+          break;
+
+        default:
+          printHelpMessage();
           break;
 
       }
@@ -88,6 +108,9 @@ public class Main {
 
 
   public static class Settings{
+
+    @Parameter(names = "--help", help = true)
+    private boolean help;
 
     @Parameter(required = true)
     private List<String> option;
@@ -104,7 +127,15 @@ public class Main {
   }
 
   public enum Option {
-    REPORTS, OUTDATED, INTEGRITY;
+    REPORTS("Generates all reports based on Nemo or instance specified with optional -instance parameter."),
+    OUTDATED("Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
+    INTEGRITY("RSpec internal integrity check. Requires -login and -password parameters.");
+
+    private String description;
+
+    Option(String description) {
+      this.description = description;
+    }
 
     public static Option fromString(String input) {
 
