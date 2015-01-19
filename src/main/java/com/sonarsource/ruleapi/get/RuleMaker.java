@@ -100,7 +100,7 @@ public class RuleMaker {
 
       List<JSONObject> jsonActiveRules = fetcher.fetchRulesFromSonarQube(instance, SONARQUBE_PROFILE_QUERY + sonarQubeDefaultProfileKey);
       for (JSONObject jsonRule : jsonActiveRules) {
-        String key = normalizeKey((String) jsonRule.get("internalKey"));
+        String key = normalizeKey((String) jsonRule.get("key"));
 
         Rule rule = ruleMap.remove(key);
         if (rule != null) {
@@ -297,7 +297,7 @@ public class RuleMaker {
 
   protected static String normalizeKey(String key) {
 
-    return key.replaceAll("^S0*(\\d+)$", "RSPEC-$1");
+    return key.replaceAll("^(.+:)?S0*(\\d+)$", "RSPEC-$2");
   }
 
   protected static boolean isKeyNormal(String key) {
