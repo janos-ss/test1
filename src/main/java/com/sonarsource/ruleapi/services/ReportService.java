@@ -6,6 +6,9 @@
 
 package com.sonarsource.ruleapi.services;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -22,46 +25,75 @@ public class ReportService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
 
+  public void getReports(String instance) throws RuleException {
 
-  public void getSummaryCoverageReports() throws RuleException {
+    getOutdatedRulesReports(instance);
+    getFindBugsDeprecationReport(instance);
+    getSummaryCoverageReports(instance);
+    getMisraDetailedCoverageReports(instance);
+
+  }
+
+  public void getSummaryCoverageReports(String instance) throws RuleException {
+
+    LOGGER.info("Getting summary coverage report  on " + instance);
+
 
     StringBuilder sb = new StringBuilder();
     for (SupportedCodingStandard standard : SupportedCodingStandard.values()) {
-      sb.append(standard.getCodingStandard().getSummaryReport()).append("\n\n");
+      sb.append(standard.getCodingStandard().getSummaryReport(instance)).append("\n\n");
     }
-    LOGGER.info(sb.toString());
+    writeFile("SummaryCoverageReports.txt", sb.toString());
+
   }
 
-  public void getFindBugsCoverageReport() throws RuleException {
+  public void getMisraDetailedCoverageReports(String instance) throws RuleException {
 
-    LOGGER.info(SupportedCodingStandard.FINDBUGS.getCodingStandard().getReport());
+    for (SupportedCodingStandard standard : SupportedCodingStandard.values()) {
+
+      if (standard.getCodingStandard() instanceof AbstractMisraSpecification) {
+
+        AbstractMisraSpecification misra = (AbstractMisraSpecification) standard.getCodingStandard();
+
+        LOGGER.info("Getting detailed coverage report for " + misra.getStandardName() + " on " + instance);
+
+        writeFile(misra.getStandardName().concat("Coverage.txt"), standard.getCodingStandard().getReport(instance));
+      }
+    }
   }
 
-  public void getFindBugsDeprecationReport() throws RuleException {
+  private void writeFile(String fileName, String content) throws RuleException {
+    PrintWriter writer = null;
+    try {
+      writer = new PrintWriter(fileName, "UTF-8");
+      writer.println(content);
+      writer.close();
+    } catch (FileNotFoundException e) {
+      throw new RuleException(e);
+    } catch (UnsupportedEncodingException e) {
+      throw new RuleException(e);
+    }
 
-    LOGGER.info(((ExternalTool)SupportedCodingStandard.FINDBUGS.getCodingStandard()).getDeprecationReport());
   }
 
-  public void getMisraC2004CoverageReport() throws RuleException {
+  public void getFindBugsDeprecationReport(String instance) throws RuleException {
+    LOGGER.info("Getting Findbugs deprecation report on " + instance);
 
-    LOGGER.info(SupportedCodingStandard.MISRA_C_2004.getCodingStandard().getReport());
+    writeFile("DeprecatedFindBugsIds.txt",
+            ((ExternalTool) SupportedCodingStandard.FINDBUGS.getCodingStandard()).getDeprecationReport(instance));
   }
 
-  public void getMisraC2012CoverageReport() throws RuleException {
+  public void getOutdatedRulesReports(String instance) throws RuleException {
 
-    LOGGER.info(SupportedCodingStandard.MISRA_C_2012.getCodingStandard().getReport());
-  }
+    for (Language language : Language.values()) {
+      getOutdatedRulesReport(language, instance);
+    }
 
-  public void getMisraCpp2008CoverageReport() throws RuleException {
-
-    LOGGER.info(SupportedCodingStandard.MISRA_CPP_2008.getCodingStandard().getReport());
-  }
-
-  public void getOutdatedRulesReport(Language language) throws RuleException {
-    getOutdatedRulesReport(language, NEMO);
   }
 
   public void getOutdatedRulesReport(Language language, String instance) throws RuleException {
+
+    LOGGER.info("Getting outdated rules report for " + language.getRspec() + " on " + instance);
 
     List<Rule> rspec = getCoveredRulesForLangauge(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
@@ -71,6 +103,7 @@ public class ReportService extends RuleManager {
 
     int notAlike = 0;
     StringBuilder sb = new StringBuilder();
+    sb.append("\nOn ").append(instance).append("\n");
     for (Rule sqRule : sqCovered) {
 
       if (specNotFoundForLegacyKey.contains(sqRule)) {
@@ -91,11 +124,14 @@ public class ReportService extends RuleManager {
       }
     }
     if (sb.length() > 0 && notAlike > 0) {
-      sb.append("\n\n").append(notAlike).append(" different out of ").append(sqCovered.size());
-      sb.insert(0,"\nDifferences Found:\n");
-      LOGGER.warning(sb.toString());
+      sb.insert(0, sqCovered.size());
+      sb.insert(0, " different out of ");
+      sb.insert(0, notAlike);
+
+      writeFile(language.getSq().concat("OutdatedRules.txt"), sb.toString());
+
     } else {
-      LOGGER.info("No differences found");
+      writeFile(language.getSq().concat("OutdatedRules.txt"), "No differences found");
     }
   }
 
