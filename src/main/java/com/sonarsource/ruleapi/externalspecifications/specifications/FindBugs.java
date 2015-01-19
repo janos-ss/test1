@@ -29,7 +29,7 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
   protected int implemented = 0;
 
 
-  public enum Rules implements CodingStandardRule {
+  public enum StandardRule implements CodingStandardRule {
     AM_CREATES_EMPTY_JAR_FILE_ENTRY(Implementability.REJECTED),
     AM_CREATES_EMPTY_ZIP_FILE_ENTRY(Implementability.REJECTED),
     AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION(Implementability.IMPLEMENTABLE),
@@ -456,7 +456,7 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
 
     private Implementability ability;
 
-    Rules (Implementability ability) {
+    StandardRule(Implementability ability) {
 
       this.ability = ability;
     }
@@ -498,7 +498,7 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
 
     String linebreak = String.format("%n");
 
-    int count = Rules.values().length;
+    int count = StandardRule.values().length;
     int unspecified = count - specified - skipped;
 
     StringBuilder sb = new StringBuilder();
@@ -516,8 +516,8 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
 
   protected void computeCoverage() {
 
-    for (Rules rule : Rules.values()) {
-      Implementability impl = rule.getImplementability();
+    for (StandardRule standardRule : StandardRule.values()) {
+      Implementability impl = standardRule.getImplementability();
       if (impl.equals(Implementability.IMPLEMENTABLE)) {
         implementable ++;
       } else if (impl.equals(Implementability.REJECTED)) {
@@ -570,13 +570,7 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
   @Override
   public CodingStandardRule[] getCodingStandardRules() {
 
-    return Rules.values();
-  }
-
-  @Override
-  public String getDeprecationReport() throws RuleException {
-
-    return getDeprecationReport(RuleManager.NEMO);
+    return StandardRule.values();
   }
 
   @Override

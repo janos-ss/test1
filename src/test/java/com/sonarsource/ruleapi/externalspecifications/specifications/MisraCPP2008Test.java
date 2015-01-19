@@ -14,7 +14,7 @@ public class MisraCPP2008Test {
   @Test
   public void numberOfMisraCPP2008RulesIs228() throws Exception {
 
-    assertThat(MisraCPP2008.Rules.values().length).isEqualTo(228);
+    assertThat(MisraCPP2008.StandardRule.values().length).isEqualTo(228);
   }
 
   @Test

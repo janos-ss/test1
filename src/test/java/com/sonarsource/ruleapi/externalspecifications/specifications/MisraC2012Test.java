@@ -14,7 +14,7 @@ public class MisraC2012Test {
   @Test
   public void numberOfMisraC2012RulesIs143() throws Exception {
 
-    assertThat(MisraC2012.Rules.values().length).isEqualTo(143);
+    assertThat(MisraC2012.StandardRule.values().length).isEqualTo(143);
   }
 
   @Test

@@ -21,7 +21,8 @@ public class MisraC2004 extends AbstractMisraSpecification {
   private int mandatoryRulesToCover = 0;
   private int optionalRulesToCover = 0;
 
-  public enum Rules implements CodingStandardRule {
+  public enum StandardRule implements CodingStandardRule {
+
     MISRAC2004_1POINT1 ("1.1", Boolean.TRUE, Boolean.TRUE),
     MISRAC2004_1POINT2 ("1.2", Boolean.TRUE, Boolean.TRUE),
     MISRAC2004_1POINT3 ("1.3", Boolean.TRUE, Boolean.TRUE),
@@ -188,7 +189,7 @@ public class MisraC2004 extends AbstractMisraSpecification {
     private Boolean isMandatory;
     private Boolean isCoverable;
 
-    Rules (String name, Boolean isMandatory, Boolean isCoverable) {
+    StandardRule(String name, Boolean isMandatory, Boolean isCoverable) {
       this.name = name;
       this.isMandatory = isMandatory;
       this.isCoverable = isCoverable;
@@ -202,8 +203,8 @@ public class MisraC2004 extends AbstractMisraSpecification {
 
   public MisraC2004(){
 
-    for (Rules rule : Rules.values()) {
-      if (rule.isMandatory) {
+    for (StandardRule standardRule : StandardRule.values()) {
+      if (standardRule.isMandatory) {
         mandatoryRulesToCover++;
       } else {
         optionalRulesToCover++;
@@ -213,7 +214,7 @@ public class MisraC2004 extends AbstractMisraSpecification {
 
   @Override
   public CodingStandardRule[] getCodingStandardRules() {
-    return Rules.values();
+    return StandardRule.values();
   }
 
   @Override
@@ -221,9 +222,9 @@ public class MisraC2004 extends AbstractMisraSpecification {
     if (Strings.isNullOrEmpty(ruleKey)) {
       return false;
     }
-    for (Rules rule : Rules.values() ) {
-      if (rule.getCodingStandardRuleId().equals(ruleKey)) {
-        return rule.isMandatory;
+    for (StandardRule standardRule : StandardRule.values() ) {
+      if (standardRule.getCodingStandardRuleId().equals(ruleKey)) {
+        return standardRule.isMandatory;
       }
     }
     return false;

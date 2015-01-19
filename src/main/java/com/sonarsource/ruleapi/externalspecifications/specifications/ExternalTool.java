@@ -9,8 +9,6 @@ import com.sonarsource.ruleapi.domain.RuleException;
 
 public interface ExternalTool {
 
-  String getDeprecationReport() throws RuleException;
-
   String getDeprecationReport(String instance) throws RuleException;
 
 }
