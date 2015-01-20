@@ -8,7 +8,6 @@ package com.sonarsource.ruleapi;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.services.ReportService;
@@ -85,7 +84,7 @@ public class Main {
       switch (option) {
         case OUTDATED :
           enforcer.setCoveredAndOutdatedLanguages(settings.login, settings.password);
-         break;
+          break;
 
         case INTEGRITY :
           enforcer.enforceCwe(settings.login, settings.password);
