@@ -30,6 +30,11 @@ public class Main {
 
   public static void main(String [] args) {
 
+    if (args.length == 0) {
+      printHelpMessage();
+      return;
+    }
+
     Settings settings = new Settings();
     new JCommander(settings, args);
 
@@ -53,6 +58,8 @@ public class Main {
         doRequestedOption(option, settings);
 
       }
+    } else {
+      printHelpMessage();
     }
   }
 
