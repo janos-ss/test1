@@ -10,6 +10,7 @@ import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.domain.RuleException;
+import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

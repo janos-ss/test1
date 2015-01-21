@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sonarsource.ruleapi.get.MarkdownConverter;
 import org.fest.util.Strings;
 
 public class ComparisonUtilities {
