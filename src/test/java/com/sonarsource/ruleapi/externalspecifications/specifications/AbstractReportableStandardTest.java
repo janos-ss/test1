@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -88,5 +89,26 @@ public class AbstractReportableStandardTest {
     fb.setCodingStandardRuleCoverageImplemented(findBugsIds, rule);
     assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).isEqualTo(rule);
 
+  }
+
+  @Test
+  public void testFindSpecifiedInRspec() {
+
+    List<Rule> rules = new ArrayList<Rule>();
+    Rule rule = new Rule("C");
+    rule.setMisraC04(new ArrayList<String>());
+    rule.getMisraC04().add("1.1");
+    rule.getMisraC04().add("1.2");
+
+    rules.add(rule);
+
+    MisraC2004 misraC2004 = new MisraC2004();
+    misraC2004.populateRulesCoverageMap();
+    misraC2004.findSpecifiedInRspec(rules);
+
+    Map<String,CodingStandardRuleCoverage> coverageMap = misraC2004.getRulesCoverage();
+    assertThat(coverageMap.get("1.1").getSpecifiedBy()).isEqualTo(rule);
+    assertThat(coverageMap.get("1.2").getSpecifiedBy()).isEqualTo(rule);
+    assertThat(coverageMap.get("1.3").getSpecifiedBy()).isNull();
   }
 }
