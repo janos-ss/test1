@@ -94,7 +94,7 @@ public class Main {
           break;
 
         case INTEGRITY :
-          enforcer.enforceCwe(settings.login, settings.password);
+          enforcer.enforceTagReferenceIntegrity(settings.login, settings.password);
           break;
 
         case REPORTS:

@@ -12,7 +12,9 @@ public enum SupportedCodingStandard {
   MISRA_C_2004(new MisraC2004()),
   MISRA_C_2012(new MisraC2012()),
   MISRA_CPP_2008(new MisraCPP2008()),
-  FINDBUGS(new FindBugs());
+  FINDBUGS(new FindBugs()),
+  CWE(new Cwe()),
+  OWASP(new OwaspTopTen());
 
 
   private AbstractCodingStandard codingStandard;

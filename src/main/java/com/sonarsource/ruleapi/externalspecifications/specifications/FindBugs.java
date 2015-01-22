@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public class FindBugs extends AbstractCodingStandard implements ExternalTool {
+public class FindBugs extends AbstractReportableStandard implements ExternalTool {
 
   private String standardName = "FindBugs";
   private String rspecFieldName = "FindBugs";
@@ -558,12 +558,12 @@ public class FindBugs extends AbstractCodingStandard implements ExternalTool {
   }
 
   @Override
-  public List<String> getStandardIdsFromRSpecRule(Rule rule) {
+  public List<String> getRspecReferenceFieldValues(Rule rule) {
     return rule.getFindbugs();
   }
 
   @Override
-  public void setStandardIdsInRSpecRule(Rule rule, List<String> ids) {
+  public void setRspecReferenceFieldValues(Rule rule, List<String> ids) {
     rule.setFindbugs(ids);
   }
 

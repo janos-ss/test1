@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
+import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractTaggableStandard;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.Language;
@@ -23,10 +25,6 @@ import com.sonarsource.ruleapi.domain.RuleException;
 public class IntegrityEnforcementService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(IntegrityEnforcementService.class.getName());
-
-  private static final String CWE = "CWE";
-  private static final String CWE_TAG = "cwe";
-  private static final String CWE_PATTERN = "CWE-\\d+";
 
 
   public void setCoveredAndOutdatedLanguages(String login, String password) throws RuleException {
@@ -121,46 +119,57 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  public void enforceCwe(String login, String password) throws RuleException {
+  public void enforceTagReferenceIntegrity(String login, String password) throws RuleException {
 
-    List<Rule> rules = RuleMaker.getRulesByJql("CWE is not EMPTY OR description ~ CWE OR labels = CWE", "");
-    for (Rule rule : rules) {
+    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
 
-      boolean tagPresent = isTagPresent(rule, CWE_TAG);
-      List<String> references = getSpecificReferences(rule, CWE);
-      List<String> cweField = rule.getCwe();
-
-      if (!tagPresent || references.isEmpty() || cweField.isEmpty()) {
-
-        Map<String, Object> updates = getCweUpdates(rule, tagPresent, references, cweField);
-
-        if (! updates.isEmpty()) {
-          RuleUpdater.updateRule(rule.getKey(), updates, login, password);
-        }
+      if (supportedStandard.getCodingStandard() instanceof  AbstractTaggableStandard) {
+        AbstractTaggableStandard taggableStandard = (AbstractTaggableStandard)supportedStandard.getCodingStandard();
+        enforceTagReferenceIntegrity(login, password, taggableStandard);
       }
     }
   }
 
-  protected Map<String, Object> getCweUpdates(Rule rule, boolean tagPresent, List<String> references,
-                                              List<String> cweField) {
+  public void enforceTagReferenceIntegrity(String login, String password, AbstractTaggableStandard taggable) throws RuleException {
+
+    List<Rule> rules = RuleMaker.getRulesByJql(
+            taggable.getRSpecReferenceFieldName() + " is not EMPTY OR description ~ '" +
+                    taggable.getSeeSectionSearchString() + "' OR labels = " + taggable.getTag(),
+            "");
+
+    for (Rule rule : rules) {
+
+      Map<String, Object> updates = getUpdates(rule, taggable);
+      if (! updates.isEmpty()) {
+        RuleUpdater.updateRule(rule.getKey(), updates, login, password);
+      }
+    }
+  }
+
+  protected Map<String, Object> getUpdates(Rule rule, AbstractTaggableStandard taggable) {
 
     Map<String, Object> updates = new HashMap<String, Object>();
 
-    List<String> cweFieldValues = cweField;
-    if (!isCweFieldEntryFormatValid(cweFieldValues, updates, rule)) {
-      cweFieldValues = rule.getCwe();
+    List<String> seeSectionReferences = getSpecificReferences(rule, taggable.getSeeSectionSearchString());
+    List<String> referenceFieldValues = taggable.getRspecReferenceFieldValues(rule);
+
+    if (seeSectionReferences.isEmpty() && referenceFieldValues.isEmpty()) {
+      if (isTagPresent(rule, taggable)) {
+        LOGGER.warning(rule.getKey() + " " + taggable.getTag() + " found in tags but not See & Reference field.");
+      }
+    }else {
+
+      if (taggable.isFieldEntryFormatNeedUpdating(updates, rule)) {
+        referenceFieldValues = taggable.getRspecReferenceFieldValues(rule);
+      }
+
+      addTagIfMissing(rule, updates, taggable.getTag());
+
+      List<String> sees = taggable.parseReferencesFromStrings(seeSectionReferences);
+      addSeeToReferenceField(sees, referenceFieldValues, taggable.getRSpecReferenceFieldName(), updates);
+      checkReferencesInSee(referenceFieldValues, sees, rule);
     }
 
-    if (tagPresent && references.isEmpty() && cweFieldValues.isEmpty()) {
-      LOGGER.warning(rule.getKey() + " - cwe found in tags but not See & Reference field.");
-    } else {
-      addTagIfMissing(rule, updates, CWE_TAG);
-
-      List<String> sees = parseCweFromSeeSection(references);
-
-      addSeeToReferenceField(sees, cweFieldValues, CWE, updates);
-      checkReferencesInSee(cweFieldValues, sees, rule);
-    }
     return updates;
   }
 
@@ -171,36 +180,6 @@ public class IntegrityEnforcementService extends RuleManager {
         LOGGER.warning(rule.getKey() + " - " + reference + " missing from See section ");
       }
     }
-  }
-
-  protected boolean isCweFieldEntryFormatValid(List<String> references, Map<String, Object> updates, Rule rule) {
-
-    boolean needUpdating = false;
-    List<String> replacements = new ArrayList<String>();
-    for (int i = 0; i < references.size() && !needUpdating; i++) {
-      if (! references.get(i).matches(CWE_PATTERN)) {
-        needUpdating = true;
-      }
-    }
-
-    for (int i = 0; i < references.size() && needUpdating; i++) {
-      String ref = references.get(i);
-      if (ref.matches("\\d+")) {
-        replacements.add(CWE+"-"+ref);
-      } else if (ref.matches(CWE_PATTERN)) {
-        replacements.add(ref);
-      } else {
-        LOGGER.warning("Strange CWE reference found in " + rule.getKey() + ": " + ref);
-        needUpdating = false;
-      }
-    }
-
-    if (needUpdating) {
-      rule.setCwe(replacements);
-      updates.put(CWE, replacements);
-      return false;
-    }
-    return true;
   }
 
   protected void addSeeToReferenceField(List<String> sees, List<String> referenceField, String fieldName,
@@ -214,22 +193,6 @@ public class IntegrityEnforcementService extends RuleManager {
         }
       }
     }
-  }
-
-  protected List<String> parseCweFromSeeSection(List<String> references) {
-
-    List<String> refs = new ArrayList<String>();
-
-    for (String reference : references) {
-      String[] pieces = reference.split(" ");
-      for (String piece : pieces) {
-        if (piece.matches(CWE_PATTERN)) {
-          refs.add(piece);
-        }
-      }
-    }
-
-    return refs;
   }
 
   protected void addTagIfMissing(Rule rule, Map<String, Object> updates, String tag) {
@@ -255,9 +218,9 @@ public class IntegrityEnforcementService extends RuleManager {
     return referencesFound;
   }
 
-  protected boolean isTagPresent(Rule rule, String tag) {
+  protected boolean isTagPresent(Rule rule, AbstractTaggableStandard taggable) {
 
-    return rule.getTags().contains(tag);
+    return rule.getTags().contains(taggable.getTag());
   }
 
   protected String stripHtml(String source) {

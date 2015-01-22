@@ -13,7 +13,7 @@ import com.sonarsource.ruleapi.services.RuleManager;
 
 import java.math.BigDecimal;
 
-public abstract class AbstractMisraSpecification extends AbstractCodingStandard {
+public abstract class AbstractMisraSpecification extends AbstractReportableStandard {
 
   public static final int DEFAULT_ROUNDING = 2;
 

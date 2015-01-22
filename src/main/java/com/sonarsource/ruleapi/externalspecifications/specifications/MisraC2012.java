@@ -221,12 +221,12 @@ public class MisraC2012 extends AbstractMisraSpecification {
   }
 
   @Override
-  public List<String> getStandardIdsFromRSpecRule(Rule rule) {
+  public List<String> getRspecReferenceFieldValues(Rule rule) {
     return rule.getMisraC04();
   }
 
   @Override
-  public void setStandardIdsInRSpecRule(Rule rule, List<String> ids) {
+  public void setRspecReferenceFieldValues(Rule rule, List<String> ids) {
     rule.setMisraC12(ids);
   }
 

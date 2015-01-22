@@ -40,8 +40,13 @@ public class ReportService extends RuleManager {
 
 
     StringBuilder sb = new StringBuilder();
-    for (SupportedCodingStandard standard : SupportedCodingStandard.values()) {
-      sb.append(standard.getCodingStandard().getSummaryReport(instance)).append("\n\n");
+    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
+
+      AbstractCodingStandard standard = supportedStandard.getCodingStandard();
+      if (standard instanceof AbstractReportableStandard) {
+
+        sb.append(((AbstractReportableStandard)standard).getSummaryReport(instance)).append("\n\n");
+      }
     }
     writeFile("SummaryCoverageReports.txt", sb.toString());
 
@@ -57,7 +62,7 @@ public class ReportService extends RuleManager {
 
         LOGGER.info("Getting detailed coverage report for " + misra.getStandardName() + " on " + instance);
 
-        writeFile(misra.getStandardName().concat("Coverage.txt"), standard.getCodingStandard().getReport(instance));
+        writeFile(misra.getStandardName().concat("Coverage.txt"), misra.getReport(instance));
       }
     }
   }
