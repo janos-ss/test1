@@ -99,7 +99,7 @@ public abstract class AbstractReportableStandard extends AbstractCodingStandard 
     return expandedKeyList;
   }
 
-  protected void findSpecifiedInRspec(List<Rule> rspecRules) throws RuleException {
+  protected void findSpecifiedInRspec(List<Rule> rspecRules) {
 
     for (Rule rspecRule : rspecRules) {
       List<String> ids = getRspecReferenceFieldValues(rspecRule);
