@@ -15,7 +15,7 @@ public class Cwe extends AbstractTaggableStandard {
 
   private static final String TAG = "cwe";
   private static final String REFERENCE_PATTERN = "CWE-\\d+";
-  private static final String CWE = "CWE";
+  private static final String NAME = "CWE";
 
   @Override
   public String getTag() {
@@ -26,13 +26,13 @@ public class Cwe extends AbstractTaggableStandard {
   @Override
   public String getStandardName() {
 
-    return CWE;
+    return NAME;
   }
 
   @Override
   public String getRSpecReferenceFieldName() {
 
-    return CWE;
+    return NAME;
   }
 
   @Override
@@ -50,7 +50,7 @@ public class Cwe extends AbstractTaggableStandard {
   @Override
   public String getSeeSectionSearchString() {
 
-    return CWE;
+    return NAME;
   }
 
   @Override
@@ -70,7 +70,7 @@ public class Cwe extends AbstractTaggableStandard {
     for (int i = 0; i < references.size(); i++) {
       String ref = references.get(i);
       if (ref.matches("\\d+")) {
-        replacements.add(CWE + "-" + ref);
+        replacements.add(NAME + "-" + ref);
         needUpdating = true;
       } else if (ref.matches(REFERENCE_PATTERN)) {
         replacements.add(ref);
