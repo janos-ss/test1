@@ -66,18 +66,6 @@ public class IntegrityEnforcementServiceTest {
     assertThat(updates).hasSize(1);
   }
 
-//  @Test
-//  public void testParseCweFromSeeSection() {
-//
-//    List<String> references = new ArrayList<String>();
-//    references.add("MITRE, CWE-123 - title");
-//    references.add("MITRE, 404 - RAH!");
-//
-//    List<String> refs = enforcer.parseReferenceFromSeeSection(references);
-//
-//    assertThat(refs).hasSize(1).contains("CWE-123");
-//  }
-
   @Test
   public void testAddSeeToReferenceField() {
 
@@ -100,44 +88,6 @@ public class IntegrityEnforcementServiceTest {
     assertThat(updateValue).hasSize(3).contains("CWE-1").contains("CWE-2").contains("CWE-3");
     assertThat(updateValue).isEqualTo(referenceField);
   }
-
-//  @Test
-//  public void testIsCweEntryFormatValid() {
-//
-//    Rule rule = new Rule("");
-//    rule.setKey("test");
-//
-//    List<String> references = new ArrayList<String>();
-//    references.add("CWE-123");
-//    references.add("456");
-//
-//    Map<String, Object> updates = new HashMap<String, Object>();
-//
-//    enforcer.isFieldEntryFormatValid(references, updates, rule);
-//    List<String> ups = (List<String>) updates.get("CWE");
-//
-//    assertThat(updates).hasSize(1);
-//    assertThat(rule.getCwe()).hasSize(2).contains("CWE-123").contains("CWE-456");
-//    assertThat(rule.getCwe()).isEqualTo(ups);
-//  }
-
-//  @Test
-//  public void testIsCweEntryFormatValidNot() {
-//
-//    Rule rule = new Rule("");
-//    rule.setKey("test");
-//
-//    List<String> references = new ArrayList<String>();
-//    references.add("CWE123");
-//    references.add("456");
-//
-//    Map<String, Object> updates = new HashMap<String, Object>();
-//
-//    enforcer.isFieldEntryFormatValid(references, updates, rule);
-//    List<String> ups = (List<String>) updates.get("CWE");
-//
-//    assertThat(updates).hasSize(0);
-//  }
 
   @Test
   public void testGetCweUpdates1() {

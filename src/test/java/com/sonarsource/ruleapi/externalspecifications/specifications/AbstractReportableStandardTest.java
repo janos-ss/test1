@@ -16,7 +16,7 @@ import java.util.List;
 import static org.fest.assertions.Assertions.assertThat;
 
 
-public class AbstractCodingStandardTest {
+public class AbstractReportableStandardTest {
 
   private static String FB_ID = "BC_IMPOSSIBLE_CAST";
 
