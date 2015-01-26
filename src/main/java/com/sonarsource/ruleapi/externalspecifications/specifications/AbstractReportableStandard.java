@@ -68,10 +68,10 @@ public abstract class AbstractReportableStandard extends AbstractCodingStandard 
 
     rulesCoverage = new HashMap<String, CodingStandardRuleCoverage>();
 
-    for (CodingStandardRule rule : getCodingStandardRules()) {
+    for (CodingStandardRule csr : getCodingStandardRules()) {
       CodingStandardRuleCoverage cov = new CodingStandardRuleCoverage();
-      cov.setRule(rule.getCodingStandardRuleId());
-      rulesCoverage.put(rule.getCodingStandardRuleId(), cov);
+      cov.setRule(csr.getCodingStandardRuleId());
+      rulesCoverage.put(csr.getCodingStandardRuleId(), cov);
     }
   }
 
