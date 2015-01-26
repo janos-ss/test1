@@ -60,9 +60,6 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
 
     List<String> references = getRspecReferenceFieldValues(rule);
 
-    boolean needUpdating = false;
-
-    List<String> replacements = new ArrayList<String>();
     for (int i = 0; i < references.size(); i++) {
       String ref = references.get(i);
 
