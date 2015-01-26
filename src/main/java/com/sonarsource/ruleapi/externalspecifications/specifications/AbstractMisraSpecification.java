@@ -9,11 +9,16 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.*;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.domain.RuleException;
+import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.services.RuleManager;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
-public abstract class AbstractMisraSpecification extends AbstractReportableStandard {
+public abstract class AbstractMisraSpecification extends AbstractReportableStandard implements TaggableStandard {
 
   public static final int DEFAULT_ROUNDING = 2;
 
@@ -26,11 +31,48 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
 
   public abstract int getOptionalRulesToCoverCount();
 
+  public abstract CodingStandardRule getCodingStandardRuleFromId(String id);
+
+
+  private static final Logger LOGGER = Logger.getLogger(AbstractMisraSpecification.class.getName());
+
+  private static final String TAG = "misra";
 
   protected int mandatoryRulesImplemented = 0;
   protected int optionalRulesImplemented = 0;
   protected int totalRulesImplemented = 0;
 
+
+  @Override
+  public String getTag() {
+
+    return TAG;
+  }
+
+  @Override
+  public boolean isTagShared() {
+
+    return true;
+  }
+
+  @Override
+  public boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule) {
+
+    List<String> references = getRspecReferenceFieldValues(rule);
+
+    boolean needUpdating = false;
+
+    List<String> replacements = new ArrayList<String>();
+    for (int i = 0; i < references.size(); i++) {
+      String ref = references.get(i);
+
+      if (getCodingStandardRuleFromId(ref) == null) {
+        LOGGER.info("Unrecognized " + getRSpecReferenceFieldName() + " value, " + ref + ", in " + rule.getKey());
+      }
+    }
+
+    return false;
+  }
 
   @Override
   public String getReport() throws RuleException {

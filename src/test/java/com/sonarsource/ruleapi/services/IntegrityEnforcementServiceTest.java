@@ -6,8 +6,7 @@
 package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.specifications.Cwe;
-import com.sonarsource.ruleapi.externalspecifications.specifications.OwaspTopTen;
+import com.sonarsource.ruleapi.externalspecifications.specifications.*;
 import org.junit.Test;
 
 import java.util.*;

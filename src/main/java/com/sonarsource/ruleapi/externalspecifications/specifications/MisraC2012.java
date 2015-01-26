@@ -5,7 +5,9 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
@@ -14,8 +16,12 @@ import org.fest.util.Strings;
 
 public class MisraC2012 extends AbstractMisraSpecification {
 
-  private String standardName = "MISRA C 2012";
-  private String rspecFieldName = "MISRA C 2012";
+  private static final String NAME = "MISRA C 2012";
+  private static final String SEE_SECTION_SEARCH_STRING = "MISRA C:2012,";
+  private static final String REFERENCE_PATTERN = "\\d\\d?\\.\\d\\d?";
+
+  private Map<String, CodingStandardRule> ruleMap = new HashMap<String, CodingStandardRule>();
+
   private Language language = Language.C;
 
   private int mandatoryRulesToCover = 0;
@@ -207,12 +213,27 @@ public class MisraC2012 extends AbstractMisraSpecification {
   public MisraC2012() {
 
     for (StandardRule standardRule : StandardRule.values()) {
+      ruleMap.put(standardRule.getCodingStandardRuleId(), (CodingStandardRule)standardRule);
+
       if (standardRule.isMandatory) {
         mandatoryRulesToCover++;
       } else {
         optionalRulesToCover++;
       }
     }
+  }
+
+
+  @Override
+  public String getSeeSectionSearchString() {
+
+    return SEE_SECTION_SEARCH_STRING;
+  }
+
+  @Override
+  public String getReferencePattern() {
+
+    return REFERENCE_PATTERN;
   }
 
   @Override
@@ -222,7 +243,7 @@ public class MisraC2012 extends AbstractMisraSpecification {
 
   @Override
   public List<String> getRspecReferenceFieldValues(Rule rule) {
-    return rule.getMisraC04();
+    return rule.getMisraC12();
   }
 
   @Override
@@ -235,10 +256,9 @@ public class MisraC2012 extends AbstractMisraSpecification {
     if (Strings.isNullOrEmpty(ruleKey)) {
       return false;
     }
-    for (StandardRule standardRule : StandardRule.values() ) {
-      if (standardRule.getCodingStandardRuleId().equals(ruleKey)) {
-        return standardRule.isMandatory;
-      }
+    StandardRule sr = (StandardRule) ruleMap.get(ruleKey);
+    if (sr != null) {
+      return sr.isMandatory;
     }
     return false;
   }
@@ -250,17 +270,27 @@ public class MisraC2012 extends AbstractMisraSpecification {
 
   @Override
   public String getStandardName() {
-    return standardName;
+    return NAME;
   }
 
   @Override
   public String getRSpecReferenceFieldName() {
-    return rspecFieldName;
+    return NAME;
   }
 
   @Override
   public int getOptionalRulesToCoverCount() {
     return optionalRulesToCover;
+  }
+
+  @Override
+  public CodingStandardRule getCodingStandardRuleFromId(String id) {
+
+    if (id == null) {
+      return null;
+    }
+
+    return ruleMap.get(id);
   }
 
   @Override

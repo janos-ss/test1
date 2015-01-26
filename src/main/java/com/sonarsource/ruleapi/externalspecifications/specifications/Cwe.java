@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,12 @@ public class Cwe implements TaggableStandard {
   private static final String TAG = "cwe";
   private static final String REFERENCE_PATTERN = "CWE-\\d+";
   private static final String NAME = "CWE";
+
+  @Override
+  public boolean isTagShared() {
+
+    return false;
+  }
 
   @Override
   public String getTag() {

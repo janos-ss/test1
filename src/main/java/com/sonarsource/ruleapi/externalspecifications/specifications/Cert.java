@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,12 @@ public class Cert implements TaggableStandard {
 
   private static final String REFERENCE_PATTERN = "[A-Z]{3}\\d\\d-[A-Za-z]+";
 
+
+  @Override
+  public boolean isTagShared() {
+
+    return false;
+  }
 
   @Override
   public String getTag() {

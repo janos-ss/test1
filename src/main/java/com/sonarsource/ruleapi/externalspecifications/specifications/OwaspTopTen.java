@@ -7,6 +7,7 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,12 @@ public class OwaspTopTen implements TaggableStandard {
   private static final String SEE_SECTION_SEARCH = "OWASP Top Ten";
 
   private static final String REFERENCE_PATTERN = "A\\d+";
+
+  @Override
+  public boolean isTagShared() {
+
+    return false;
+  }
 
   @Override
   public String getTag() {

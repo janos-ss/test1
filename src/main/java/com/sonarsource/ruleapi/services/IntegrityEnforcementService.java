@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
-import com.sonarsource.ruleapi.externalspecifications.specifications.TaggableStandard;
+import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.Language;
@@ -133,8 +133,8 @@ public class IntegrityEnforcementService extends RuleManager {
   public void enforceTagReferenceIntegrity(String login, String password, TaggableStandard taggable) throws RuleException {
 
     List<Rule> rules = RuleMaker.getRulesByJql(
-            taggable.getRSpecReferenceFieldName() + " is not EMPTY OR description ~ '" +
-                    taggable.getSeeSectionSearchString() + "' OR labels = " + taggable.getTag(),
+            "('" + taggable.getRSpecReferenceFieldName() + "' is not EMPTY OR description ~ '" +
+                    taggable.getSeeSectionSearchString() + "' OR labels = " + taggable.getTag() + ")",
             "");
 
     for (Rule rule : rules) {
@@ -154,7 +154,7 @@ public class IntegrityEnforcementService extends RuleManager {
     List<String> referenceFieldValues = taggable.getRspecReferenceFieldValues(rule);
 
     if (seeSectionReferences.isEmpty() && referenceFieldValues.isEmpty()) {
-      if (isTagPresent(rule, taggable)) {
+      if (isTagPresent(rule, taggable) && ! taggable.isTagShared()) {
         LOGGER.warning(rule.getKey() + " " + taggable.getTag() + " found in tags but not See & Reference field.");
       }
     }else {
@@ -230,10 +230,16 @@ public class IntegrityEnforcementService extends RuleManager {
   public List<String> parseReferencesFromStrings(TaggableStandard taggable, List<String> references) {
     List<String> refs = new ArrayList<String>();
 
+    String pattern = taggable.getReferencePattern();
+
     for (String reference : references) {
+      if (!reference.matches(".*" + pattern + ".*")) {
+        continue;
+      }
+
       String[] pieces = reference.split(" ");
       for (String piece : pieces) {
-        if (piece.matches(taggable.getReferencePattern())) {
+        if (piece.matches(pattern)) {
           refs.add(piece);
         }
       }
