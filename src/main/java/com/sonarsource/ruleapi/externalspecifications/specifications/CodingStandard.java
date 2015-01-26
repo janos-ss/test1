@@ -10,7 +10,7 @@ import com.sonarsource.ruleapi.domain.Rule;
 import java.util.List;
 
 
-public abstract class AbstractCodingStandard {
+public interface CodingStandard {
 
   public abstract String getStandardName();
 

@@ -15,16 +15,16 @@ public enum SupportedCodingStandard {
   FINDBUGS(new FindBugs()),
   CWE(new Cwe()),
   OWASP(new OwaspTopTen()),
-  CERT(new Cert() );
+  CERT(new Cert());
 
 
-  private AbstractCodingStandard codingStandard;
+  private CodingStandard codingStandard;
 
-  private SupportedCodingStandard(AbstractCodingStandard rulesRepository) {
+  private SupportedCodingStandard(CodingStandard rulesRepository) {
     this.codingStandard = rulesRepository;
   }
 
-  public AbstractCodingStandard getCodingStandard() {
+  public CodingStandard getCodingStandard() {
     return codingStandard;
   }
 

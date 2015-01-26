@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -26,7 +27,9 @@ public class OwaspTest {
     references.add("MITRE, CWE-123 - title");
     references.add("OWASP Top Ten 2013 Category A9");
 
-    List<String> refs = owasp.parseReferencesFromStrings(references);
+    IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
+
+    List<String> refs = enforcer.parseReferencesFromStrings(owasp,references);
 
     assertThat(refs).hasSize(1).contains("A9");
   }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class OwaspTopTen extends AbstractTaggableStandard {
+public class OwaspTopTen implements TaggableStandard {
 
   private static final String TAG = "owasp-top10";
 

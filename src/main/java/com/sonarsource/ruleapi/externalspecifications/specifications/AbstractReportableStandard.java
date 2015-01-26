@@ -16,7 +16,7 @@ import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.domain.RuleException;
 import org.fest.util.Strings;
 
-public abstract class AbstractReportableStandard extends AbstractCodingStandard {
+public abstract class AbstractReportableStandard implements CodingStandard {
 
   public abstract String getReport() throws RuleException;
 

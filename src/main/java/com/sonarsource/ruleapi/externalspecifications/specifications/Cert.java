@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 
-public class Cert extends AbstractTaggableStandard {
+public class Cert implements TaggableStandard {
 
   private static final Logger LOGGER = Logger.getLogger(Cert.class.getName());
 

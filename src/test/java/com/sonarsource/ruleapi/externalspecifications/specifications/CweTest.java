@@ -7,6 +7,7 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -28,7 +29,8 @@ public class CweTest {
     references.add("MITRE, CWE-123 - title");
     references.add("MITRE, 404 - RAH!");
 
-    List<String> refs = cwe.parseReferencesFromStrings(references);
+    IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
+    List<String> refs = enforcer.parseReferencesFromStrings(cwe, references);
 
     assertThat(refs).hasSize(1).contains("CWE-123");
   }

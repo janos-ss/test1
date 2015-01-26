@@ -42,7 +42,7 @@ public class ReportService extends RuleManager {
     StringBuilder sb = new StringBuilder();
     for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
 
-      AbstractCodingStandard standard = supportedStandard.getCodingStandard();
+      CodingStandard standard = supportedStandard.getCodingStandard();
       if (standard instanceof AbstractReportableStandard) {
 
         sb.append(((AbstractReportableStandard)standard).getSummaryReport(instance)).append("\n\n");

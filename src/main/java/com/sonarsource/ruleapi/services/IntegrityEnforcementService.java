@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
-import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractTaggableStandard;
+import com.sonarsource.ruleapi.externalspecifications.specifications.TaggableStandard;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.Language;
@@ -123,14 +123,14 @@ public class IntegrityEnforcementService extends RuleManager {
 
     for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
 
-      if (supportedStandard.getCodingStandard() instanceof  AbstractTaggableStandard) {
-        AbstractTaggableStandard taggableStandard = (AbstractTaggableStandard)supportedStandard.getCodingStandard();
+      if (supportedStandard.getCodingStandard() instanceof TaggableStandard) {
+        TaggableStandard taggableStandard = (TaggableStandard)supportedStandard.getCodingStandard();
         enforceTagReferenceIntegrity(login, password, taggableStandard);
       }
     }
   }
 
-  public void enforceTagReferenceIntegrity(String login, String password, AbstractTaggableStandard taggable) throws RuleException {
+  public void enforceTagReferenceIntegrity(String login, String password, TaggableStandard taggable) throws RuleException {
 
     List<Rule> rules = RuleMaker.getRulesByJql(
             taggable.getRSpecReferenceFieldName() + " is not EMPTY OR description ~ '" +
@@ -146,7 +146,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  protected Map<String, Object> getUpdates(Rule rule, AbstractTaggableStandard taggable) {
+  protected Map<String, Object> getUpdates(Rule rule, TaggableStandard taggable) {
 
     Map<String, Object> updates = new HashMap<String, Object>();
 
@@ -165,7 +165,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
       addTagIfMissing(rule, updates, taggable.getTag());
 
-      List<String> sees = taggable.parseReferencesFromStrings(seeSectionReferences);
+      List<String> sees = parseReferencesFromStrings(taggable, seeSectionReferences);
       addSeeToReferenceField(sees, referenceFieldValues, taggable.getRSpecReferenceFieldName(), updates);
       checkReferencesInSee(referenceFieldValues, sees, rule);
     }
@@ -218,7 +218,7 @@ public class IntegrityEnforcementService extends RuleManager {
     return referencesFound;
   }
 
-  protected boolean isTagPresent(Rule rule, AbstractTaggableStandard taggable) {
+  protected boolean isTagPresent(Rule rule, TaggableStandard taggable) {
 
     return rule.getTags().contains(taggable.getTag());
   }
@@ -227,4 +227,18 @@ public class IntegrityEnforcementService extends RuleManager {
     return source.replaceAll("<[^>]+>", "");
   }
 
+  public List<String> parseReferencesFromStrings(TaggableStandard taggable, List<String> references) {
+    List<String> refs = new ArrayList<String>();
+
+    for (String reference : references) {
+      String[] pieces = reference.split(" ");
+      for (String piece : pieces) {
+        if (piece.matches(taggable.getReferencePattern())) {
+          refs.add(piece);
+        }
+      }
+    }
+
+    return refs;
+  }
 }
