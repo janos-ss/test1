@@ -14,7 +14,8 @@ public enum SupportedCodingStandard {
   MISRA_CPP_2008(new MisraCPP2008()),
   FINDBUGS(new FindBugs()),
   CWE(new Cwe()),
-  OWASP(new OwaspTopTen());
+  OWASP(new OwaspTopTen()),
+  CERT(new Cert() );
 
 
   private AbstractCodingStandard codingStandard;
