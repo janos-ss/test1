@@ -25,5 +25,18 @@ public class MisraCPP2008Test {
     assertThat(m8.isRuleMandatory(null)).isFalse();
     assertThat(m8.isRuleMandatory("0-3-1")).isFalse();
     assertThat(m8.isRuleMandatory("0-1-1")).isTrue();
+    assertThat(m8.isRuleMandatory("0-0-0")).isFalse();
   }
+
+  @Test
+  public void testGetCodingStandardRuleFromId() {
+
+    MisraCPP2008 m8 = new MisraCPP2008();
+
+    assertThat(m8.getCodingStandardRuleFromId(null)).isNull();
+
+    assertThat(m8.getCodingStandardRuleFromId("0-1-1")).isEqualTo(MisraCPP2008.StandardRule.MISRACPP2008_0_1_1);
+
+  }
+
 }

@@ -25,5 +25,17 @@ public class MisraC2012Test {
     assertThat(m12.isRuleMandatory(null)).isFalse();
     assertThat(m12.isRuleMandatory("1.1")).isTrue();
     assertThat(m12.isRuleMandatory("1.2")).isFalse();
+    assertThat(m12.isRuleMandatory("0.0")).isFalse();
+  }
+
+  @Test
+  public void testGetCodingStandardRuleFromId() {
+
+    MisraC2012 m12 = new MisraC2012();
+
+    assertThat(m12.getCodingStandardRuleFromId(null)).isNull();
+
+    assertThat(m12.getCodingStandardRuleFromId("1.1")).isEqualTo(MisraC2012.StandardRule.MISRAC2012_1POINT1);
+
   }
 }
