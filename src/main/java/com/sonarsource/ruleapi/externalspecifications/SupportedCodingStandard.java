@@ -15,7 +15,8 @@ public enum SupportedCodingStandard {
   FINDBUGS(new FindBugs()),
   CWE(new Cwe()),
   OWASP(new OwaspTopTen()),
-  CERT(new Cert());
+  CERT(new Cert()),
+  SANS_TOP_25(new SansTop25());
 
 
   private CodingStandard codingStandard;
