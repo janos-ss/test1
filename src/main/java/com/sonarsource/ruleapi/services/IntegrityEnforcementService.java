@@ -13,10 +13,12 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
+import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.domain.RuleComparison;
 import com.sonarsource.ruleapi.domain.RuleException;
@@ -163,11 +165,20 @@ public class IntegrityEnforcementService extends RuleManager {
         referenceFieldValues = taggable.getRspecReferenceFieldValues(rule);
       }
 
-      addTagIfMissing(rule, updates, taggable.getTag());
+      if (taggable instanceof DerivativeTaggableStandard) {
+        DerivativeTaggableStandard derivativeStandard = (DerivativeTaggableStandard) taggable;
 
-      List<String> sees = parseReferencesFromStrings(taggable, seeSectionReferences);
-      addSeeToReferenceField(sees, referenceFieldValues, taggable.getRSpecReferenceFieldName(), updates);
-      checkReferencesInSee(referenceFieldValues, sees, rule);
+        derivativeStandard.addTagIfMissing(rule, updates);
+        derivativeStandard.checkReferencesInSeeSection(rule);
+
+      } else {
+        List<String> sees = parseReferencesFromStrings(taggable, seeSectionReferences);
+
+        addTagIfMissing(rule, updates, taggable.getTag());
+        addSeeToReferenceField(sees, referenceFieldValues, taggable.getRSpecReferenceFieldName(), updates);
+        checkReferencesInSee(referenceFieldValues, sees, rule);
+
+      }
     }
 
     return updates;
@@ -210,7 +221,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
     String[] referenceLines = rule.getReferences().split("\n");
     for (String line : referenceLines) {
-      line = stripHtml(line);
+      line = ComparisonUtilities.stripHtml(line);
       if (line.contains(authority)) {
         referencesFound.add(line);
       }
@@ -223,9 +234,6 @@ public class IntegrityEnforcementService extends RuleManager {
     return rule.getTags().contains(taggable.getTag());
   }
 
-  protected String stripHtml(String source) {
-    return source.replaceAll("<[^>]+>", "");
-  }
 
   public List<String> parseReferencesFromStrings(TaggableStandard taggable, List<String> references) {
     List<String> refs = new ArrayList<String>();

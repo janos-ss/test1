@@ -310,4 +310,10 @@ public class ComparisonUtilitiesTest {
     assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl)).isTrue();
   }
 
+  @Test
+  public void testStripHtml() {
+
+    String html = "<ul><li><a href=\"blah.com\">blah</a></li></ul>";
+    assertThat(ComparisonUtilities.stripHtml(html)).isEqualTo("blah");
+  }
 }

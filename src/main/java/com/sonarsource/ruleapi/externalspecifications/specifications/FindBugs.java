@@ -475,20 +475,9 @@ public class FindBugs extends AbstractReportableStandard implements ExternalTool
   }
 
   @Override
-  public String getReport() throws RuleException {
-    return getSummaryReport();
-  }
-
-  @Override
   public String getReport(String instance) throws RuleException {
 
     return getSummaryReport(instance);
-  }
-
-  @Override
-  public String getSummaryReport() throws RuleException {
-
-    return getSummaryReport(RuleManager.NEMO);
   }
 
   @Override

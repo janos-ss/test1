@@ -71,23 +71,11 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   }
 
   @Override
-  public String getReport() throws RuleException {
-
-    return getReport(RuleManager.NEMO);
-  }
-
-  @Override
   public String getReport(String instance) throws RuleException {
 
     initCoverageResults(instance);
     computeCoverage();
     return generateReport();
-  }
-
-  @Override
-  public String getSummaryReport() throws RuleException {
-
-    return getSummaryReport(RuleManager.NEMO);
   }
 
   @Override

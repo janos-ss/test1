@@ -18,12 +18,6 @@ public class IntegrityEnforcementServiceTest {
 
   IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
 
-  @Test
-  public void testStripHtml() {
-
-    String html = "<ul><li><a href=\"blah.com\">blah</a></li></ul>";
-    assertThat(enforcer.stripHtml(html)).isEqualTo("blah");
-  }
 
   @Test
   public void testIsTagPresent() {

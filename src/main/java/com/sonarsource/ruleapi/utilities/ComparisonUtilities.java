@@ -277,4 +277,7 @@ public class ComparisonUtilities {
     return sb.toString();
   }
 
+  public static String stripHtml(String source) {
+    return source.replaceAll("<[^>]+>", "");
+  }
 }

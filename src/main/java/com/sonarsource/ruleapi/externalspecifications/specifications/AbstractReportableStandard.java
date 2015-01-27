@@ -19,11 +19,7 @@ import org.fest.util.Strings;
 
 public abstract class AbstractReportableStandard implements CodingStandard {
 
-  public abstract String getReport() throws RuleException;
-
   public abstract String getReport(String instance) throws RuleException;
-
-  public abstract String getSummaryReport() throws RuleException;
 
   public abstract String getSummaryReport(String instance) throws RuleException;
 
