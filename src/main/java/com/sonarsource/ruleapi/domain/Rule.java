@@ -121,17 +121,17 @@ public class Rule {
   private List<String> outdatedLanguages = new ArrayList<String>();
   private List<String> irrelevantLanguages = new ArrayList<String>();
 
-  private List<String> findbugs;
-  private List<String> pmd;
-  private List<String> checkstyle;
-  private List<String> misraC12;
-  private List<String> misraC04;
-  private List<String> misraCpp;
-  private List<String> findSecBugs;
-  private List<String> cert;
-  private List<String> owasp;
-  private List<String> phpFig;
-  private List<String> cwe;
+  private List<String> findbugs = new ArrayList<String>();
+  private List<String> pmd = new ArrayList<String>();
+  private List<String> checkstyle = new ArrayList<String>();
+  private List<String> misraC12 = new ArrayList<String>();
+  private List<String> misraC04 = new ArrayList<String>();
+  private List<String> misraCpp = new ArrayList<String>();
+  private List<String> findSecBugs = new ArrayList<String>();
+  private List<String> cert = new ArrayList<String>();
+  private List<String> owasp = new ArrayList<String>();
+  private List<String> phpFig = new ArrayList<String>();
+  private List<String> cwe = new ArrayList<String>();
 
   public Rule(String language) {
     this.language = language;

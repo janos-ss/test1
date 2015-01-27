@@ -93,7 +93,7 @@ public class SansTop25 extends Cwe implements DerivativeTaggableStandard {
     }
   }
 
-  private boolean isSansRule(Rule rule) {
+  protected boolean isSansRule(Rule rule) {
 
     List<String> refs = getRspecReferenceFieldValues(rule);
     for (String cwe : refs) {
