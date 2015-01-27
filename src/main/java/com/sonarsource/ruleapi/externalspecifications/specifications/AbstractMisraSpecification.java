@@ -10,7 +10,6 @@ import com.sonarsource.ruleapi.domain.*;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
-import com.sonarsource.ruleapi.services.RuleManager;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -86,11 +86,9 @@ public class SansTop25 extends Cwe implements DerivativeTaggableStandard {
 
     if (needsTag && !hasTag) {
       tags.add(TAG);
-System.out.println("updating tags in " + rule.getKey());
       updates.put("Labels", tags);
     } else if (!needsTag && hasTag) {
       tags.remove(TAG);
-System.out.println("updating tags in " + rule.getKey());
       updates.put("Labels", tags);
     }
   }
