@@ -37,8 +37,8 @@ public class FindbugsTest {
     fb.populateRulesCoverageMap();
     fb.computeCoverage();
 
-    assertThat(fb.implementable).isEqualTo(397);
-    assertThat(fb.skipped).isEqualTo(26);
+    assertThat(fb.implementable).isEqualTo(394);
+    assertThat(fb.skipped).isEqualTo(29);
     assertThat(fb.specified).isEqualTo(0);
     assertThat(fb.implemented).isEqualTo(0);
 
