@@ -25,6 +25,15 @@ public class ReportService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
 
+  public void generateRuleDescriptions(List<String> ruleKeys, String language) throws RuleException {
+    if (ruleKeys != null) {
+      for (String ruleKey : ruleKeys) {
+        Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
+        writeFile(ruleKey+".html", rule.getHtmlDescription());
+      }
+    }
+  }
+
   public void getReports(String instance) throws RuleException {
 
     getOutdatedRulesReports(instance);

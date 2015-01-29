@@ -78,7 +78,12 @@ public class Main {
 
 
     IntegrityEnforcementService enforcer = null;
-    if (option != Option.REPORTS) {
+    ReportService rs = null;
+    if (option == Option.REPORTS || option == Option.GENERATE) {
+
+      rs = new ReportService();
+
+    } else {
 
       if (Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password)) {
         printHelpMessage();
@@ -98,8 +103,11 @@ public class Main {
           break;
 
         case REPORTS:
-          ReportService rs = new ReportService();
           rs.getReports(settings.instance);
+          break;
+
+        case GENERATE:
+          rs.generateRuleDescriptions(settings.ruleKeys, settings.language);
           break;
 
         default:
@@ -130,12 +138,19 @@ public class Main {
     @Parameter(names = "-password")
     private String password;
 
+    @Parameter(names="-rule", variableArity = true)
+    public List<String> ruleKeys = new ArrayList<String>();
+
+    @Parameter(names="-langauge")
+    private String language;
+
   }
 
   public enum Option {
     REPORTS("Generates all reports based on Nemo or instance specified with optional -instance parameter."),
     OUTDATED("Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
-    INTEGRITY("RSpec internal integrity check. Requires -login and -password parameters.");
+    INTEGRITY("RSpec internal integrity check. Requires -login and -password parameters."),
+    GENERATE("Generates html description file specified by -rule and -langauge parameters.");
 
     private String description;
 
