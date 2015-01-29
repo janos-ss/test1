@@ -141,7 +141,7 @@ public class Main {
     @Parameter(names="-rule", variableArity = true)
     public List<String> ruleKeys = new ArrayList<String>();
 
-    @Parameter(names="-langauge")
+    @Parameter(names="-language")
     private String language;
 
   }
