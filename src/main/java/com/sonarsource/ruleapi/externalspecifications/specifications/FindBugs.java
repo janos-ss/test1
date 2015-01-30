@@ -493,12 +493,12 @@ public class FindBugs extends AbstractReportableStandard implements ExternalTool
     StringBuilder sb = new StringBuilder();
     sb.append(linebreak).append(standardName).append(linebreak);
     sb.append(formatLine("FB rule count:", count, 100));
-    sb.append(formatLine("rejected:", skipped, ((float)skipped/count)*100));
-    sb.append(formatLine("implementable:", implementable, ((float)implementable/count)*100));
+    sb.append(formatLine("rejected:", skipped, ((double)skipped/count)*100));
+    sb.append(formatLine("implementable:", implementable, ((double)implementable/count)*100));
     sb.append(linebreak).append("Of Implementable rules:").append(linebreak);
-    sb.append(formatLine("unspecified:", unspecified, ((float)unspecified/implementable)*100));
-    sb.append(formatLine("specified:", specified, ((float)specified/implementable)*100));
-    sb.append(formatLine("implemented:", implemented, ((float)implemented/implementable)*100));
+    sb.append(formatLine("unspecified:", unspecified, ((double)unspecified/implementable)*100));
+    sb.append(formatLine("specified:", specified, ((double)specified/implementable)*100));
+    sb.append(formatLine("implemented:", implemented, ((double)implemented/implementable)*100));
 
     return sb.toString();
   }
@@ -527,7 +527,7 @@ public class FindBugs extends AbstractReportableStandard implements ExternalTool
     }
   }
 
-  protected String formatLine(String label, int count, float percentage) {
+  protected String formatLine(String label, int count, double percentage) {
     return String.format("  %-15s %3d  %6.2f%%%n", label, count, percentage);
   }
 

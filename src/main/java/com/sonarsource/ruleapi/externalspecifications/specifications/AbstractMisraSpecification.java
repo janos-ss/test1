@@ -20,7 +20,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
 
   public static final int DEFAULT_ROUNDING = 2;
 
-  public static final float PERCENT_FACTOR = 100.0f;
+  public static final double PERCENT_FACTOR = 100.0d;
 
 
   public abstract boolean isRuleMandatory(String ruleKey);
@@ -144,11 +144,8 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     return buff.toString();
   }
 
-  private void appendSummaryLine(StringBuilder buff, int toCover, int covered, float percent, String indent, String linebreak) {
-    buff.append(indent).append("Specified: ").append(toCover)
-            .append(indent).append("Implemented: ").append(covered)
-            .append(indent).append("=> ").append(percent).append("%")
-            .append(linebreak);
+  private void appendSummaryLine(StringBuilder buff, int toCover, int covered, double percent, String indent, String linebreak) {
+    buff.append(String.format("%sSpecified: %d%sImplemented: %d%s=> %.2f%%%n", indent, toCover, indent, covered, indent, percent ));
   }
 
   protected void computeCoverage() {
@@ -170,25 +167,15 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     totalRulesImplemented = mandatoryRulesImplemented + optionalRulesImplemented;
   }
 
-  public float getMandatoryCoveragePercent() {
-    return round(mandatoryRulesImplemented * 100.0f / getMandatoryRulesToCoverCount());
+  public double getMandatoryCoveragePercent() {
+    return mandatoryRulesImplemented * PERCENT_FACTOR / getMandatoryRulesToCoverCount();
   }
 
-  public float getOptionalCoveragePercent() {
-    return round(optionalRulesImplemented * 100.0f / getOptionalRulesToCoverCount());
+  public double getOptionalCoveragePercent() {
+    return optionalRulesImplemented * PERCENT_FACTOR / getOptionalRulesToCoverCount();
   }
 
-  public float getTotalCoveragePercent() {
-    return round(totalRulesImplemented * PERCENT_FACTOR / getCodingStandardRules().length);
-  }
-
-  public static float round(float d) {
-    return round(d, DEFAULT_ROUNDING);
-  }
-
-  public static float round(float d, int decimalPlace) {
-    BigDecimal bd = new BigDecimal(Float.toString(d));
-    bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
-    return bd.floatValue();
+  public double getTotalCoveragePercent() {
+    return totalRulesImplemented * PERCENT_FACTOR / getCodingStandardRules().length;
   }
 }

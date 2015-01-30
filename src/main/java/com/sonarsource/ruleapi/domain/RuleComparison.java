@@ -386,8 +386,8 @@ public class RuleComparison{
       return result;
     }
 
-    int aVal = Integer.valueOf(a.replaceAll("\\D",""));
-    int bVal = Integer.valueOf(b.replaceAll("\\D",""));
+    int aVal = Integer.parseInt(a.replaceAll("\\D",""));
+    int bVal = Integer.parseInt(b.replaceAll("\\D",""));
 
     TimeUnit aUnit = null;
     String tmp = a.replaceAll("\\d","").replaceAll("\\s", "").toUpperCase().replace("MN", "MIN");

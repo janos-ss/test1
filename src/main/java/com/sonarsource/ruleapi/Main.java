@@ -77,19 +77,12 @@ public class Main {
   protected static void doRequestedOption(Option option, Settings settings) {
 
 
-    IntegrityEnforcementService enforcer = null;
-    ReportService rs = null;
-    if (option == Option.REPORTS || option == Option.GENERATE) {
-
-      rs = new ReportService();
-
-    } else {
-
-      if (Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password)) {
-        printHelpMessage();
-        return;
-      }
-      enforcer = new IntegrityEnforcementService();
+    IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
+    ReportService rs = new ReportService();
+    if (option != Option.REPORTS && option != Option.GENERATE &&
+            (Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password))) {
+      printHelpMessage();
+      return;
     }
 
     try {
