@@ -38,28 +38,28 @@ public class Main {
     Settings settings = new Settings();
     new JCommander(settings, args);
 
-    if (settings.help) {
+    if (settings.help || settings.option.isEmpty()) {
       printHelpMessage();
       return;
     }
 
-    if (settings.option != null && !settings.option.isEmpty()){
+    List<Option> options = new ArrayList<Option>();
+    for (String str : settings.option) {
 
-      List<Option> options = new ArrayList<Option>();
-      for (String str : settings.option) {
-
-        Option option = Option.fromString(str);
-        if (! options.contains(option)) {
-          options.add(option);
-        }
+      Option option = Option.fromString(str);
+      if (option.requiresCredentials && ! credentialsProvided(settings)) {
+        printHelpMessage();
+        return;
       }
 
-      for (Option option : options) {
-        doRequestedOption(option, settings);
-
+      if (! options.contains(option)) {
+        options.add(option);
       }
-    } else {
-      printHelpMessage();
+    }
+
+    for (Option option : options) {
+      doRequestedOption(option, settings);
+
     }
   }
 
@@ -79,11 +79,6 @@ public class Main {
 
     IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
     ReportService rs = new ReportService();
-    if (option != Option.REPORTS && option != Option.GENERATE &&
-            (Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password))) {
-      printHelpMessage();
-      return;
-    }
 
     try {
       switch (option) {
@@ -113,6 +108,11 @@ public class Main {
     }
   }
 
+  private static boolean credentialsProvided(Settings settings) {
+
+    return !(Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password));
+  }
+
 
   public static class Settings{
 
@@ -120,7 +120,7 @@ public class Main {
     private boolean help;
 
     @Parameter(required = true)
-    private List<String> option;
+    private List<String> option = new ArrayList<String>();
 
     @Parameter(names = "-instance")
     private String instance = RuleManager.NEMO;
@@ -140,14 +140,16 @@ public class Main {
   }
 
   public enum Option {
-    REPORTS("Generates all reports based on Nemo or instance specified with optional -instance parameter."),
-    OUTDATED("Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
-    INTEGRITY("RSpec internal integrity check. Requires -login and -password parameters."),
-    GENERATE("Generates html description file specified by -rule and -langauge parameters.");
+    REPORTS(false,  "Generates all reports based on Nemo or instance specified with optional -instance parameter."),
+    OUTDATED(true,  "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
+    INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
+    GENERATE(false, "Generates html description file specified by -rule and -langauge parameters.");
 
     private String description;
+    private boolean requiresCredentials;
 
-    Option(String description) {
+    Option(boolean requiresCredentials, String description) {
+      this.requiresCredentials = requiresCredentials;
       this.description = description;
     }
 
