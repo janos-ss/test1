@@ -241,6 +241,8 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
           countRiskyResource(cov);
 
           break;
+        
+        default:
       }
     }
 
