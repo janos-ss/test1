@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import org.junit.Test;
@@ -156,6 +157,60 @@ public class SansTop25Test {
     }
 
     assertThat(report).isEqualTo(expectedReport);
+  }
+
+  @Test
+  public void testCheckReferencesInSeeSection() {
+
+    Rule rule = new Rule("");
+
+    String seeSection="<li><a href=\"cwe.mitre.org/data/definitions/459\">MITRE, CWE-459</a> - Incomplete Cleanup</li>" +
+            "<li><a href=\"http://www.sans.org/top25-software-errors/\">SANS Top 25</a> - Porous Defenses</li>";
+    rule.setReferences(seeSection);
+
+    sansTop25.checkReferencesInSeeSection(rule);
+
+    assertThat(rule.getCwe()).isEmpty();
+    assertThat(rule.getReferences()).isEqualTo(seeSection);
+
+    rule.getCwe().add("CWE-250");
+    sansTop25.checkReferencesInSeeSection(rule);
+
+    assertThat(rule.getCwe()).hasSize(1);
+    assertThat(rule.getReferences()).isEqualTo(seeSection);
+  }
+
+  @Test
+  public void testComputeCoverageRulesFound() {
+    SansTop25 sans = new SansTop25();
+
+    sans.populateRulesCoverageMap();
+
+    Rule rule = new Rule("");
+
+    CodingStandardRuleCoverage cov = sans.getRulesCoverage().get("CWE-829");
+    cov.setSpecifiedBy(rule);
+    cov.setImplementedBy(rule);
+    sans.computeCoverage();
+
+
+    String newline = String.format("%n");
+    String expectedSummaryReport = newline +
+            "SANS Top 25 for Java" + newline +
+            "Insecure Interaction Between Components  6,  specified:  0,  implemented:  0" + newline +
+            "Porous Defenses                         11,  specified:  0,  implemented:  0" + newline +
+            "Risky Resource Management                8,  specified:  1,  implemented:  1" + newline +
+            "Total                                   25,  specified:  1,  implemented:  1" + newline;
+    String summaryReport = "";
+    try {
+      summaryReport = sans.getSummaryReport("");
+    } catch (RuleException e) {
+      e.printStackTrace();
+    }
+
+    assertThat(summaryReport).isEqualTo(expectedSummaryReport);
+
+
   }
 
 }
