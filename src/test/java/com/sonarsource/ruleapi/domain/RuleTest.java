@@ -214,4 +214,110 @@ public class RuleTest {
 
     assertThat(rule.getParameterList().size()).isEqualTo(1);
   }
+
+  @Test
+  public void testAnnotationsAllOptions() {
+
+    Rule rule = new Rule(LANG);
+
+    rule.setKey("RSPEC-1997");
+
+    rule.getTags().add("misra");
+    rule.getTags().add("cwe");
+
+    rule.setSeverity(Rule.Severity.MAJOR);
+
+    rule.setTitle("This is a \"test\"");
+
+    rule.setDefaultActive(Boolean.TRUE);
+
+    rule.setSqaleRemediationFunction(Rule.RemediationFunction.LINEAR_OFFSET);
+    rule.setSqaleLinearArgDesc("per point of complexity above the threshold");
+    rule.setSqaleLinearOffset("10min");
+    rule.setSqaleLinearFactor("1min");
+    rule.setSqaleSubCharac(Rule.Subcharacteristic.COMPILER_RELATED_PORTABILITY);
+
+    String expectedAnnotation = "@Rule(key = \"S1997\",\n" +
+            "  priority = Priority.MAJOR\n" +
+            "  name = \"This is a \\\"test\\\"\")\n" +
+            "@RuleTags({ \"misra\", \"cwe\" })\n" +
+            "@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.COMPILER_RELATED_PORTABILITY)\n" +
+            "@SqaleLinearWithOffsetRemediation( coeff=\"1min\", effortToFixDescription=\"per point of complexity above the threshold\", offset=\"10min\")\n" +
+            "@ActivatedByDefault\n";
+
+    assertThat(rule.getAnnotations()).isEqualTo(expectedAnnotation);
+  }
+
+  @Test
+  public void testAnnotationsMinimal(){
+    Rule rule = new Rule(LANG);
+
+    rule.setKey("RSPEC-1997");
+
+    rule.setSeverity(Rule.Severity.MAJOR);
+
+    rule.setTitle("This is a test");
+
+    String expectedAnnotation = "@Rule(key = \"S1997\",\n" +
+            "  priority = Priority.MAJOR\n" +
+            "  name = \"This is a test\")\n";
+
+    assertThat(rule.getAnnotations()).isEqualTo(expectedAnnotation);
+  }
+
+  @Test
+  public void testAnnotationsConstantSqaleLegacyKey(){
+    Rule rule = new Rule(LANG);
+
+    rule.setKey("LegacyKey");
+
+    rule.getTags().add("cwe");
+
+    rule.setSeverity(Rule.Severity.MAJOR);
+
+    rule.setTitle("This is a \"test\"");
+
+    rule.setDefaultActive(Boolean.FALSE);
+
+    rule.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
+    rule.setSqaleConstantCostOrLinearThreshold("10min");
+    rule.setSqaleSubCharac(Rule.Subcharacteristic.COMPILER_RELATED_PORTABILITY);
+
+    String expectedAnnotation = "@Rule(key = \"LegacyKey\",\n" +
+            "  priority = Priority.MAJOR\n" +
+            "  name = \"This is a \\\"test\\\"\")\n" +
+            "@RuleTags({ \"cwe\" })\n" +
+            "@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.COMPILER_RELATED_PORTABILITY)\n" +
+            "@SqaleConstantRemediation( \"10min\" )\n";
+
+    assertThat(rule.getAnnotations()).isEqualTo(expectedAnnotation);
+  }
+
+  @Test
+  public void testAnnotationsLinearSqale(){
+    Rule rule = new Rule(LANG);
+
+    rule.setKey("RSPEC-1997");
+
+    rule.setSeverity(Rule.Severity.MAJOR);
+
+    rule.setTitle("This is a \"test\"");
+
+    rule.setDefaultActive(Boolean.TRUE);
+
+    rule.setSqaleRemediationFunction(Rule.RemediationFunction.LINEAR);
+    rule.setSqaleLinearArgDesc("per point of complexity above the threshold");
+    rule.setSqaleLinearFactor("1min");
+    rule.setSqaleSubCharac(Rule.Subcharacteristic.COMPILER_RELATED_PORTABILITY);
+
+    String expectedAnnotation = "@Rule(key = \"S1997\",\n" +
+            "  priority = Priority.MAJOR\n" +
+            "  name = \"This is a \\\"test\\\"\")\n" +
+            "@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.COMPILER_RELATED_PORTABILITY)\n" +
+            "@SqaleLinearRemediation( coeff=\"1min\", effortToFixDescription=\"per point of complexity above the threshold\")\n" +
+            "@ActivatedByDefault\n";
+
+    assertThat(rule.getAnnotations()).isEqualTo(expectedAnnotation);
+  }
+
 }

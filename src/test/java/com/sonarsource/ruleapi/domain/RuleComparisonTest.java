@@ -6,9 +6,6 @@
 
 package com.sonarsource.ruleapi.domain;
 
-import com.sonarsource.ruleapi.domain.Parameter;
-import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.domain.RuleComparison;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import org.junit.Test;
 
@@ -866,7 +863,7 @@ public class RuleComparisonTest {
 
     String str = "this is a test";
 
-    spec.setSqaleLinearArg(str);
+    spec.setSqaleLinearArgDesc(str);
 
     assertThat(rc.compare()).isEqualTo(1);
   }
@@ -879,7 +876,7 @@ public class RuleComparisonTest {
 
     String str = "this is a test";
 
-    spec.setSqaleLinearArg(str);
+    spec.setSqaleLinearArgDesc(str);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
             "  SQALE linear argument\n" +

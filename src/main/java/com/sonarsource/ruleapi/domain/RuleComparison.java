@@ -242,7 +242,7 @@ public class RuleComparison{
     }
 
     if (compareSqaleLinearArg() != 0) {
-      logDifference(sb, "SQALE linear argument", spec.getSqaleLinearArg(), impl.getSqaleLinearArg());
+      logDifference(sb, "SQALE linear argument", spec.getSqaleLinearArgDesc(), impl.getSqaleLinearArgDesc());
     }
 
     if (compareSqaleLinearFactor() != 0) {
@@ -364,7 +364,7 @@ public class RuleComparison{
   }
 
   protected int compareSqaleLinearArg() {
-    return ComparisonUtilities.compareStrings(spec.getSqaleLinearArg(), impl.getSqaleLinearArg());
+    return ComparisonUtilities.compareStrings(spec.getSqaleLinearArgDesc(), impl.getSqaleLinearArgDesc());
   }
 
   protected int compareSqaleLinearFactor() {

@@ -109,7 +109,7 @@ public class Rule {
   private Subcharacteristic sqaleSubCharac = null;
   private RemediationFunction sqaleRemediationFunction = null;
   private String sqaleConstantCostOrLinearThreshold = null;
-  private String sqaleLinearArg = null;
+  private String sqaleLinearArgDesc = null;
   private String sqaleLinearFactor = null;
   private String sqaleLinearOffset = null;
 
@@ -135,6 +135,89 @@ public class Rule {
 
   public Rule(String language) {
     this.language = language;
+  }
+
+  public String getAnnotations() {
+
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("@Rule(key = \"").append(denormalizeKey()).append("\",\n  ")
+            .append("priority = Priority.").append(getSeverity().name()).append("\n  ")
+            .append("name = \"").append(getTitleForAnnotation()).append("\")\n");
+
+    String tags = getTagList();
+    if (tags.length()> 0) {
+      sb.append("@RuleTags({ ").append(tags).append(" })\n");
+    }
+
+    sb.append(getSqaleForAnnotation());
+
+    if (defaultActive != null && defaultActive) {
+      sb.append("@ActivatedByDefault\n");
+    }
+
+    return sb.toString();
+  }
+
+  protected String getSqaleForAnnotation() {
+
+    StringBuilder sb = new StringBuilder();
+    if (sqaleRemediationFunction != null) {
+      if (getSqaleSubCharac() != null) {
+        sb.append("@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.").append(getSqaleSubCharac().name()).append(")\n");
+      }
+
+      switch (sqaleRemediationFunction) {
+        case CONSTANT_ISSUE:
+          sb.append("@SqaleConstantRemediation( \"").append(sqaleConstantCostOrLinearThreshold).append("\" )");
+          break;
+        case LINEAR:
+          sb.append("@SqaleLinearRemediation( coeff=\"").append(sqaleLinearFactor)
+                  .append("\", effortToFixDescription=\"").append(sqaleLinearArgDesc).append("\")");
+          break;
+        case LINEAR_OFFSET:
+          sb.append("@SqaleLinearWithOffsetRemediation( coeff=\"").append(sqaleLinearFactor)
+                  .append("\", effortToFixDescription=\"").append(sqaleLinearArgDesc)
+                  .append("\", offset=\"").append(sqaleLinearOffset).append("\")");
+          break;
+      }
+      sb.append("\n");
+    }
+    return sb.toString();
+  }
+
+  protected String getTitleForAnnotation() {
+    StringBuilder sb = new StringBuilder();
+
+    for (int i = 0; i < title.length(); i++) {
+      char ch = title.charAt(i);
+      if (ch == '\"') {
+        sb.append("\\\"");
+      } else {
+        sb.append(ch);
+      }
+    }
+    return sb.toString();
+  }
+
+  protected String denormalizeKey() {
+    String denorm = key;
+    if (denorm.matches("RSPEC-\\d+")) {
+      denorm = denorm.replaceAll("RSPEC-","S");
+    }
+    return denorm;
+  }
+
+  protected String getTagList() {
+
+    StringBuilder sb = new StringBuilder();
+    for (String tag : tags) {
+      if (sb.length() > 0) {
+        sb.append(", ");
+      }
+      sb.append("\"").append(tag).append("\"");
+    }
+    return sb.toString();
   }
 
   public void merge(Rule subRule) {
@@ -180,8 +263,8 @@ public class Rule {
       this.sqaleConstantCostOrLinearThreshold = subRule.sqaleConstantCostOrLinearThreshold;
     }
 
-    if (!Strings.isNullOrEmpty(subRule.sqaleLinearArg)) {
-      this.sqaleLinearArg = subRule.sqaleLinearArg;
+    if (!Strings.isNullOrEmpty(subRule.sqaleLinearArgDesc)) {
+      this.sqaleLinearArgDesc = subRule.sqaleLinearArgDesc;
     }
 
     if (!Strings.isNullOrEmpty(subRule.sqaleLinearFactor)) {
@@ -388,14 +471,14 @@ public class Rule {
     this.language = language;
   }
 
-  public String getSqaleLinearArg() {
+  public String getSqaleLinearArgDesc() {
 
-    return sqaleLinearArg;
+    return sqaleLinearArgDesc;
   }
 
-  public void setSqaleLinearArg(String sqaleLinearArg) {
+  public void setSqaleLinearArgDesc(String sqaleLinearArgDesc) {
 
-    this.sqaleLinearArg = sqaleLinearArg;
+    this.sqaleLinearArgDesc = sqaleLinearArgDesc;
   }
 
   public String getSqaleLinearFactor() {

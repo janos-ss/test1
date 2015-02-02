@@ -323,7 +323,7 @@ public class RuleMakerTest {
     assertThat(rule.getSqaleSubCharac()).isEqualTo(Rule.Subcharacteristic.COMPILER_RELATED_PORTABILITY);
     assertThat(rule.getSqaleRemediationFunction()).isEqualTo(Rule.RemediationFunction.CONSTANT_ISSUE);
     assertThat(rule.getSqaleConstantCostOrLinearThreshold()).isEqualTo("2d");
-    assertThat(rule.getSqaleLinearArg()).isNull();
+    assertThat(rule.getSqaleLinearArgDesc()).isNull();
     assertThat(rule.getSqaleLinearFactor()).isNull();
     assertThat(rule.getSqaleLinearOffset()).isNull();
   }

@@ -177,7 +177,7 @@ public class RuleMaker {
     rule.setSqaleLinearFactor((String) jsonRule.get("defaultDebtRemFnCoeff"));
     rule.setSqaleLinearOffset((String) jsonRule.get("defaultDebtRemFnOffset"));
     rule.setSqaleConstantCostOrLinearThreshold((String) jsonRule.get("defaultDebtRemFnCoeff"));
-    rule.setSqaleLinearArg((String) jsonRule.get("effortToFixDescription"));
+    rule.setSqaleLinearArgDesc((String) jsonRule.get("effortToFixDescription"));
 
     rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
 
@@ -259,7 +259,7 @@ public class RuleMaker {
 
     setRemediationFunction(rule, getCustomFieldValue(issue, "SQALE Remediation Function"));
     rule.setSqaleConstantCostOrLinearThreshold(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold"));
-    rule.setSqaleLinearArg(getCustomFieldValue(issue, "SQALE Linear Argument"));
+    rule.setSqaleLinearArgDesc(getCustomFieldValue(issue, "SQALE Linear Argument"));
     rule.setSqaleLinearFactor(getCustomFieldValue(issue, "SQALE Linear Factor"));
     rule.setSqaleLinearOffset(getCustomFieldValue(issue, "SQALE Linear Offset"));
   }
