@@ -8,6 +8,8 @@ package com.sonarsource.ruleapi.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.common.base.Strings;
 
@@ -187,17 +189,8 @@ public class Rule {
   }
 
   protected String getTitleForAnnotation() {
-    StringBuilder sb = new StringBuilder();
 
-    for (int i = 0; i < title.length(); i++) {
-      char ch = title.charAt(i);
-      if (ch == '\"') {
-        sb.append("\\\"");
-      } else {
-        sb.append(ch);
-      }
-    }
-    return sb.toString();
+    return title.replaceAll(Pattern.quote("\""), Matcher.quoteReplacement("\\\""));
   }
 
   protected String denormalizeKey() {
