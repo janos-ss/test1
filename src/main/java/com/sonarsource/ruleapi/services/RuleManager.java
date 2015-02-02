@@ -23,11 +23,11 @@ public class RuleManager {
 
   public static final String NEMO = "http://nemo.sonarqube.org";
 
-  protected List<Rule> getCoveredRulesForLangauge(Language language) throws RuleException {
+  public List<Rule> getCoveredRulesForLangauge(Language language) throws RuleException {
     return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec() + "\"", language.getRspec());
   }
 
-  protected List<Rule> getImplementedRulesForLanguage(Language language, String instance) throws RuleException {
+  public List<Rule> getImplementedRulesForLanguage(Language language, String instance) throws RuleException {
     return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq(), language.getSqProfileKey());
   }
 
