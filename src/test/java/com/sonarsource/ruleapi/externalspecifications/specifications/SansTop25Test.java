@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.domain.RuleException;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -83,4 +84,78 @@ public class SansTop25Test {
     rule.getCwe().add("CWE-1");
     assertThat(sansTop25.isSansRule(rule)).isFalse();
   }
+
+  @Test
+  public void testSummaryReport(){
+    SansTop25 sans = new SansTop25();
+
+    sans.populateRulesCoverageMap();
+    sans.computeCoverage();
+
+    String newline = String.format("%n");
+    String expectedSummaryReport = newline +
+            "SANS Top 25 for Java" + newline +
+            "Insecure Interaction Between Components  6,  specified:  0,  implemented:  0" + newline +
+            "Porous Defenses                         11,  specified:  0,  implemented:  0" + newline +
+            "Risky Resource Management                8,  specified:  0,  implemented:  0" + newline +
+            "Total                                   25,  specified:  0,  implemented:  0" + newline;
+    String summaryReport = "";
+    try {
+      summaryReport = sans.getSummaryReport("");
+    } catch (RuleException e) {
+      e.printStackTrace();
+    }
+
+    assertThat(summaryReport).isEqualTo(expectedSummaryReport);
+  }
+
+  @Test
+  public void testReport(){
+    SansTop25 sans = new SansTop25();
+
+    sans.populateRulesCoverageMap();
+    sans.computeCoverage();
+
+    String newline = String.format("%n");
+    String expectedReport = "Rule           Spec.        Impl.       " + newline +
+            " 1) CWE-89                              " + newline +
+            " 2) CWE-78                              " + newline +
+            " 3) CWE-120                             " + newline +
+            " 4) CWE-79                              " + newline +
+            " 5) CWE-306                             " + newline +
+            " 6) CWE-862                             " + newline +
+            " 7) CWE-798                             " + newline +
+            " 8) CWE-311                             " + newline +
+            " 9) CWE-434                             " + newline +
+            "10) CWE-807                             " + newline +
+            "11) CWE-250                             " + newline +
+            "12) CWE-352                             " + newline +
+            "13) CWE-22                              " + newline +
+            "14) CWE-494                             " + newline +
+            "15) CWE-863                             " + newline +
+            "16) CWE-829                             " + newline +
+            "17) CWE-732                             " + newline +
+            "18) CWE-676                             " + newline +
+            "19) CWE-327                             " + newline +
+            "20) CWE-131                             " + newline +
+            "21) CWE-307                             " + newline +
+            "22) CWE-601                             " + newline +
+            "23) CWE-134                             " + newline +
+            "24) CWE-190                             " + newline +
+            "25) CWE-759                             " + newline + newline +
+            "SANS Top 25 for Java" + newline +
+            "Insecure Interaction Between Components  6,  specified:  0,  implemented:  0" + newline +
+            "Porous Defenses                         11,  specified:  0,  implemented:  0" + newline +
+            "Risky Resource Management                8,  specified:  0,  implemented:  0" + newline +
+            "Total                                   25,  specified:  0,  implemented:  0" + newline;
+    String report = "";
+    try {
+      report = sans.getReport("");
+    } catch (RuleException e) {
+      e.printStackTrace();
+    }
+
+    assertThat(report).isEqualTo(expectedReport);
+  }
+
 }
