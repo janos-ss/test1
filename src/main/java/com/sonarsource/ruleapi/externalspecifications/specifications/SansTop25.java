@@ -227,41 +227,56 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
       switch (sr.category) {
         case INSECURE_INTERACTION:
 
-          insecureInteractionCount++;
-          if (cov.getSpecifiedBy() != null) {
-            insecureInteractionSpecified++;
-          }
-          if (cov.getImplementedBy() != null) {
-            insecureInteractionImplemented++;
-          }
+          countInsecureCoverage(cov);
 
           break;
 
         case POROUS_DEFENSES:
 
-          porousDefensesCount++;
-          if (cov.getSpecifiedBy() != null) {
-            porousDefensesSpecified++;
-          }
-          if (cov.getImplementedBy() != null) {
-            porousDefensesImplemented++;
-          }
+          countPorousDefenses(cov);
           break;
 
         case RISKY_RESOURCE:
 
-          riskyResourceCount++;
-          if (cov.getSpecifiedBy() != null) {
-            riskyResourceSpecified++;
-          }
-          if (cov.getImplementedBy() != null) {
-            riskyResourceImplemented++;
-          }
+          countRiskyResource(cov);
 
           break;
       }
     }
 
+  }
+
+  private void countRiskyResource(CodingStandardRuleCoverage cov) {
+
+    riskyResourceCount++;
+    if (cov.getSpecifiedBy() != null) {
+      riskyResourceSpecified++;
+    }
+    if (cov.getImplementedBy() != null) {
+      riskyResourceImplemented++;
+    }
+  }
+
+  private void countPorousDefenses(CodingStandardRuleCoverage cov) {
+
+    porousDefensesCount++;
+    if (cov.getSpecifiedBy() != null) {
+      porousDefensesSpecified++;
+    }
+    if (cov.getImplementedBy() != null) {
+      porousDefensesImplemented++;
+    }
+  }
+
+  private void countInsecureCoverage(CodingStandardRuleCoverage cov) {
+
+    insecureInteractionCount++;
+    if (cov.getSpecifiedBy() != null) {
+      insecureInteractionSpecified++;
+    }
+    if (cov.getImplementedBy() != null) {
+      insecureInteractionImplemented++;
+    }
   }
 
   protected boolean isSansRule(Rule rule) {

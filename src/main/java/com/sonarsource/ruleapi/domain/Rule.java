@@ -147,9 +147,9 @@ public class Rule {
             .append("priority = Priority.").append(getSeverity().name()).append("\n  ")
             .append("name = \"").append(getTitleForAnnotation()).append("\")\n");
 
-    String tags = getTagList();
-    if (tags.length()> 0) {
-      sb.append("@RuleTags({ ").append(tags).append(" })\n");
+    String tagsAsString = getTagList();
+    if (tagsAsString.length()> 0) {
+      sb.append("@RuleTags({ ").append(tagsAsString).append(" })\n");
     }
 
     sb.append(getSqaleForAnnotation());
