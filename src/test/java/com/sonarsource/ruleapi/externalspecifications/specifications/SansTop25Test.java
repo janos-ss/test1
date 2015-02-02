@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
+import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -210,7 +211,17 @@ public class SansTop25Test {
 
     assertThat(summaryReport).isEqualTo(expectedSummaryReport);
 
+  }
 
+  @Test
+  public void testGetters() {
+
+    assertThat(sansTop25.getLanguage()).isEqualTo(Language.JAVA);
+    assertThat(sansTop25.getStandardName()).isEqualTo("SANS Top 25");
+    assertThat(sansTop25.getRSpecReferenceFieldName()).isEqualTo("CWE");
+    assertThat(sansTop25.getCodingStandardRules()).hasSize(25);
+    assertThat(sansTop25.getReferencePattern()).isEqualTo("CWE-\\d+");
+    assertThat(sansTop25.getTag()).isEqualTo("sans-top25");
   }
 
 }
