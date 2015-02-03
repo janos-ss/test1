@@ -13,15 +13,15 @@ import java.util.Map;
 
 public interface TaggableStandard extends CodingStandard {
 
-  public boolean isTagShared();
+  boolean isTagShared();
 
-  public String getTag();
+  String getTag();
 
-  public String getSeeSectionSearchString();
+  String getSeeSectionSearchString();
 
-  public String getReferencePattern();
+  String getReferencePattern();
 
-  public boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule);
+  boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule);
 
 
 }

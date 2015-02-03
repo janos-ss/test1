@@ -12,12 +12,12 @@ import java.util.List;
 
 public interface CodingStandard {
 
-  public String getStandardName();
+  String getStandardName();
 
-  public String getRSpecReferenceFieldName();
+  String getRSpecReferenceFieldName();
 
-  public List<String> getRspecReferenceFieldValues(Rule rule);
+  List<String> getRspecReferenceFieldValues(Rule rule);
 
-  public void setRspecReferenceFieldValues(Rule rule, List<String> ids);
+  void setRspecReferenceFieldValues(Rule rule, List<String> ids);
 
 }
