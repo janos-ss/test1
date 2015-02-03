@@ -239,8 +239,8 @@ public class RuleTest {
 
     String expectedAnnotation = "@Rule(key = \"S1997\",\n" +
             "  priority = Priority.MAJOR\n" +
-            "  name = \"This is a \\\"test\\\"\")\n" +
-            "@RuleTags({ \"misra\", \"cwe\" })\n" +
+            "  name = \"This is a \\\"test\\\"\",\n" +
+            "  tags = \"misra\", \"cwe\")\n" +
             "@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.COMPILER_RELATED_PORTABILITY)\n" +
             "@SqaleLinearWithOffsetRemediation( coeff=\"1min\", effortToFixDescription=\"per point of complexity above the threshold\", offset=\"10min\")\n" +
             "@ActivatedByDefault\n";
@@ -260,7 +260,8 @@ public class RuleTest {
 
     String expectedAnnotation = "@Rule(key = \"S1997\",\n" +
             "  priority = Priority.MAJOR\n" +
-            "  name = \"This is a test\")\n";
+            "  name = \"This is a test\",\n" +
+            "  tags = \"\")\n";
 
     assertThat(rule.getAnnotations()).isEqualTo(expectedAnnotation);
   }
@@ -285,8 +286,8 @@ public class RuleTest {
 
     String expectedAnnotation = "@Rule(key = \"LegacyKey\",\n" +
             "  priority = Priority.MAJOR\n" +
-            "  name = \"This is a \\\"test\\\"\")\n" +
-            "@RuleTags({ \"cwe\" })\n" +
+            "  name = \"This is a \\\"test\\\"\",\n" +
+            "  tags = \"cwe\")\n" +
             "@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.COMPILER_RELATED_PORTABILITY)\n" +
             "@SqaleConstantRemediation( \"10min\" )\n";
 
@@ -312,7 +313,8 @@ public class RuleTest {
 
     String expectedAnnotation = "@Rule(key = \"S1997\",\n" +
             "  priority = Priority.MAJOR\n" +
-            "  name = \"This is a \\\"test\\\"\")\n" +
+            "  name = \"This is a \\\"test\\\"\",\n" +
+            "  tags = \"\")\n" +
             "@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.COMPILER_RELATED_PORTABILITY)\n" +
             "@SqaleLinearRemediation( coeff=\"1min\", effortToFixDescription=\"per point of complexity above the threshold\")\n" +
             "@ActivatedByDefault\n";

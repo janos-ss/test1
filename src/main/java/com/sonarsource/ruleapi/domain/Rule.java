@@ -143,16 +143,12 @@ public class Rule {
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append("@Rule(key = \"").append(denormalizeKey()).append("\",\n  ")
+    sb.append("@Rule(key = \"")   .append(denormalizeKey()).append("\",\n  ")
             .append("priority = Priority.").append(getSeverity().name()).append("\n  ")
-            .append("name = \"").append(getTitleForAnnotation()).append("\")\n");
+            .append("name = \"")  .append(getTitleForAnnotation()).append("\",\n  ")
+            .append("tags = ")    .append(getTagListForAnnotation()).append(")\n");
 
-    String tagsAsString = getTagList();
-    if (tagsAsString.length()> 0) {
-      sb.append("@RuleTags({ ").append(tagsAsString).append(" })\n");
-    }
-
-    sb.append(getSqaleForAnnotation());
+    sb.append(getSqaleAnnotations());
 
     if (defaultActive != null && defaultActive) {
       sb.append("@ActivatedByDefault\n");
@@ -161,7 +157,7 @@ public class Rule {
     return sb.toString();
   }
 
-  protected String getSqaleForAnnotation() {
+  public String getSqaleAnnotations() {
 
     StringBuilder sb = new StringBuilder();
     if (sqaleRemediationFunction != null) {
@@ -201,7 +197,7 @@ public class Rule {
     return denorm;
   }
 
-  protected String getTagList() {
+  protected String getTagListForAnnotation() {
 
     StringBuilder sb = new StringBuilder();
     for (String tag : tags) {
@@ -209,6 +205,9 @@ public class Rule {
         sb.append(", ");
       }
       sb.append("\"").append(tag).append("\"");
+    }
+    if (sb.length() == 0) {
+      sb.append("\"\"");
     }
     return sb.toString();
   }
