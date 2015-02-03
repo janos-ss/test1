@@ -226,22 +226,17 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
 
       switch (sr.category) {
         case INSECURE_INTERACTION:
-
           countInsecureCoverage(cov);
-
           break;
 
         case POROUS_DEFENSES:
-
           countPorousDefenses(cov);
           break;
 
         case RISKY_RESOURCE:
-
           countRiskyResource(cov);
-
           break;
-        
+
         default:
       }
     }
