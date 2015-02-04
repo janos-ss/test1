@@ -15,7 +15,7 @@ public class LangugeTest {
   @Test
   public void testLanguagesEnum() {
 
-    assertThat(Language.values().length).isEqualTo(17);
+    assertThat(Language.values().length).isEqualTo(18);
     assertThat(Language.ABAP.sq).isEqualTo("abap");
     assertThat(Language.ABAP.rspec).isEqualTo("ABAP");
     assertThat(Language.ABAP.update).isTrue();
