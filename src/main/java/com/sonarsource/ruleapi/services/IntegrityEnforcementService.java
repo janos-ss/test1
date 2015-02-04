@@ -32,6 +32,7 @@ public class IntegrityEnforcementService extends RuleManager {
   public void setCoveredAndOutdatedLanguages(String login, String password) throws RuleException {
 
     for (Language lang : Language.values()) {
+      LOGGER.info("Setting covered and outdated for " + lang.getRspec());
       if (!lang.doUpdate()) {
         LOGGER.warning("Update disabled for " + lang.getSq() + "/" + lang.getRspec());
       }
