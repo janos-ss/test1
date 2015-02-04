@@ -20,8 +20,8 @@ public enum Language {
   PLI   ("pli",         "PL/I",        "pli-sonar-way-95331",   true),
   PLSQL ("plsql",       "PL/SQL",      "plsql-sonar-way-37514", true),
   PY    ("python",      "Python",      "py-sonar-way-67511",    true),
-  SWIFT ("swift",       "Swift",       "",                      false),
   RPG   ("rpg",         "RPG",         "rpg-sonar-way-64226",   true),
+  SWIFT ("swift",       "Swift",       "",                      false),
   VB    ("vb",          "VB6",         "vb-sonar-way-21338",    true),
   VBNET ("vbnet",       "VB.Net",      "vbnet-sonar-way-31082", true),
   XML   ("xml",         "XML",         "web-sonar-way-50375",   true);
