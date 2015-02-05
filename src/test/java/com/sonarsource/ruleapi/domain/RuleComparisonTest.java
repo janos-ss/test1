@@ -318,7 +318,7 @@ public class RuleComparisonTest {
     spec.setDefaultActive(Boolean.TRUE);
     impl.setDefaultActive(Boolean.FALSE);
 
-    assertThat(rc.compare()).isEqualTo(1);
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
   @Test
@@ -329,7 +329,7 @@ public class RuleComparisonTest {
 
     spec.setDefaultActive(Boolean.TRUE);
 
-    assertThat(rc.compare()).isEqualTo(-1);
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
   @Test
@@ -556,36 +556,6 @@ public class RuleComparisonTest {
     impl.setDefaultActive(Boolean.TRUE);
 
     assertThat(rc.toString()).hasSize(0);
-  }
-
-  @Test
-  public void testToStringDefaultActiveNeq() throws Exception {
-
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    spec.setDefaultActive(Boolean.TRUE);
-    impl.setDefaultActive(Boolean.FALSE);
-
-    assertThat(rc.toString()).isEqualTo("null\n" +
-            "  default active\n" +
-            "    spec: true\n" +
-            "    impl: false\n");
-  }
-
-  @Test
-  public void testToStringDefaultActiveNeqWithNull() throws Exception {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    spec.setDefaultActive(Boolean.TRUE);
-
-    assertThat(rc.toString()).isEqualTo("null\n" +
-            "  default active\n" +
-            "    spec: true\n" +
-            "    impl: null\n");
   }
 
   @Test
