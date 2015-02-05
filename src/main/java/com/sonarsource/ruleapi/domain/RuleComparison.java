@@ -53,10 +53,6 @@ public class RuleComparison{
     if (result != 0) {
       return result;
     }
-    result = compareDefaultActive();
-    if (result != 0) {
-      return result;
-    }
 
     result = compareTemplate();
     if (result != 0) {
@@ -175,10 +171,6 @@ public class RuleComparison{
     }
     if (compareSeverity() != 0) {
       logDifference(sb, "severity", spec.getSeverity(), impl.getSeverity());
-    }
-
-    if (compareDefaultActive() != 0) {
-      logDifference(sb, "default active", spec.getDefaultActive(),impl.getDefaultActive());
     }
 
     if (compareTemplate() != 0) {
@@ -301,14 +293,6 @@ public class RuleComparison{
       return result;
     }
     return spec.getSeverity().compareTo(impl.getSeverity());
-  }
-
-  protected int compareDefaultActive() {
-    int result = checkForNulls(spec.getDefaultActive(), impl.getDefaultActive());
-    if (result != 0 || spec.getDefaultActive() == null) {
-      return result;
-    }
-    return spec.getDefaultActive().compareTo(impl.getDefaultActive());
   }
 
   protected int compareTemplate() {
