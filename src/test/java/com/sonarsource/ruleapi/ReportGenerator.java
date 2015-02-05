@@ -6,6 +6,8 @@
 
 package com.sonarsource.ruleapi;
 
+import com.sonarsource.ruleapi.domain.RuleException;
+import com.sonarsource.ruleapi.services.ReportService;
 import org.junit.Test;
 
 import com.sonar.orchestrator.Orchestrator;
@@ -39,8 +41,14 @@ public class ReportGenerator {
 				.setOrchestratorProperty("xmlVersion", "DEV").addPlugin("xml")
 				.build();
 		orchestrator.start();
-		String sonarqubeUrl = orchestrator.getServer().getUrl();
-		System.out.println("SonarQube URL : " + sonarqubeUrl);
+
+    ReportService reportService = new ReportService();
+    try {
+      reportService.getReports(orchestrator.getServer().getUrl());
+    } catch (RuleException e) {
+      e.printStackTrace();
+    }
+
 		orchestrator.stop();
 	}
 }
