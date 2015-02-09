@@ -140,6 +140,8 @@ public class OwaspTopTen extends AbstractReportableStandard implements TaggableS
   @Override
   public String getSummaryReport(String instance) {
 
+    String newline = String.format("%n");
+
     initCoverageResults(instance);
 
     StringBuilder sb = new StringBuilder();
@@ -153,7 +155,7 @@ public class OwaspTopTen extends AbstractReportableStandard implements TaggableS
       sb.append(cov.getCodingStandardRuleId())
               .append("\tSpecified: ").append(cov.getSpecifiedBy().size())
               .append("\tImplemented: ").append(cov.getImplementedBy().size())
-              .append("\n");
+              .append(newline);
     }
 
     return sb.toString();
