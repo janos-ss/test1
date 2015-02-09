@@ -25,7 +25,7 @@ public class RuleUpdater {
   }
 
 
-  public static boolean updateRule(String ruleKey, Map<String,Object> fieldValuesToUpdate, String login, String password) throws RuleException {
+  public static boolean updateRule(String ruleKey, Map<String,Object> fieldValuesToUpdate, String login, String password) {
 
     if (!ruleKey.matches("RSPEC-[0-9]+")) {
       return false;
@@ -42,7 +42,7 @@ public class RuleUpdater {
     return updater.updateIssue(login, password, ruleKey, request);
   }
 
-  protected static JSONObject prepareRequest(Map<String, Object> fieldValuesToUpdate, JSONObject fieldsMeta) throws RuleException {
+  protected static JSONObject prepareRequest(Map<String, Object> fieldValuesToUpdate, JSONObject fieldsMeta) {
 
     Map<String,String> fieldIds = extractFieldIds(fieldsMeta);
 
@@ -70,7 +70,7 @@ public class RuleUpdater {
   }
 
 
-  protected static Object handleConstrainedValueList(Object candidateFieldValue, Map<String, String> allowedValues, String fieldId) throws RuleException {
+  protected static Object handleConstrainedValueList(Object candidateFieldValue, Map<String, String> allowedValues, String fieldId) {
     if (candidateFieldValue instanceof String) {
       String passedVal = (String) candidateFieldValue;
       return jsonObjectOrException(allowedValues, fieldId, passedVal);
@@ -84,7 +84,7 @@ public class RuleUpdater {
     return new JSONObject();
   }
 
-  private static JSONObject jsonObjectOrException(Map<String, String> allowedValues, String fieldId, String passedVal) throws RuleException {
+  private static JSONObject jsonObjectOrException(Map<String, String> allowedValues, String fieldId, String passedVal) {
 
     if (allowedValues.containsKey(passedVal)) {
       JSONObject jsonObject = new JSONObject();

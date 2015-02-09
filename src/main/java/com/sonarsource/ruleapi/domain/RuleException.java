@@ -6,7 +6,7 @@
 
 package com.sonarsource.ruleapi.domain;
 
-public class RuleException extends Exception {
+public class RuleException extends RuntimeException {
 
   public RuleException(String message) {
     super(message);

@@ -40,8 +40,6 @@ public class Fetcher {
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
   private static final String EXPAND = "?expand=names";
 
-  public Fetcher() {
-  }
 
   /**
    * Retrieves Jira Issue by Jira id (RSPEC-###)
@@ -54,7 +52,7 @@ public class Fetcher {
    * @param key the key to search by.
    * @return Populated Issue retrieved from Jira or null
    */
-  public JSONObject fetchIssueByKey(String key) throws RuleException {
+  public JSONObject fetchIssueByKey(String key) {
 
     JSONObject issue = null;
 
@@ -69,11 +67,11 @@ public class Fetcher {
     return issue;
   }
 
-  private JSONObject getIssueByKey(String issueKey) throws RuleException {
+  private JSONObject getIssueByKey(String issueKey) {
     return getJsonFromUrl(BASE_URL + ISSUE + issueKey + EXPAND);
   }
 
-  private JSONObject getIssueByLegacyKey(String searchString) throws RuleException {
+  private JSONObject getIssueByLegacyKey(String searchString) {
     try {
       String searchStr = URLEncoder.encode(BASE_QUERY + searchString, "UTF-8").replaceAll("\\+", "%20");
 
@@ -89,7 +87,7 @@ public class Fetcher {
     }
   }
 
-  public List<JSONObject> fetchIssuesBySearch(String search) throws RuleException {
+  public List<JSONObject> fetchIssuesBySearch(String search) {
 
     try {
 
@@ -125,7 +123,7 @@ public class Fetcher {
    *               E. G. repositories=c
    * @return list of retrieved JSON rules
    */
-  public List<JSONObject> fetchRulesFromSonarQube(String instance, String search) throws RuleException {
+  public List<JSONObject> fetchRulesFromSonarQube(String instance, String search) {
 
     String path = "/api/rules/search?ps=1000&";
 
@@ -134,7 +132,7 @@ public class Fetcher {
   }
 
 
-  public JSONObject fetchRuleFromSonarQube(String instance, String ruleKey) throws RuleException {
+  public JSONObject fetchRuleFromSonarQube(String instance, String ruleKey) {
 
     String path = "/api/rules/show?key=";
 
@@ -142,12 +140,12 @@ public class Fetcher {
     return (JSONObject) rawResult.get("rule");
   }
 
-  public JSONObject getJsonFromUrl(String url) throws RuleException {
+  public JSONObject getJsonFromUrl(String url) {
 
     return getJsonFromUrl(url, null, null);
   }
 
-  public JSONObject getJsonFromUrl(String url, String login, String password) throws RuleException {
+  public JSONObject getJsonFromUrl(String url, String login, String password) {
     Client client = ClientBuilder.newClient();
     if (login != null && password != null) {
       client.register(HttpAuthenticationFeature.basic(login, password));

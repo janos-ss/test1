@@ -41,8 +41,6 @@ public class RuleUpdaterTest {
 
     } catch (ParseException e) {
       e.printStackTrace();
-    } catch (RuleException e) {
-      e.printStackTrace();
     }
 
     assertThat(obj.toJSONString()).isEqualTo("{\"fields\":{\"customfield_10007\":{\"id\":\"10040\"}}}");
@@ -67,8 +65,6 @@ public class RuleUpdaterTest {
 
     } catch (ParseException e) {
       e.printStackTrace();
-    } catch (RuleException e) {
-      e.printStackTrace();
     }
 
     assertThat(obj.toJSONString()).isEqualTo("{\"fields\":{\"customfield_10001\":[{\"id\":\"10021\"},{\"id\":\"10122\"}]}}");
@@ -88,8 +84,6 @@ public class RuleUpdaterTest {
 
     } catch (ParseException e) {
       e.printStackTrace();
-    } catch (RuleException e) {
-      e.printStackTrace();
     }
 
     assertThat(obj.toJSONString()).isEqualTo("{\"fields\":{\"customfield_10007\":{}}}");
@@ -107,7 +101,7 @@ public class RuleUpdaterTest {
       Map<String, Object> map = new HashMap<String, Object>();
       map.put("Default Severity", "Green");
 
-      obj = RuleUpdater.prepareRequest(map, fieldsMeta);
+      RuleUpdater.prepareRequest(map, fieldsMeta);
       fail("RuleException expected");
     } catch (Exception e) {
       assertThat(e).isInstanceOf(RuleException.class);
@@ -155,8 +149,6 @@ public class RuleUpdaterTest {
       map.put("Labels", labels);
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
-    } catch (RuleException e) {
-      e.printStackTrace();
     } catch (ParseException e) {
       e.printStackTrace();
     }
@@ -182,8 +174,6 @@ public class RuleUpdaterTest {
       map.put("CWE", cwe);
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
-    } catch (RuleException e) {
-      e.printStackTrace();
     } catch (ParseException e) {
       e.printStackTrace();
     }
@@ -204,8 +194,6 @@ public class RuleUpdaterTest {
       map.put("CWE", cwe);
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
-    } catch (RuleException e) {
-      e.printStackTrace();
     } catch (ParseException e) {
       e.printStackTrace();
     }
@@ -224,8 +212,6 @@ public class RuleUpdaterTest {
       map.put("Message", "this is the message...");
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
-    } catch (RuleException e) {
-      e.printStackTrace();
     } catch (ParseException e) {
       e.printStackTrace();
     }
@@ -253,8 +239,6 @@ public class RuleUpdaterTest {
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
 
     } catch (ParseException e) {
-      e.printStackTrace();
-    } catch (RuleException e) {
       e.printStackTrace();
     }
 
@@ -287,8 +271,6 @@ public class RuleUpdaterTest {
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
 
     } catch (ParseException e) {
-      e.printStackTrace();
-    } catch (RuleException e) {
       e.printStackTrace();
     }
 

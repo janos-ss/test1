@@ -7,7 +7,6 @@
 package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 
@@ -23,11 +22,11 @@ public class RuleManager {
 
   public static final String NEMO = "http://nemo.sonarqube.org";
 
-  public List<Rule> getCoveredRulesForLangauge(Language language) throws RuleException {
+  public List<Rule> getCoveredRulesForLangauge(Language language) {
     return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec() + "\"", language.getRspec());
   }
 
-  public List<Rule> getImplementedRulesForLanguage(Language language, String instance) throws RuleException {
+  public List<Rule> getImplementedRulesForLanguage(Language language, String instance) {
     return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq(), language.getSqProfileKey());
   }
 
@@ -40,7 +39,7 @@ public class RuleManager {
     return map;
   }
 
-  protected String getNormalKey(String legacyKey, Language language) throws RuleException {
+  protected String getNormalKey(String legacyKey, Language language) {
     String key = legacyKey;
     if (! legacyKey.matches("RSPEC-\\d+")) {
 
@@ -53,7 +52,7 @@ public class RuleManager {
     return key;
   }
 
-  protected List<Rule> standardizeKeysAndIdentifyMissingSpecs(Language language, List<Rule> sqCovered) throws RuleException {
+  protected List<Rule> standardizeKeysAndIdentifyMissingSpecs(Language language, List<Rule> sqCovered) {
 
     List<Rule> specNotFound = new ArrayList<Rule>(sqCovered.size()/2);
     for (Rule sqRule : sqCovered) {

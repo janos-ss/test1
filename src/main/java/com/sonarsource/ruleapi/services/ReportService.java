@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.sonar.orchestrator.Orchestrator;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.specifications.*;
 import com.sonarsource.ruleapi.get.RuleMaker;
@@ -25,7 +26,7 @@ public class ReportService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
 
-  public void generateRuleDescriptions(List<String> ruleKeys, String language) throws RuleException {
+  public void generateRuleDescriptions(List<String> ruleKeys, String language) {
     if (ruleKeys != null) {
       for (String ruleKey : ruleKeys) {
         Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
@@ -34,16 +35,16 @@ public class ReportService extends RuleManager {
     }
   }
 
-  public void getReports(String instance) throws RuleException {
+  public void getReports(String instance) {
 
-    getOutdatedRulesReports(instance);
-    getFindBugsDeprecationReport(instance);
-    getSummaryCoverageReports(instance);
-    getMisraDetailedCoverageReports(instance);
+    writeOutdatedRulesReports(instance);
+    writeFindBugsDeprecationReport(instance);
+    writeMisraDetailedCoverageReports(instance);
+    writeSummaryCoverageReports(instance);
 
   }
 
-  public void getSummaryCoverageReports(String instance) throws RuleException {
+  public void writeSummaryCoverageReports(String instance) {
 
     LOGGER.info("Getting summary coverage report  on " + instance);
 
@@ -61,7 +62,7 @@ public class ReportService extends RuleManager {
 
   }
 
-  public void getMisraDetailedCoverageReports(String instance) throws RuleException {
+  public void writeMisraDetailedCoverageReports(String instance) {
 
     for (SupportedCodingStandard standard : SupportedCodingStandard.values()) {
 
@@ -76,7 +77,7 @@ public class ReportService extends RuleManager {
     }
   }
 
-  private void writeFile(String fileName, String content) throws RuleException {
+  private void writeFile(String fileName, String content) {
     PrintWriter writer = null;
     try {
       writer = new PrintWriter(fileName, "UTF-8");
@@ -90,22 +91,22 @@ public class ReportService extends RuleManager {
 
   }
 
-  public void getFindBugsDeprecationReport(String instance) throws RuleException {
+  public void writeFindBugsDeprecationReport(String instance) {
     LOGGER.info("Getting Findbugs deprecation report on " + instance);
 
     writeFile("DeprecatedFindBugsIds.txt",
             ((ExternalTool) SupportedCodingStandard.FINDBUGS.getCodingStandard()).getDeprecationReport(instance));
   }
 
-  public void getOutdatedRulesReports(String instance) throws RuleException {
+  public void writeOutdatedRulesReports(String instance) {
 
     for (Language language : Language.values()) {
-      getOutdatedRulesReport(language, instance);
+      writeOutdatedRulesReport(language, instance);
     }
 
   }
 
-  public void getOutdatedRulesReport(Language language, String instance) throws RuleException {
+  public void writeOutdatedRulesReport(Language language, String instance) {
 
     LOGGER.info("Getting outdated rules report for " + language.getRspec() + " on " + instance);
 
@@ -147,6 +148,39 @@ public class ReportService extends RuleManager {
     } else {
       writeFile(language.getSq().concat("OutdatedRules.txt"), "No differences found");
     }
+  }
+
+  public void writeReportsWithOrchestrator() {
+    Orchestrator orchestrator = Orchestrator
+            .builderEnv()
+            .setOrchestratorProperty("sonar.runtimeVersion", "LTS")
+            .setOrchestratorProperty("orchestrator.updateCenterUrl",
+                    "http://update.sonarsource.org/update-center-dev.properties")
+            .setOrchestratorProperty("sonar.jdbc.dialect", "h2")
+
+            .setOrchestratorProperty("abapVersion", "DEV").addPlugin("abap")
+            .setOrchestratorProperty("cobolVersion", "DEV").addPlugin("cobol")
+            .setOrchestratorProperty("cppVersion", "DEV").addPlugin("cpp")
+            .setOrchestratorProperty("csharpVersion", "DEV").addPlugin("csharp")
+            .setOrchestratorProperty("flexVersion", "DEV").addPlugin("flex")
+            .setOrchestratorProperty("javaVersion", "DEV").addPlugin("java")
+            .setOrchestratorProperty("javascriptVersion", "DEV").addPlugin("javascript")
+            .setOrchestratorProperty("phpVersion", "DEV").addPlugin("php")
+            .setOrchestratorProperty("pliVersion", "DEV").addPlugin("pli")
+            .setOrchestratorProperty("plsqlVersion", "DEV").addPlugin("plsql")
+            .setOrchestratorProperty("pythonVersion", "DEV").addPlugin("python")
+            .setOrchestratorProperty("rpgVersion", "DEV").addPlugin("rpg")
+            .setOrchestratorProperty("vbVersion", "DEV").addPlugin("vb")
+            .setOrchestratorProperty("vbnetVersion", "DEV").addPlugin("vbnet")
+            .setOrchestratorProperty("webVersion", "DEV").addPlugin("web")
+            .setOrchestratorProperty("xmlVersion", "DEV").addPlugin("xml")
+            .build();
+
+    orchestrator.start();
+
+    getReports(orchestrator.getServer().getUrl());
+
+    orchestrator.stop();
   }
 
 }

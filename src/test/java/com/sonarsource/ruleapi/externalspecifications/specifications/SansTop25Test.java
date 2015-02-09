@@ -7,7 +7,6 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
@@ -101,12 +100,7 @@ public class SansTop25Test {
             "Porous Defenses                         11,  specified:  0,  implemented:  0" + newline +
             "Risky Resource Management                8,  specified:  0,  implemented:  0" + newline +
             "Total                                   25,  specified:  0,  implemented:  0" + newline;
-    String summaryReport = "";
-    try {
-      summaryReport = sans.getSummaryReport("");
-    } catch (RuleException e) {
-      e.printStackTrace();
-    }
+    String summaryReport = sans.getSummaryReport("");
 
     assertThat(summaryReport).isEqualTo(expectedSummaryReport);
   }
@@ -150,12 +144,7 @@ public class SansTop25Test {
             "Porous Defenses                         11,  specified:  0,  implemented:  0" + newline +
             "Risky Resource Management                8,  specified:  0,  implemented:  0" + newline +
             "Total                                   25,  specified:  0,  implemented:  0" + newline;
-    String report = "";
-    try {
-      report = sans.getReport("");
-    } catch (RuleException e) {
-      e.printStackTrace();
-    }
+    String report = sans.getReport("");
 
     assertThat(report).isEqualTo(expectedReport);
   }
@@ -203,11 +192,7 @@ public class SansTop25Test {
             "Risky Resource Management                8,  specified:  1,  implemented:  1" + newline +
             "Total                                   25,  specified:  1,  implemented:  1" + newline;
     String summaryReport = "";
-    try {
-      summaryReport = sans.getSummaryReport("");
-    } catch (RuleException e) {
-      e.printStackTrace();
-    }
+    summaryReport = sans.getSummaryReport("");
 
     assertThat(summaryReport).isEqualTo(expectedSummaryReport);
 

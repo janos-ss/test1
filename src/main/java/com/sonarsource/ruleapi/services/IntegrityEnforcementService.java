@@ -21,7 +21,6 @@ import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.domain.RuleComparison;
-import com.sonarsource.ruleapi.domain.RuleException;
 
 
 public class IntegrityEnforcementService extends RuleManager {
@@ -29,7 +28,7 @@ public class IntegrityEnforcementService extends RuleManager {
   private static final Logger LOGGER = Logger.getLogger(IntegrityEnforcementService.class.getName());
 
 
-  public void setCoveredAndOutdatedLanguages(String login, String password) throws RuleException {
+  public void setCoveredAndOutdatedLanguages(String login, String password) {
 
     for (Language lang : Language.values()) {
       LOGGER.info("Setting covered and outdated for " + lang.getRspec());
@@ -40,7 +39,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  public void setCoveredAndOutdatedForLanguage(String login, String password, Language language) throws RuleException {
+  public void setCoveredAndOutdatedForLanguage(String login, String password, Language language) {
     String rspecLanguage = language.getRspec();
 
     List<Rule> rspec = getCoveredRulesForLangauge(language);
@@ -122,7 +121,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  public void enforceTagReferenceIntegrity(String login, String password) throws RuleException {
+  public void enforceTagReferenceIntegrity(String login, String password) {
 
     for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
 
@@ -133,7 +132,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  public void enforceTagReferenceIntegrity(String login, String password, TaggableStandard taggable) throws RuleException {
+  public void enforceTagReferenceIntegrity(String login, String password, TaggableStandard taggable) {
 
     List<Rule> rules = RuleMaker.getRulesByJql(
             "('" + taggable.getRSpecReferenceFieldName() + "' is not EMPTY OR description ~ '" +

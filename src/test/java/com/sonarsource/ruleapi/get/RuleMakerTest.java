@@ -7,7 +7,6 @@ package com.sonarsource.ruleapi.get;
 
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.domain.RuleException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.json.simple.parser.JSONParser;
@@ -237,11 +236,7 @@ public class RuleMakerTest {
   @Test
   public void testFleshOutRuleNullIssue() {
     Rule rule = new Rule("");
-    try {
-      RuleMaker.fleshOutRule(new Fetcher(), rule, null);
-    } catch (RuleException e) {
-      e.printStackTrace();
-    }
+    RuleMaker.fleshOutRule(new Fetcher(), rule, null);
     assertThat(rule.getTitle()).isNull();
   }
 
@@ -253,8 +248,6 @@ public class RuleMakerTest {
     try {
       RuleMaker.fleshOutRule(new Fetcher(), rule, (JSONObject) parser.parse(json));
     } catch (ParseException e) {
-      e.printStackTrace();
-    } catch (RuleException e) {
       e.printStackTrace();
     }
     assertThat(rule.getSeverity()).isNull();
@@ -444,6 +437,29 @@ public class RuleMakerTest {
     assertThat(RuleMaker.normalizeKey(key1)).isEqualTo(key1);
     assertThat(RuleMaker.normalizeKey(key2)).isEqualTo("RSPEC-1111");
     assertThat(RuleMaker.normalizeKey(key3)).isEqualTo("RSPEC-109");
+  }
+
+  @Test
+  public void testSqaleConstantValueFromSqInstance() {
+
+    Rule rule = new Rule("");
+    String cost = "5h";
+
+    rule.setSqaleRemediationFunction(Rule.RemediationFunction.LINEAR);
+    RuleMaker.setSqaleConstantValueFromSqInstance(rule, cost);
+    assertThat(rule.getSqaleConstantCostOrLinearThreshold()).isNull();
+    assertThat(rule.getSqaleLinearOffset()).isNull();
+
+    rule.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
+    RuleMaker.setSqaleConstantValueFromSqInstance(rule, cost);
+    assertThat(rule.getSqaleConstantCostOrLinearThreshold()).isEqualTo(cost);
+    assertThat(rule.getSqaleLinearOffset()).isNull();
+
+    rule.setSqaleRemediationFunction(Rule.RemediationFunction.LINEAR_OFFSET);
+    RuleMaker.setSqaleConstantValueFromSqInstance(rule, cost);
+    assertThat(rule.getSqaleConstantCostOrLinearThreshold()).isNull();
+    assertThat(rule.getSqaleLinearOffset()).isEqualTo(cost);
+
   }
 
 }

@@ -7,7 +7,6 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
@@ -142,7 +141,7 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
 
 
   @Override
-  public String getReport(String instance) throws RuleException {
+  public String getReport(String instance) {
 
     initCoverageResults(instance);
     computeCoverage();
@@ -170,7 +169,7 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
 
 
   @Override
-  public String getSummaryReport(String instance) throws RuleException {
+  public String getSummaryReport(String instance) {
 
     initCoverageResults(instance);
     computeCoverage();

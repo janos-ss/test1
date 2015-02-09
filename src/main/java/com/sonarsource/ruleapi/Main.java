@@ -9,7 +9,6 @@ package com.sonarsource.ruleapi;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
-import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.services.RuleManager;
 import org.fest.util.Strings;
@@ -47,7 +46,7 @@ public class Main {
     for (String str : settings.option) {
 
       Option option = Option.fromString(str);
-      if (option.requiresCredentials && ! credentialsProvided(settings)) {
+      if (option.requiresCredentials && !credentialsProvided(settings)) {
         printHelpMessage();
         return;
       }
@@ -80,31 +79,31 @@ public class Main {
     IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
     ReportService rs = new ReportService();
 
-    try {
-      switch (option) {
-        case OUTDATED :
-          enforcer.setCoveredAndOutdatedLanguages(settings.login, settings.password);
-          break;
+    switch (option) {
+      case OUTDATED :
+        enforcer.setCoveredAndOutdatedLanguages(settings.login, settings.password);
+        break;
 
-        case INTEGRITY :
-          enforcer.enforceTagReferenceIntegrity(settings.login, settings.password);
-          break;
+      case INTEGRITY :
+        enforcer.enforceTagReferenceIntegrity(settings.login, settings.password);
+        break;
 
-        case REPORTS:
+      case REPORTS:
+        if (settings.orchestrator) {
+          rs.writeReportsWithOrchestrator();
+        } else {
           rs.getReports(settings.instance);
-          break;
+        }
+        break;
 
-        case GENERATE:
-          rs.generateRuleDescriptions(settings.ruleKeys, settings.language);
-          break;
+      case GENERATE:
+        rs.generateRuleDescriptions(settings.ruleKeys, settings.language);
+        break;
 
-        default:
-          printHelpMessage();
-          break;
+      default:
+        printHelpMessage();
+        break;
 
-      }
-    } catch (RuleException e) {
-      LOGGER.log(Level.SEVERE, e.getMessage(), e);
     }
   }
 
@@ -125,6 +124,9 @@ public class Main {
     @Parameter(names = "-instance")
     private String instance = RuleManager.NEMO;
 
+    @Parameter(names = "-latestSnapshot")
+    private boolean orchestrator;
+
     @Parameter(names = "-login")
     private String login;
 
@@ -140,7 +142,7 @@ public class Main {
   }
 
   public enum Option {
-    REPORTS(false,  "Generates all reports based on Nemo or instance specified with optional -instance parameter."),
+    REPORTS(false,  "Generates all reports based on Nemo (default) or a particular -instance http:..., or -latestSnapshot."),
     OUTDATED(true,  "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
     INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
     GENERATE(false, "Generates html description file specified by -rule and -langauge parameters.");

@@ -6,7 +6,6 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.domain.RuleException;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -25,12 +24,8 @@ public class AbstractMisraSpecificationTest {
 
     String summaryReport = "";
     String report = "";
-    try {
-      summaryReport = c4.getSummaryReport(null);
-      report = c4.getReport(null);
-    } catch (RuleException e) {
-      e.printStackTrace();
-    }
+    summaryReport = c4.getSummaryReport(null);
+    report = c4.getReport(null);
 
     String linebreak = String.format("%n");
     String expectedSummary = "MISRA C 2004" + linebreak +
@@ -62,12 +57,8 @@ public class AbstractMisraSpecificationTest {
 
     String summaryReport = "";
     String report = "";
-    try {
-      summaryReport = c4.getSummaryReport(null);
-      report = c4.getReport(null);
-    } catch (RuleException e) {
-      e.printStackTrace();
-    }
+    summaryReport = c4.getSummaryReport(null);
+    report = c4.getReport(null);
 
     String linebreak = String.format("%n");
 

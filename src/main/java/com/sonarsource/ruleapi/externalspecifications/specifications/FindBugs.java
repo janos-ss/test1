@@ -11,7 +11,6 @@ import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.ExternalTool;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.Language;
-import com.sonarsource.ruleapi.domain.RuleException;
 
 import java.util.Iterator;
 import java.util.List;
@@ -474,13 +473,13 @@ public class FindBugs extends AbstractReportableStandard implements ExternalTool
   }
 
   @Override
-  public String getReport(String instance) throws RuleException {
+  public String getReport(String instance) {
 
     return getSummaryReport(instance);
   }
 
   @Override
-  public String getSummaryReport(String instance) throws RuleException {
+  public String getSummaryReport(String instance) {
 
     initCoverageResults(instance);
     computeCoverage();
@@ -563,7 +562,7 @@ public class FindBugs extends AbstractReportableStandard implements ExternalTool
   }
 
   @Override
-  public String getDeprecationReport(String instance) throws RuleException {
+  public String getDeprecationReport(String instance) {
 
     initCoverageResults(instance);
     StringBuilder sb = new StringBuilder();

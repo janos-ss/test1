@@ -14,14 +14,13 @@ import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 
 import com.sonarsource.ruleapi.utilities.Language;
-import com.sonarsource.ruleapi.domain.RuleException;
 import org.fest.util.Strings;
 
 public abstract class AbstractReportableStandard implements CodingStandard {
 
-  public abstract String getReport(String instance) throws RuleException;
+  public abstract String getReport(String instance);
 
-  public abstract String getSummaryReport(String instance) throws RuleException;
+  public abstract String getSummaryReport(String instance);
 
   public abstract Language getLanguage();
 
@@ -32,7 +31,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
   private String lastInstance = null;
 
 
-  public List<Rule> getRSpecRulesReferencingStandard() throws RuleException {
+  public List<Rule> getRSpecRulesReferencingStandard() {
     String query = "'" + getRSpecReferenceFieldName() + "' is not EMPTY";
 
     List<Rule> rules =  RuleMaker.getRulesByJql(query, getLanguage().getRspec());
@@ -49,7 +48,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     return rulesCoverage;
   }
 
-  protected void initCoverageResults(String instance) throws RuleException {
+  protected void initCoverageResults(String instance) {
     if (rulesCoverage == null || !(Strings.isNullOrEmpty(instance) || instance.equals(this.lastInstance))) {
       this.lastInstance = instance;
 
@@ -116,7 +115,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     }
   }
 
-  protected void findImplementedByPlugin(String instance) throws RuleException {
+  protected void findImplementedByPlugin(String instance) {
 
     if (instance != null) {
 

@@ -9,7 +9,6 @@ import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
-import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -37,12 +36,12 @@ public class RuleMaker {
   private RuleMaker() {
   }
 
-  public static List<Rule> getRulesFromSonarQubeForLanguage(Language language, String instance) throws RuleException {
+  public static List<Rule> getRulesFromSonarQubeForLanguage(Language language, String instance) {
     return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq(),
             language.getSqProfileKey());
   }
 
-  public static Rule getRuleFromSonarQubeByKey(String sonarQubeInstance, String ruleKey, Language language) throws RuleException {
+  public static Rule getRuleFromSonarQubeByKey(String sonarQubeInstance, String ruleKey, Language language) {
 
     Fetcher fetcher = new Fetcher();
 
@@ -72,7 +71,7 @@ public class RuleMaker {
    * @param language language of rule. Used to distinguish among language-specific options
    * @return rule fetched from Jira
    */
-  public static Rule getRuleByKey(String key, String language) throws RuleException {
+  public static Rule getRuleByKey(String key, String language) {
     Fetcher fetcher = new Fetcher();
 
     Rule rule = new Rule(language);
@@ -82,7 +81,7 @@ public class RuleMaker {
     return rule;
   }
 
-  public static List<Rule> getRulesFromSonarQubeByQuery(String instance, String query, String sonarQubeDefaultProfileKey) throws RuleException {
+  public static List<Rule> getRulesFromSonarQubeByQuery(String instance, String query, String sonarQubeDefaultProfileKey) {
 
     List<Rule> rules = new ArrayList<Rule>();
 
@@ -122,7 +121,7 @@ public class RuleMaker {
    * @param language the language sought. Not used in the query but used to populate rule members
    * @return a list of retrieved rules
    */
-  public static List<Rule> getRulesByJql(String query, String language) throws RuleException {
+  public static List<Rule> getRulesByJql(String query, String language) {
     List<Rule> rules = new ArrayList<Rule>();
 
     Fetcher fetcher = new Fetcher();
@@ -137,7 +136,7 @@ public class RuleMaker {
     return rules;
   }
 
-  protected static void fleshOutRule(Fetcher fetcher, Rule rule, JSONObject jsonRule) throws RuleException {
+  protected static void fleshOutRule(Fetcher fetcher, Rule rule, JSONObject jsonRule) {
     if (jsonRule != null) {
       populateFields(rule, jsonRule);
 
@@ -174,9 +173,8 @@ public class RuleMaker {
     rule.setSqaleCharac((String) jsonRule.get("defaultDebtChar"));
     setSubcharacteristic(rule, (String) jsonRule.get("defaultDebtSubChar"));
     setRemediationFunction(rule, (String) jsonRule.get("defaultDebtRemFnType"));
+    setSqaleConstantValueFromSqInstance(rule, (String) jsonRule.get("defaultDebtRemFnOffset"));
     rule.setSqaleLinearFactor((String) jsonRule.get("defaultDebtRemFnCoeff"));
-    rule.setSqaleLinearOffset((String) jsonRule.get("defaultDebtRemFnOffset"));
-    rule.setSqaleConstantCostOrLinearThreshold((String) jsonRule.get("defaultDebtRemFnCoeff"));
     rule.setSqaleLinearArgDesc((String) jsonRule.get("effortToFixDescription"));
 
     rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
@@ -286,7 +284,26 @@ public class RuleMaker {
     }
   }
 
-  private static JSONObject getSubtask(Fetcher fetcher, String language, JSONArray tasks) throws RuleException {
+  protected static void setSqaleConstantValueFromSqInstance(Rule rule, String value) {
+
+    rule.setSqaleConstantCostOrLinearThreshold(null);
+    rule.setSqaleLinearOffset(null);
+
+    Rule.RemediationFunction remFun = rule.getSqaleRemediationFunction();
+    if (remFun == null) {
+      return;
+    }
+
+    if (remFun == Rule.RemediationFunction.LINEAR_OFFSET) {
+      rule.setSqaleLinearOffset(value);
+
+    } else if (remFun == Rule.RemediationFunction.CONSTANT_ISSUE) {
+      rule.setSqaleConstantCostOrLinearThreshold(value);
+
+    }
+  }
+
+  private static JSONObject getSubtask(Fetcher fetcher, String language, JSONArray tasks) {
     if (tasks != null && ! Strings.isNullOrEmpty(language)) {
       for (JSONObject subt : (Iterable<JSONObject>) tasks) {
         if (isLanguageMatch(language, getJsonFieldValue(subt, "summary").trim())) {

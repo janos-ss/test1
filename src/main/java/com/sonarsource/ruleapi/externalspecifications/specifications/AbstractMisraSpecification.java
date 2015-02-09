@@ -8,7 +8,6 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.*;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
-import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 
 import java.util.List;
@@ -69,7 +68,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   }
 
   @Override
-  public String getReport(String instance) throws RuleException {
+  public String getReport(String instance) {
 
     initCoverageResults(instance);
     computeCoverage();
@@ -77,7 +76,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   }
 
   @Override
-  public String getSummaryReport(String instance) throws RuleException {
+  public String getSummaryReport(String instance) {
 
     initCoverageResults(instance);
     computeCoverage();
