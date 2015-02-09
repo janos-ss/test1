@@ -37,10 +37,10 @@ public class ReportService extends RuleManager {
 
   public void getReports(String instance) {
 
-    writeOutdatedRulesReports(instance);
     writeFindBugsDeprecationReport(instance);
-    writeMisraDetailedCoverageReports(instance);
+    writeDetailedCoverageReports(instance);
     writeSummaryCoverageReports(instance);
+    writeOutdatedRulesReports(instance);
 
   }
 
@@ -62,17 +62,17 @@ public class ReportService extends RuleManager {
 
   }
 
-  public void writeMisraDetailedCoverageReports(String instance) {
+  public void writeDetailedCoverageReports(String instance) {
 
-    for (SupportedCodingStandard standard : SupportedCodingStandard.values()) {
+    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
 
-      if (standard.getCodingStandard() instanceof AbstractMisraSpecification) {
+      if (supportedStandard.getCodingStandard() instanceof AbstractReportableStandard) {
 
-        AbstractMisraSpecification misra = (AbstractMisraSpecification) standard.getCodingStandard();
+        AbstractReportableStandard standard = (AbstractReportableStandard) supportedStandard.getCodingStandard();
 
-        LOGGER.info("Getting detailed coverage report for " + misra.getStandardName() + " on " + instance);
+        LOGGER.info("Getting detailed coverage report for " + standard.getStandardName() + " on " + instance);
 
-        writeFile(misra.getStandardName().concat("Coverage.txt"), misra.getReport(instance));
+        writeFile(standard.getStandardName().concat("Coverage.txt"), standard.getReport(instance));
       }
     }
   }
