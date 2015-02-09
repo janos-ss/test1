@@ -44,7 +44,7 @@ public class ReportGenerator {
 
     ReportService reportService = new ReportService();
     try {
-      reportService.getReports(orchestrator.getServer().getUrl());
+      reportService.writeAllReports(orchestrator.getServer().getUrl());
     } catch (RuleException e) {
       e.printStackTrace();
     }

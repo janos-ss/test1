@@ -35,7 +35,7 @@ public class ReportService extends RuleManager {
     }
   }
 
-  public void getReports(String instance) {
+  public void writeAllReports(String instance) {
 
     writeFindBugsDeprecationReport(instance);
     writeDetailedCoverageReports(instance);
@@ -178,7 +178,7 @@ public class ReportService extends RuleManager {
 
     orchestrator.start();
 
-    getReports(orchestrator.getServer().getUrl());
+    writeAllReports(orchestrator.getServer().getUrl());
 
     orchestrator.stop();
   }

@@ -91,7 +91,7 @@ public class Main {
         if (settings.orchestrator) {
           rs.writeReportsWithOrchestrator();
         } else {
-          rs.getReports(settings.instance);
+          rs.writeAllReports(settings.instance);
         }
         break;
 
