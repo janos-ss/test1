@@ -163,8 +163,8 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
     return String.format("%2d) %-10s %-12s %-12s%n",
             sr.rank,
             sr.getCodingStandardRuleId(),
-            cov.getSpecifiedBy().size() == 0 ? "" : cov.getSpecifiedByKeysAsCommaList(),
-            cov.getImplementedBy().size() == 0 ? "" : cov.getImplementedByKeysAsCommaList());
+            cov.getSpecifiedBy().isEmpty() ? "" : cov.getSpecifiedByKeysAsCommaList(),
+            cov.getImplementedBy().isEmpty() ? "" : cov.getImplementedByKeysAsCommaList());
   }
 
 
@@ -245,10 +245,10 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
   private void countRiskyResource(CodingStandardRuleCoverage cov) {
 
     riskyResourceCount++;
-    if (cov.getSpecifiedBy().size() > 0) {
+    if (!cov.getSpecifiedBy().isEmpty()) {
       riskyResourceSpecified++;
     }
-    if (cov.getImplementedBy().size() > 0) {
+    if (!cov.getImplementedBy().isEmpty()) {
       riskyResourceImplemented++;
     }
   }
@@ -256,10 +256,10 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
   private void countPorousDefenses(CodingStandardRuleCoverage cov) {
 
     porousDefensesCount++;
-    if (cov.getSpecifiedBy().size() > 0) {
+    if (!cov.getSpecifiedBy().isEmpty()) {
       porousDefensesSpecified++;
     }
-    if (cov.getImplementedBy().size() > 0) {
+    if (!cov.getImplementedBy().isEmpty()) {
       porousDefensesImplemented++;
     }
   }
@@ -267,10 +267,10 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
   private void countInsecureCoverage(CodingStandardRuleCoverage cov) {
 
     insecureInteractionCount++;
-    if (cov.getSpecifiedBy().size() > 0) {
+    if (!cov.getSpecifiedBy().isEmpty()) {
       insecureInteractionSpecified++;
     }
-    if (cov.getImplementedBy().size() > 0) {
+    if (!cov.getImplementedBy().isEmpty()) {
       insecureInteractionImplemented++;
     }
   }

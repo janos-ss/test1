@@ -517,10 +517,10 @@ public class FindBugs extends AbstractReportableStandard implements ExternalTool
     while (itr.hasNext()) {
       CodingStandardRuleCoverage cov = itr.next();
 
-      if (cov.getImplementedBy().size() > 0) {
+      if (!cov.getImplementedBy().isEmpty()) {
         implemented++;
       }
-      if (cov.getSpecifiedBy().size() > 0) {
+      if (!cov.getSpecifiedBy().isEmpty()) {
         specified ++;
       }
     }
@@ -568,7 +568,7 @@ public class FindBugs extends AbstractReportableStandard implements ExternalTool
     StringBuilder sb = new StringBuilder();
 
     for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
-      if (cov.getImplementedBy().size() > 0) {
+      if (!cov.getImplementedBy().isEmpty()) {
         sb.append(cov.getCodingStandardRuleId())
                 .append("\t")
                 .append(cov.getImplementedByKeysAsCommaList())
