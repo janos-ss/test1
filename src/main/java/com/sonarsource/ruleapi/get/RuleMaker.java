@@ -18,7 +18,12 @@ import java.util.*;
 /**
  * Given a key and a language, retrieves the relevant Issue
  * from Jira (if possible), and populates a new Rule with
- * the details. Rule population includes the retrieval
+ * the details.
+ *
+ * Given a key, langauge and SQ instance URL, retrieves the
+ * relevant Issue from the SonarQube instance.
+ *
+ * Rule population from Jira includes the retrieval
  * and overlay of values from any language-specific subtask,
  * as well as proper handling of labeled language-specific
  * variants such as {code} blocks and parameter variations.
