@@ -6,14 +6,17 @@
 
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
+import com.sonarsource.ruleapi.utilities.Language;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class OwaspTopTen implements TaggableStandard {
+public class OwaspTopTen extends AbstractReportableStandard implements TaggableStandard {
 
   private static final String TAG = "owasp-top10";
 
@@ -22,6 +25,8 @@ public class OwaspTopTen implements TaggableStandard {
   private static final String SEE_SECTION_SEARCH = "OWASP Top Ten";
 
   private static final String REFERENCE_PATTERN = "A\\d+";
+
+  private Language language = Language.JAVA;
 
   @Override
   public boolean isTagShared() {
@@ -94,5 +99,104 @@ public class OwaspTopTen implements TaggableStandard {
     }
 
     return needUpdating;
+  }
+
+
+  public void setLanguage(Language language) {
+    this.language = language;
+    resetRulesCoverageMap();
+  }
+
+  protected String getReportHeader() {
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(getStandardName()).append(" for ").append(getLanguage().getRspec()).append(String.format("%n"));
+    return sb.toString();
+  }
+
+  @Override
+  public String getReport(String instance) {
+
+    String newline = String.format("%n");
+
+    initCoverageResults(instance);
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(getReportHeader());
+
+    for (CodingStandardRule csr : getCodingStandardRules()) {
+      StandardRule sr = (StandardRule)csr;
+      CodingStandardRuleCoverage csrc = getRulesCoverage().get(sr.getCodingStandardRuleId());
+
+      sb.append(sr.getCodingStandardRuleId()).append(" - ").append(sr.getTitle()).append(newline);
+      sb.append("\t").append("Specifying:   ").append(csrc.getSpecifiedByKeysAsCommaList()).append(newline);
+      sb.append("\t").append("Implementing: ").append(csrc.getImplementedByKeysAsCommaList()).append(newline)
+              .append(newline);
+    }
+
+    return sb.toString();
+  }
+
+  @Override
+  public String getSummaryReport(String instance) {
+
+    initCoverageResults(instance);
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(getReportHeader());
+
+    for (CodingStandardRule csr : getCodingStandardRules()) {
+
+      StandardRule sr = (StandardRule)csr;
+      CodingStandardRuleCoverage cov = getRulesCoverage().get(sr.getCodingStandardRuleId());
+
+      sb.append(cov.getCodingStandardRuleId())
+              .append("\tSpecified: ").append(cov.getSpecifiedBy().size())
+              .append("\tImplemented: ").append(cov.getImplementedBy().size())
+              .append("\n");
+    }
+
+    return sb.toString();
+  }
+
+  @Override
+  public Language getLanguage() {
+
+    return language;
+  }
+
+  @Override
+  public CodingStandardRule[] getCodingStandardRules() {
+
+    return StandardRule.values();
+  }
+
+  public enum StandardRule implements CodingStandardRule {
+    A1 ("Injection"),
+    A2 ("Broken Authentication and Session Management"),
+    A3 ("Cross-Site Scripting (XSS)"),
+    A4 ("Insecure Direct Object References"),
+    A5 ("Security Misconfiguration"),
+    A6 ("Sensitive Data Exposure"),
+    A7 ("Missing Function Level Access Control"),
+    A8 ("Cross-Site Request Forgery (CSRF)"),
+    A9 ("Using Components with Known Vulnerabilities"),
+    A10 ("Unvalidated Redirects and Forwards");
+
+    private String title;
+
+    StandardRule(String title) {
+      this.title = title;
+    }
+
+    public String getTitle() {
+      return title;
+    }
+
+    @Override
+    public String getCodingStandardRuleId() {
+      return name();
+    }
+
   }
 }

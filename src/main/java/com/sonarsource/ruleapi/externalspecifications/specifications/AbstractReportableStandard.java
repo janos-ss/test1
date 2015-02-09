@@ -71,6 +71,10 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     }
   }
 
+  protected void resetRulesCoverageMap() {
+    rulesCoverage = null;
+  }
+
   public List<String> getExpandedStandardKeyList(List<String> listFromRspec) {
 
     if (listFromRspec == null){

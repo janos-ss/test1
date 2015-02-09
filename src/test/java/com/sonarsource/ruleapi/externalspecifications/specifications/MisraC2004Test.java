@@ -7,7 +7,11 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import com.sonarsource.ruleapi.domain.Rule;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MisraC2004Test {
@@ -38,6 +42,20 @@ public class MisraC2004Test {
 
     assertThat(m4.getCodingStandardRuleFromId("1.1")).isEqualTo(MisraC2004.StandardRule.MISRAC2004_1POINT1);
 
+  }
+
+  @Test
+  public void testSetRspecReferenceFieldValues() {
+    MisraC2004 m4 = new MisraC2004();
+    Rule rule = new Rule("C");
+    List<String> ids = new ArrayList<String>(3);
+    ids.add("red");
+    ids.add("green");
+    ids.add("blue");
+
+    m4.setRspecReferenceFieldValues(rule, ids);
+
+    assertThat(rule.getMisraC04()).isEqualTo(ids);
   }
 
 }
