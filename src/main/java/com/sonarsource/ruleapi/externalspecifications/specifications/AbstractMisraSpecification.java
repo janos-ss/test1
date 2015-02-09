@@ -115,19 +115,19 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
       buff.append(ruleId);
 
       String tmp = na;
-      if (coverage.getSpecifiedBy() != null) {
-        tmp = coverage.getSpecifiedBy().getKey();
+      if (coverage.getSpecifiedBy().size() > 0) {
+        tmp = coverage.getSpecifiedByKeysAsCommaList();
       }
       buff.append(indent).append("S: ").append(tmp);
 
       tmp = na;
-      if (coverage.getImplementedBy() != null) {
-        tmp = coverage.getImplementedBy().getKey();
+      if (coverage.getImplementedBy().size() > 0) {
+        tmp = coverage.getImplementedByKeysAsCommaList();
       }
       buff.append(indent).append("C: ").append(tmp);
 
       tmp = "N";
-      if (coverage.getImplementedBy() != null) {
+      if (coverage.getImplementedBy().size() > 0) {
         tmp = "Y";
       }
       buff.append(indent).append("I: ").append(tmp);
@@ -153,8 +153,8 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     }
 
     for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
-      if (cov.getImplementedBy() != null) {
-        if (isRuleMandatory(cov.getRule())) {
+      if (cov.getImplementedBy().size() > 0) {
+        if (isRuleMandatory(cov.getCodingStandardRuleId())) {
           mandatoryRulesImplemented++;
         } else {
           optionalRulesImplemented++;

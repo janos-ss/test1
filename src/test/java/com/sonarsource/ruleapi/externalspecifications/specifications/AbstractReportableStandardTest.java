@@ -57,16 +57,16 @@ public class AbstractReportableStandardTest {
     fb.populateRulesCoverageMap();
 
     fb.setCodingStandardRuleCoverageSpecifiedBy(rule, null);
-    assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).isNull();
+    assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).hasSize(0);
 
     List<String> findBugsIds = new ArrayList<String>();
     fb.setCodingStandardRuleCoverageSpecifiedBy(rule, null);
-    assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).isNull();
+    assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).hasSize(0);
 
     findBugsIds.add(FB_ID);
     fb.setCodingStandardRuleCoverageSpecifiedBy(rule, findBugsIds);
     CodingStandardRuleCoverage cov =  fb.getRulesCoverage().get(FB_ID);
-    assertThat(fb.getRulesCoverage().get(FB_ID).getSpecifiedBy()).isEqualTo(rule);
+    assertThat(fb.getRulesCoverage().get(FB_ID).getSpecifiedBy().get(0)).isEqualTo(rule);
 
   }
 
@@ -79,15 +79,15 @@ public class AbstractReportableStandardTest {
     fb.populateRulesCoverageMap();
 
     fb.setCodingStandardRuleCoverageImplemented(null, rule);
-    assertThat(fb.getRulesCoverage().get(FB_ID).getSpecifiedBy()).isNull();
+    assertThat(fb.getRulesCoverage().get(FB_ID).getSpecifiedBy()).hasSize(0);
 
     List<String> findBugsIds = new ArrayList<String>();
     fb.setCodingStandardRuleCoverageImplemented(findBugsIds, rule);
-    assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).isNull();
+    assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).hasSize(0);
 
     findBugsIds.add(FB_ID);
     fb.setCodingStandardRuleCoverageImplemented(findBugsIds, rule);
-    assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).isEqualTo(rule);
+    assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy().get(0)).isEqualTo(rule);
 
   }
 
@@ -107,8 +107,8 @@ public class AbstractReportableStandardTest {
     misraC2004.findSpecifiedInRspec(rules);
 
     Map<String,CodingStandardRuleCoverage> coverageMap = misraC2004.getRulesCoverage();
-    assertThat(coverageMap.get("1.1").getSpecifiedBy()).isEqualTo(rule);
-    assertThat(coverageMap.get("1.2").getSpecifiedBy()).isEqualTo(rule);
-    assertThat(coverageMap.get("1.3").getSpecifiedBy()).isNull();
+    assertThat(coverageMap.get("1.1").getSpecifiedBy().get(0)).isEqualTo(rule);
+    assertThat(coverageMap.get("1.2").getSpecifiedBy().get(0)).isEqualTo(rule);
+    assertThat(coverageMap.get("1.3").getSpecifiedBy()).hasSize(0);
   }
 }

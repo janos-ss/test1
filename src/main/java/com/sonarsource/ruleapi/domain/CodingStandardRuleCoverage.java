@@ -5,35 +5,69 @@
  */
 package com.sonarsource.ruleapi.domain;
 
+import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class CodingStandardRuleCoverage {
 
   private String codingStandardRuleId = null;
-  private Rule specifiedBy = null;
-  private Rule implementedBy = null;
+  private List<Rule> specifiedBy = new ArrayList<Rule>();
+  private List<Rule> implementedBy = new ArrayList<Rule>();
 
-  public Rule getSpecifiedBy() {
+  public List<Rule> getSpecifiedBy() {
     return specifiedBy;
   }
 
-  public void setSpecifiedBy(Rule specifiedBy) {
+  public String getSpecifiedByKeysAsCommaList() {
+
+    return getRuleKeysAsString(specifiedBy);
+  }
+
+  public void setSpecifiedBy(List<Rule> specifiedBy) {
     this.specifiedBy = specifiedBy;
   }
 
-  public String getRule() {
+  public void addSpecifiedBy(Rule rule) {
+
+    this.specifiedBy.add(rule);
+  }
+
+  public String getCodingStandardRuleId() {
     return codingStandardRuleId;
   }
 
-  public void setRule(String rule) {
+  public void setCodingStandardRuleId(String rule) {
     this.codingStandardRuleId = rule;
   }
 
-  public Rule getImplementedBy() {
+  public List<Rule> getImplementedBy() {
     return implementedBy;
   }
 
-  public void setImplementedBy(Rule implementedBy) {
+  public String getImplementedByKeysAsCommaList() {
+
+    return getRuleKeysAsString(implementedBy);
+  }
+
+  public void setImplementedBy(List<Rule> implementedBy) {
     this.implementedBy = implementedBy;
   }
 
+  public void addImplementedBy(Rule rule) {
+
+    implementedBy.add(rule);
+  }
+
+  protected String getRuleKeysAsString(List<Rule> rules) {
+
+    List<String> ids = new ArrayList<String>(rules.size());
+    for (Rule rule : rules) {
+      ids.add(rule.getKey());
+    }
+    return ComparisonUtilities.listToString(ids, true);
+
+  }
 }

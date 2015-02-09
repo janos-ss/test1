@@ -179,8 +179,8 @@ public class SansTop25Test {
     Rule rule = new Rule("");
 
     CodingStandardRuleCoverage cov = sans.getRulesCoverage().get("CWE-829");
-    cov.setSpecifiedBy(rule);
-    cov.setImplementedBy(rule);
+    cov.addSpecifiedBy(rule);
+    cov.addImplementedBy(rule);
     sans.computeCoverage();
 
 

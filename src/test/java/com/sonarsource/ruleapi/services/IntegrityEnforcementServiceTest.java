@@ -203,4 +203,12 @@ public class IntegrityEnforcementServiceTest {
     assertThat(rule.getCoveredLanguages()).hasSize(1);
   }
 
+  @Test
+  public void testtest() {
+
+    ReportService rs = new ReportService();
+    rs.writeMisraDetailedCoverageReports(RuleManager.NEMO);
+
+  }
+
 }

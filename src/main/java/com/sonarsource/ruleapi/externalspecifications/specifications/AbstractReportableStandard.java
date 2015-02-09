@@ -66,7 +66,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
 
     for (CodingStandardRule csr : getCodingStandardRules()) {
       CodingStandardRuleCoverage cov = new CodingStandardRuleCoverage();
-      cov.setRule(csr.getCodingStandardRuleId());
+      cov.setCodingStandardRuleId(csr.getCodingStandardRuleId());
       rulesCoverage.put(csr.getCodingStandardRuleId(), cov);
     }
   }
@@ -109,7 +109,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
       for (String id : ids) {
         CodingStandardRuleCoverage cov = getRulesCoverage().get(id);
         if (cov != null) {
-          cov.setSpecifiedBy(rspecRule);
+          cov.addSpecifiedBy(rspecRule);
         }
       }
     }
@@ -138,7 +138,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
       for (String id : ids) {
         CodingStandardRuleCoverage cov = getRulesCoverage().get(id);
         if (cov != null) {
-          cov.setImplementedBy(rule);
+          cov.addImplementedBy(rule);
         }
       }
     }
