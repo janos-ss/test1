@@ -88,11 +88,7 @@ public class Main {
         break;
 
       case REPORTS:
-        if (settings.orchestrator) {
-          rs.writeReportsWithOrchestrator();
-        } else {
-          rs.writeAllReports(settings.instance);
-        }
+        generateReports(settings, rs);
         break;
 
       case GENERATE:
@@ -104,6 +100,16 @@ public class Main {
         break;
 
     }
+  }
+
+  private static void generateReports(Settings settings, ReportService rs) {
+
+    if (settings.orchestrator) {
+      rs.writeReportsWithOrchestrator();
+    } else {
+      rs.writeAllReports(settings.instance);
+    }
+
   }
 
   private static boolean credentialsProvided(Settings settings) {
