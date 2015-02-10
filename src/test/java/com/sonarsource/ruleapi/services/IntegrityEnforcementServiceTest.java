@@ -203,15 +203,4 @@ public class IntegrityEnforcementServiceTest {
     assertThat(rule.getCoveredLanguages()).hasSize(1);
   }
 
-//  @Test
-//  public void testtest() {
-//
-//    RuleManager rm = new RuleManager();
-//
-////    List<Rule> covered = rm.getCoveredRulesForLangauge(Language.JAVA);
-//    List<Rule> all = rm.getCoveredAndTargetedRulesForLangauge(Language.JAVA);
-//
-//    System.out.println("yo");
-//  }
-
 }

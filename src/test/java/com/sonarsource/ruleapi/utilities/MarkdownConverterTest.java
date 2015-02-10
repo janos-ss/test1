@@ -380,4 +380,14 @@ public class MarkdownConverterTest {
 
   }
 
+  @Test
+  public void testMultipleUrlsOneLine() {
+
+    String markdown = "Derived from FindSecBugs rules [Potential SQL/JPQL Injection (JPA)|http://h3xstream.github.io/find-sec-bugs/bugs.htm#SQL_INJECTION_JPA], [Potential SQL/JDOQL Injection (JDO)|http://h3xstream.github.io/find-sec-bugs/bugs.htm#SQL_INJECTION_JDO], [Potential SQL/HQL Injection (Hibernate)|http://h3xstream.github.io/find-sec-bugs/bugs.htm#SQL_INJECTION_HIBERNATE]";
+    String html = "Derived from FindSecBugs rules <a href=\"http://h3xstream.github.io/find-sec-bugs/bugs.htm#SQL_INJECTION_JPA\">Potential SQL/JPQL Injection (JPA)</a>, <a href=\"http://h3xstream.github.io/find-sec-bugs/bugs.htm#SQL_INJECTION_JDO\">Potential SQL/JDOQL Injection (JDO)</a>, <a href=\"http://h3xstream.github.io/find-sec-bugs/bugs.htm#SQL_INJECTION_HIBERNATE\">Potential SQL/HQL Injection (Hibernate)</a>";
+
+    assertThat(mc.handleHref(markdown)).isEqualTo(html);
+
+  }
+
 }

@@ -167,8 +167,12 @@ public class MarkdownConverter {
 
   protected String handleHref(String arg) {
     String line = arg;
-    if (line.matches("[^\\[]*\\[[^|]+\\|https?[A-Za-z0-9-._~:/?#\\\\[\\\\]@!$&'()*+,;=% ]+\\].*")) {
-      int pos = line.indexOf("http");
+    while (line.matches("[^\\[]*\\[[^|]+\\|https?[A-Za-z0-9-._~:/?#\\\\[\\\\]@!$&'()*+,;=% ]+\\].*")) {
+      int pos = line.indexOf("|http");
+      if (pos == -1) {
+        pos = line.indexOf("[http");
+      }
+      pos++;
       int hrefStart = findBefore(line, pos, '[');
       int hrefEnd = line.indexOf(']', pos+1);
 
