@@ -9,6 +9,7 @@ import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
+import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 
@@ -344,6 +345,11 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
     @Override
     public String getCodingStandardRuleId() {
       return this.name().replace('_','-');
+    }
+
+    @Override
+    public Implementability getImplementability() {
+      return Implementability.IMPLEMENTABLE;
     }
 
   }

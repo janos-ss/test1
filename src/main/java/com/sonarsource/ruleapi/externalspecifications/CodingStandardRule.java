@@ -8,4 +8,5 @@ package com.sonarsource.ruleapi.externalspecifications;
 
 public interface CodingStandardRule {
   String getCodingStandardRuleId();
+  Implementability getImplementability();
 }

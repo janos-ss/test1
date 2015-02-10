@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.*;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
+import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 
 import java.util.List;
@@ -97,7 +98,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     appendSummaryLine(buff, getOptionalRulesToCoverCount(), optionalRulesImplemented, getOptionalCoveragePercent(), indent, linebreak);
 
     buff.append("Total:");
-    appendSummaryLine(buff, getCodingStandardRules().length, totalRulesImplemented, getTotalCoveragePercent(), indent, "");
+    appendSummaryLine(buff, getMandatoryRulesToCoverCount() + getOptionalRulesToCoverCount(), totalRulesImplemented, getTotalCoveragePercent(), indent, "");
 
     return buff.toString();
   }
@@ -114,24 +115,31 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
 
       buff.append(ruleId);
 
-      String tmp = na;
-      if (!coverage.getSpecifiedBy().isEmpty()) {
-        tmp = coverage.getSpecifiedByKeysAsCommaList();
-      }
-      buff.append(indent).append("S: ").append(tmp);
+      if (Implementability.NOT_IMPLEMENTABLE.equals(rule.getImplementability())) {
 
-      tmp = na;
-      if (!coverage.getImplementedBy().isEmpty()) {
-        tmp = coverage.getImplementedByKeysAsCommaList();
-      }
-      buff.append(indent).append("C: ").append(tmp);
+        buff.append(indent).append("not implementable").append(linebreak);
 
-      tmp = "N";
-      if (!coverage.getImplementedBy().isEmpty()) {
-        tmp = "Y";
+      } else {
+
+        String tmp = na;
+        if (!coverage.getSpecifiedBy().isEmpty()) {
+          tmp = coverage.getSpecifiedByKeysAsCommaList();
+        }
+        buff.append(indent).append("S: ").append(tmp);
+
+        tmp = na;
+        if (!coverage.getImplementedBy().isEmpty()) {
+          tmp = coverage.getImplementedByKeysAsCommaList();
+        }
+        buff.append(indent).append("C: ").append(tmp);
+
+        tmp = "N";
+        if (!coverage.getImplementedBy().isEmpty()) {
+          tmp = "Y";
+        }
+        buff.append(indent).append("I: ").append(tmp);
+        buff.append(linebreak);
       }
-      buff.append(indent).append("I: ").append(tmp);
-      buff.append(linebreak);
 
     }
     buff.append("S = Specified | C = Covered in RSpec | I = Implemented in Plugin").append(linebreak).append(linebreak);
@@ -174,6 +182,6 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   }
 
   public double getTotalCoveragePercent() {
-    return totalRulesImplemented * PERCENT_FACTOR / getCodingStandardRules().length;
+    return totalRulesImplemented * PERCENT_FACTOR / (getMandatoryRulesToCoverCount() + getOptionalRulesToCoverCount());
   }
 }

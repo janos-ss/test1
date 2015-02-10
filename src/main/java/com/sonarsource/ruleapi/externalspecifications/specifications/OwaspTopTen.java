@@ -9,6 +9,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
+import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.utilities.Language;
 
@@ -174,21 +175,23 @@ public class OwaspTopTen extends AbstractReportableStandard implements TaggableS
   }
 
   public enum StandardRule implements CodingStandardRule {
-    A1 ("Injection"),
-    A2 ("Broken Authentication and Session Management"),
-    A3 ("Cross-Site Scripting (XSS)"),
-    A4 ("Insecure Direct Object References"),
-    A5 ("Security Misconfiguration"),
-    A6 ("Sensitive Data Exposure"),
-    A7 ("Missing Function Level Access Control"),
-    A8 ("Cross-Site Request Forgery (CSRF)"),
-    A9 ("Using Components with Known Vulnerabilities"),
-    A10 ("Unvalidated Redirects and Forwards");
+    A1 ("Injection", Implementability.IMPLEMENTABLE),
+    A2 ("Broken Authentication and Session Management", Implementability.IMPLEMENTABLE),
+    A3 ("Cross-Site Scripting (XSS)", Implementability.IMPLEMENTABLE),
+    A4 ("Insecure Direct Object References", Implementability.IMPLEMENTABLE),
+    A5 ("Security Misconfiguration", Implementability.IMPLEMENTABLE),
+    A6 ("Sensitive Data Exposure", Implementability.IMPLEMENTABLE),
+    A7 ("Missing Function Level Access Control", Implementability.IMPLEMENTABLE),
+    A8 ("Cross-Site Request Forgery (CSRF)", Implementability.IMPLEMENTABLE),
+    A9 ("Using Components with Known Vulnerabilities", Implementability.NOT_IMPLEMENTABLE),
+    A10 ("Unvalidated Redirects and Forwards", Implementability.IMPLEMENTABLE);
 
     private String title;
+    private Implementability implementability;
 
-    StandardRule(String title) {
+    StandardRule(String title, Implementability implementability) {
       this.title = title;
+      this.implementability = implementability;
     }
 
     public String getTitle() {
@@ -200,5 +203,9 @@ public class OwaspTopTen extends AbstractReportableStandard implements TaggableS
       return name();
     }
 
+    @Override
+    public Implementability getImplementability() {
+      return implementability;
+    }
   }
 }
