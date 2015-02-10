@@ -29,9 +29,9 @@ public class AbstractMisraSpecificationTest {
 
     String linebreak = String.format("%n");
     String expectedSummary = "MISRA C 2004" + linebreak +
-            "Mandatory:\tSpecified: 121\tImplemented: 0\t=> 0.00%" + linebreak +
+            "Mandatory:\tSpecified: 122\tImplemented: 0\t=> 0.00%" + linebreak +
             "Optional:\tSpecified: 20\tImplemented: 0\t=> 0.00%" + linebreak +
-            "Total:\tSpecified: 141\tImplemented: 0\t=> 0.00%" + linebreak;
+            "Total:\tSpecified: 142\tImplemented: 0\t=> 0.00%" + linebreak;
 
     assertThat(summaryReport).isEqualTo(expectedSummary);
     assertThat(report).endsWith(summaryReport);
@@ -63,9 +63,9 @@ public class AbstractMisraSpecificationTest {
     String linebreak = String.format("%n");
 
     String expectedSummary = "MISRA C 2004" + linebreak +
-            "Mandatory:\tSpecified: 121\tImplemented: 1\t=> 0.83%" + linebreak +
+            "Mandatory:\tSpecified: 122\tImplemented: 1\t=> 0.82%" + linebreak +
             "Optional:\tSpecified: 20\tImplemented: 1\t=> 5.00%" + linebreak +
-            "Total:\tSpecified: 141\tImplemented: 2\t=> 1.42%" + linebreak;
+            "Total:\tSpecified: 142\tImplemented: 2\t=> 1.41%" + linebreak;
 
     assertThat(summaryReport).isEqualTo(expectedSummary);
     assertThat(report).contains(expectedSummary);

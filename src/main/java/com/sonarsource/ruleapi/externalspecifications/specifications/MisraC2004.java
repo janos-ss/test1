@@ -130,6 +130,7 @@ public class MisraC2004 extends AbstractMisraSpecification {
     MISRAC2004_14POINT9 ("14.9", Boolean.TRUE, Boolean.TRUE),
     MISRAC2004_14POINT10 ("14.10", Boolean.TRUE, Boolean.TRUE),
 
+    MISRAC2004_15POINT0 ("15.0", Boolean.TRUE, Boolean.TRUE),
     MISRAC2004_15POINT1 ("15.1", Boolean.TRUE, Boolean.TRUE),
     MISRAC2004_15POINT2 ("15.2", Boolean.TRUE, Boolean.TRUE),
     MISRAC2004_15POINT3 ("15.3", Boolean.TRUE, Boolean.TRUE),
