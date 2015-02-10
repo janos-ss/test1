@@ -59,11 +59,6 @@ public class RuleComparison{
       return result;
     }
 
-    result = compareMessage();
-    if (result != 0) {
-      return result;
-    }
-
     result = compareDescriptionValues();
     if (result != 0) {
       return result;
@@ -301,10 +296,6 @@ public class RuleComparison{
 
   protected int compareTitle() {
     return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getTitle(), impl.getTitle());
-  }
-
-  protected int compareMessage() {
-    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getMessage(), impl.getMessage());
   }
 
   protected int compareDescription() {

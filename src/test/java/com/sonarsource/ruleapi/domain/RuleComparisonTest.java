@@ -369,29 +369,6 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void testCompareMessageNeq() throws Exception {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    spec.setMessage("message");
-    impl.setMessage("a message");
-
-    assertThat(rc.compare()).isEqualTo(12);
-  }
-
-  @Test
-  public void testCompareMessageNeqWithNull() throws Exception {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    spec.setMessage("message");
-
-    assertThat(rc.compare()).isEqualTo(-1);
-  }
-
-  @Test
   public void testToStringParameterListEq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
