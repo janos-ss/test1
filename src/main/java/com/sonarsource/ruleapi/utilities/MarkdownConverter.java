@@ -220,7 +220,11 @@ public class MarkdownConverter {
       paragraph = false;
 
     } else if (line.startsWith("|")) {
-      line = "<tr><td>" + line.substring(1, line.lastIndexOf('|')) + "</td></tr>";
+      int pos = line.lastIndexOf('|');
+      if (pos <= 0) {
+        pos = line.length();
+      }
+      line = "<tr><td>" + line.substring(1, pos) + "</td></tr>";
       line = line.replace("|", "</td><td>");
       paragraph = false;
     }

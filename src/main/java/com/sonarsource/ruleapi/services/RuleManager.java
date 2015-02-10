@@ -26,6 +26,13 @@ public class RuleManager {
     return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec() + "\"", language.getRspec());
   }
 
+  public List<Rule> getCoveredAndTargetedRulesForLangauge(Language language) {
+    return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec()
+                            + "\" or \"Targeted Languages\" = \"" + language.getRspec() + "\"",
+            language.getRspec());
+  }
+
+
   public List<Rule> getImplementedRulesForLanguage(Language language, String instance) {
     return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq(), language.getSqProfileKey());
   }
