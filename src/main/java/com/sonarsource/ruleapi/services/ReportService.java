@@ -6,6 +6,7 @@
 
 package com.sonarsource.ruleapi.services;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -25,6 +26,8 @@ import com.sonarsource.ruleapi.domain.RuleException;
 public class ReportService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
+  private static final String COVERAGE_DIR = "Coverage/";
+
 
   public void generateRuleDescriptions(List<String> ruleKeys, String language) {
     if (ruleKeys != null) {
@@ -58,7 +61,7 @@ public class ReportService extends RuleManager {
         sb.append(((AbstractReportableStandard)standard).getSummaryReport(instance)).append("\n\n");
       }
     }
-    writeFile("SummaryCoverageReports.txt", sb.toString());
+    writeFile(COVERAGE_DIR.concat("SummaryCoverageReports.txt"), sb.toString());
 
   }
 
@@ -72,7 +75,7 @@ public class ReportService extends RuleManager {
 
         LOGGER.info("Getting detailed coverage report for " + standard.getStandardName() + " on " + instance);
 
-        writeFile(standard.getStandardName().concat("Coverage.txt"), standard.getReport(instance));
+        writeFile(COVERAGE_DIR.concat(standard.getStandardName()).concat("Coverage.txt"), standard.getReport(instance));
       }
     }
   }
@@ -80,9 +83,15 @@ public class ReportService extends RuleManager {
   private void writeFile(String fileName, String content) {
     PrintWriter writer = null;
     try {
-      writer = new PrintWriter(fileName, "UTF-8");
+      String path = "Reports/" + fileName.replaceAll(" ", "_");
+
+      File file = new File(path);
+      file.getParentFile().mkdirs();
+
+      writer = new PrintWriter(file, "UTF-8");
       writer.println(content);
       writer.close();
+
     } catch (FileNotFoundException e) {
       throw new RuleException(e);
     } catch (UnsupportedEncodingException e) {
@@ -109,6 +118,8 @@ public class ReportService extends RuleManager {
   public void writeOutdatedRulesReport(Language language, String instance) {
 
     LOGGER.info("Getting outdated rules report for " + language.getRspec() + " on " + instance);
+
+    String fileName = "Outdated/".concat(language.getSq()).concat("OutdatedRules.txt");
 
     List<Rule> rspec = getCoveredRulesForLangauge(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
@@ -143,10 +154,10 @@ public class ReportService extends RuleManager {
       sb.insert(0, " different out of ");
       sb.insert(0, notAlike);
 
-      writeFile(language.getSq().concat("OutdatedRules.txt"), sb.toString());
+      writeFile(fileName, sb.toString());
 
     } else {
-      writeFile(language.getSq().concat("OutdatedRules.txt"), "No differences found");
+      writeFile(fileName, "No differences found");
     }
   }
 
