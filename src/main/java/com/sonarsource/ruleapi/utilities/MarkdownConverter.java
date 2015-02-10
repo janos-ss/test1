@@ -57,6 +57,8 @@ public class MarkdownConverter {
           lines[i] = handleCode(hasLangCodeSample, language, lines[i], sb);
 
           if (!codeOpen) {
+
+            lines[i] = handleLinebreaksInTables(lines, i);
             lines[i] = handleTable(lines[i], sb);
             lines[i] = handleHref(lines[i]);
             lines[i] = handleHeading(lines[i]);
@@ -74,6 +76,22 @@ public class MarkdownConverter {
       return sb.toString();
     }
     return markdown;
+  }
+
+  protected String handleLinebreaksInTables(String[] lines, int i) {
+
+    if (lines[i].startsWith("|") && !lines[i].endsWith("|")) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(lines[i]);
+
+      for (int j = i + 1; j < lines.length && !sb.toString().endsWith("|"); j++) {
+        sb.append("<br/>");
+        sb.append(lines[j]);
+        lines[j] = "";
+      }
+      return sb.toString();
+    }
+    return lines[i];
   }
 
   protected boolean hasLanguageCodeSample(String language, String markdown) {
