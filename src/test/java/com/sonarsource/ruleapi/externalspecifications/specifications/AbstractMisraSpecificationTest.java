@@ -69,7 +69,7 @@ public class AbstractMisraSpecificationTest {
 
     assertThat(summaryReport).isEqualTo(expectedSummary);
     assertThat(report).contains(expectedSummary);
-    assertThat(report).contains("1.4\tS: null\tC: null\tI: Y");
+    assertThat(report).contains("2.1\tS: NA\t\tC: NA\t\tI: N");
 
   }
 
