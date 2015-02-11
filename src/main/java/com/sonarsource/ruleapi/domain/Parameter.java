@@ -10,8 +10,8 @@ import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 
 public class Parameter implements Comparable<Parameter> {
   private String key;
-  private String description;
-  private String defaultVal;
+  private String description = "";
+  private String defaultVal = "";
   private String type;
 
   public String getKey() {

@@ -191,7 +191,11 @@ public class RuleMaker {
       Parameter param = new Parameter();
       param.setKey((String) obj.get("key"));
       param.setDescription((String) obj.get("htmlDesc"));
-      param.setDefaultVal((String) obj.get("defaultValue"));
+
+      String tmp = (String) obj.get("defaultValue");
+      if (tmp != null) {
+        param.setDefaultVal(tmp);
+      }
       param.setType((String) obj.get("type"));
       rule.getParameterList().add(param);
     }
