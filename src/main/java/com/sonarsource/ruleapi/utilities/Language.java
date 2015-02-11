@@ -9,7 +9,7 @@ package com.sonarsource.ruleapi.utilities;
 public enum Language {
   ABAP  ("abap",        "ABAP",        "abap-sonar-way-38370",  true),
   C     ("c",           "C",           "c-sonar-way-44762",     true),
-  COBOL ("cobol",       "Cobol",       "cobol-sonar-way-41769", false),
+  COBOL ("cobol",       "Cobol",       "cobol-sonar-way-41769", true),
   CPP   ("cpp",         "C++",         "cpp-sonar-way-81587",   true),
   CSH   ("csharpsquid", "C#",          "cs-sonar-way-31865",    true),
   FLEX  ("flex",        "Flex",        "flex-sonar-way-91920",  true),
