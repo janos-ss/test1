@@ -41,10 +41,17 @@ public class FindbugsTest {
     assertThat(fb.skipped).isEqualTo(29);
     assertThat(fb.specified).isEqualTo(0);
     assertThat(fb.implemented).isEqualTo(0);
+  }
+
+  @Test
+  public void testComputeCoverageAgain() {
 
     Rule rule = new Rule("Java");
     List<String> ids = new ArrayList<String>();
     ids.add(FB_ID);
+
+    FindBugs fb = new FindBugs();
+    fb.populateRulesCoverageMap();
 
     fb.setCodingStandardRuleCoverageImplemented(ids,rule);
     fb.setCodingStandardRuleCoverageSpecifiedBy(rule, ids);
@@ -52,6 +59,5 @@ public class FindbugsTest {
     fb.computeCoverage();
     assertThat(fb.specified).isEqualTo(1);
     assertThat(fb.implemented).isEqualTo(1);
-
   }
 }

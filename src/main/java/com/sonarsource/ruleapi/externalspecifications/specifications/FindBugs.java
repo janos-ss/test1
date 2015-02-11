@@ -505,24 +505,26 @@ public class FindBugs extends AbstractReportableStandard implements ExternalTool
 
   protected void computeCoverage() {
 
-    for (StandardRule standardRule : StandardRule.values()) {
-      Implementability impl = standardRule.getImplementability();
-      if (impl.equals(Implementability.IMPLEMENTABLE)) {
-        implementable ++;
-      } else if (impl.equals(Implementability.REJECTED)) {
-        skipped++;
+    if (implementable == 0) {
+      for (StandardRule standardRule : StandardRule.values()) {
+        Implementability impl = standardRule.getImplementability();
+        if (impl.equals(Implementability.IMPLEMENTABLE)) {
+          implementable++;
+        } else if (impl.equals(Implementability.REJECTED)) {
+          skipped++;
+        }
       }
-    }
 
-    Iterator<CodingStandardRuleCoverage> itr = getRulesCoverage().values().iterator();
-    while (itr.hasNext()) {
-      CodingStandardRuleCoverage cov = itr.next();
+      Iterator<CodingStandardRuleCoverage> itr = getRulesCoverage().values().iterator();
+      while (itr.hasNext()) {
+        CodingStandardRuleCoverage cov = itr.next();
 
-      if (!cov.getImplementedBy().isEmpty()) {
-        implemented++;
-      }
-      if (!cov.getSpecifiedBy().isEmpty()) {
-        specified ++;
+        if (!cov.getImplementedBy().isEmpty()) {
+          implemented++;
+        }
+        if (!cov.getSpecifiedBy().isEmpty()) {
+          specified++;
+        }
       }
     }
   }
