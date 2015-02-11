@@ -55,6 +55,7 @@ public class Rule {
     // Efficiency
     CPU_EFFICIENCY("Processor use"),
     MEMORY_EFFICIENCY("Memory use"),
+    NETWORK_USE("Network use"),
 
     // Changability
     ARCHITECTURE_CHANGEABILITY("Architecture related changeability"),
