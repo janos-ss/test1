@@ -441,6 +441,12 @@ public class RuleMaker {
       if (obj instanceof String) {
         return (String) obj;
       }
+
+      if (obj instanceof JSONArray) {
+        JSONArray arr = (JSONArray) obj;
+        obj = arr.get(0);
+      }
+
       if (obj instanceof JSONObject) {
         JSONObject value = (JSONObject) obj;
         if (value.containsKey("name")) {
