@@ -26,7 +26,7 @@ import com.sonarsource.ruleapi.domain.RuleException;
 public class ReportService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
-  private static final String COVERAGE_DIR = "Coverage/";
+  private static final String COVERAGE_DIR = "Reports/Coverage/";
 
 
   public void generateRuleDescriptions(List<String> ruleKeys, String language) {
@@ -83,10 +83,13 @@ public class ReportService extends RuleManager {
   private void writeFile(String fileName, String content) {
     PrintWriter writer = null;
     try {
-      String path = "Reports/" + fileName.replaceAll(" ", "_");
+      String path = fileName.replaceAll(" ", "_");
 
       File file = new File(path);
-      file.getParentFile().mkdirs();
+      File parent = file.getParentFile();
+      if (parent != null) {
+        parent.mkdirs();
+      }
 
       writer = new PrintWriter(file, "UTF-8");
       writer.println(content);
@@ -103,7 +106,7 @@ public class ReportService extends RuleManager {
   public void writeFindBugsDeprecationReport(String instance) {
     LOGGER.info("Getting Findbugs deprecation report on " + instance);
 
-    writeFile("DeprecatedFindBugsIds.txt",
+    writeFile("Reports/DeprecatedFindBugsIds.txt",
             ((ExternalTool) SupportedCodingStandard.FINDBUGS.getCodingStandard()).getDeprecationReport(instance));
   }
 
@@ -119,7 +122,7 @@ public class ReportService extends RuleManager {
 
     LOGGER.info("Getting outdated rules report for " + language.getRspec() + " on " + instance);
 
-    String fileName = "Outdated/".concat(language.getSq()).concat("OutdatedRules.txt");
+    String fileName = "Reports/Outdated/".concat(language.getSq()).concat("OutdatedRules.txt");
 
     List<Rule> rspec = getCoveredRulesForLangauge(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
