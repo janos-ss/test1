@@ -31,11 +31,11 @@ public class MisraC2004 extends AbstractMisraSpecification {
 
   public enum StandardRule implements CodingStandardRule {
 
-    MISRAC2004_1POINT1 ("1.1", Boolean.TRUE, Implementability.IMPLEMENTABLE),
-    MISRAC2004_1POINT2 ("1.2", Boolean.TRUE, Implementability.IMPLEMENTABLE),
-    MISRAC2004_1POINT3 ("1.3", Boolean.TRUE, Implementability.IMPLEMENTABLE),
-    MISRAC2004_1POINT4 ("1.4", Boolean.TRUE, Implementability.IMPLEMENTABLE),
-    MISRAC2004_1POINT5 ("1.5", Boolean.FALSE, Implementability.IMPLEMENTABLE),
+    MISRAC2004_1POINT1 ("1.1", Boolean.TRUE, Implementability.NOT_IMPLEMENTABLE),
+    MISRAC2004_1POINT2 ("1.2", Boolean.TRUE, Implementability.NOT_IMPLEMENTABLE),
+    MISRAC2004_1POINT3 ("1.3", Boolean.TRUE, Implementability.NOT_IMPLEMENTABLE),
+    MISRAC2004_1POINT4 ("1.4", Boolean.TRUE, Implementability.NOT_IMPLEMENTABLE),
+    MISRAC2004_1POINT5 ("1.5", Boolean.FALSE, Implementability.NOT_IMPLEMENTABLE),
 
     MISRAC2004_2POINT1 ("2.1", Boolean.TRUE, Implementability.IMPLEMENTABLE),
     MISRAC2004_2POINT2 ("2.2", Boolean.TRUE, Implementability.IMPLEMENTABLE),

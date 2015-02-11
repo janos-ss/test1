@@ -183,7 +183,7 @@ public class OwaspTopTen extends AbstractReportableStandard implements TaggableS
     A6 ("Sensitive Data Exposure", Implementability.IMPLEMENTABLE),
     A7 ("Missing Function Level Access Control", Implementability.IMPLEMENTABLE),
     A8 ("Cross-Site Request Forgery (CSRF)", Implementability.IMPLEMENTABLE),
-    A9 ("Using Components with Known Vulnerabilities", Implementability.NOT_IMPLEMENTABLE),
+    A9 ("Using Components with Known Vulnerabilities", Implementability.IMPLEMENTABLE),
     A10 ("Unvalidated Redirects and Forwards", Implementability.IMPLEMENTABLE);
 
     private String title;
