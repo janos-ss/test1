@@ -614,7 +614,10 @@ public class RuleMaker {
   private static void handleHtml(Rule rule, String[] pieces) {
 
     rule.setDescription(pieces[0].replaceAll("&lt;", "<").replaceAll("&gt;", ">"));
-    for (String piece : pieces) {
+
+    for (int i = 1; i < pieces.length; i++) {
+
+      String piece = pieces[i];
       if (piece.contains("Noncompliant Code Example")) {
         rule.setNonCompliant(HTML_H2 + piece);
 
