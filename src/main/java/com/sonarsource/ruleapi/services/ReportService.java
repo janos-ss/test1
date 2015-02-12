@@ -26,7 +26,7 @@ import com.sonarsource.ruleapi.domain.RuleException;
 public class ReportService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
-  private static final String COVERAGE_DIR = "Reports/Coverage/";
+  private static final String COVERAGE_DIR = "target/reports/coverage/";
 
 
   public void generateRuleDescriptions(List<String> ruleKeys, String language) {
@@ -61,7 +61,7 @@ public class ReportService extends RuleManager {
         sb.append(((AbstractReportableStandard)standard).getSummaryReport(instance)).append("\n\n");
       }
     }
-    writeFile(COVERAGE_DIR.concat("SummaryCoverageReports.txt"), sb.toString());
+    writeFile(COVERAGE_DIR.concat("summary_coverage_reports.txt"), sb.toString());
 
   }
 
@@ -75,7 +75,7 @@ public class ReportService extends RuleManager {
 
         LOGGER.info("Getting detailed coverage report for " + standard.getStandardName() + " on " + instance);
 
-        writeFile(COVERAGE_DIR.concat(standard.getStandardName()).concat("Coverage.txt"), standard.getReport(instance));
+        writeFile(COVERAGE_DIR.concat(standard.getStandardName()).concat("_coverage.txt"), standard.getReport(instance));
       }
     }
   }
@@ -83,7 +83,7 @@ public class ReportService extends RuleManager {
   private void writeFile(String fileName, String content) {
     PrintWriter writer = null;
     try {
-      String path = fileName.replaceAll(" ", "_");
+      String path = fileName.toLowerCase().replaceAll(" ", "_");
 
       File file = new File(path);
       File parent = file.getParentFile();
@@ -106,7 +106,7 @@ public class ReportService extends RuleManager {
   public void writeFindBugsDeprecationReport(String instance) {
     LOGGER.info("Getting Findbugs deprecation report on " + instance);
 
-    writeFile("Reports/DeprecatedFindBugsIds.txt",
+    writeFile("target/reports/deprecated_findBugs_ids.txt",
             ((ExternalTool) SupportedCodingStandard.FINDBUGS.getCodingStandard()).getDeprecationReport(instance));
   }
 
@@ -122,7 +122,7 @@ public class ReportService extends RuleManager {
 
     LOGGER.info("Getting outdated rules report for " + language.getRspec() + " on " + instance);
 
-    String fileName = "Reports/Outdated/".concat(language.getSq()).concat("OutdatedRules.txt");
+    String fileName = "target/reports/outdated/".concat(language.getSq()).concat("_outdated_rules.txt");
 
     List<Rule> rspec = getCoveredRulesForLangauge(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
