@@ -148,7 +148,6 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
     computeCoverage();
 
     StringBuilder sb = new StringBuilder();
-    sb.append(String.format("%-14s %-12s %-12s%n", "Rule", "Spec.", "Impl."));
     for (StandardRule sr : StandardRule.values()) {
       sb.append(formatLine(sr));
     }
@@ -161,9 +160,10 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
 
     CodingStandardRuleCoverage cov = getRulesCoverage().get(sr.getCodingStandardRuleId());
 
-    return String.format("%2d) %-10s %-12s %-12s%n",
+    return String.format("%2d) %-7s - %s%n      Specifying:   %s%n      Implementing: %s%n%n",
             sr.rank,
             sr.getCodingStandardRuleId(),
+            sr.category.getName(),
             cov.getSpecifiedBy().isEmpty() ? "" : cov.getSpecifiedByKeysAsCommaList(),
             cov.getImplementedBy().isEmpty() ? "" : cov.getImplementedByKeysAsCommaList());
   }
