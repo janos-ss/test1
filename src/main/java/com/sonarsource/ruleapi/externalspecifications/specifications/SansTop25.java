@@ -33,14 +33,17 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
   private int insecureInteractionCount = 0;
   private int insecureInteractionSpecified = 0;
   private int insecureInteractionImplemented = 0;
+  private int insecureInteractionNa = 0;
 
   private int riskyResourceCount = 0;
   private int riskyResourceSpecified = 0;
   private int riskyResourceImplemented = 0;
+  private int riskyResourceNa = 0;
 
   private int porousDefensesCount = 0;
   private int porousDefensesSpecified = 0;
   private int porousDefensesImplemented = 0;
+  private int porousDefensesNa = 0;
 
   private Map<String, CodingStandardRule> ruleMap = new HashMap<String, CodingStandardRule>();
 
@@ -159,11 +162,19 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
   protected String formatLine(StandardRule sr) {
 
     CodingStandardRuleCoverage cov = getRulesCoverage().get(sr.getCodingStandardRuleId());
+    if (Implementability.NOT_IMPLEMENTABLE.equals(sr.getImplementability())){
+      return String.format("%2d) %-7s - %s%n      Not Implementable: %s%n%n",
+              sr.rank,
+              sr.getCodingStandardRuleId(),
+              sr.category.getName(),
+              sr.title);
+    }
 
-    return String.format("%2d) %-7s - %s%n      Specifying:   %s%n      Implementing: %s%n%n",
+    return String.format("%2d) %-7s - %s - %s%n      Specifying:   %s%n      Implementing: %s%n%n",
             sr.rank,
             sr.getCodingStandardRuleId(),
             sr.category.getName(),
+            sr.title,
             cov.getSpecifiedBy().isEmpty() ? "" : cov.getSpecifiedByKeysAsCommaList(),
             cov.getImplementedBy().isEmpty() ? "" : cov.getImplementedByKeysAsCommaList());
   }
@@ -180,22 +191,23 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
     sb.append(newline).append(getStandardName()).append(" for ").append(language.getRspec()).append(newline);
 
     sb.append(formatSummaryLine(Category.INSECURE_INTERACTION.getName(),
-            insecureInteractionCount, insecureInteractionSpecified, insecureInteractionImplemented));
+            insecureInteractionCount, insecureInteractionNa, insecureInteractionSpecified, insecureInteractionImplemented));
     sb.append(formatSummaryLine(Category.POROUS_DEFENSES.getName(),
-            porousDefensesCount, porousDefensesSpecified, porousDefensesImplemented));
+            porousDefensesCount, porousDefensesNa, porousDefensesSpecified, porousDefensesImplemented));
     sb.append(formatSummaryLine(Category.RISKY_RESOURCE.getName(),
-            riskyResourceCount, riskyResourceSpecified, riskyResourceImplemented));
+            riskyResourceCount, riskyResourceNa, riskyResourceSpecified, riskyResourceImplemented));
     sb.append(formatSummaryLine("Total", 25,
+            insecureInteractionNa + riskyResourceNa + porousDefensesNa,
             insecureInteractionSpecified + riskyResourceSpecified + porousDefensesSpecified,
             insecureInteractionImplemented + riskyResourceImplemented + porousDefensesImplemented));
 
     return sb.toString();
   }
 
-  protected String formatSummaryLine(String label, int total, int specified, int implemented) {
+  protected String formatSummaryLine(String label, int total, int na, int specified, int implemented) {
 
-    return String.format("%-39s %2d,  specified: %2d,  implemented: %2d%n",
-            label, total, specified, implemented);
+    return String.format("%-39s %2d, unimplementable: %2d  specified: %2d,  implemented: %2d%n",
+            label, total, na, specified, implemented);
   }
 
   @Override
@@ -226,15 +238,15 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
 
       switch (sr.category) {
         case INSECURE_INTERACTION:
-          countInsecureCoverage(cov);
+          countInsecureCoverage(sr, cov);
           break;
 
         case POROUS_DEFENSES:
-          countPorousDefenses(cov);
+          countPorousDefenses(sr, cov);
           break;
 
         case RISKY_RESOURCE:
-          countRiskyResource(cov);
+          countRiskyResource(sr, cov);
           break;
 
         default:
@@ -243,9 +255,12 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
 
   }
 
-  private void countRiskyResource(CodingStandardRuleCoverage cov) {
+  private void countRiskyResource(StandardRule sr, CodingStandardRuleCoverage cov) {
 
     riskyResourceCount++;
+    if (Implementability.NOT_IMPLEMENTABLE.equals(sr.getImplementability())) {
+      riskyResourceNa ++;
+    }
     if (!cov.getSpecifiedBy().isEmpty()) {
       riskyResourceSpecified++;
     }
@@ -254,9 +269,12 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
     }
   }
 
-  private void countPorousDefenses(CodingStandardRuleCoverage cov) {
+  private void countPorousDefenses(StandardRule sr, CodingStandardRuleCoverage cov) {
 
     porousDefensesCount++;
+    if (Implementability.NOT_IMPLEMENTABLE.equals(sr.getImplementability())) {
+      porousDefensesNa++;
+    }
     if (!cov.getSpecifiedBy().isEmpty()) {
       porousDefensesSpecified++;
     }
@@ -265,9 +283,12 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
     }
   }
 
-  private void countInsecureCoverage(CodingStandardRuleCoverage cov) {
+  private void countInsecureCoverage(StandardRule sr, CodingStandardRuleCoverage cov) {
 
     insecureInteractionCount++;
+    if (Implementability.NOT_IMPLEMENTABLE.equals(sr.getImplementability())) {
+      insecureInteractionNa++;
+    }
     if (!cov.getSpecifiedBy().isEmpty()) {
       insecureInteractionSpecified++;
     }
@@ -306,39 +327,41 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
 
   public enum StandardRule implements CodingStandardRule {
 
-    CWE_89  (1,  Category.INSECURE_INTERACTION, "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"),
-    CWE_78  (2,  Category.INSECURE_INTERACTION, "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')"),
-    CWE_120 (3,  Category.RISKY_RESOURCE, "Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')"),
-    CWE_79  (4,  Category.INSECURE_INTERACTION, "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"),
-    CWE_306 (5,  Category.POROUS_DEFENSES, "Missing Authentication for Critical Function"),
-    CWE_862 (6,  Category.POROUS_DEFENSES, "Missing Authorization"),
-    CWE_798 (7,  Category.POROUS_DEFENSES, "Use of Hard-coded Credentials"),
-    CWE_311 (8,  Category.POROUS_DEFENSES, "Missing Encryption of Sensitive Data"),
-    CWE_434 (9,  Category.INSECURE_INTERACTION, "Unrestricted Upload of File with Dangerous Type"),
-    CWE_807 (10, Category.POROUS_DEFENSES, "Reliance on Untrusted Inputs in a Security Decision"),
-    CWE_250 (11, Category.POROUS_DEFENSES, "Execution with Unnecessary Privileges"),
-    CWE_352 (12, Category.INSECURE_INTERACTION, "Cross-Site Request Forgery (CSRF)"),
-    CWE_22  (13, Category.RISKY_RESOURCE, "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')"),
-    CWE_494 (14, Category.RISKY_RESOURCE, "Download of Code Without Integrity Check"),
-    CWE_863 (15, Category.POROUS_DEFENSES, "Incorrect Authorization"),
-    CWE_829 (16, Category.RISKY_RESOURCE, "Inclusion of Functionality from Untrusted Control Sphere"),
-    CWE_732 (17, Category.POROUS_DEFENSES, "Incorrect Permission Assignment for Critical Resource"),
-    CWE_676 (18, Category.RISKY_RESOURCE, "Use of Potentially Dangerous Function"),
-    CWE_327 (19, Category.POROUS_DEFENSES, "Use of a Broken or Risky Cryptographic Algorithm"),
-    CWE_131 (20, Category.RISKY_RESOURCE, "Incorrect Calculation of Buffer Size"),
-    CWE_307 (21, Category.POROUS_DEFENSES, "Improper Restriction of Excessive Authentication Attempts"),
-    CWE_601 (22, Category.INSECURE_INTERACTION, "URL Redirection to Untrusted Site ('Open Redirect')"),
-    CWE_134 (23, Category.RISKY_RESOURCE, "Uncontrolled Format String"),
-    CWE_190 (24, Category.RISKY_RESOURCE, "Integer Overflow or Wraparound"),
-    CWE_759 (25, Category.POROUS_DEFENSES, "Use of a One-Way Hash without a Salt");
+    CWE_89  (1,  Category.INSECURE_INTERACTION, Implementability.IMPLEMENTABLE,     "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"),
+    CWE_78  (2,  Category.INSECURE_INTERACTION, Implementability.IMPLEMENTABLE,     "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')"),
+    CWE_120 (3,  Category.RISKY_RESOURCE,       Implementability.IMPLEMENTABLE,     "Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')"),
+    CWE_79  (4,  Category.INSECURE_INTERACTION, Implementability.IMPLEMENTABLE,     "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"),
+    CWE_306 (5,  Category.POROUS_DEFENSES,      Implementability.NOT_IMPLEMENTABLE, "Missing Authentication for Critical Function"),
+    CWE_862 (6,  Category.POROUS_DEFENSES,      Implementability.NOT_IMPLEMENTABLE, "Missing Authorization"),
+    CWE_798 (7,  Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Use of Hard-coded Credentials"),
+    CWE_311 (8,  Category.POROUS_DEFENSES,      Implementability.NOT_IMPLEMENTABLE, "Missing Encryption of Sensitive Data"),
+    CWE_434 (9,  Category.INSECURE_INTERACTION, Implementability.IMPLEMENTABLE,     "Unrestricted Upload of File with Dangerous Type"),
+    CWE_807 (10, Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Reliance on Untrusted Inputs in a Security Decision"),
+    CWE_250 (11, Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Execution with Unnecessary Privileges"),
+    CWE_352 (12, Category.INSECURE_INTERACTION, Implementability.IMPLEMENTABLE,     "Cross-Site Request Forgery (CSRF)"),
+    CWE_22  (13, Category.RISKY_RESOURCE,       Implementability.IMPLEMENTABLE,     "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')"),
+    CWE_494 (14, Category.RISKY_RESOURCE,       Implementability.NOT_IMPLEMENTABLE, "Download of Code Without Integrity Check"),
+    CWE_863 (15, Category.POROUS_DEFENSES,      Implementability.NOT_IMPLEMENTABLE, "Incorrect Authorization"),
+    CWE_829 (16, Category.RISKY_RESOURCE,       Implementability.IMPLEMENTABLE,     "Inclusion of Functionality from Untrusted Control Sphere"),
+    CWE_732 (17, Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Incorrect Permission Assignment for Critical Resource"),
+    CWE_676 (18, Category.RISKY_RESOURCE,       Implementability.IMPLEMENTABLE,     "Use of Potentially Dangerous Function"),
+    CWE_327 (19, Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Use of a Broken or Risky Cryptographic Algorithm"),
+    CWE_131 (20, Category.RISKY_RESOURCE,       Implementability.IMPLEMENTABLE,     "Incorrect Calculation of Buffer Size"),
+    CWE_307 (21, Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Improper Restriction of Excessive Authentication Attempts"),
+    CWE_601 (22, Category.INSECURE_INTERACTION, Implementability.IMPLEMENTABLE,     "URL Redirection to Untrusted Site ('Open Redirect')"),
+    CWE_134 (23, Category.RISKY_RESOURCE,       Implementability.IMPLEMENTABLE,     "Uncontrolled Format String"),
+    CWE_190 (24, Category.RISKY_RESOURCE,       Implementability.IMPLEMENTABLE,     "Integer Overflow or Wraparound"),
+    CWE_759 (25, Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Use of a One-Way Hash without a Salt");
 
     private int rank;
     private Category category;
     private String title;
+    private Implementability implementability;
 
-    StandardRule(int rank, Category category, String title) {
+    StandardRule(int rank, Category category, Implementability implementability, String title) {
       this.rank = rank;
       this.category = category;
+      this.implementability = implementability;
       this.title = title;
     }
 
@@ -349,7 +372,7 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
 
     @Override
     public Implementability getImplementability() {
-      return Implementability.IMPLEMENTABLE;
+      return this.implementability;
     }
 
   }

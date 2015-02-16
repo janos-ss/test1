@@ -96,10 +96,10 @@ public class SansTop25Test {
     String newline = String.format("%n");
     String expectedSummaryReport = newline +
             "SANS Top 25 for Java" + newline +
-            "Insecure Interaction Between Components  6,  specified:  0,  implemented:  0" + newline +
-            "Porous Defenses                         11,  specified:  0,  implemented:  0" + newline +
-            "Risky Resource Management                8,  specified:  0,  implemented:  0" + newline +
-            "Total                                   25,  specified:  0,  implemented:  0" + newline;
+            "Insecure Interaction Between Components  6, unimplementable:  0  specified:  0,  implemented:  0" + newline +
+            "Porous Defenses                         11, unimplementable:  4  specified:  0,  implemented:  0" + newline +
+            "Risky Resource Management                8, unimplementable:  1  specified:  0,  implemented:  0" + newline +
+            "Total                                   25, unimplementable:  5  specified:  0,  implemented:  0" + newline;
     String summaryReport = sans.getSummaryReport("");
 
     assertThat(summaryReport).isEqualTo(expectedSummaryReport);
@@ -147,10 +147,10 @@ public class SansTop25Test {
     String newline = String.format("%n");
     String expectedSummaryReport = newline +
             "SANS Top 25 for Java" + newline +
-            "Insecure Interaction Between Components  6,  specified:  0,  implemented:  0" + newline +
-            "Porous Defenses                         11,  specified:  0,  implemented:  0" + newline +
-            "Risky Resource Management                8,  specified:  1,  implemented:  1" + newline +
-            "Total                                   25,  specified:  1,  implemented:  1" + newline;
+            "Insecure Interaction Between Components  6, unimplementable:  0  specified:  0,  implemented:  0" + newline +
+            "Porous Defenses                         11, unimplementable:  4  specified:  0,  implemented:  0" + newline +
+            "Risky Resource Management                8, unimplementable:  1  specified:  1,  implemented:  1" + newline +
+            "Total                                   25, unimplementable:  5  specified:  1,  implemented:  1" + newline;
     String summaryReport = "";
     summaryReport = sans.getSummaryReport("");
 
