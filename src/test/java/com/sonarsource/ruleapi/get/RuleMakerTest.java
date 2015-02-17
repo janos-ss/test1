@@ -476,4 +476,14 @@ public class RuleMakerTest {
     assertThat(rule.isTemplate()).isTrue();
   }
 
+  @Test
+  public void testCFamilyLanguageMatch() {
+    assertThat(RuleMaker.isLanguageMatch("C","C-Family")).isTrue();
+    assertThat(RuleMaker.isLanguageMatch("C++","Objective-C")).isTrue();
+
+    assertThat(RuleMaker.isLanguageMatch("C", "Charlie")).isFalse();
+    assertThat(RuleMaker.isLanguageMatch("C", "C#")).isFalse();
+
+    assertThat(RuleMaker.isLanguageMatch("Java","CPP")).isFalse();
+  }
 }

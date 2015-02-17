@@ -333,6 +333,11 @@ public class RuleMaker {
   }
 
   protected static boolean isLanguageMatch(String language, String candidate) {
+
+    if (isCFamilyMatch(language)) {
+      return isCFamilyMatch(candidate);
+    }
+
     if (language.equals(candidate)) {
       return true;
     }
@@ -340,6 +345,24 @@ public class RuleMaker {
       return false;
     }
     return candidate.matches(language + "\\W.*");
+  }
+
+  protected static boolean isCFamilyMatch(String candidate) {
+    String[] cFamily = {"C-Family", "C", "CPP", "C++", "Objective-C"};
+
+    if (candidate.equalsIgnoreCase("C#") || candidate.matches("(?i:C#\\W.*)")) {
+      return false;
+    }
+
+    for (String option : cFamily) {
+      if (option.equalsIgnoreCase(candidate)) {
+        return true;
+      }
+      if (candidate.matches("(?i:" + option + "\\W.*)")) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public static List<Parameter> handleParameterList(String paramString, String language) {
