@@ -169,4 +169,65 @@ public class SansTop25Test {
     assertThat(sansTop25.getTag()).isEqualTo("sans-top25");
   }
 
+  @Test
+  public void testGetSpecifiedByString() {
+    SansTop25 sans = new SansTop25();
+
+    sans.populateRulesCoverageMap();
+
+    Rule rule = new Rule("Java");
+    rule.setKey("RSPEC-1234");
+    List<String> covered = rule.getCoveredLanguages();
+    covered.add("Java");
+    covered.add("Swift");
+    covered.add("HTML");
+    List<String> targeted = rule.getTargetedLanguages();
+    targeted.add("C");
+    targeted.add("C++");
+    targeted.add("PL/SQL");
+
+    Rule rule2 = new Rule("JavaScript");
+    rule2.setKey("RSPEC-2345");
+    rule2.getTargetedLanguages().add("ABAP");
+
+    CodingStandardRuleCoverage cov = sans.getRulesCoverage().get("CWE-829");
+    cov.addSpecifiedBy(rule);
+    cov.addSpecifiedBy(rule2);
+
+    String expected = "RSPEC-1234 (C, C++, PL/SQL, Java, Swift, HTML); RSPEC-2345 (ABAP)";
+    assertThat(sans.getSpecifiedByString(cov)).isEqualTo(expected);
+
+  }
+
+  @Test
+  public void testGetCoveredByString() {
+    SansTop25 sans = new SansTop25();
+
+    sans.populateRulesCoverageMap();
+
+    Rule rule = new Rule("Java");
+    rule.setKey("RSPEC-1234");
+    List<String> covered = rule.getCoveredLanguages();
+    covered.add("Java");
+    covered.add("Swift");
+    covered.add("HTML");
+    List<String> targeted = rule.getTargetedLanguages();
+    targeted.add("C");
+    targeted.add("C++");
+    targeted.add("PL/SQL");
+
+    Rule rule2 = new Rule("JavaScript");
+    rule2.setKey("RSPEC-2345");
+    rule2.getTargetedLanguages().add("ABAP");
+
+    CodingStandardRuleCoverage cov = sans.getRulesCoverage().get("CWE-829");
+    cov.addImplementedBy(rule);
+    cov.addImplementedBy(rule2);
+
+    String expected = "RSPEC-1234 (Java); RSPEC-2345 (JavaScript)";
+    assertThat(sans.getCoveredByString(cov)).isEqualTo(expected);
+
+  }
+
+
 }
