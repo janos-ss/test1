@@ -9,7 +9,9 @@ import com.sonarsource.ruleapi.domain.Rule;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -73,4 +75,22 @@ public class AbstractMisraSpecificationTest {
 
   }
 
+  @Test
+  public void testIsFieldEntryFormatNeedUpdating() {
+
+    MisraC2004 misra = new MisraC2004();
+
+    Rule rule = new Rule("C");
+    rule.setKey("RSPEC-1345");
+    rule.getMisraC04().add("hello");
+
+    Map<String, Object> map = new HashMap<String, Object>();
+
+    assertThat(map).isEmpty();
+
+    misra.isFieldEntryFormatNeedUpdating(map, rule);
+
+    assertThat(map).isEmpty();
+
+  }
 }
