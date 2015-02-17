@@ -125,10 +125,21 @@ public class Fetcher {
    */
   public List<JSONObject> fetchRulesFromSonarQube(String instance, String search) {
 
-    String path = "/api/rules/search?ps=1000&";
+    String baseUrl = instance + "/api/rules/search?ps=500&" + search;
 
-    JSONObject rawResult = getJsonFromUrl(instance + path + search);
-    return (JSONArray)rawResult.get("rules");
+    JSONObject rawResult = getJsonFromUrl(baseUrl);
+    JSONArray rules = (JSONArray)rawResult.get("rules");
+
+    while ((Long) rawResult.get("total") > rules.size()) {
+      long page = (Long) rawResult.get("p");
+      page++;
+
+      rawResult = getJsonFromUrl(baseUrl + "&p=" + page);
+      rules.addAll((JSONArray) rawResult.get("rules"));
+
+    }
+
+    return rules;
   }
 
 
