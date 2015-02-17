@@ -13,6 +13,7 @@ import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 
+import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.fest.util.Strings;
 
@@ -34,7 +35,12 @@ public abstract class AbstractReportableStandard implements CodingStandard {
   public List<Rule> getRSpecRulesReferencingStandard() {
     String query = "'" + getRSpecReferenceFieldName() + "' is not EMPTY";
 
-    List<Rule> rules =  RuleMaker.getRulesByJql(query, getLanguage().getRspec());
+    Language language = getLanguage();
+    String rspecLanguage = "";
+    if (language != null) {
+      rspecLanguage = language.getRspec();
+    }
+    List<Rule> rules = RuleMaker.getRulesByJql(query, rspecLanguage);
 
     for (Rule rule: rules) {
       List <String> expandedIdList = getExpandedStandardKeyList(getRspecReferenceFieldValues(rule));
@@ -123,17 +129,38 @@ public abstract class AbstractReportableStandard implements CodingStandard {
 
     if (instance != null) {
 
-      List<Rule> sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(getLanguage(), instance);
+      Language language = getLanguage();
+      String sq = "";
+
+      List<Rule> sqImplemented = null;
+      if (language != null) {
+        sq = language.getSq();
+
+        sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(getLanguage(), instance);
+
+      } else {
+        sqImplemented = RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + getSqRepoList(),null);
+      }
 
       for (Rule sqRule : sqImplemented) {
         String key = sqRule.getKey();
 
-        Rule rspecRule = RuleMaker.getRuleByKey(key, getLanguage().getSq());
+        Rule rspecRule = RuleMaker.getRuleByKey(key, sq);
         List<String> ids = getExpandedStandardKeyList(getRspecReferenceFieldValues(rspecRule));
 
         setCodingStandardRuleCoverageImplemented(ids, sqRule);
       }
     }
+  }
+
+  private String getSqRepoList() {
+
+    List<String> repos = new ArrayList<String>();
+    for (Language language : Language.values()) {
+      repos.add(language.getSq());
+    }
+    String tmp = ComparisonUtilities.listToString(repos, true);
+    return tmp.replaceAll(" ", "");
   }
 
   protected void setCodingStandardRuleCoverageImplemented(List<String> ids, Rule rule) {

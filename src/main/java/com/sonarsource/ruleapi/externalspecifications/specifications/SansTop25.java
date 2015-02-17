@@ -28,7 +28,7 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
   private static final String REFERENCE_PATTERN = "CWE-\\d+";
   private static final String CWE = "CWE";
 
-  private Language language = Language.JAVA;
+  private Language language = null;
 
   private int insecureInteractionCount = 0;
   private int insecureInteractionSpecified = 0;
@@ -175,8 +175,38 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
             sr.getCodingStandardRuleId(),
             sr.category.getName(),
             sr.title,
-            cov.getSpecifiedBy().isEmpty() ? "" : cov.getSpecifiedByKeysAsCommaList(),
-            cov.getImplementedBy().isEmpty() ? "" : cov.getImplementedByKeysAsCommaList());
+            getSpecifiedByString(cov),
+            getCoveredByString(cov));
+  }
+
+  protected String getSpecifiedByString(CodingStandardRuleCoverage cov) {
+
+    StringBuilder sb = new StringBuilder();
+
+    for (Rule rule : cov.getSpecifiedBy()) {
+      List<String> languages = rule.getTargetedLanguages();
+      languages.addAll(rule.getCoveredLanguages());
+      if (sb.length() > 0) {
+        sb.append("; ");
+      }
+      sb.append(rule.getKey()).append(" (").append(ComparisonUtilities.listToString(languages, true)).append(")");
+    }
+
+    return sb.toString();
+  }
+
+  protected String getCoveredByString(CodingStandardRuleCoverage cov) {
+
+    StringBuilder sb = new StringBuilder();
+
+    for (Rule rule : cov.getImplementedBy()) {
+      if (sb.length() > 0) {
+        sb.append("; ");
+      }
+      sb.append(rule.getKey()).append(" (").append(rule.getLanguage()).append(")");
+    }
+
+    return sb.toString();
   }
 
 
@@ -188,7 +218,7 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
 
     String newline = String.format("%n");
     StringBuilder sb = new StringBuilder();
-    sb.append(newline).append(getStandardName()).append(" for ").append(language.getRspec()).append(newline);
+    sb.append(newline).append(getStandardName()).append(newline);
 
     sb.append(formatSummaryLine(Category.INSECURE_INTERACTION.getName(),
             insecureInteractionCount, insecureInteractionNa, insecureInteractionSpecified, insecureInteractionImplemented));
