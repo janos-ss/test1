@@ -42,10 +42,9 @@ public class IntegrityEnforcementService extends RuleManager {
   public void setCoveredAndOutdatedForLanguage(String login, String password, Language language) {
     String rspecLanguage = language.getRspec();
 
-    List<Rule> rspec = getCoveredRulesForLangauge(language);
-    Map<String, Rule> rspecRules = mapRulesByKey(rspec);
-
     Map<String,Rule> needsUpdating = new HashMap<String, Rule>();
+
+    Map<String, Rule> rspecRules = mapRulesByKey(getCoveredRulesForLangauge(language));
 
     List<Rule> sqCovered = getImplementedRulesForLanguage(language, NEMO);
     List<Rule> specNotFound = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);

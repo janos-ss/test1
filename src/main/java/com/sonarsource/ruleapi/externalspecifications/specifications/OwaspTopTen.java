@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.sonarsource.ruleapi.externalspecifications.Implementability.IMPLEMENTABLE;
+
+
 public class OwaspTopTen extends AbstractReportableStandard implements TaggableStandard {
 
   private static final String TAG = "owasp-top10";
@@ -175,16 +178,16 @@ public class OwaspTopTen extends AbstractReportableStandard implements TaggableS
   }
 
   public enum StandardRule implements CodingStandardRule {
-    A1 ("Injection", Implementability.IMPLEMENTABLE),
-    A2 ("Broken Authentication and Session Management", Implementability.IMPLEMENTABLE),
-    A3 ("Cross-Site Scripting (XSS)", Implementability.IMPLEMENTABLE),
-    A4 ("Insecure Direct Object References", Implementability.IMPLEMENTABLE),
-    A5 ("Security Misconfiguration", Implementability.IMPLEMENTABLE),
-    A6 ("Sensitive Data Exposure", Implementability.IMPLEMENTABLE),
-    A7 ("Missing Function Level Access Control", Implementability.IMPLEMENTABLE),
-    A8 ("Cross-Site Request Forgery (CSRF)", Implementability.IMPLEMENTABLE),
-    A9 ("Using Components with Known Vulnerabilities", Implementability.IMPLEMENTABLE),
-    A10 ("Unvalidated Redirects and Forwards", Implementability.IMPLEMENTABLE);
+    A1 ("Injection", IMPLEMENTABLE),
+    A2 ("Broken Authentication and Session Management", IMPLEMENTABLE),
+    A3 ("Cross-Site Scripting (XSS)", IMPLEMENTABLE),
+    A4 ("Insecure Direct Object References", IMPLEMENTABLE),
+    A5 ("Security Misconfiguration", IMPLEMENTABLE),
+    A6 ("Sensitive Data Exposure", IMPLEMENTABLE),
+    A7 ("Missing Function Level Access Control", IMPLEMENTABLE),
+    A8 ("Cross-Site Request Forgery (CSRF)", IMPLEMENTABLE),
+    A9 ("Using Components with Known Vulnerabilities", IMPLEMENTABLE),
+    A10 ("Unvalidated Redirects and Forwards", IMPLEMENTABLE);
 
     private String title;
     private Implementability implementability;
