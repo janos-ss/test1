@@ -75,7 +75,7 @@ public class ReportService extends RuleManager {
 
         LOGGER.info("Getting detailed coverage report for " + standard.getStandardName() + " on " + instance);
 
-        writeFile(COVERAGE_DIR.concat(standard.getStandardName()).concat("_coverage.txt"), standard.getReport(instance));
+        writeFile(COVERAGE_DIR.concat(standard.getStandardName()).concat("_coverage.txt").toLowerCase(), standard.getReport(instance));
       }
     }
   }
@@ -83,7 +83,7 @@ public class ReportService extends RuleManager {
   private void writeFile(String fileName, String content) {
     PrintWriter writer = null;
     try {
-      String path = fileName.toLowerCase().replaceAll(" ", "_");
+      String path = fileName.replaceAll(" ", "_");
 
       File file = new File(path);
       File parent = file.getParentFile();
@@ -122,7 +122,7 @@ public class ReportService extends RuleManager {
 
     LOGGER.info("Getting outdated rules report for " + language.getRspec() + " on " + instance);
 
-    String fileName = "target/reports/outdated/".concat(language.getSq()).concat("_outdated_rules.txt");
+    String fileName = "target/reports/outdated/".concat(language.getSq()).concat("_outdated_rules.txt").toLowerCase();
 
     List<Rule> rspec = getCoveredRulesForLangauge(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
