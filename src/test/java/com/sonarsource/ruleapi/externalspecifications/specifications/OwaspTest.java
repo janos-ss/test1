@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class OwaspTest {
 
     IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
 
-    List<String> refs = enforcer.parseReferencesFromStrings(owasp,references);
+    List<String> refs = enforcer.parseReferencesFromStrings(OwaspTopTen.StandardRule.A9,references);
 
     assertThat(refs).hasSize(1).contains("A9");
   }
@@ -41,15 +42,17 @@ public class OwaspTest {
     refs.add("A1");
     refs.add("A2");
 
-    owasp.setRspecReferenceFieldValues(rule, refs);
+    TaggableStandard taggable = OwaspTopTen.StandardRule.A3;
+
+    taggable.setRspecReferenceFieldValues(rule, refs);
 
     Map<String, Object> updates = new HashMap<String, Object>();
 
-    assertThat(owasp.isFieldEntryFormatNeedUpdating(updates, rule)).isFalse();
+    assertThat(taggable.isFieldEntryFormatNeedUpdating(updates, rule)).isFalse();
     assertThat(updates).isEmpty();
 
     refs.add("blah A3 blah");
-    assertThat(owasp.isFieldEntryFormatNeedUpdating(updates, rule)).isTrue();
+    assertThat(taggable.isFieldEntryFormatNeedUpdating(updates, rule)).isTrue();
     assertThat(updates).hasSize(1);
 
   }

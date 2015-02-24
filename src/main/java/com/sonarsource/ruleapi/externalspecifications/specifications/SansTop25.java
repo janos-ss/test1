@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 
-public class SansTop25  extends AbstractReportableStandard implements DerivativeTaggableStandard {
+public class SansTop25  extends AbstractReportableStandard {
 
   private static final Logger LOGGER = Logger.getLogger(SansTop25.class.getName());
 
@@ -45,43 +45,6 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
   private int porousDefensesImplemented = 0;
   private int porousDefensesNa = 0;
 
-  private Map<String, CodingStandardRule> ruleMap = new HashMap<String, CodingStandardRule>();
-
-  public SansTop25() {
-    for (CodingStandardRule csr : StandardRule.values()) {
-      ruleMap.put(csr.getCodingStandardRuleId(), csr);
-    }
-  }
-
-  @Override
-  public boolean isTagShared() {
-
-    return false;
-  }
-
-  @Override
-  public String getTag() {
-
-    return TAG;
-  }
-
-  @Override
-  public String getSeeSectionSearchString() {
-
-    return NAME;
-  }
-
-  @Override
-  public String getReferencePattern() {
-
-    return REFERENCE_PATTERN;
-  }
-
-  @Override
-  public boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule) {
-
-    return false;
-  }
 
   @Override
   public String getStandardName() {
@@ -105,44 +68,6 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
   public void setRspecReferenceFieldValues(Rule rule, List<String> ids) {
     rule.setCwe(ids);
   }
-
-  @Override
-  public void checkReferencesInSeeSection(Rule rule) {
-
-    if (! isSansRule(rule) && rule.getReferences().contains(NAME)) {
-      LOGGER.warning(NAME + " found erroneously in See section for " + rule.getKey());
-      return;
-    }
-
-    String seeSection = ComparisonUtilities.stripHtml(rule.getReferences());
-
-    for (String cwe : getRspecReferenceFieldValues(rule)) {
-      StandardRule sr = (StandardRule) ruleMap.get(cwe);
-      if (sr != null) {
-        String expectedReference = NAME + " - " + sr.category.getName();
-        if (!seeSection.contains(expectedReference)) {
-          LOGGER.info("Expected reference not found in " + rule.getKey() + ": " + expectedReference);
-        }
-      }
-    }
-  }
-
-  @Override
-  public void addTagIfMissing(Rule rule, Map<String, Object> updates) {
-
-    List tags = rule.getTags();
-    boolean needsTag = isSansRule(rule);
-    boolean hasTag = tags.contains(TAG);
-
-    if (needsTag && !hasTag) {
-      tags.add(TAG);
-      updates.put("Labels", tags);
-    } else if (!needsTag && hasTag) {
-      tags.remove(TAG);
-      updates.put("Labels", tags);
-    }
-  }
-
 
   @Override
   public String getReport(String instance) {
@@ -246,11 +171,6 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
     return language;
   }
 
-  public void resetLanguage(Language langauge) {
-    this.language = langauge;
-    ruleMap.clear();
-  }
-
   @Override
   public CodingStandardRule[] getCodingStandardRules() {
 
@@ -327,18 +247,7 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
     }
   }
 
-  protected boolean isSansRule(Rule rule) {
-
-    List<String> refs = getRspecReferenceFieldValues(rule);
-    for (String cwe : refs) {
-      if (ruleMap.get(cwe) != null) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public enum Category {
+  public enum Category implements DerivativeTaggableStandard {
     INSECURE_INTERACTION("Insecure Interaction Between Components"),
     RISKY_RESOURCE("Risky Resource Management"),
     POROUS_DEFENSES("Porous Defenses");
@@ -353,6 +262,121 @@ public class SansTop25  extends AbstractReportableStandard implements Derivative
       return name;
     }
 
+    @Override
+    public boolean isTagShared() {
+
+      return false;
+    }
+
+    @Override
+    public String getTag() {
+
+      return TAG + "-" + getName().split(" ")[0].toLowerCase();
+    }
+
+    @Override
+    public String getSeeSectionSearchString() {
+
+      return NAME;
+    }
+
+    @Override
+    public String getReferencePattern() {
+
+      return REFERENCE_PATTERN;
+    }
+
+    @Override
+    public boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule) {
+
+      return false;
+    }
+
+    protected boolean isSansCategoryRule(Rule rule, Category category) {
+
+      List<String> refs = getRspecReferenceFieldValues(rule);
+      for (String cwe : refs) {
+
+        StandardRule sr = getRuleForCwe(cwe);
+
+        if (sr != null && (category == null || sr.category.equals(category))) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    protected StandardRule getRuleForCwe(String cwe) {
+
+      for (StandardRule sr : StandardRule.values()) {
+        if (sr.getCodingStandardRuleId().equals(cwe)) {
+          return sr;
+        }
+      }
+      return null;
+    }
+
+    @Override
+    public String getStandardName() {
+
+      return NAME;
+    }
+
+    @Override
+    public String getRSpecReferenceFieldName() {
+
+      return CWE;
+    }
+
+    @Override
+    public List<String> getRspecReferenceFieldValues(Rule rule) {
+
+      return rule.getCwe();
+    }
+
+    @Override
+    public void setRspecReferenceFieldValues(Rule rule, List<String> ids) {
+      rule.setCwe(ids);
+    }
+
+
+    @Override
+    public void checkReferencesInSeeSection(Rule rule) {
+
+      if (! isSansCategoryRule(rule, null) && rule.getReferences().contains(NAME)) {
+        LOGGER.warning(NAME + " found erroneously in See section for " + rule.getKey());
+        return;
+      }
+
+      String seeSection = ComparisonUtilities.stripHtml(rule.getReferences());
+
+      for (String cwe : getRspecReferenceFieldValues(rule)) {
+        StandardRule sr = getRuleForCwe(cwe);
+        if (sr != null) {
+          String expectedReference = NAME + " - " + sr.category.getName();
+          if (!seeSection.contains(expectedReference)) {
+            LOGGER.info("Expected reference not found in " + rule.getKey() + ": " + expectedReference);
+          }
+        }
+      }
+    }
+
+    @Override
+    public void addTagIfMissing(Rule rule, Map<String, Object> updates) {
+
+      String tag = getTag();
+      List tags = rule.getTags();
+      boolean needsTag = isSansCategoryRule(rule, this);
+      boolean hasTag = tags.contains(tag);
+
+      if (needsTag && !hasTag) {
+        tags.add(tag);
+        updates.put("Labels", tags);
+      } else if (!needsTag && hasTag) {
+        tags.remove(tag);
+        updates.put("Labels", tags);
+      }
+    }
   }
 
   public enum StandardRule implements CodingStandardRule {

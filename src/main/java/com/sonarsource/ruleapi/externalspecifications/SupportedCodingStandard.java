@@ -14,9 +14,22 @@ public enum SupportedCodingStandard {
   MISRA_CPP_2008(new MisraCPP2008()),
   FINDBUGS(new FindBugs()),
   CWE(new Cwe()),
-  OWASP(new OwaspTopTen()),
+  OWASP(new OwaspTopTen()),  // ReportableStandard
+  OWASP_A1(OwaspTopTen.StandardRule.A1),  // TaggableStandards
+  OWASP_A2(OwaspTopTen.StandardRule.A2),
+  OWASP_A3(OwaspTopTen.StandardRule.A3),
+  OWASP_A4(OwaspTopTen.StandardRule.A4),
+  OWASP_A5(OwaspTopTen.StandardRule.A5),
+  OWASP_A6(OwaspTopTen.StandardRule.A6),
+  OWASP_A7(OwaspTopTen.StandardRule.A7),
+  OWASP_A8(OwaspTopTen.StandardRule.A8),
+  OWASP_A9(OwaspTopTen.StandardRule.A9),
+  OWASP_A10(OwaspTopTen.StandardRule.A10),
   CERT(new Cert()),
-  SANS_TOP_25(new SansTop25());
+  SANS_TOP_25(new SansTop25()),  // ReportableStandard
+  SANS_TOP_25_INSECURE(SansTop25.Category.INSECURE_INTERACTION),  // TaggableStandards
+  SANS_TOP_25_RISKY(SansTop25.Category.RISKY_RESOURCE),
+  SANS_TOP_25_POROUS(SansTop25.Category.POROUS_DEFENSES);
 
 
   private CodingStandard codingStandard;

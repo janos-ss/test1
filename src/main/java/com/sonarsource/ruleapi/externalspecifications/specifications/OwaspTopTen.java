@@ -9,40 +9,28 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
+import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
-import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.utilities.Language;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static com.sonarsource.ruleapi.externalspecifications.Implementability.IMPLEMENTABLE;
 
 
-public class OwaspTopTen extends AbstractReportableStandard implements TaggableStandard {
+public class OwaspTopTen extends AbstractReportableStandard {
 
-  private static final String TAG = "owasp-top10";
+  private static final Logger LOGGER = Logger.getLogger(OwaspTopTen.class.getName());
 
   private static final String REFERENCE_FIELD_NAME = "OWASP";
 
   private static final String SEE_SECTION_SEARCH = "OWASP Top Ten";
 
-  private static final String REFERENCE_PATTERN = "A\\d+";
-
   private Language language = Language.JAVA;
 
-  @Override
-  public boolean isTagShared() {
-
-    return false;
-  }
-
-  @Override
-  public String getTag() {
-
-    return TAG;
-  }
 
   @Override
   public String getStandardName() {
@@ -67,44 +55,6 @@ public class OwaspTopTen extends AbstractReportableStandard implements TaggableS
 
     rule.setOwasp(ids);
   }
-
-  @Override
-  public String getSeeSectionSearchString() {
-
-    return SEE_SECTION_SEARCH;
-  }
-
-  @Override
-  public String getReferencePattern() {
-
-    return REFERENCE_PATTERN;
-  }
-
-  @Override
-  public boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule) {
-
-    List<String> references = getRspecReferenceFieldValues(rule);
-
-    boolean needUpdating = false;
-    List<String> replacements = new ArrayList<String>();
-    for (int i = 0; i < references.size(); i++) {
-      String ref = references.get(i);
-      if (ref.matches(".+"+REFERENCE_PATTERN+".+")) {
-        replacements.add(ref.replaceAll(".+("+REFERENCE_PATTERN+").+","$1"));
-        needUpdating = true;
-      } else {
-        replacements.add(ref);
-      }
-    }
-
-    if (needUpdating) {
-      setRspecReferenceFieldValues(rule, replacements);
-      updates.put(getRSpecReferenceFieldName(), replacements);
-    }
-
-    return needUpdating;
-  }
-
 
   public void setLanguage(Language language) {
     this.language = language;
@@ -177,7 +127,7 @@ public class OwaspTopTen extends AbstractReportableStandard implements TaggableS
     return StandardRule.values();
   }
 
-  public enum StandardRule implements CodingStandardRule {
+  public enum StandardRule implements CodingStandardRule, DerivativeTaggableStandard {
     A1 ("Injection", IMPLEMENTABLE),
     A2 ("Broken Authentication and Session Management", IMPLEMENTABLE),
     A3 ("Cross-Site Scripting (XSS)", IMPLEMENTABLE),
@@ -189,8 +139,12 @@ public class OwaspTopTen extends AbstractReportableStandard implements TaggableS
     A9 ("Using Components with Known Vulnerabilities", IMPLEMENTABLE),
     A10 ("Unvalidated Redirects and Forwards", IMPLEMENTABLE);
 
+
+    private static final String REFERENCE_PATTERN = "A\\d+";
+
     private String title;
     private Implementability implementability;
+
 
     StandardRule(String title, Implementability implementability) {
       this.title = title;
@@ -210,5 +164,112 @@ public class OwaspTopTen extends AbstractReportableStandard implements TaggableS
     public Implementability getImplementability() {
       return implementability;
     }
+
+    @Override
+    public void checkReferencesInSeeSection(Rule rule) {
+      List<String> owasp = rule.getOwasp();
+
+      String references = rule.getReferences().replaceAll("\n","");
+      String regex = ".*" + name() + "\\<.*";
+      boolean seeSectionHasReference = references.matches(regex);
+
+      if (owasp.contains(name()) && !seeSectionHasReference) {
+        LOGGER.info("Expected reference not found in " + rule.getKey() + ": " + name());
+      } else if (!owasp.contains(name()) && seeSectionHasReference) {
+        LOGGER.warning(name() + " found erroneously in See section for " + rule.getKey());
+      }
+    }
+
+    @Override
+    public void addTagIfMissing(Rule rule, Map<String, Object> updates) {
+      String tag = getTag();
+      List tags = rule.getTags();
+
+      boolean needsTag = getRspecReferenceFieldValues(rule).contains(name());
+      boolean hasTag = tags.contains(tag);
+
+      if (!hasTag && needsTag) {
+        tags.add(tag);
+        updates.put("Labels", tags);
+      } else if (hasTag && !needsTag) {
+        tags.remove(tag);
+        updates.put("Labels", tags);
+      }
+
+    }
+
+    @Override
+    public boolean isTagShared() {
+
+      return true;
+    }
+
+    @Override
+    public String getTag() {
+
+      return "owasp-"+name().toLowerCase();
+    }
+
+    @Override
+    public String getSeeSectionSearchString() {
+
+      return SEE_SECTION_SEARCH;
+    }
+
+    @Override
+    public String getReferencePattern() {
+
+      return REFERENCE_PATTERN;
+    }
+
+    @Override
+    public boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule) {
+
+      List<String> references = getRspecReferenceFieldValues(rule);
+
+      boolean needUpdating = false;
+      List<String> replacements = new ArrayList<String>();
+      for (int i = 0; i < references.size(); i++) {
+        String ref = references.get(i);
+        if (ref.matches(".+"+REFERENCE_PATTERN+".+")) {
+          replacements.add(ref.replaceAll(".+("+REFERENCE_PATTERN+").+","$1"));
+          needUpdating = true;
+        } else {
+          replacements.add(ref);
+        }
+      }
+
+      if (needUpdating) {
+        setRspecReferenceFieldValues(rule, replacements);
+        updates.put(getRSpecReferenceFieldName(), replacements);
+      }
+
+      return needUpdating;
+    }
+
+    @Override
+    public String getStandardName() {
+
+      return SEE_SECTION_SEARCH;
+    }
+
+    @Override
+    public String getRSpecReferenceFieldName() {
+
+      return REFERENCE_FIELD_NAME;
+    }
+
+    @Override
+    public List<String> getRspecReferenceFieldValues(Rule rule) {
+
+      return rule.getOwasp();
+    }
+
+    @Override
+    public void setRspecReferenceFieldValues(Rule rule, List<String> ids) {
+
+      rule.setOwasp(ids);
+    }
+
   }
 }
