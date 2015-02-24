@@ -43,8 +43,23 @@ public class ReportService extends RuleManager {
     writeFindBugsDeprecationReport(instance);
     writeDetailedCoverageReports(instance);
     writeSummaryCoverageReports(instance);
+    writeCweCoverageReports();
     writeOutdatedRulesReports(instance);
 
+  }
+
+  public void writeCweCoverageReports() {
+
+    for (Language language : Language.values()) {
+      writeCweCoverageReport(language);
+    }
+  }
+
+  public void writeCweCoverageReport(Language language) {
+
+    Cwe cwe = new Cwe();
+    cwe.setLanguage(language);
+    writeFile(COVERAGE_DIR + language.getSq()+"_cwe_coverage.html", cwe.getReport(RuleManager.NEMO));
   }
 
   public void writeSummaryCoverageReports(String instance) {
@@ -81,6 +96,10 @@ public class ReportService extends RuleManager {
   }
 
   private void writeFile(String fileName, String content) {
+    if (content == null) {
+      return;
+    }
+
     PrintWriter writer = null;
     try {
       String path = fileName.replaceAll(" ", "_");

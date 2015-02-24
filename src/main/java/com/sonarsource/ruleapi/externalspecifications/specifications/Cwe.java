@@ -6,17 +6,19 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
+import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.utilities.Language;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class Cwe implements TaggableStandard {
+public class Cwe extends AbstractReportableStandard implements TaggableStandard {
 
   private static final String TAG = "cwe";
   private static final String REFERENCE_PATTERN = "CWE-\\d+";
   private static final String NAME = "CWE";
+  private Language language = null;
 
   @Override
   public boolean isTagShared() {
@@ -97,4 +99,91 @@ public class Cwe implements TaggableStandard {
   }
 
 
+  private Map<Integer, ArrayList<Rule>> initCoverage(String instance) {
+
+    if (language == null) {
+      return null;
+    }
+
+    TreeMap<Integer, ArrayList<Rule>> cweRules = new TreeMap<Integer, ArrayList<Rule>>();
+
+    List<Rule> sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
+    for (Rule sq : sqImplemented) {
+
+      Rule rspec = RuleMaker.getRuleByKey(sq.getKey(), language.getRspec());
+      for (String cwe : rspec.getCwe()) {
+        int num = Integer.valueOf(cwe.split("-")[1]);
+
+        ArrayList<Rule> rules = cweRules.get(num);
+        if (rules == null) {
+          rules = new ArrayList<Rule>();
+          cweRules.put(num, rules);
+        }
+        rules.add(sq);
+      }
+    }
+
+    return cweRules;
+  }
+
+  @Override
+  public String getReport(String instance) {
+
+    if (language == null) {
+      return null;
+    }
+
+    Map<Integer, ArrayList<Rule>> cweRules = initCoverage(instance);
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("<h2>").append(language.getRspec()).append(" coverage of CWE</h2>\n");
+    sb.append("<ul>\n");
+
+    for (Map.Entry<Integer, ArrayList<Rule>> entry : cweRules.entrySet()) {
+
+      Integer key = entry.getKey();
+      sb.append("<li><a href='http://cwe.mitre.org/data/definitions/").append(key)
+              .append("'>CWE-").append(key).append("</a><ul>\n");
+
+      for (Rule rule : entry.getValue()) {
+
+        String ruleKey = rule.getKey();
+        if (RuleMaker.isKeyNormal(ruleKey)) {
+          ruleKey = ruleKey.replace("RSPEC-", "S");
+        }
+
+        // http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS2066
+        sb.append("<li><a href='").append(instance).append("/coding_rules#rule_key=")
+                .append(language.getSq()).append("%3A").append(ruleKey).append("'>")
+                .append(rule.getKey()).append("</a> ").append(rule.getTitle()).append("</li>\n");
+      }
+      sb.append("</ul></li>\n");
+    }
+    sb.append("</ul>");
+
+    return sb.toString();
+  }
+
+  @Override
+  public String getSummaryReport(String instance) {
+
+    return getReport(instance);
+  }
+
+  @Override
+  public Language getLanguage() {
+
+    return language;
+  }
+
+  public void setLanguage(Language language){
+
+    this.language = language;
+  }
+
+  @Override
+  public CodingStandardRule[] getCodingStandardRules() {
+
+    return new CodingStandardRule[0];
+  }
 }

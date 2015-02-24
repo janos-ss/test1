@@ -328,7 +328,7 @@ public class RuleMaker {
     return key.replaceAll("^(.+:)?S0*(\\d+)$", "RSPEC-$2");
   }
 
-  protected static boolean isKeyNormal(String key) {
+  public static boolean isKeyNormal(String key) {
     return key.matches("RSPEC-\\d+");
   }
 
