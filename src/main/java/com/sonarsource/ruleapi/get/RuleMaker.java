@@ -350,7 +350,7 @@ public class RuleMaker {
   protected static boolean isCFamilyMatch(String candidate) {
     String[] cFamily = {"C-Family", "C", "CPP", "C++", "Objective-C"};
 
-    if (candidate.equalsIgnoreCase("C#") || candidate.matches("(?i:C#\\W.*)")) {
+    if ("C#".equalsIgnoreCase(candidate) || candidate.matches("(?i:C#\\W.*)")) {
       return false;
     }
 

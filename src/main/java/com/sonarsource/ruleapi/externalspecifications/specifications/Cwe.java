@@ -112,7 +112,7 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
 
       Rule rspec = RuleMaker.getRuleByKey(sq.getKey(), language.getRspec());
       for (String cwe : rspec.getCwe()) {
-        int num = Integer.valueOf(cwe.split("-")[1]);
+        Integer num = Integer.valueOf(cwe.split("-")[1]);
 
         ArrayList<Rule> rules = cweRules.get(num);
         if (rules == null) {

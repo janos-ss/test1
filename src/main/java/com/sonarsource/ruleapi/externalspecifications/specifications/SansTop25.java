@@ -13,7 +13,6 @@ import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
