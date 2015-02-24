@@ -51,6 +51,9 @@ public class ReportService extends RuleManager {
   public void writeCweCoverageReports() {
 
     for (Language language : Language.values()) {
+
+      LOGGER.info("Getting CWE coverage report for " + language.getRspec());
+
       writeCweCoverageReport(language);
     }
   }
