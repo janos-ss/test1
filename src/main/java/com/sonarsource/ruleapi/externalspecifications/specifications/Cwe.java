@@ -134,6 +134,9 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
     }
 
     Map<Integer, ArrayList<Rule>> cweRules = initCoverage(instance);
+    if (cweRules.isEmpty()) {
+      return null;
+    }
 
     StringBuilder sb = new StringBuilder();
     sb.append("<h2>").append(language.getRspec()).append(" coverage of CWE</h2>\n");
