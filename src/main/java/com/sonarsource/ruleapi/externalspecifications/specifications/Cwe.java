@@ -146,7 +146,7 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
 
       Integer key = entry.getKey();
       sb.append("<tr><td><a href='http://cwe.mitre.org/data/definitions/").append(key)
-              .append("'>CWE-").append(key).append("</a></td>\n<td>");
+              .append("' target='_blank'>CWE-").append(key).append("</a></td>\n<td>");
 
       for (Rule rule : entry.getValue()) {
 
