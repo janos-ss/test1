@@ -140,13 +140,13 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
 
     StringBuilder sb = new StringBuilder();
     sb.append("<h2>").append(language.getRspec()).append(" coverage of CWE</h2>\n");
-    sb.append("<ul>\n");
+    sb.append("<table>\n");
 
     for (Map.Entry<Integer, ArrayList<Rule>> entry : cweRules.entrySet()) {
 
       Integer key = entry.getKey();
-      sb.append("<li><a href='http://cwe.mitre.org/data/definitions/").append(key)
-              .append("'>CWE-").append(key).append("</a><ul>\n");
+      sb.append("<tr><td><a href='http://cwe.mitre.org/data/definitions/").append(key)
+              .append("'>CWE-").append(key).append("</a></td>\n<td>");
 
       for (Rule rule : entry.getValue()) {
 
@@ -156,13 +156,13 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
         }
 
         // http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS2066
-        sb.append("<li><a href='").append(instance).append("/coding_rules#rule_key=")
+        sb.append("<a href='").append(instance).append("/coding_rules#rule_key=")
                 .append(language.getSq()).append("%3A").append(ruleKey).append("'>")
-                .append(rule.getKey()).append("</a> ").append(rule.getTitle()).append("</li>\n");
+                .append(ruleKey).append("</a> ").append(rule.getTitle()).append("<br/>\n");
       }
-      sb.append("</ul></li>\n");
+      sb.append("</td></tr>\n");
     }
-    sb.append("</ul>");
+    sb.append("</table>");
 
     return sb.toString();
   }
