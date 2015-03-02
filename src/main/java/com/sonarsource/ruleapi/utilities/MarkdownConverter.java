@@ -61,6 +61,7 @@ public class MarkdownConverter {
             lines[i] = handleLinebreaksInTables(lines, i);
             lines[i] = handleTable(lines[i], sb);
             lines[i] = handleHref(lines[i]);
+            lines[i] = handleRuleLinks(lines[i], language);
             lines[i] = handleHeading(lines[i]);
             lines[i] = handleBq(lines[i]);
             lines[i] = handleDoubleCurly(lines[i]);
@@ -161,6 +162,18 @@ public class MarkdownConverter {
       char level = line.charAt(1);
       line = "<h" + level + '>' + line.substring(3).trim() + "</h" + level + ">\n";
       paragraph = false;
+    }
+    return line;
+  }
+
+  protected String handleRuleLinks(String arg, String language) {
+
+    String line = arg;
+    int pos = 0;
+
+    Language lang = Language.fromString(language.toUpperCase());
+    if (lang != null && line.matches(".*S\\d+(\\s|$).*")) {
+      line = line.replaceAll("(S\\d+)", "<a href='/coding_rules#rule_key=" + lang.getSq() + ":$1'>$1</a>");
     }
     return line;
   }

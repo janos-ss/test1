@@ -21,4 +21,14 @@ public class LangugeTest {
     assertThat(Language.ABAP.update).isTrue();
   }
 
+  @Test
+  public void testFromString() {
+
+    assertThat(Language.fromString("Java")).isEqualTo(Language.JAVA);
+    assertThat(Language.fromString("java")).isEqualTo(Language.JAVA);
+    assertThat(Language.fromString("")).isNull();
+    assertThat(Language.fromString(null)).isNull();
+    assertThat(Language.fromString("Orange")).isNull();
+  }
+
 }

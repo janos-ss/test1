@@ -6,6 +6,8 @@
 
 package com.sonarsource.ruleapi.utilities;
 
+import org.fest.util.Strings;
+
 public enum Language {
   ABAP  ("abap",        "ABAP",        "common-abap",  "abap-sonar-way-38370",  true),
   C     ("c",           "C",           "common-c",     "c-sonar-way-44762",     true),
@@ -58,6 +60,21 @@ public enum Language {
 
   public boolean doUpdate() {
     return update;
+  }
+
+  public static Language fromString(String value) {
+
+    if (Strings.isNullOrEmpty(value)) {
+      return null;
+    }
+
+    String uc = value.toUpperCase();
+    for (Language language : Language.values()) {
+      if (language.name().equals(uc)) {
+        return language;
+      }
+    }
+    return null;
   }
 
 }
