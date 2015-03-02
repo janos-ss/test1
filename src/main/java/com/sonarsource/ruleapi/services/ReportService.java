@@ -28,6 +28,39 @@ public class ReportService extends RuleManager {
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
   private static final String COVERAGE_DIR = "target/reports/coverage/";
 
+  private String css = "<style>\n" +
+          "  * { font-family: sans-serif; }\n" +
+          "  h2 {\n" +
+          "    margin: 20px 0 20px 0;\n" +
+          "    font-weight: 500;\n" +
+          "    }\n" +
+          "  table {\n" +
+          "    width: 100%;\n" +
+          "    border-collapse: collapse;\n" +
+          "    }\n" +
+          "  td {\n" +
+          "    vertical-align: top;\n" +
+          "    line-height: 1.5;\n" +
+          "    padding: 12px 6px;\n" +
+          "    }\n" +
+          "  td:first-child {\n" +
+          "    width: 1px;\n" +
+          "    padding-right: 24px;\n" +
+          "    white-space: nowrap;\n" +
+          "    }\n" +
+          "  td:last-child a {\n" +
+          "    margin-right: 5px;\n" +
+          "  }\n" +
+          "  tr:nth-child(even) td { background-color: #f7f7f7; }\n" +
+          "  a {\n" +
+          "    border-bottom: 1px solid #cae3f2;\n" +
+          "    color: #236a97;\n" +
+          "    font-weight: 300;\n" +
+          "    text-decoration: none;\n" +
+          "  }\n" +
+          "  a:hover, a:focus { color: #4b9fd5; }\n" +
+          "</style>\n";
+
 
   public void generateRuleDescriptions(List<String> ruleKeys, String language) {
     if (ruleKeys != null) {
@@ -62,7 +95,11 @@ public class ReportService extends RuleManager {
 
     Cwe cwe = new Cwe();
     cwe.setLanguage(language);
-    writeFile(COVERAGE_DIR + language.getSq()+"_cwe_coverage.html", cwe.getReport(RuleManager.NEMO));
+    String report = cwe.getReport(RuleManager.NEMO);
+    if (report != null) {
+      report = css + report;
+      writeFile(COVERAGE_DIR + language.getSq()+"_cwe_coverage.html", report);
+    }
   }
 
   public void writeSummaryCoverageReports(String instance) {
