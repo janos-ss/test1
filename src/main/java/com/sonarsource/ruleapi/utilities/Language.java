@@ -23,10 +23,11 @@ public enum Language {
   PLSQL ("plsql",       "PL/SQL",      "common-plsql", "plsql-sonar-way-37514", true),
   PY    ("python",      "Python",      "common-py",    "py-sonar-way-67511",    true),
   RPG   ("rpg",         "RPG",         "common-rpg",   "rpg-sonar-way-64226",   true),
-  SWIFT ("swift",       "Swift",       "",   "",                   false),
+  SWIFT ("swift",       "Swift",       "",   "",                                false),
   VB    ("vb",          "VB6",         "common-vb",    "vb-sonar-way-21338",    true),
   VBNET ("vbnet",       "VB.Net",      "common-vbnet", "vbnet-sonar-way-31082", true),
-  XML   ("xml",         "XML",         "",             "web-sonar-way-50375",   true);
+  WEB   ("Web",         "Web",         "",             "web-sonar-way-50375",   true),
+  XML   ("xml",         "XML",         "",             "xml-sonar-way-06052",   true);
 
   protected final String sq;
   protected final String sqCommon;
