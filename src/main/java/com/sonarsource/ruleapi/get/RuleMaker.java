@@ -266,7 +266,7 @@ public class RuleMaker {
 
     setRemediationFunction(rule, getCustomFieldValue(issue, "SQALE Remediation Function"));
     rule.setSqaleConstantCostOrLinearThreshold(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold"));
-    rule.setSqaleLinearArgDesc(getCustomFieldValue(issue, "SQALE Linear Argument"));
+    rule.setSqaleLinearArgDesc(getCustomFieldValue(issue, "SQALE Linear Argument Description"));
     rule.setSqaleLinearFactor(getCustomFieldValue(issue, "SQALE Linear Factor"));
     rule.setSqaleLinearOffset(getCustomFieldValue(issue, "SQALE Linear Offset"));
   }
