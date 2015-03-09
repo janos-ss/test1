@@ -20,7 +20,6 @@ import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
-import com.sonarsource.ruleapi.domain.RuleComparison;
 
 
 public class IntegrityEnforcementService extends RuleManager {
@@ -28,25 +27,28 @@ public class IntegrityEnforcementService extends RuleManager {
   private static final Logger LOGGER = Logger.getLogger(IntegrityEnforcementService.class.getName());
 
 
-  public void setCoveredAndOutdatedLanguages(String login, String password) {
+  public void setCoveredLanguages(String login, String password) {
+
+    String url = startOrchestrator();
 
     for (Language lang : Language.values()) {
-      LOGGER.info("Setting covered and outdated for " + lang.getRspec());
+      LOGGER.info("Setting covered for " + lang.getRspec());
       if (!lang.doUpdate()) {
         LOGGER.warning("Update disabled for " + lang.getSq() + "/" + lang.getRspec());
       }
-      setCoveredAndOutdatedForLanguage(login, password, lang);
+      setCoveredForLanguage(login, password, lang, url);
     }
+    stopOrchestrator();
   }
 
-  public void setCoveredAndOutdatedForLanguage(String login, String password, Language language) {
+  public void setCoveredForLanguage(String login, String password, Language language, String url) {
     String rspecLanguage = language.getRspec();
 
     Map<String,Rule> needsUpdating = new HashMap<String, Rule>();
 
     Map<String, Rule> rspecRules = mapRulesByKey(getCoveredRulesForLangauge(language));
 
-    List<Rule> sqCovered = getImplementedRulesForLanguage(language, NEMO);
+    List<Rule> sqCovered = getImplementedRulesForLanguage(language, url);
     List<Rule> specNotFound = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);
 
     for (Rule sqRule : sqCovered) {
@@ -63,7 +65,6 @@ public class IntegrityEnforcementService extends RuleManager {
         }
 
         addCoveredForNemoRules(rspecLanguage, needsUpdating, rspecRule);
-        setOutdatedForNemoRules(rspecLanguage, needsUpdating, rspecRule, sqRule);
       }
     }
 
@@ -73,24 +74,8 @@ public class IntegrityEnforcementService extends RuleManager {
         Map<String, Object> updates = new HashMap<String, Object>();
         updates.put("Covered Languages", rule.getCoveredLanguages());
         updates.put("Targeted languages", rule.getTargetedLanguages());
-        updates.put("Outdated Languages", rule.getOutdatedLanguages());
         RuleUpdater.updateRule(rule.getKey(), updates, login, password);
       }
-    }
-  }
-
-  protected void setOutdatedForNemoRules(String rspecLanguage, Map<String, Rule> needsUpdating, Rule rspec, Rule nemo) {
-    RuleComparison rc = new RuleComparison(rspec, nemo);
-    int result = rc.compare();
-    List<String> outdatedLanguages = rspec.getOutdatedLanguages();
-
-    if (result != 0 && !outdatedLanguages.contains(rspecLanguage)) {
-      outdatedLanguages.add(rspecLanguage);
-      needsUpdating.put(rspec.getKey(), rspec);
-      LOGGER.info(rspecLanguage + " " + rspec.getKey() + " setting outdated");
-    } else  if (result == 0 && outdatedLanguages.remove(rspecLanguage)) {
-      needsUpdating.put(rspec.getKey(), rspec);
-      LOGGER.info(rspecLanguage + " " + rspec.getKey() + " UNsetting outdated");
     }
   }
 
@@ -98,7 +83,6 @@ public class IntegrityEnforcementService extends RuleManager {
 
     for (Rule rspecRule : rspecRules.values()) {
       rspecRule.getCoveredLanguages().remove(rspecLanguage);
-      rspecRule.getOutdatedLanguages().remove(rspecLanguage);
 
       rspecRule.getTargetedLanguages().add(rspecLanguage);
       LOGGER.info(rspecLanguage + " " + rspecRule.getKey() + " moving from covered to targeted");

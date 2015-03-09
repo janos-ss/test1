@@ -80,7 +80,7 @@ public class Main {
 
     switch (option) {
       case OUTDATED :
-        enforcer.setCoveredAndOutdatedLanguages(settings.login, settings.password);
+        enforcer.setCoveredLanguages(settings.login, settings.password);
         break;
 
       case INTEGRITY :

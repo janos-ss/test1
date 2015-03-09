@@ -157,7 +157,6 @@ public class IntegrityEnforcementServiceTest {
 
     Rule rule = new Rule("");
     rule.getCoveredLanguages().add(language);
-    rule.getOutdatedLanguages().add(language);
     Map<String, Rule> rspecRules = new HashMap<String, Rule>();
     rspecRules.put("key", rule);
 
@@ -167,7 +166,6 @@ public class IntegrityEnforcementServiceTest {
 
     assertThat(needsUpdating).hasSize(1);
     assertThat(rule.getCoveredLanguages()).isEmpty();
-    assertThat(rule.getOutdatedLanguages()).isEmpty();
     assertThat(rule.getTargetedLanguages()).hasSize(1);
   }
 

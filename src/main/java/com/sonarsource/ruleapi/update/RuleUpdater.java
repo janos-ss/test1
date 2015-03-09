@@ -108,7 +108,7 @@ public class RuleUpdater {
   protected static Map<String,String> getAllowedValues(JSONObject fields, String fieldId) {
 
     JSONObject jsonObject = (JSONObject) fields.get(fieldId);
-    if (jsonObject.containsKey("allowedValues")) {
+    if (jsonObject != null && jsonObject.containsKey("allowedValues")) {
       Map<String,String> allowedValues = new HashMap<String, String>();
 
       JSONArray allowedJsonValues = (JSONArray) jsonObject.get("allowedValues");

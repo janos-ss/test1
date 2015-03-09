@@ -6,6 +6,7 @@
 
 package com.sonarsource.ruleapi.services;
 
+import com.sonar.orchestrator.Orchestrator;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
@@ -19,8 +20,9 @@ import java.util.logging.Logger;
 public class RuleManager {
   private static final Logger LOGGER = Logger.getLogger(RuleManager.class.getName());
 
-
   public static final String NEMO = "http://nemo.sonarqube.org";
+
+  private Orchestrator orchestrator = null;
 
   public List<Rule> getCoveredRulesForLangauge(Language language) {
     return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec() + "\"", language.getRspec());
@@ -75,5 +77,44 @@ public class RuleManager {
       sqRule.setKey(key);
     }
     return specNotFound;
+  }
+
+  public String startOrchestrator() {
+    if (orchestrator == null) {
+      orchestrator = Orchestrator
+              .builderEnv()
+              .setOrchestratorProperty("sonar.runtimeVersion", "LTS")
+              .setOrchestratorProperty("orchestrator.updateCenterUrl",
+                      "http://update.sonarsource.org/update-center-dev.properties")
+              .setOrchestratorProperty("sonar.jdbc.dialect", "h2")
+
+              .setOrchestratorProperty("abapVersion", "DEV").addPlugin("abap")
+              .setOrchestratorProperty("cobolVersion", "DEV").addPlugin("cobol")
+              .setOrchestratorProperty("cppVersion", "DEV").addPlugin("cpp")
+              .setOrchestratorProperty("csharpVersion", "DEV").addPlugin("csharp")
+              .setOrchestratorProperty("flexVersion", "DEV").addPlugin("flex")
+              .setOrchestratorProperty("javaVersion", "DEV").addPlugin("java")
+              .setOrchestratorProperty("javascriptVersion", "DEV").addPlugin("javascript")
+              .setOrchestratorProperty("phpVersion", "DEV").addPlugin("php")
+              .setOrchestratorProperty("pliVersion", "DEV").addPlugin("pli")
+              .setOrchestratorProperty("plsqlVersion", "DEV").addPlugin("plsql")
+              .setOrchestratorProperty("pythonVersion", "DEV").addPlugin("python")
+              .setOrchestratorProperty("rpgVersion", "DEV").addPlugin("rpg")
+              .setOrchestratorProperty("vbVersion", "DEV").addPlugin("vb")
+              .setOrchestratorProperty("vbnetVersion", "DEV").addPlugin("vbnet")
+              .setOrchestratorProperty("webVersion", "DEV").addPlugin("web")
+              .setOrchestratorProperty("xmlVersion", "DEV").addPlugin("xml")
+              .build();
+
+      orchestrator.start();
+    }
+    return orchestrator.getServer().getUrl();
+  }
+
+  public void stopOrchestrator() {
+    if (orchestrator != null) {
+      orchestrator.stop();
+      orchestrator = null;
+    }
   }
 }
