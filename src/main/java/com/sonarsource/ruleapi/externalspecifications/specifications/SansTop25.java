@@ -387,7 +387,7 @@ public class SansTop25  extends AbstractReportableStandard {
     CWE_306 (5,  Category.POROUS_DEFENSES,      Implementability.NOT_IMPLEMENTABLE, "Missing Authentication for Critical Function"),
     CWE_862 (6,  Category.POROUS_DEFENSES,      Implementability.NOT_IMPLEMENTABLE, "Missing Authorization"),
     CWE_798 (7,  Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Use of Hard-coded Credentials"),
-    CWE_311 (8,  Category.POROUS_DEFENSES,      Implementability.NOT_IMPLEMENTABLE, "Missing Encryption of Sensitive Data"),
+    CWE_311 (8,  Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Missing Encryption of Sensitive Data"),
     CWE_434 (9,  Category.INSECURE_INTERACTION, Implementability.IMPLEMENTABLE,     "Unrestricted Upload of File with Dangerous Type"),
     CWE_807 (10, Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Reliance on Untrusted Inputs in a Security Decision"),
     CWE_250 (11, Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Execution with Unnecessary Privileges"),
