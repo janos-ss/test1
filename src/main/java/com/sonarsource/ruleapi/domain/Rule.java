@@ -119,7 +119,6 @@ public class Rule {
 
   private List<String> targetedLanguages = new ArrayList<String>();
   private List<String> coveredLanguages = new ArrayList<String>();
-  private List<String> outdatedLanguages = new ArrayList<String>();
   private List<String> irrelevantLanguages = new ArrayList<String>();
 
   private List<String> findbugs = new ArrayList<String>();
@@ -572,16 +571,6 @@ public class Rule {
   public void setCoveredLanguages(List<String> coveredLanguages) {
 
     this.coveredLanguages = coveredLanguages;
-  }
-
-  public List<String> getOutdatedLanguages() {
-
-    return outdatedLanguages;
-  }
-
-  public void setOutdatedLanguages(List<String> outdatedLanguages) {
-
-    this.outdatedLanguages = outdatedLanguages;
   }
 
   public List<String> getIrrelevantLanguages() {

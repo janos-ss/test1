@@ -221,7 +221,6 @@ public class RuleMaker {
 
     rule.setTargetedLanguages(getCustomFieldStoredAsList(issue, "Targeted languages"));
     rule.setCoveredLanguages(getCustomFieldStoredAsList(issue, "Covered Languages"));
-    rule.setOutdatedLanguages(getCustomFieldStoredAsList(issue, "Outdated Languages"));
     rule.setIrrelevantLanguages(getCustomFieldStoredAsList(issue, "Irrelevant for Languages"));
 
     rule.setTitle(getJsonFieldValue(issue, "summary"));
