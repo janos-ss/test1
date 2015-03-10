@@ -7,6 +7,8 @@ package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.specifications.*;
+import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
 import java.util.*;
@@ -200,4 +202,26 @@ public class IntegrityEnforcementServiceTest {
     assertThat(rule.getCoveredLanguages()).hasSize(1);
   }
 
+  @Test
+  public void testSeeAlsoReferencesIgnored() {
+
+    Rule rule = new Rule("C");
+    rule.setReferences("<h2>See</h2>\n" +
+            "\n" +
+            "<ul>\n" +
+            "<li> MISRA C:2004, 20.3</li>\n" +
+            "</ul>\n" +
+            "<h3>See Also</h3>\n" +
+            "\n" +
+            "<ul>\n" +
+            "<li> MISRA C:2004, 13.3</li>\n" +
+            "<li> ISO/IEC 9899:1990</li>\n" +
+            "</ul>\n");
+
+    String authority = "MISRA C:2004,";
+    List<String> specificReferences = enforcer.getSpecificReferences(rule, authority);
+
+    assertThat(specificReferences).hasSize(1);
+    assertThat(specificReferences).contains(" MISRA C:2004, 20.3");
+  }
 }
