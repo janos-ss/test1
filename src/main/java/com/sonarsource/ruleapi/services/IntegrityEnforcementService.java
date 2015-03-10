@@ -205,7 +205,7 @@ public class IntegrityEnforcementService extends RuleManager {
     String[] referenceLines = rule.getReferences().split("\n");
     for (String line : referenceLines) {
       line = ComparisonUtilities.stripHtml(line);
-      if (line.contains("See Also")) {
+      if (line.toLowerCase().contains("see also")) {
         break;
       }
       if (line.contains(authority)) {
