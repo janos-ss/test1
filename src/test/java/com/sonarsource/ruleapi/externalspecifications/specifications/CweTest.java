@@ -8,12 +8,10 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
+import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -76,5 +74,62 @@ public class CweTest {
     assertThat(updates).hasSize(0);
   }
 
+  @Test
+  public void testPopulateCweMap() {
+    Cwe cwe1 = new Cwe();
+
+    Map<Integer,ArrayList<Rule>> cweRules = new TreeMap<Integer, ArrayList<Rule>>();
+
+    Rule sq = new Rule("Java");
+    Rule rspec = sq;
+    cwe1.populateCweMap(cweRules, sq, rspec);
+
+    assertThat(cweRules).isEmpty();
+
+    sq.getCwe().add("CWE-234");
+    cwe1.populateCweMap(cweRules, sq, rspec);
+
+    Rule sq2 = new Rule("Java");
+    Rule rspec2 = sq2;
+    sq2.getCwe().add("CWE-123");
+    sq2.getCwe().add("CWE-234");
+
+    cwe1.populateCweMap(cweRules, sq2, rspec2);
+
+    assertThat(cweRules.get(123)).isEqualTo(Arrays.asList(sq2));
+    assertThat(cweRules.get(234)).contains(sq);
+    assertThat(cweRules.values()).hasSize(2);
+  }
+
+  @Test
+  public void testGetReport(){
+    Cwe cwe1 = new Cwe();
+    cwe1.setLanguage(Language.ABAP);
+
+    Map<Integer,ArrayList<Rule>> cweRules = new TreeMap<Integer, ArrayList<Rule>>();
+
+    assertThat(cwe1.generateReport("http://localhost:9000", cweRules)).isNull();
+
+    Rule sq2 = new Rule("Java");
+    Rule rspec2 = sq2;
+    sq2.getCwe().add("CWE-123");
+    sq2.getCwe().add("CWE-234");
+    sq2.setKey("NonNormalKey");
+
+    cwe1.populateCweMap(cweRules, sq2, rspec2);
+
+    String expectedReport = "<h2>ABAP coverage of CWE</h2>\n" +
+            "<table>\n" +
+            "<tr><td><a href='http://cwe.mitre.org/data/definitions/123' target='_blank'>CWE-123</a></td>\n" +
+            "<td><a href='http://localhost:9000/coding_rules#rule_key=abap%3ANonNormalKey'>NonNormalKey</a> null<br/>\n" +
+            "</td></tr>\n" +
+            "<tr><td><a href='http://cwe.mitre.org/data/definitions/234' target='_blank'>CWE-234</a></td>\n" +
+            "<td><a href='http://localhost:9000/coding_rules#rule_key=abap%3ANonNormalKey'>NonNormalKey</a> null<br/>\n" +
+            "</td></tr>\n" +
+            "</table>";
+
+    assertThat(cwe1.generateReport("http://localhost:9000", cweRules)).isEqualTo(expectedReport);
+
+  }
 
 }
