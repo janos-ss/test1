@@ -12,9 +12,9 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sonar.orchestrator.Orchestrator;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.specifications.*;
 import com.sonarsource.ruleapi.get.RuleMaker;
@@ -28,39 +28,17 @@ public class ReportService extends RuleManager {
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
   private static final String COVERAGE_DIR = "target/reports/coverage/";
 
-  private String css = "<style>\n" +
-          "  * { font-family: sans-serif; }\n" +
-          "  h2 {\n" +
-          "    margin: 20px 0 20px 0;\n" +
-          "    font-weight: 500;\n" +
-          "    }\n" +
-          "  table {\n" +
-          "    width: 100%;\n" +
-          "    border-collapse: collapse;\n" +
-          "    }\n" +
-          "  td {\n" +
-          "    vertical-align: top;\n" +
-          "    line-height: 1.5;\n" +
-          "    padding: 12px 6px;\n" +
-          "    }\n" +
-          "  td:first-child {\n" +
-          "    width: 1px;\n" +
-          "    padding-right: 24px;\n" +
-          "    white-space: nowrap;\n" +
-          "    }\n" +
-          "  td:last-child a {\n" +
-          "    margin-right: 5px;\n" +
-          "  }\n" +
-          "  tr:nth-child(even) td { background-color: #f7f7f7; }\n" +
-          "  a {\n" +
-          "    border-bottom: 1px solid #cae3f2;\n" +
-          "    color: #236a97;\n" +
-          "    font-weight: 300;\n" +
-          "    text-decoration: none;\n" +
-          "  }\n" +
-          "  a:hover, a:focus { color: #4b9fd5; }\n" +
-          "</style>\n";
+  private String css = "";
 
+
+  public ReportService() {
+    java.net.URL url = this.getClass().getResource("/services");
+    try {
+      css = new java.util.Scanner(new File(url.getPath() + "/report.css"), "UTF8").useDelimiter("\\Z").next();
+    } catch (FileNotFoundException e) {
+      LOGGER.log(Level.WARNING, "CSS file not found",e);
+    }
+  }
 
   public void generateRuleDescriptions(List<String> ruleKeys, String language) {
     if (ruleKeys != null) {

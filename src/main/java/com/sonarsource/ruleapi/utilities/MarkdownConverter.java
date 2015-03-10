@@ -169,7 +169,6 @@ public class MarkdownConverter {
   protected String handleRuleLinks(String arg, String language) {
 
     String line = arg;
-    int pos = 0;
 
     Language lang = Language.fromString(language.toUpperCase());
     if (lang != null && line.matches(".*S\\d+(\\s|$).*")) {
