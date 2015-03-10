@@ -60,7 +60,7 @@ public class AbstractReportableStandardTest {
     assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).hasSize(0);
 
     List<String> findBugsIds = new ArrayList<String>();
-    fb.setCodingStandardRuleCoverageSpecifiedBy(rule, null);
+    fb.setCodingStandardRuleCoverageSpecifiedBy(rule, findBugsIds);
     assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).hasSize(0);
 
     findBugsIds.add(FB_ID);
@@ -68,6 +68,14 @@ public class AbstractReportableStandardTest {
     CodingStandardRuleCoverage cov =  fb.getRulesCoverage().get(FB_ID);
     assertThat(fb.getRulesCoverage().get(FB_ID).getSpecifiedBy().get(0)).isEqualTo(rule);
 
+  }
+
+  @Test
+  public void testGetSqRepoList() {
+    MisraC2004 misraC2004 = new MisraC2004();
+    String reposList = "abap,c,cobol,cpp,csharpsquid,flex,squid,javascript,objc,php,pli,plsql,python,rpg,swift,vb,vbnet,Web,xml";
+
+    assertThat(misraC2004.getSqRepoList()).isEqualTo(reposList);
   }
 
   @Test
