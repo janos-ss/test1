@@ -111,19 +111,24 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
     for (Rule sq : sqImplemented) {
 
       Rule rspec = RuleMaker.getRuleByKey(sq.getKey(), language.getRspec());
-      for (String cwe : rspec.getCwe()) {
-        Integer num = Integer.valueOf(cwe.split("-")[1]);
-
-        ArrayList<Rule> rules = cweRules.get(num);
-        if (rules == null) {
-          rules = new ArrayList<Rule>();
-          cweRules.put(num, rules);
-        }
-        rules.add(sq);
-      }
+      populateCweMap(cweRules, sq, rspec);
     }
 
     return cweRules;
+  }
+
+  protected void populateCweMap(Map<Integer, ArrayList<Rule>> cweRules, Rule sq, Rule rspec) {
+
+    for (String cwe : rspec.getCwe()) {
+      Integer num = Integer.valueOf(cwe.split("-")[1]);
+
+      ArrayList<Rule> rules = cweRules.get(num);
+      if (rules == null) {
+        rules = new ArrayList<Rule>();
+        cweRules.put(num, rules);
+      }
+      rules.add(sq);
+    }
   }
 
   @Override
@@ -134,6 +139,11 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
     }
 
     Map<Integer, ArrayList<Rule>> cweRules = initCoverage(instance);
+    return generateReport(instance, cweRules);
+  }
+
+  protected String generateReport(String instance, Map<Integer, ArrayList<Rule>> cweRules) {
+
     if (cweRules.isEmpty()) {
       return null;
     }

@@ -123,4 +123,38 @@ public class OwaspTest {
 
   }
 
+  @Test
+  public void testAddTagIfMissing() {
+
+    Rule rule = new Rule("Java");
+    Map<String, Object> updates = new HashMap<String, Object>();
+
+    // !hasTag && !needsTag
+    OwaspTopTen.StandardRule.A1.addTagIfMissing(rule, updates);
+    assertThat(updates).isEmpty();
+
+    rule.getOwasp().add("A1");
+
+    // !hasTag && needsTag
+    OwaspTopTen.StandardRule.A1.addTagIfMissing(rule, updates);
+    assertThat(updates).hasSize(1);
+    assertThat(updates.containsKey("Labels")).isTrue();
+
+    updates.clear();
+
+    // previous run added tag to rule
+    // hasTag && needsTag
+    OwaspTopTen.StandardRule.A1.addTagIfMissing(rule, updates);
+    assertThat(updates).isEmpty();
+
+    rule.getOwasp().clear();
+    updates.clear();
+
+    // hasTag && !needsTag
+    OwaspTopTen.StandardRule.A1.addTagIfMissing(rule, updates);
+    assertThat(updates).hasSize(1);
+    assertThat(updates.containsKey("Labels")).isTrue();
+    assertThat((List)updates.get("Labels")).isEmpty();
+  }
+
 }

@@ -153,7 +153,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     }
   }
 
-  private String getSqRepoList() {
+  protected String getSqRepoList() {
 
     List<String> repos = new ArrayList<String>();
     for (Language language : Language.values()) {
