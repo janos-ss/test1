@@ -20,6 +20,7 @@ import static org.fest.assertions.Assertions.assertThat;
 public class AbstractReportableStandardTest {
 
   private static String FB_ID = "BC_IMPOSSIBLE_CAST";
+  private static String BOGUS = "BOGUS_FINDBUGS_ID";
 
 
   @Test
@@ -57,11 +58,16 @@ public class AbstractReportableStandardTest {
     fb.populateRulesCoverageMap();
 
     fb.setCodingStandardRuleCoverageSpecifiedBy(rule, null);
-    assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).hasSize(0);
+    assertThat(fb.getRulesCoverage().get(FB_ID).getSpecifiedBy()).hasSize(0);
 
     List<String> findBugsIds = new ArrayList<String>();
     fb.setCodingStandardRuleCoverageSpecifiedBy(rule, findBugsIds);
-    assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).hasSize(0);
+    assertThat(fb.getRulesCoverage().get(FB_ID).getSpecifiedBy()).hasSize(0);
+
+    findBugsIds.add(BOGUS);
+    fb.setCodingStandardRuleCoverageSpecifiedBy(rule, findBugsIds);
+    assertThat(fb.getRulesCoverage().get(BOGUS)).isNull();
+
 
     findBugsIds.add(FB_ID);
     fb.setCodingStandardRuleCoverageSpecifiedBy(rule, findBugsIds);
@@ -87,11 +93,15 @@ public class AbstractReportableStandardTest {
     fb.populateRulesCoverageMap();
 
     fb.setCodingStandardRuleCoverageImplemented(null, rule);
-    assertThat(fb.getRulesCoverage().get(FB_ID).getSpecifiedBy()).hasSize(0);
+    assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).hasSize(0);
 
     List<String> findBugsIds = new ArrayList<String>();
     fb.setCodingStandardRuleCoverageImplemented(findBugsIds, rule);
     assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).hasSize(0);
+
+    findBugsIds.add(BOGUS);
+    fb.setCodingStandardRuleCoverageImplemented(findBugsIds, rule);
+    assertThat(fb.getRulesCoverage().get(BOGUS)).isNull();
 
     findBugsIds.add(FB_ID);
     fb.setCodingStandardRuleCoverageImplemented(findBugsIds, rule);

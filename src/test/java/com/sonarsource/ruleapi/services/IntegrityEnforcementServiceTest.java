@@ -133,11 +133,7 @@ public class IntegrityEnforcementServiceTest {
   @Test
   public void testGetCweUpdates3() {
     Rule rule = new Rule("");
-    boolean tagPresent = false;
-    List<String> references = new ArrayList<String>();
-    List<String> cweField = new ArrayList<String>();
-    cweField.add("CWE-789");
-    rule.setCwe(cweField);
+    rule.getCwe().add("CWE-789");
 
     Map<String,Object> updates = enforcer.getUpdates(rule, new Cwe());
 
@@ -149,8 +145,26 @@ public class IntegrityEnforcementServiceTest {
     expectedUpdates.put("Labels", tmp);
 
     assertThat(updates).hasSize(1).isEqualTo(expectedUpdates);
-
   }
+
+  @Test
+  public void testGetCweUpdatesWithDerivativeTaggableStandard() {
+
+    Rule rule = new Rule("");
+    rule.getCwe().add("CWE-89");
+
+    Map<String,Object> updates = enforcer.getUpdates(rule, SansTop25.Category.INSECURE_INTERACTION);
+
+    Map<String, Object> expectedUpdates = new HashMap<String, Object>();
+
+    List<String> tmp = new ArrayList<String>();
+    tmp.add("sans-top25-insecure");
+
+    expectedUpdates.put("Labels", tmp);
+
+    assertThat(updates).hasSize(1).isEqualTo(expectedUpdates);
+  }
+
 
   @Test
   public void testDropCovered() {
