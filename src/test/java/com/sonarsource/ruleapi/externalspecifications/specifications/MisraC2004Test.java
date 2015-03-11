@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import static org.fest.assertions.Assertions.assertThat;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -58,4 +59,13 @@ public class MisraC2004Test {
     assertThat(rule.getMisraC04()).isEqualTo(ids);
   }
 
+  @Test
+  public void testGetters() {
+    MisraC2004 m4 = new MisraC2004();
+
+    assertThat(m4.getLanguage()).isEqualTo(Language.C);
+    assertThat(m4.getSeeSectionSearchString()).isEqualTo("MISRA C:2004,");
+    assertThat(m4.getReferencePattern()).isEqualTo("\\d\\d?\\.\\d\\d?");
+
+  }
 }
