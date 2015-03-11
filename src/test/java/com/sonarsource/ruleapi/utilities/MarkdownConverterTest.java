@@ -415,6 +415,16 @@ public class MarkdownConverterTest {
   }
 
   @Test
+  public void testUrlNoLinkText() {
+
+    String markdown = "this is a test [http://blah.com]";
+    String html = "this is a test <a href=\"http://blah.com\">http://blah.com</a>";
+
+    assertThat(mc.handleHref(markdown)).isEqualTo(html);
+  }
+
+
+  @Test
   public void testRuleLinks() {
     String line1 = "* Rule S1656 - Implements a check on {{=}}.";
     String line1Out1 = "* Rule <a href='/coding_rules#rule_key=squid:S1656'>S1656</a> - Implements a check on {{=}}.";
@@ -449,6 +459,12 @@ public class MarkdownConverterTest {
             "</blockquote>\n";
 
     assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+  }
+
+  @Test
+  public void testFindBefore() {
+    String str = "this is a test";
+    assertThat(mc.findBefore(str, 3, '*')).isEqualTo(-1);
   }
 
 }

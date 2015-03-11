@@ -191,7 +191,8 @@ public class MarkdownConverter {
 
   protected String handleHref(String arg) {
     String line = arg;
-    while (line.matches("[^\\[]*\\[[^|]+\\|https?[A-Za-z0-9-._~:/?#\\\\[\\\\]@!$&'()*+,;=% ]+\\].*")) {
+    while (line.matches("[^\\[]*\\[[^|]+\\|https?[A-Za-z0-9-._~:/?#\\\\[\\\\]@!$&'()*+,;=% ]+\\].*")
+            || line.matches(".*\\[https?[A-Za-z0-9-._~:/?#\\\\[\\\\]@!$&'()*+,;=% ]+\\].*")) {
       int pos = line.indexOf("|http");
       if (pos == -1) {
         pos = line.indexOf("[http");
@@ -201,7 +202,10 @@ public class MarkdownConverter {
       int hrefEnd = line.indexOf(']', pos+1);
 
       String href = line.substring(pos, hrefEnd);
-      String label = line.substring(hrefStart + 1, pos - 1);
+      String label = href;
+      if (pos-1 > hrefStart+1) {
+        label = line.substring(hrefStart + 1, pos - 1);
+      }
       String lineBegin = line.substring(0, hrefStart);
       String lineEnd = "";
       if (hrefEnd +1 < line.length()) {
@@ -311,16 +315,16 @@ public class MarkdownConverter {
   }
 
   protected String handleList(StringBuilder sb, String line) {
-    int pos = line.indexOf(' ');
+    int firstSpace = line.indexOf(' ');
 
     if (line.matches("[*#]+ +.*")) {
 
-      if (pos > -1 && listCloses.size() > pos) {
+      if (listCloses.size() > firstSpace) {
         sb.append(listCloses.pop());
       }
 
-      if (listCloses.size() < pos) {
-        if (line.charAt(pos - 1) == '*') {
+      if (listCloses.size() < firstSpace) {
+        if (line.charAt(firstSpace - 1) == '*') {
           listCloses.push("</ul>\n");
           sb.append("<ul>\n");
         } else {
@@ -378,7 +382,7 @@ public class MarkdownConverter {
     return line;
   }
 
-  private int findBefore(String line, int start, char ch) {
+  protected int findBefore(String line, int start, char ch) {
     for (int i = start - 1; i >= 0; i--) {
       if (line.charAt(i) == ch) {
         return i;
