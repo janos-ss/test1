@@ -381,6 +381,30 @@ public class MarkdownConverterTest {
   }
 
   @Test
+  public void testLinebreakInTableNotClosed() {
+
+    String markdown = "When using Spring proxies, calling a method in the same class with an incompatible {{@Transactional}} requirement will result in runtime exceptions because Spring only \"sees\" the caller and makes no provisions for properly invoking the callee. \n" +
+            "\n" +
+            "Therefore, certain calls should never be made within the same class:\n" +
+            "||From||To||\n" +
+            "| non-{{@Transactional}} | {{@Transactional}} |\n" +
+            "| {{@Transactional}} | {{@Transactional(propagation = Propagation.NEVER)}} |\n" +
+            "| {{@Transactional(propagation = Propagation.MANDATORY)}}, \n" +
+            "{{@Transactional(propagation = Propagation.NESTED)}}, \n" +
+            "{{@Transactional(propagation = Propagation.REQUIRED)}} (the default)";
+    String html = "<p>When using Spring proxies, calling a method in the same class with an incompatible <code>@Transactional</code> requirement will result in runtime exceptions because Spring only \"sees\" the caller and makes no provisions for properly invoking the callee. </p>\n" +
+            "<p>Therefore, certain calls should never be made within the same class:</p>\n" +
+            "<table>\n" +
+            "<tr><th>From</th><th>To</th></tr>\n" +
+            "<tr><td> non-<code>@Transactional</code> </td><td> <code>@Transactional</code> </td></tr>\n" +
+            "<tr><td> <code>@Transactional</code> </td><td> <code>@Transactional(propagation = Propagation.NEVER)</code> </td></tr>\n" +
+            "<tr><td> <code>@Transactional(propagation = Propagation.MANDATORY)</code>, <br/><code>@Transactional(propagation = Propagation.NESTED)</code>, <br/><code>@Transactional(propagation = Propagation.REQUIRED)</code> (the default)</td></tr>\n" +
+            "</table>\n";
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
+  }
+
+
+  @Test
   public void testMultipleUrlsOneLine() {
 
     String markdown = "Derived from FindSecBugs rules [Potential SQL/JPQL Injection (JPA)|http://h3xstream.github.io/find-sec-bugs/bugs.htm#SQL_INJECTION_JPA], [Potential SQL/JDOQL Injection (JDO)|http://h3xstream.github.io/find-sec-bugs/bugs.htm#SQL_INJECTION_JDO], [Potential SQL/HQL Injection (Hibernate)|http://h3xstream.github.io/find-sec-bugs/bugs.htm#SQL_INJECTION_HIBERNATE]";
@@ -413,6 +437,18 @@ public class MarkdownConverterTest {
     assertThat(mc.handleRuleLinks(line3, "Java")).isEqualTo(line3Out);
     assertThat(mc.handleRuleLinks(line3, "")).isEqualTo(line3);
 
+  }
+
+  @Test
+  public void testHangingBlockquote() {
+
+    String markdown = "Kennedy said\n" +
+            "{quote}Now is the time for all good men to come to the aid of their country.";
+    String expectedHtml = "<p>Kennedy said</p>\n" +
+            "<blockquote><p>Now is the time for all good men to come to the aid of their country.</p>\n" +
+            "</blockquote>\n";
+
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
   }
 
 }

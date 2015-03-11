@@ -18,6 +18,9 @@ public class MarkdownConverter {
   private boolean quoteOpen = false;
   private LinkedList<String> listCloses;
 
+  private final static String BQ_OPEN = "<blockquote>";
+  private final static String BQ_CLOSE = "</blockquote>";
+
   public MarkdownConverter() {
   }
 
@@ -101,10 +104,19 @@ public class MarkdownConverter {
 
   protected void handleParagraph(StringBuilder sb, String line) {
     if (!wrongLanguage) {
-      if (isPTagNeeded(line)) {
+      int pos = line.indexOf(BQ_OPEN);
+      if (isPTagNeeded(line) &&  pos > -1) {
+        pos += BQ_OPEN.length();
+        sb.append(line.substring(0, pos));
         sb.append("<p>");
+        sb.append(line.substring(pos));
+      } else if (isPTagNeeded(line)){
+        sb.append("<p>");
+        sb.append(line);
+      } else {
+        sb.append(line);
       }
-      sb.append(line);
+
       if (isPTagNeeded(line)) {
         sb.append("</p>");
       }
@@ -151,7 +163,7 @@ public class MarkdownConverter {
       sb.append("</table>\n");
     }
     if (quoteOpen) {
-      sb.append("</blockquote>\n");
+      sb.append(BQ_CLOSE + "\n");
     }
 
   }
@@ -205,7 +217,7 @@ public class MarkdownConverter {
   protected String handleBq(String arg) {
     String line = arg;
     if (line.startsWith("bq. ")) {
-      line = "<blockquote>" + line.substring(4) + "</blockquote>";
+      line = BQ_OPEN + line.substring(4) + BQ_CLOSE;
       paragraph = false;
     }
     return line;
@@ -216,10 +228,10 @@ public class MarkdownConverter {
     String quote = "{quote}";
     if (line.contains(quote)) {
       if (quoteOpen) {
-        line = line.replace(quote, "</blockquote>");
+        line = line.replace(quote, BQ_CLOSE);
         quoteOpen = false;
       } else {
-        line = line.replace(quote, "<blockquote>");
+        line = line.replace(quote, BQ_OPEN);
         quoteOpen = true;
       }
     }
