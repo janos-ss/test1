@@ -18,8 +18,8 @@ public class MarkdownConverter {
   private boolean quoteOpen = false;
   private LinkedList<String> listCloses;
 
-  private final static String BQ_OPEN = "<blockquote>";
-  private final static String BQ_CLOSE = "</blockquote>";
+  private static final String BQ_OPEN = "<blockquote>";
+  private static final String BQ_CLOSE = "</blockquote>";
 
   public MarkdownConverter() {
   }
