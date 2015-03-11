@@ -37,14 +37,17 @@ public class FindbugsTest {
     fb.populateRulesCoverageMap();
     fb.computeCoverage();
 
-    assertThat(fb.implementable).isEqualTo(395);
-    assertThat(fb.skipped).isEqualTo(28);
+    assertThat(fb.implementable).isEqualTo(391);
+    assertThat(fb.skipped).isEqualTo(32);
     assertThat(fb.specified).isEqualTo(0);
     assertThat(fb.implemented).isEqualTo(0);
   }
 
   @Test
   public void testComputeCoverageAgain() {
+
+    String blah = "red";
+    blah.matches("a\\(b");
 
     Rule rule = new Rule("Java");
     List<String> ids = new ArrayList<String>();
