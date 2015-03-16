@@ -159,16 +159,7 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
               .append("' target='_blank'>CWE-").append(key).append("</a></td>\n<td>");
 
       for (Rule rule : entry.getValue()) {
-
-        String ruleKey = rule.getKey();
-        if (RuleMaker.isKeyNormal(ruleKey)) {
-          ruleKey = ruleKey.replace("RSPEC-", "S");
-        }
-
-        // http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS2066
-        sb.append("<a href='").append(instance).append("/coding_rules#rule_key=")
-                .append(language.getSq()).append("%3A").append(ruleKey).append("'>")
-                .append(ruleKey).append("</a> ").append(rule.getTitle()).append("<br/>\n");
+        sb.append(getLinkedRuleReference(instance, rule));
       }
       sb.append("</td></tr>\n");
     }

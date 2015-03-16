@@ -22,6 +22,8 @@ import com.sonarsource.ruleapi.externalspecifications.*;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.domain.RuleComparison;
 import com.sonarsource.ruleapi.domain.RuleException;
+import org.fest.util.Strings;
+
 
 public class ReportService extends RuleManager {
 
@@ -109,6 +111,26 @@ public class ReportService extends RuleManager {
         LOGGER.info("Getting detailed coverage report for " + standard.getStandardName() + " on " + instance);
 
         writeFile(COVERAGE_DIR.concat(standard.getStandardName()).concat("_coverage.txt").toLowerCase(), standard.getReport(instance));
+      }
+    }
+  }
+
+  public void writeUserFacingReports() {
+
+    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
+
+      if (supportedStandard.getCodingStandard() instanceof CustomerReport) {
+
+        CustomerReport customerReport = (CustomerReport) supportedStandard.getCodingStandard();
+
+        LOGGER.info("Getting user-facing report for " + customerReport.getStandardName());
+
+        String report = customerReport.getHtmlReport(RuleManager.NEMO);
+        if (!Strings.isNullOrEmpty(report)) {
+          report = css + report;
+          writeFile(COVERAGE_DIR.concat(customerReport.getStandardName()).concat(".html").toLowerCase(), report);
+
+        }
       }
     }
   }

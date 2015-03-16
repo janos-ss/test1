@@ -55,14 +55,22 @@ public abstract class AbstractReportableStandard implements CodingStandard {
   }
 
   protected void initCoverageResults(String instance) {
-    if (rulesCoverage == null || !(Strings.isNullOrEmpty(instance) || instance.equals(this.lastInstance))) {
+
+    if (rulesCoverage == null) {
+
       this.lastInstance = instance;
 
       populateRulesCoverageMap();
-
       findSpecifiedInRspec(getRSpecRulesReferencingStandard());
-
       findImplementedByPlugin(instance);
+
+    } else if (!(Strings.isNullOrEmpty(instance) || instance.equals(this.lastInstance))) {
+
+      this.lastInstance = instance;
+
+      cleanRulesCoverageMap();
+      findImplementedByPlugin(instance);
+
     }
   }
 
@@ -74,6 +82,13 @@ public abstract class AbstractReportableStandard implements CodingStandard {
       CodingStandardRuleCoverage cov = new CodingStandardRuleCoverage();
       cov.setCodingStandardRuleId(csr.getCodingStandardRuleId());
       rulesCoverage.put(csr.getCodingStandardRuleId(), cov);
+    }
+  }
+
+  protected void cleanRulesCoverageMap() {
+
+    for (CodingStandardRuleCoverage csrc : rulesCoverage.values()) {
+      csrc.getImplementedBy().clear();
     }
   }
 
@@ -173,6 +188,26 @@ public abstract class AbstractReportableStandard implements CodingStandard {
         }
       }
     }
+  }
+
+  protected String denormalizeRuleKey(String ruleKey) {
+    if (RuleMaker.isKeyNormal(ruleKey)) {
+      return ruleKey.replace("RSPEC-", "S");
+    }
+    return ruleKey;
+  }
+
+  protected String getLinkedRuleReference(String instance, Rule rule) {
+
+    String ruleKey = denormalizeRuleKey(rule.getKey());
+
+    StringBuilder sb = new StringBuilder();
+    // http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS2066
+    sb.append("<a href='").append(instance).append("/coding_rules#rule_key=")
+            .append(getLanguage().getSq()).append("%3A").append(ruleKey).append("'>")
+            .append(ruleKey).append("</a> ")
+            .append(rule.getTitle()).append("<br/>\n");
+    return sb.toString();
   }
 
 }

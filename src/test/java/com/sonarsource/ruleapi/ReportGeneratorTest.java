@@ -19,6 +19,7 @@ public class ReportGeneratorTest {
   	if("true".equals(System.getProperty("reports.generation", "false"))) {
       ReportService rs = new ReportService();
       rs.writeReportsWithOrchestrator();
+      rs.writeUserFacingReports();
   	}
   }
 }

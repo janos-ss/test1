@@ -76,6 +76,26 @@ public class AbstractMisraSpecificationTest {
   }
 
   @Test
+  public void testHtmlReport() {
+    MisraC2004 misraC2004 = new MisraC2004();
+    misraC2004.populateRulesCoverageMap();
+
+    misraC2004.computeCoverage();
+
+    String report = misraC2004.getHtmlReport("");
+    String expectedReport = "<h2>C coverage of MISRA C 2004</h2>" +
+            "<table><tr><td>1.1</td><td>Not statically checkable</td></tr><tr><td>1.2</td><td>Not statically checkable</td></tr>" +
+            "<tr><td>1.3</td><td>Not statically checkable</td></tr><tr><td>1.4</td><td>Not statically checkable</td></tr>" +
+            "<tr><td>1.5</td><td>Not statically checkable</td></tr><tr><td>3.1</td><td>Not statically checkable</td></tr>" +
+            "<tr><td>3.2</td><td>Not statically checkable</td></tr><tr><td>3.3</td><td>Not statically checkable</td></tr>" +
+            "<tr><td>3.5</td><td>Not statically checkable</td></tr><tr><td>3.6</td><td>Not statically checkable</td></tr>" +
+            "<tr><td>16.10</td><td>Not statically checkable</td></tr><tr><td>18.3</td><td>Not statically checkable</td></tr>" +
+            "<tr><td>20.3</td><td>Not statically checkable</td></tr><tr><td>21.1</td><td>Not statically checkable</td></tr></table>";
+
+    assertThat(report).isEqualTo(expectedReport);
+  }
+
+  @Test
   public void testIsFieldEntryFormatNeedUpdating() {
 
     MisraC2004 misra = new MisraC2004();

@@ -129,4 +129,45 @@ public class AbstractReportableStandardTest {
     assertThat(coverageMap.get("1.2").getSpecifiedBy().get(0)).isEqualTo(rule);
     assertThat(coverageMap.get("1.3").getSpecifiedBy()).hasSize(0);
   }
+
+  @Test
+  public void testCleanRulesCoverageMap(){
+    MisraC2004 misraC2004 = new MisraC2004();
+    misraC2004.populateRulesCoverageMap();
+
+    Rule rule = new Rule("C");
+    rule.setKey("key");
+
+    for (CodingStandardRuleCoverage csrc : misraC2004.getRulesCoverage().values()) {
+      csrc.addImplementedBy(rule);
+    }
+
+    misraC2004.cleanRulesCoverageMap();
+    for (CodingStandardRuleCoverage csrc : misraC2004.getRulesCoverage().values()) {
+      assertThat(csrc.getImplementedBy()).isEmpty();
+    }
+  }
+
+  @Test
+  public void testDenormalizeKey() {
+    MisraC2004 misraC2004 = new MisraC2004();
+    String nonNormalized = "nonNormalized";
+    assertThat(misraC2004.denormalizeRuleKey(nonNormalized)).isEqualTo(nonNormalized);
+    assertThat(misraC2004.denormalizeRuleKey("RSPEC-1234")).isEqualTo("S1234");
+  }
+
+  @Test
+  public void testGetLinkedRuleReference() {
+    Rule rule = new Rule("C");
+    rule.setKey("RSPEC-1234");
+    rule.setTitle("This is a rule title");
+
+    String expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3AS1234'>S1234</a> This is a rule title<br/>\n";
+
+    MisraC2004 misraC2004 = new MisraC2004();
+    assertThat(misraC2004.getLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
+
+
+  }
+
 }

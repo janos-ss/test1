@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.*;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
+import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 
@@ -15,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public abstract class AbstractMisraSpecification extends AbstractReportableStandard implements TaggableStandard {
+public abstract class AbstractMisraSpecification extends AbstractReportableStandard
+        implements TaggableStandard, CustomerReport {
 
   public static final int DEFAULT_ROUNDING = 2;
 
@@ -66,6 +68,14 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     }
 
     return false;
+  }
+
+  @Override
+  public String getHtmlReport(String instance) {
+
+    initCoverageResults(instance);
+    computeCoverage();
+    return generateHtmlReport(instance);
   }
 
   @Override
@@ -154,11 +164,39 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     buff.append(String.format("%sSpecified: %d%sImplemented: %d%s=> %.2f%%%n", indent, toCover, indent, covered, indent, percent ));
   }
 
+  private final String generateHtmlReport(String instance) {
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("<h2>").append(getLanguage().getRspec()).append(" coverage of ").append(getStandardName()).append("</h2>");
+
+    sb.append("<table>");
+
+    for (CodingStandardRule csr : getCodingStandardRules()) {
+      String ruleId = csr.getCodingStandardRuleId();
+      CodingStandardRuleCoverage coverage = getRulesCoverage().get(ruleId);
+
+      if (Implementability.NOT_IMPLEMENTABLE.equals(csr.getImplementability())) {
+        sb.append("<tr><td>").append(ruleId).append("</td><td>Not statically checkable</td></tr>");
+
+      } else if (! coverage.getImplementedBy().isEmpty()) {
+        sb.append("<tr><td>").append(ruleId).append("</td><td>");
+        for (Rule rule : coverage.getImplementedBy()) {
+          sb.append(getLinkedRuleReference(instance, rule));
+        }
+        sb.append("</td></tr>");
+      }
+    }
+
+    sb.append("</table>");
+
+    return sb.toString();
+  }
+
   protected void computeCoverage() {
 
-    if (totalRulesImplemented > 0) {
-      return;
-    }
+    mandatoryRulesImplemented = 0;
+    optionalRulesImplemented = 0;
+    totalRulesImplemented = 0;
 
     for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
       if (!cov.getImplementedBy().isEmpty()) {
