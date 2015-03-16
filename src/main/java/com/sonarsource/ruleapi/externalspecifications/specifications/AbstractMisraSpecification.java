@@ -189,6 +189,15 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
 
     sb.append("</table>");
 
+    sb.append("<h3>Summary</h3><table>");
+    sb.append("<tr><td>Mandatory rules covered:</td>");
+    sb.append("<td>").append(mandatoryRulesImplemented).append(", ").append(String.format("%.2f",getMandatoryCoveragePercent())).append("%</td></tr>");
+    sb.append("<tr><td>Optional rules covered:</td>");
+    sb.append("<td>").append(optionalRulesImplemented).append(", ").append(String.format("%.2f",getOptionalCoveragePercent())).append("%</td></tr>");
+    sb.append("<tr><td>Total:</td>");
+    sb.append("<td>").append(totalRulesImplemented).append(", ").append(String.format("%.2f",getTotalCoveragePercent())).append("%</td></tr>");
+    sb.append("</table>");
+
     return sb.toString();
   }
 

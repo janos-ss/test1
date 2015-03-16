@@ -82,15 +82,26 @@ public class AbstractMisraSpecificationTest {
 
     misraC2004.computeCoverage();
 
+    Rule rule = new Rule("C");
+    rule.setKey("RSPEC-1234");
+    rule.setTitle("Rule title...");
+    misraC2004.getRulesCoverage().get("2.1").addImplementedBy(rule);
+
     String report = misraC2004.getHtmlReport("");
-    String expectedReport = "<h2>C coverage of MISRA C 2004</h2>" +
-            "<table><tr><td>1.1</td><td>Not statically checkable</td></tr><tr><td>1.2</td><td>Not statically checkable</td></tr>" +
+    String expectedReport = "<h2>C coverage of MISRA C 2004</h2><table>" +
+            "<tr><td>1.1</td><td>Not statically checkable</td></tr><tr><td>1.2</td><td>Not statically checkable</td></tr>" +
             "<tr><td>1.3</td><td>Not statically checkable</td></tr><tr><td>1.4</td><td>Not statically checkable</td></tr>" +
-            "<tr><td>1.5</td><td>Not statically checkable</td></tr><tr><td>3.1</td><td>Not statically checkable</td></tr>" +
-            "<tr><td>3.2</td><td>Not statically checkable</td></tr><tr><td>3.3</td><td>Not statically checkable</td></tr>" +
-            "<tr><td>3.5</td><td>Not statically checkable</td></tr><tr><td>3.6</td><td>Not statically checkable</td></tr>" +
-            "<tr><td>16.10</td><td>Not statically checkable</td></tr><tr><td>18.3</td><td>Not statically checkable</td></tr>" +
-            "<tr><td>20.3</td><td>Not statically checkable</td></tr><tr><td>21.1</td><td>Not statically checkable</td></tr></table>";
+            "<tr><td>1.5</td><td>Not statically checkable</td></tr>" +
+            "<tr><td>2.1</td><td><a href='/coding_rules#rule_key=c%3AS1234'>S1234</a> Rule title...<br/>\n" +
+            "</td></tr><tr><td>3.1</td><td>Not statically checkable</td></tr><tr><td>3.2</td><td>Not statically checkable</td></tr>" +
+            "<tr><td>3.3</td><td>Not statically checkable</td></tr><tr><td>3.5</td><td>Not statically checkable</td></tr>" +
+            "<tr><td>3.6</td><td>Not statically checkable</td></tr><tr><td>16.10</td><td>Not statically checkable</td></tr>" +
+            "<tr><td>18.3</td><td>Not statically checkable</td></tr><tr><td>20.3</td><td>Not statically checkable</td></tr>" +
+            "<tr><td>21.1</td><td>Not statically checkable</td></tr></table>" +
+            "<h3>Summary</h3>" +
+            "<table><tr><td>Mandatory rules covered:</td><td>1, 0.91%</td></tr>" +
+            "<tr><td>Optional rules covered:</td><td>0, 0.00%</td></tr>" +
+            "<tr><td>Total:</td><td>1, 0.78%</td></tr></table>";
 
     assertThat(report).isEqualTo(expectedReport);
   }
