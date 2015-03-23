@@ -88,7 +88,11 @@ public class AbstractMisraSpecificationTest {
     misraC2004.getRulesCoverage().get("2.1").addImplementedBy(rule);
 
     String report = misraC2004.getHtmlReport("");
-    String expectedReport = "<h2>C coverage of MISRA C 2004</h2><table>" +
+    String expectedReport = "<h2>C coverage of MISRA C 2004</h2>" +
+            "These are the MISRA C 2004 rules covered for C by the " +
+            "<a href='http://sonarsource.com'>SonarSource</a> " +
+            "<a href='http://www.sonarsource.com/products/plugins/languages/cpp/'>C/C++ plugin</a>." +
+            "<table>" +
             "<tr><td>1.1</td><td>Not statically checkable</td></tr><tr><td>1.2</td><td>Not statically checkable</td></tr>" +
             "<tr><td>1.3</td><td>Not statically checkable</td></tr><tr><td>1.4</td><td>Not statically checkable</td></tr>" +
             "<tr><td>1.5</td><td>Not statically checkable</td></tr>" +

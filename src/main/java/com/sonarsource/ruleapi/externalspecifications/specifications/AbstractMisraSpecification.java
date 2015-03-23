@@ -168,6 +168,10 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     StringBuilder sb = new StringBuilder();
 
     sb.append("<h2>").append(getLanguage().getRspec()).append(" coverage of ").append(getStandardName()).append("</h2>");
+    sb.append("These are the ").append(getStandardName())
+            .append(" rules covered for ").append(getLanguage().getRspec())
+            .append(" by the <a href='http://sonarsource.com'>SonarSource</a> ")
+            .append("<a href='http://www.sonarsource.com/products/plugins/languages/cpp/'>C/C++ plugin</a>.");
 
     sb.append("<table>");
 
