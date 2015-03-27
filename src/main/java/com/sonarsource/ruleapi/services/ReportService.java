@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -35,10 +36,12 @@ public class ReportService extends RuleManager {
 
   public ReportService() {
     java.net.URL url = this.getClass().getResource("/services");
-    try {
-      css = new java.util.Scanner(new File(url.getPath() + "/report.css"), "UTF8").useDelimiter("\\Z").next();
-    } catch (FileNotFoundException e) {
-      LOGGER.log(Level.WARNING, "CSS file not found",e);
+    if (url != null) {
+      try {
+        css = new java.util.Scanner(new File(url.getPath() + "/report.css"), "UTF8").useDelimiter("\\Z").next();
+      } catch (FileNotFoundException e) {
+        LOGGER.log(Level.WARNING, "CSS file not found", e);
+      }
     }
   }
 
@@ -46,7 +49,7 @@ public class ReportService extends RuleManager {
     if (ruleKeys != null) {
       for (String ruleKey : ruleKeys) {
         Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
-        writeFile(ruleKey+".html", rule.getHtmlDescription());
+        writeFile(ruleKey + ".html", rule.getHtmlDescription());
       }
     }
   }
