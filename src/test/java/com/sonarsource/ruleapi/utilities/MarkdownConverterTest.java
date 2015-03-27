@@ -5,7 +5,6 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
-import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import org.junit.Test;
 
 import java.io.File;
