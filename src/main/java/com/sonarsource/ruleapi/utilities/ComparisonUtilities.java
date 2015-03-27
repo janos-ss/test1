@@ -169,7 +169,7 @@ public class ComparisonUtilities {
             || isEquivalentEntityIgnoreBrackets(rspecTok, implTok);
   }
 
-  private static boolean isEquivalentEntityIgnoreBrackets(String rspecTok, String implTok) {
+  protected static boolean isEquivalentEntityIgnoreBrackets(String rspecTok, String implTok) {
 
     String a = rspecTok;
     String b = implTok;
@@ -187,7 +187,7 @@ public class ComparisonUtilities {
     return a.equalsIgnoreCase(b);
   }
 
-  private static boolean isPhraseInOptions(String rspecTok, String implTok, List<String> implTokens){
+  protected static boolean isPhraseInOptions(String rspecTok, String implTok, List<String> implTokens){
 
     String rTok = rspecTok;
     if (rTok.matches("^\\[.*\\]$") || rTok.matches("^\\(.*\\)$")) {
@@ -218,7 +218,7 @@ public class ComparisonUtilities {
     }
   }
 
-  private static String assembleExtendedImplToken(List<String> implTokens, String implTok, String phraseToMatch) {
+  protected static String assembleExtendedImplToken(List<String> implTokens, String implTok, String phraseToMatch) {
 
     int phraseLength = phraseToMatch.split(" ").length;
 
@@ -229,7 +229,7 @@ public class ComparisonUtilities {
     return sb.toString();
   }
 
-  private static boolean isOptional(String rspecTok) {
+  protected static boolean isOptional(String rspecTok) {
 
     return rspecTok.matches("[\\[(].*[\\])]") && !rspecTok.contains("|");
   }

@@ -7,6 +7,11 @@
 package com.sonarsource.ruleapi.utilities;
 
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 
@@ -194,6 +199,7 @@ public class ComparisonUtilitiesTest {
 
     String test = "test";
     assertThat(ComparisonUtilities.compareTextFunctionalEquivalence(null, test)).isEqualTo(1);
+    assertThat(ComparisonUtilities.compareTextFunctionalEquivalence(test, null)).isEqualTo(-1);
   }
 
   @Test
@@ -315,5 +321,41 @@ public class ComparisonUtilitiesTest {
 
     String html = "<ul><li><a href=\"blah.com\">blah</a></li></ul>";
     assertThat(ComparisonUtilities.stripHtml(html)).isEqualTo("blah");
+  }
+
+  @Test
+  public void testIsEquivalentEntityIgnoreBrackets() {
+    String rspecTok = "Now is the time.";
+    String implTok = "Now is [the] time.";
+
+    assertThat(ComparisonUtilities.isEquivalentEntityIgnoreBrackets(rspecTok, implTok)).isTrue();
+  }
+
+  @Test
+  public void testIsPhraseInOptions() {
+    String rspecTok = "Now is the time";
+    String implTok = "Now is the time";
+
+    List<String> implTokens = new ArrayList<String>();
+
+    assertThat(ComparisonUtilities.isPhraseInOptions(rspecTok, implTok, implTokens)).isTrue();
+  }
+
+  @Test
+  public void testAssembleExtendedImplToken () {
+
+    String seed = "Now is the time";
+    List<String> implTokens = new ArrayList(Arrays.asList(seed.split(" ")));
+    String implTok = implTokens.remove(0);
+    String phraseToMatch = "Now is the time for all good people";
+
+    assertThat(ComparisonUtilities.assembleExtendedImplToken(implTokens, implTok, phraseToMatch)).isEqualTo(seed);
+  }
+
+  @Test
+  public void testIsOptional() {
+    assertThat(ComparisonUtilities.isOptional("[yes]")).isTrue();
+    assertThat(ComparisonUtilities.isOptional("yes")).isFalse();
+    assertThat(ComparisonUtilities.isOptional("[yes|no]")).isFalse();
   }
 }
