@@ -9,6 +9,7 @@ package com.sonarsource.ruleapi.utilities;
 import org.fest.util.Strings;
 
 public enum Language {
+  //     SonarQube      RSpec          Common          Nemo profile key       doUpdate
   ABAP  ("abap",        "ABAP",        "common-abap",  "abap-sonar-way-38370",  true),
   C     ("c",           "C",           "common-c",     "c-sonar-way-44762",     true),
   COBOL ("cobol",       "Cobol",       "common-cobol", "cobol-sonar-way-41769", true),
