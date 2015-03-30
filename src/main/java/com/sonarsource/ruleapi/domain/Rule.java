@@ -161,6 +161,8 @@ public class Rule {
     }
     mergeDescriptionPieces(subRule);
     mergeSqalePieces(subRule);
+
+    tags.addAll(subRule.getTags());
   }
 
   protected void mergeSqalePieces(Rule subRule) {
