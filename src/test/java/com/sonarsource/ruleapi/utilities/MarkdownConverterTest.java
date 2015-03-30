@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import org.junit.Test;
 
 import java.io.File;
@@ -466,4 +467,18 @@ public class MarkdownConverterTest {
     assertThat(mc.findBefore(str, 3, '*')).isEqualTo(-1);
   }
 
+  @Test
+  public void testAsterisksInCodeTags(){
+    String markdown = "This *should be bold* and this should not: \"{{.*TODO.*}}\"";
+    String expectedHtml = "<p>This <strong>should be bold</strong> and this should not: \"<code>.*TODO.*</code>\"</p>\n";
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+
+    markdown = " \"{{(?i).*TODO.*}}\" plus some *bold text.*";
+    expectedHtml = "<p> \"<code>(?i).*TODO.*</code>\" plus some <strong>bold text.</strong></p>\n";
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+
+    markdown = "Some *bold* text before, some {{.*code.*}}, and some *bold* text after.";
+    expectedHtml = "<p>Some <strong>bold</strong> text before, some <code>.*code.*</code>, and some <strong>bold</strong> text after.</p>\n";
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+  }
 }

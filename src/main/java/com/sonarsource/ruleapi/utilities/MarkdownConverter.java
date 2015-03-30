@@ -5,6 +5,9 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
+import oracle.net.aso.p;
+import oracle.net.aso.s;
+
 import java.util.LinkedList;
 
 /**
@@ -349,16 +352,36 @@ public class MarkdownConverter {
 
   protected String handleBold(String arg) {
     String line = arg;
+
     boolean boldOpen = false;
-    while (line.matches(".*(\\b\\*|\\*\\b).*")) {
-      if (boldOpen) {
-        line = line.replaceFirst("(\\b)\\*", "</strong>$1");
-        boldOpen = false;
-      } else {
-        line = line.replaceFirst("\\*(\\b)", "$1<strong>");
-        boldOpen = true;
+    int lastPos = -1;
+    int pos = line.indexOf('*');
+
+    while (pos > -1) {
+      int openCode = line.indexOf("<code>", lastPos);
+      int closeCode = line.indexOf("</code>", pos);
+
+      if (openCode > pos || closeCode < pos) {
+
+        String left = line.substring(0, pos);
+        String right = "";
+        if (pos < line.length()) {
+          right = line.substring(pos + 1);
+        }
+
+        if (boldOpen) {
+          line = left + "</strong>" + right;
+          boldOpen = false;
+        } else {
+          line = left + "<strong>" + right;
+          boldOpen = true;
+        }
       }
+
+      lastPos = pos;
+      pos = line.indexOf('*', pos+1);
     }
+
     return line;
   }
 
