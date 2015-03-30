@@ -64,18 +64,6 @@ public class RuleTest {
   }
 
   @Test
-  public void testMergeTitle() throws Exception {
-    Rule rule = new Rule(LANG);
-    Rule subRule = new Rule(LANG);
-    String title = "My title";
-    subRule.setTitle(LANG + ": " +title);
-
-    rule.merge(subRule);
-
-    assertThat(rule.getTitle()).isEqualTo(title);
-  }
-
-  @Test
   public void testMergeDefaultActive() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setDefaultActive(Boolean.FALSE);
@@ -213,6 +201,57 @@ public class RuleTest {
     rule.merge(subRule);
 
     assertThat(rule.getParameterList().size()).isEqualTo(1);
+  }
+
+  @Test
+  public void testMergeTitle() throws Exception {
+    Rule rule = new Rule(LANG);
+    Rule subRule = new Rule(LANG);
+    String title = "My title";
+    subRule.setTitle(LANG + ": " +title);
+
+    rule.merge(subRule);
+
+    assertThat(rule.getTitle()).isEqualTo(title);
+  }
+
+  @Test
+  public void testMergeTitleCFamily() {
+
+    String title = "This is a title";
+    Rule rule = new Rule("C");
+    Rule subRule = new Rule("");
+
+    rule.setTitle(title);
+    subRule.setTitle("C");
+    rule.mergeTitle(subRule);
+    assertThat(rule.getTitle()).isEqualTo(title);
+
+    rule.setTitle(title);
+    subRule.setTitle("C: blah");
+    rule.mergeTitle(subRule);
+    assertThat(rule.getTitle()).isEqualTo("blah");
+
+    rule.setTitle(title);
+    subRule.setTitle("C - blah");
+    rule.mergeTitle(subRule);
+    assertThat(rule.getTitle()).isEqualTo("blah");
+
+    rule.setTitle(title);
+    subRule.setTitle("C-Family");
+    rule.mergeTitle(subRule);
+    assertThat(rule.getTitle()).isEqualTo(title);
+
+    rule.setTitle(title);
+    subRule.setTitle("C-Family: blah");
+    rule.mergeTitle(subRule);
+    assertThat(rule.getTitle()).isEqualTo("blah");
+
+    rule.setTitle(title);
+    subRule.setTitle("C-Family - blah");
+    rule.mergeTitle(subRule);
+    assertThat(rule.getTitle()).isEqualTo("blah");
+
   }
 
 }

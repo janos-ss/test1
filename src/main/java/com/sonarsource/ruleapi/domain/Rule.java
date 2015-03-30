@@ -195,8 +195,15 @@ public class Rule {
     }
   }
 
-  private void mergeTitle(Rule subRule) {
-    String subTitle = subRule.title.replaceFirst(language, "").trim();
+  protected void mergeTitle(Rule subRule) {
+
+    String subTitle = subRule.title;
+    int pos = subTitle.indexOf(' ');
+    if (pos == -1) {
+      return;
+    }
+
+    subTitle = subTitle.substring(pos).trim();
     if (subTitle.length() > 0) {
       if (subTitle.startsWith(": ") || subTitle.startsWith("- ")) {
         subTitle = subTitle.substring(2);
