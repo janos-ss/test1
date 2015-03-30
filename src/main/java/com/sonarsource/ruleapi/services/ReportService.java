@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -23,6 +24,7 @@ import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.domain.RuleComparison;
 import com.sonarsource.ruleapi.domain.RuleException;
 import org.fest.util.Strings;
+import org.json.simple.JSONArray;
 
 
 public class ReportService extends RuleManager {
@@ -173,13 +175,27 @@ public class ReportService extends RuleManager {
 
   public void writeOutdatedRulesReports(String instance) {
 
-    for (Language language : Language.values()) {
-      writeOutdatedRulesReport(language, instance);
-    }
+    JSONArray results = new JSONArray();
 
+    for (Language language : Language.values()) {
+      int count = writeOutdatedRulesReport(language, instance);
+      if (count > 0) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("outdated", count);
+        map.put("name",language.getRspec());
+        results.add(map);
+      }
+    }
+    writeFile("target/reports/outdated/summary.json", results.toJSONString());
   }
 
-  public void writeOutdatedRulesReport(Language language, String instance) {
+  /**
+   *
+   * @param language the language to check
+   * @param instance the SonarQube instance against which to run the check
+   * @return Number of outdated rules
+   */
+  public int writeOutdatedRulesReport(Language language, String instance) {
 
     LOGGER.info("Getting outdated rules report for " + language.getRspec() + " on " + instance);
 
@@ -223,6 +239,7 @@ public class ReportService extends RuleManager {
     } else {
       writeFile(fileName, "No differences found");
     }
+    return notAlike;
   }
 
   public void writeReportsWithOrchestrator() {
