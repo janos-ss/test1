@@ -5,7 +5,6 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import org.junit.Test;
 
 import java.io.File;
