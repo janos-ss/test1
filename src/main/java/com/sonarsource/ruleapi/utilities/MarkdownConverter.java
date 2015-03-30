@@ -23,6 +23,8 @@ public class MarkdownConverter {
 
   private static final String BQ_OPEN = "<blockquote>";
   private static final String BQ_CLOSE = "</blockquote>";
+  private static final String CODE_OPEN = "<code>";
+  private static final String CODE_CLOSE = "</code>";
 
   public MarkdownConverter() {
   }
@@ -142,7 +144,7 @@ public class MarkdownConverter {
    * @return <code></code> converted to markdown
    */
   protected String handleCodeTags(String line) {
-    return line.replaceAll("<code>","{{").replaceAll("</code>","}}");
+    return line.replaceAll(CODE_OPEN,"{{").replaceAll(CODE_CLOSE,"}}");
   }
 
   public static String handleEntities(String line) {
@@ -248,10 +250,10 @@ public class MarkdownConverter {
   protected String handleDoubleCurly(String arg) {
     String line = arg;
     if (line.contains("{{")) {
-      line = line.replaceAll("\\{\\{", "<code>");
+      line = line.replaceAll("\\{\\{", CODE_OPEN);
     }
     if (line.contains("}}")) {
-      line = line.replaceAll("}}", "</code>");
+      line = line.replaceAll("}}", CODE_CLOSE);
     }
     return line;
   }
@@ -358,8 +360,8 @@ public class MarkdownConverter {
     int pos = line.indexOf('*');
 
     while (pos > -1) {
-      int openCode = line.indexOf("<code>", lastPos);
-      int closeCode = line.indexOf("</code>", pos);
+      int openCode = line.indexOf(CODE_OPEN, lastPos);
+      int closeCode = line.indexOf(CODE_CLOSE, pos);
 
       if (openCode > pos || closeCode < pos) {
 
