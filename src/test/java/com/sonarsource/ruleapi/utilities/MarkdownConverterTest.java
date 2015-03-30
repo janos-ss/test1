@@ -446,6 +446,15 @@ public class MarkdownConverterTest {
     assertThat(mc.handleRuleLinks(line3, "Java")).isEqualTo(line3Out);
     assertThat(mc.handleRuleLinks(line3, "")).isEqualTo(line3);
 
+    line1Out1 = "* Rule <a href='/coding_rules#rule_key=javascript:S1656'>S1656</a> - Implements a check on {{=}}.";
+    line1Out2 = "<ul>\n" +
+            "<li> Rule <a href='/coding_rules#rule_key=javascript:S1656'>S1656</a> - Implements a check on <code>=</code>.</li>\n" +
+            "</ul>\n";
+
+    assertThat(mc.handleRuleLinks(line1, "JavaScript")).isEqualTo(line1Out1);
+    assertThat(mc.handleRuleLinks(line1, "")).isEqualTo(line1);
+    assertThat(mc.transform(line1, "JavaScript")).isEqualTo(line1Out2);
+
   }
 
   @Test

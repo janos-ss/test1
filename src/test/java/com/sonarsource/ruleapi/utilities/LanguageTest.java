@@ -10,7 +10,7 @@ import org.junit.Test;
 import static org.fest.assertions.Assertions.assertThat;
 
 
-public class LangugeTest {
+public class LanguageTest {
 
   @Test
   public void testLanguagesEnum() {
@@ -29,6 +29,8 @@ public class LangugeTest {
     assertThat(Language.fromString("")).isNull();
     assertThat(Language.fromString(null)).isNull();
     assertThat(Language.fromString("Orange")).isNull();
+    assertThat(Language.fromString("JavaScript")).isEqualTo(Language.JS);
+    assertThat(Language.fromString("Python")).isEqualTo(Language.PY);
   }
 
 }

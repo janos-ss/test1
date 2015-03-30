@@ -72,7 +72,7 @@ public enum Language {
 
     String uc = value.toUpperCase();
     for (Language language : Language.values()) {
-      if (language.name().equals(uc)) {
+      if (language.name().equals(uc) || language.rspec.toUpperCase().equals(uc)) {
         return language;
       }
     }
