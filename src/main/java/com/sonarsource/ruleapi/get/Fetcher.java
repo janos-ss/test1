@@ -18,16 +18,15 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Retrieves Issue from Jira by key
  */
 public class Fetcher {
 
-  // use start= for pagination. If first page was 50 results, start=51 for page 2.
+  private static final Logger LOGGER = Logger.getLogger(Fetcher.class.getName());
 
   public static final String BASE_URL = "http://jira.sonarsource.com/rest/api/latest/";
   public static final String ISSUE = "issue/";
@@ -39,6 +38,9 @@ public class Fetcher {
   private static final String SEARCH = "search?expand=names&maxResults=500&jql=";
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
   private static final String EXPAND = "?expand=names";
+
+  private static final Map<String, JSONObject> RESPONSE_CACHE = new HashMap<String, JSONObject>();
+
 
 
   /**
@@ -157,9 +159,15 @@ public class Fetcher {
   }
 
   public JSONObject getJsonFromUrl(String url, String login, String password) {
+
+    JSONObject cacheObj = RESPONSE_CACHE.get(url);
+
     Client client = ClientBuilder.newClient();
     if (login != null && password != null) {
       client.register(HttpAuthenticationFeature.basic(login, password));
+    } else if (cacheObj != null) {
+      LOGGER.fine("Returning cached obj for:" + url);
+      return cacheObj;
     }
 
     WebTarget webResource = client.target(url);
@@ -178,7 +186,9 @@ public class Fetcher {
 
     JSONParser parser = new JSONParser();
     try {
-      return (JSONObject)parser.parse(responseStr);
+      cacheObj = (JSONObject)parser.parse(responseStr);
+      RESPONSE_CACHE.put(url, cacheObj);
+      return cacheObj;
     } catch (ParseException e) {
       throw new RuleException(e);
     }
