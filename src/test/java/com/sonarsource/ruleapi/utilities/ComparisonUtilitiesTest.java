@@ -358,4 +358,14 @@ public class ComparisonUtilitiesTest {
     assertThat(ComparisonUtilities.isOptional("yes")).isFalse();
     assertThat(ComparisonUtilities.isOptional("[yes|no]")).isFalse();
   }
+
+  @Test
+  public void testRuleLinks() {
+    String spec = "<li>See also {rule:squid:S1234}</li>";
+    String impl = "<li>See also <a href=\"/coding_rules#rule_key=squid%3AS1234\">S1234</a></li>";
+    String impl2 = "<li>See also <a href=\"/sonar/coding_rules#rule_key=squid%3AS1234\">S1234</a></li>";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl2)).isTrue();
+  }
 }

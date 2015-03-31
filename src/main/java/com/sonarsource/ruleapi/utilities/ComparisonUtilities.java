@@ -115,16 +115,60 @@ public class ComparisonUtilities {
     boolean isEquivalent = true;
     if (arePhraseOptionsPresent(rspecTok) && !isPhraseInOptions(rspecTok, implTok, implTokens)) {
       isEquivalent = false;
+
     } else if (! isEquivalentToken(implTok, rspecTok)) {
+
       if (isOptional(rspecTok)) {
         disassembleExtendedImplToken(implTokens, implTok);
-      } else {
+
+      } else if (! isMatchingRuleLink(implTokens, rspecTok, implTok)) {
         isEquivalent = false;
       }
     }
     return isEquivalent;
   }
 
+
+  /**
+   * The goal of this method is to find these 2 strings equivalent:
+   *     {rule:squid:S1234}
+   *     <a href=\"/coding_rules#rule_key=squid%3AS1234\">S1234</a>"
+   *
+   * I.E. a rule link macro and the URL it expands to should be seen as equivalent
+   *
+   *
+   * @param implTokens additional tokens will be popped off this list as needed to complete link string
+   * @param rspecTok token from rule fetched from RSpec
+   * @param implTok initial token from rule fetched from SonarQube instance
+   * @return true iff rule link macro and anchor link to same rule
+   */
+  protected static boolean isMatchingRuleLink(List<String> implTokens, String rspecTok, String implTok) {
+    if (!rspecTok.matches("\\{rule:.*") || !"<a".equals(implTok)) {
+      return false;
+    }
+
+    StringBuilder sb = new StringBuilder(implTok);
+    while (!sb.toString().endsWith("</a>")) {
+      sb.append(" ").append(implTokens.remove(0));
+    }
+
+    String rspecLink = rspecTok.replaceAll("\\{rule:([^:]+):([^}]+)}","$1:$2");
+    String implLink = sb.toString().replaceAll(".*rule_key=([^\"]+)[\"|'].*", "$1")
+            .replaceAll("%3A",":")
+            .trim();
+
+    return rspecLink.equals(implLink);
+  }
+
+  /**
+   * To make comparisons easiser:
+   * * Remove html whitespace (paragraph & brake tags)
+   * * Convert runs of whitespace into a single space
+   * * Add spaces around quotes and certain other HTML tags
+   *
+   * @param a  the string to be manipulated
+   * @return manipulated string
+   */
   protected static String spaceOutHtmlAndCollapseWhitespace(String a) {
     String unneededWhitespace = "[\\r\\n\\t]+";
     String pTags = "</?p>";
@@ -136,6 +180,14 @@ public class ComparisonUtilities {
             .replaceAll("[.,]", "").replaceAll(" +", " ").trim();
   }
 
+  /**
+   * There's no need to run in-depth comparison algorithms unless one or both strings
+   * contains characters indicating that it's necessary.
+   *
+   * @param aString
+   * @param bString
+   * @return true if one or both params contains certain characters
+   */
   private static boolean isTokenCheckingIndicated(String aString, String bString) {
     String indicatesOptionsEntities = ".*[|\\[(&\"<>].+";
     return aString.matches(indicatesOptionsEntities) || bString.matches(indicatesOptionsEntities);
@@ -169,6 +221,13 @@ public class ComparisonUtilities {
             || isEquivalentEntityIgnoreBrackets(rspecTok, implTok);
   }
 
+  /**
+   * Convert html-significant chars to entities & remove brackets/parens
+   *
+   * @param rspecTok
+   * @param implTok
+   * @return
+   */
   protected static boolean isEquivalentEntityIgnoreBrackets(String rspecTok, String implTok) {
 
     String a = rspecTok;
@@ -187,6 +246,20 @@ public class ComparisonUtilities {
     return a.equalsIgnoreCase(b);
   }
 
+  /**
+   * Given a list of options, E.G. [a|the|an|one] return true if implTok matches one of the options.
+   * Since options can be words or phrases, implTokens list is necessary to flesh-out implTok as necessary
+   * to identify match.
+   * E.G.
+   *   rspecTok = [these|those|the others]
+   *   implTok = the
+   * The match can't be identified until the next token from implTokens ("others") is added to implTok
+   *
+   * @param rspecTok
+   * @param implTok
+   * @param implTokens
+   * @return
+   */
   protected static boolean isPhraseInOptions(String rspecTok, String implTok, List<String> implTokens){
 
     String rTok = rspecTok;

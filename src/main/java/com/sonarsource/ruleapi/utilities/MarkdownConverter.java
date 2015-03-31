@@ -189,7 +189,7 @@ public class MarkdownConverter {
 
     Language lang = Language.fromString(language.toUpperCase());
     if (lang != null && line.matches(".*S\\d+(\\s|$).*")) {
-      line = line.replaceAll("(S\\d+)", "<a href='/coding_rules#rule_key=" + lang.getSq() + ":$1'>$1</a>");
+      line = line.replaceAll("(S\\d+)", "{rule:" + lang.getSq() + ":$1}");
     }
     return line;
   }
