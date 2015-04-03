@@ -6,7 +6,6 @@
 
 package com.sonarsource.ruleapi;
 
-import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.services.ReportService;
 import org.junit.Test;
 
