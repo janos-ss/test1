@@ -100,6 +100,7 @@ public class RuleManager {
               .setOrchestratorProperty("plsqlVersion", "DEV").addPlugin("plsql")
               .setOrchestratorProperty("pythonVersion", "DEV").addPlugin("python")
               .setOrchestratorProperty("rpgVersion", "DEV").addPlugin("rpg")
+              .setOrchestratorProperty("swiftVersion", "DEV").addPlugin("swift")
               .setOrchestratorProperty("vbVersion", "DEV").addPlugin("vb")
               .setOrchestratorProperty("vbnetVersion", "DEV").addPlugin("vbnet")
               .setOrchestratorProperty("webVersion", "DEV").addPlugin("web")
