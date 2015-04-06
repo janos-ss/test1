@@ -57,7 +57,7 @@ public class ReportService extends RuleManager {
 
   public void writeAllReports(String instance) {
 
-    writeFindBugsDeprecationReport(instance);
+    writeDeprecationReports(instance);
     writeDetailedCoverageReports(instance);
     writeSummaryCoverageReports(instance);
     writeCweCoverageReports();
@@ -166,11 +166,21 @@ public class ReportService extends RuleManager {
 
   }
 
-  public void writeFindBugsDeprecationReport(String instance) {
-    LOGGER.info("Getting Findbugs deprecation report on " + instance);
+  public void writeDeprecationReports(String instance) {
 
-    writeFile("target/reports/deprecated_findBugs_ids.txt",
-            ((ExternalTool) SupportedCodingStandard.FINDBUGS.getCodingStandard()).getDeprecationReport(instance));
+    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
+
+      if (supportedStandard.getCodingStandard() instanceof AbstractReportableExternalTool) {
+        AbstractReportableExternalTool externalTool = (AbstractReportableExternalTool) supportedStandard.getCodingStandard();
+
+        LOGGER.info("Getting deprecation report for " + externalTool.getStandardName() + " on " + instance);
+
+        String report = externalTool.getDeprecationReport(instance);
+        if (!Strings.isNullOrEmpty(report)) {
+          writeFile("target/reports/deprecated_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
+        }
+      }
+    }
   }
 
   public void writeOutdatedRulesReports(String instance) {

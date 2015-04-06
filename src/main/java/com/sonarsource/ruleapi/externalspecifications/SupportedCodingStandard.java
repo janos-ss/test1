@@ -13,6 +13,7 @@ public enum SupportedCodingStandard {
   MISRA_C_2012(new MisraC2012()),
   MISRA_CPP_2008(new MisraCPP2008()),
   FINDBUGS(new FindBugs()),
+  PYLINT(new Pylint()),
   CWE(new Cwe()),
   OWASP(new OwaspTopTen()),  // ReportableStandard
   OWASP_A1(OwaspTopTen.StandardRule.A1),  // TaggableStandards
