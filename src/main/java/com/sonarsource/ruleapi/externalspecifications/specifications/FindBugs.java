@@ -5,27 +5,19 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
-import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
-import com.sonarsource.ruleapi.externalspecifications.ExternalTool;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.Language;
 
-import java.util.Iterator;
 import java.util.List;
 
 
-public class FindBugs extends AbstractReportableStandard implements ExternalTool {
+public class FindBugs extends AbstractReportableExternalTool {
 
   private String standardName = "FindBugs";
   private String rspecFieldName = "FindBugs";
   private Language language = Language.JAVA;
-
-  protected int implementable = 0;
-  protected int skipped = 0;
-  protected int specified = 0;
-  protected int implemented = 0;
 
 
   public enum StandardRule implements CodingStandardRule {
@@ -493,66 +485,6 @@ public class FindBugs extends AbstractReportableStandard implements ExternalTool
   }
 
   @Override
-  public String getReport(String instance) {
-
-    return getSummaryReport(instance);
-  }
-
-  @Override
-  public String getSummaryReport(String instance) {
-
-    initCoverageResults(instance);
-    computeCoverage();
-
-    String linebreak = String.format("%n");
-
-    int count = StandardRule.values().length;
-    int unspecified = count - specified - skipped;
-
-    StringBuilder sb = new StringBuilder();
-    sb.append(linebreak).append(standardName).append(linebreak);
-    sb.append(formatLine("FB rule count:", count, 100));
-    sb.append(formatLine("rejected:", skipped, ((double)skipped/count)*100));
-    sb.append(formatLine("implementable:", implementable, ((double)implementable/count)*100));
-    sb.append(linebreak).append("Of Implementable rules:").append(linebreak);
-    sb.append(formatLine("unspecified:", unspecified, ((double)unspecified/implementable)*100));
-    sb.append(formatLine("specified:", specified, ((double)specified/implementable)*100));
-    sb.append(formatLine("implemented:", implemented, ((double)implemented/implementable)*100));
-
-    return sb.toString();
-  }
-
-  protected void computeCoverage() {
-
-    if (implementable == 0) {
-      for (StandardRule standardRule : StandardRule.values()) {
-        Implementability impl = standardRule.getImplementability();
-        if (impl.equals(Implementability.IMPLEMENTABLE)) {
-          implementable++;
-        } else if (impl.equals(Implementability.REJECTED)) {
-          skipped++;
-        }
-      }
-
-      Iterator<CodingStandardRuleCoverage> itr = getRulesCoverage().values().iterator();
-      while (itr.hasNext()) {
-        CodingStandardRuleCoverage cov = itr.next();
-
-        if (!cov.getImplementedBy().isEmpty()) {
-          implemented++;
-        }
-        if (!cov.getSpecifiedBy().isEmpty()) {
-          specified++;
-        }
-      }
-    }
-  }
-
-  protected String formatLine(String label, int count, double percentage) {
-    return String.format("  %-15s %3d  %6.2f%%%n", label, count, percentage);
-  }
-
-  @Override
   public String getStandardName() {
     return standardName;
   }
@@ -582,23 +514,4 @@ public class FindBugs extends AbstractReportableStandard implements ExternalTool
 
     return StandardRule.values();
   }
-
-  @Override
-  public String getDeprecationReport(String instance) {
-
-    initCoverageResults(instance);
-    StringBuilder sb = new StringBuilder();
-
-    for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
-      if (!cov.getImplementedBy().isEmpty()) {
-        sb.append(cov.getCodingStandardRuleId())
-                .append("\t")
-                .append(cov.getImplementedByKeysAsCommaList())
-                .append("\n");
-      }
-    }
-
-    return sb.toString();
-  }
-
 }
