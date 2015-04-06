@@ -918,4 +918,33 @@ public class RuleComparisonTest {
             "    impl: Rule2 title\n");
 
   }
+
+  @Test
+  public void testDifferentStatus() {
+
+    Rule rule1 = new Rule("");
+    rule1.setTitle("Rule title...");
+    Rule rule2 = new Rule("");
+    rule2.setTitle("Rule title...");
+    rule2.setStatus(Rule.Status.DEPRECATED);
+
+    RuleComparison rc = new RuleComparison(rule1, rule2);
+
+    String expectedReport = "null\n" +
+            "  status\n" +
+            "    spec: null\n" +
+            "    impl: DEPRECATED\n";
+
+    assertThat(rc.compare()).isEqualTo(1);
+    assertThat(rc.toString()).isEqualTo(expectedReport);
+
+    rule1.setStatus(Rule.Status.READY);
+    expectedReport = "null\n" +
+            "  status\n" +
+            "    spec: READY\n" +
+            "    impl: DEPRECATED\n";
+
+    assertThat(rc.compare()).isEqualTo(-1);
+    assertThat(rc.toString()).isEqualTo(expectedReport);
+  }
 }

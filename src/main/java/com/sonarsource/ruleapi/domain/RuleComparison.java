@@ -55,6 +55,11 @@ public class RuleComparison{
       return result;
     }
 
+    result = compareStatus();
+    if (result != 0) {
+      return result;
+    }
+
     result = compareTemplate();
     if (result != 0) {
       return result;
@@ -165,8 +170,13 @@ public class RuleComparison{
     if (compareTitle() != 0) {
       logDifference(sb, "title", spec.getTitle(), impl.getTitle());
     }
+
     if (compareSeverity() != 0) {
       logDifference(sb, "severity", spec.getSeverity(), impl.getSeverity());
+    }
+
+    if (compareStatus() != 0) {
+      logDifference(sb, "status", spec.getStatus(), impl.getStatus());
     }
 
     if (compareTemplate() != 0) {
@@ -281,6 +291,15 @@ public class RuleComparison{
       sb.append(implTitle).append(implValue).append(separator);
     }
 
+  }
+
+  protected int compareStatus() {
+
+    int result = checkForNulls(spec.getStatus(), impl.getStatus());
+    if (result != 0 || spec.getStatus() == null) {
+      return result;
+    }
+    return spec.getStatus().compareTo(impl.getStatus());
   }
 
   protected int compareSeverity() {
