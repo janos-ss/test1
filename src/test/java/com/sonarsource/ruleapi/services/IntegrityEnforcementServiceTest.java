@@ -7,8 +7,6 @@ package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.specifications.*;
-import com.sonarsource.ruleapi.get.RuleMaker;
-import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
 import java.util.*;
