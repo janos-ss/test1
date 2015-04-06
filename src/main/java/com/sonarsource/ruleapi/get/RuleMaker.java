@@ -638,6 +638,8 @@ public class RuleMaker {
    */
   public static void setDescription(Rule rule, String fullDescription, boolean isMarkdown) {
 
+    String fullDesc = fullDescription;
+
     if (Rule.Status.DEPRECATED.equals(rule.getStatus()) && ! rule.getDeprecationLinks().isEmpty()) {
       StringBuilder sb = new StringBuilder();
 
@@ -651,15 +653,15 @@ public class RuleMaker {
       sb.insert(0,"\r\nThis rule is deprecated, use ");
       sb.append(" instead.");
 
-      sb.insert(0, fullDescription);
+      sb.insert(0, fullDesc);
 
-      fullDescription = sb.toString();
+      fullDesc = sb.toString();
     }
 
-    rule.setFullDescription(fullDescription);
-    if (fullDescription != null && fullDescription.length() > 0) {
-      String[] markdownPieces = fullDescription.split(MARKDOWN_H2_MATCH);
-      String[] htmlPieces = fullDescription.split(HTML_H2);
+    rule.setFullDescription(fullDesc);
+    if (fullDesc != null && fullDesc.length() > 0) {
+      String[] markdownPieces = fullDesc.split(MARKDOWN_H2_MATCH);
+      String[] htmlPieces = fullDesc.split(HTML_H2);
 
       if (isMarkdown) {
         handleMarkdown(rule, markdownPieces);
