@@ -13,6 +13,10 @@ import com.google.common.base.Strings;
 
 public class Rule {
 
+  public enum Status {
+    BETA, READY, DEPRECATED
+  }
+
   public enum Severity {
     INFO, MINOR, MAJOR, CRITICAL, BLOCKER
   }
@@ -90,7 +94,9 @@ public class Rule {
 
   private String language = null;
   private String key = null;
-  private String status = null;
+  private Status status = null;
+
+  private List<String> deprecationLinks = new ArrayList<String>();
 
   private Severity severity = null;
   private Boolean defaultActive = null;
@@ -244,11 +250,11 @@ public class Rule {
     this.key = key;
   }
 
-  public String getStatus() {
+  public Status getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(Status status) {
     this.status = status;
   }
 
@@ -590,6 +596,16 @@ public class Rule {
   public void setIrrelevantLanguages(List<String> irrelevantLanguages) {
 
     this.irrelevantLanguages = irrelevantLanguages;
+  }
+
+  public List<String> getDeprecationLinks() {
+
+    return deprecationLinks;
+  }
+
+  public void setDeprecationLinks(List<String> deprecationLinks) {
+
+    this.deprecationLinks = deprecationLinks;
   }
 
 }

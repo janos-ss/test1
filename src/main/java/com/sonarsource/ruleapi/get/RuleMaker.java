@@ -169,7 +169,7 @@ public class RuleMaker {
       rule.getLegacyKeys().add(rule.getKey());
     }
 
-    rule.setStatus((String) jsonRule.get("status"));
+    rule.setStatus(Rule.Status.valueOf((String) jsonRule.get("status")));
     rule.setSeverity(Rule.Severity.valueOf((String) jsonRule.get("severity")));
 
     rule.setTitle((String) jsonRule.get("name"));
@@ -205,7 +205,7 @@ public class RuleMaker {
 
   protected static void populateFields(Rule rule, JSONObject issue) {
     rule.setKey(issue.get("key").toString());
-    rule.setStatus(getJsonFieldValue(issue, "status"));
+    setStatusFromLinks(rule, issue);
 
     String tmp = getCustomFieldValue(issue, "Default Severity");
     if (tmp != null) {
@@ -237,6 +237,26 @@ public class RuleMaker {
     rule.setTags(getListFromJsonFieldValue(issue, "labels"));
 
     setReferences(rule, issue);
+  }
+
+  protected static void setStatusFromLinks(Rule rule, JSONObject issue) {
+
+    rule.setStatus(Rule.Status.READY);
+
+    JSONArray links = getJsonArrayField(issue, "issuelinks");
+    if (links != null) {
+      for (Object obj : links) {
+        JSONObject linkObj = (JSONObject) obj;
+
+        JSONObject linkType = (JSONObject) linkObj.get("type");
+        JSONObject inwardIssue = (JSONObject) linkObj.get("inwardIssue");
+
+        if ("Deprecate".equals(linkType.get("name")) && inwardIssue != null) {
+          rule.setStatus(Rule.Status.DEPRECATED);
+          rule.getDeprecationLinks().add((String)inwardIssue.get("key"));
+        }
+      }
+    }
   }
 
   protected static void setReferences(Rule rule, JSONObject issue) {
@@ -325,6 +345,11 @@ public class RuleMaker {
   protected static String normalizeKey(String key) {
 
     return key.replaceAll("^(.+:)?S0*(\\d+)$", "RSPEC-$2");
+  }
+
+  protected static String denormalizeKey(String key) {
+
+    return key.replaceAll("RSPEC-(\\d+)", "S$1");
   }
 
   public static boolean isKeyNormal(String key) {
@@ -495,6 +520,22 @@ public class RuleMaker {
     return null;
   }
 
+  protected static JSONArray getJsonArrayField(JSONObject jobj, String key) {
+
+    JSONObject fields = (JSONObject) jobj.get(FIELDS);
+
+    if(fields != null && key != null) {
+      Object obj = fields.get(key);
+      if (obj == null) {
+        obj = fields.get(getCustomFieldKey(jobj, key));
+      }
+      if (obj instanceof JSONArray) {
+        return (JSONArray) obj;
+      }
+    }
+    return null;
+  }
+
   protected static List<String> getListFromJsonFieldValue(JSONObject jobj, String key) {
 
     List<String> list = new ArrayList<String>();
@@ -596,6 +637,24 @@ public class RuleMaker {
    * @param fullDescription the text from which to populate it.
    */
   public static void setDescription(Rule rule, String fullDescription, boolean isMarkdown) {
+
+    if (Rule.Status.DEPRECATED.equals(rule.getStatus()) && ! rule.getDeprecationLinks().isEmpty()) {
+      StringBuilder sb = new StringBuilder();
+
+      for (String key : rule.getDeprecationLinks()) {
+        if (sb.length() > 0) {
+          sb.append(", ");
+        }
+        sb.append(denormalizeKey(key));
+      }
+
+      sb.insert(0,"\r\nThis rule is deprecated, use ");
+      sb.append(" instead.");
+
+      sb.insert(0, fullDescription);
+
+      fullDescription = sb.toString();
+    }
 
     rule.setFullDescription(fullDescription);
     if (fullDescription != null && fullDescription.length() > 0) {
