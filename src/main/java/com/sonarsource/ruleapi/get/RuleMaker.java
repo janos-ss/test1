@@ -272,6 +272,7 @@ public class RuleMaker {
     rule.setOwasp(getCustomFieldValueAsList(issue, "OWASP"));
     rule.setPhpFig(getCustomFieldValueAsList(issue, "PHP-FIG"));
     rule.setCwe(getCustomFieldValueAsList(issue, "CWE"));
+    rule.setPylint(getCustomFieldValueAsList(issue, "Pylint"));
   }
 
   protected static void setSqale(Rule rule, JSONObject issue) {

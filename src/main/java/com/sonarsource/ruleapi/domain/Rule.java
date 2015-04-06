@@ -138,6 +138,8 @@ public class Rule {
   private List<String> owasp = new ArrayList<String>();
   private List<String> phpFig = new ArrayList<String>();
   private List<String> cwe = new ArrayList<String>();
+  private List<String> pylint = new ArrayList<String>();
+
 
   public Rule(String language) {
     this.language = language;
@@ -606,6 +608,16 @@ public class Rule {
   public void setDeprecationLinks(List<String> deprecationLinks) {
 
     this.deprecationLinks = deprecationLinks;
+  }
+
+  public List<String> getPylint() {
+
+    return pylint;
+  }
+
+  public void setPylint(List<String> pylint) {
+
+    this.pylint = pylint;
   }
 
 }
