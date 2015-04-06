@@ -123,8 +123,10 @@ public abstract class AbstractReportableStandard implements CodingStandard {
   protected void findSpecifiedInRspec(List<Rule> rspecRules) {
 
     for (Rule rspecRule : rspecRules) {
-      List<String> ids = getRspecReferenceFieldValues(rspecRule);
-      setCodingStandardRuleCoverageSpecifiedBy(rspecRule, ids);
+      if (! Rule.Status.DEPRECATED.equals(rspecRule.getStatus())) {
+        List<String> ids = getRspecReferenceFieldValues(rspecRule);
+        setCodingStandardRuleCoverageSpecifiedBy(rspecRule, ids);
+      }
     }
   }
 
@@ -158,12 +160,14 @@ public abstract class AbstractReportableStandard implements CodingStandard {
       }
 
       for (Rule sqRule : sqImplemented) {
-        String key = sqRule.getKey();
+        if (! Rule.Status.DEPRECATED.equals(sqRule.getStatus())) {
+          String key = sqRule.getKey();
 
-        Rule rspecRule = RuleMaker.getRuleByKey(key, sq);
-        List<String> ids = getExpandedStandardKeyList(getRspecReferenceFieldValues(rspecRule));
+          Rule rspecRule = RuleMaker.getRuleByKey(key, sq);
+          List<String> ids = getExpandedStandardKeyList(getRspecReferenceFieldValues(rspecRule));
 
-        setCodingStandardRuleCoverageImplemented(ids, sqRule);
+          setCodingStandardRuleCoverageImplemented(ids, sqRule);
+        }
       }
     }
   }
