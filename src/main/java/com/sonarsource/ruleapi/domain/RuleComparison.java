@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
@@ -182,7 +183,7 @@ public class RuleComparison{
     }
 
     if (compareTags() != 0) {
-      logDifference(sb,"tags",
+      logDifference(sb,"tags:" + getTagDifferences(),
               ComparisonUtilities.listToString(spec.getTags(), true), ComparisonUtilities.listToString(impl.getTags(), true));
     }
 
@@ -401,6 +402,34 @@ public class RuleComparison{
       }
     }
     return 0;
+  }
+
+  protected String getTagDifferences() {
+
+    StringBuilder sb = new StringBuilder();
+
+    List<String> aList = spec.getTags();
+    List<String> bList = impl.getTags();
+
+    List<String> missingFromSpec = new ArrayList<String>(aList);
+    missingFromSpec.removeAll(bList);
+
+    List<String> extraInSpec = new ArrayList<String>(bList);
+    extraInSpec.removeAll(aList);
+
+    if (!missingFromSpec.isEmpty()) {
+      sb.append(" +");
+      sb.append(ComparisonUtilities.listToString(missingFromSpec, true));
+    }
+    if (!extraInSpec.isEmpty()) {
+      if (sb.length() > 0) {
+        sb.append(";");
+      }
+      sb.append(" -");
+      sb.append(ComparisonUtilities.listToString(extraInSpec, true));
+    }
+
+    return sb.toString();
   }
 
   protected int compareTags() {

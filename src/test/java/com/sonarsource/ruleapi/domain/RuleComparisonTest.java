@@ -90,7 +90,7 @@ public class RuleComparisonTest {
     RuleComparison rc = new RuleComparison(spec, impl);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
-            "  tags\n" +
+            "  tags: +clumsy, java8; -bug, performance\n" +
             "    spec: clumsy, java8\n" +
             "    impl: bug, performance\n");
   }
