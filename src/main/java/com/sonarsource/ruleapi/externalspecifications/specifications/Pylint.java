@@ -18,11 +18,6 @@ public class Pylint extends AbstractReportableExternalTool {
   private Language language = Language.PY;
   private String name = "Pylint";
 
-  protected int implementable = 0;
-  protected int skipped = 0;
-  protected int specified = 0;
-  protected int implemented = 0;
-
 
   public enum PylintRule implements CodingStandardRule {
     C0102 ("Black listed name \"%s\"", Implementability.IMPLEMENTABLE),
