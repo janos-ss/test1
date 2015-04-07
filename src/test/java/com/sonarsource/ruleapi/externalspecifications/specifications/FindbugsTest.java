@@ -3,12 +3,9 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
-import com.sonarsource.ruleapi.get.Fetcher;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -21,14 +18,6 @@ public class FindbugsTest {
 
   private static String FB_ID = "BC_IMPOSSIBLE_CAST";
 
-  @Test
-  public void testFormatLine() {
-
-    FindBugs fb = (FindBugs)SupportedCodingStandard.FINDBUGS.getCodingStandard();
-
-    String result = String.format("  yo                9   37.67%%%n");
-    assertThat(fb.formatLine("yo", 9, (float)37.671293)).isEqualTo(result);
-  }
 
   @Test
   public void testComputeCoverage(){
@@ -45,9 +34,6 @@ public class FindbugsTest {
 
   @Test
   public void testComputeCoverageAgain() {
-
-    String blah = "red";
-    blah.matches("a\\(b");
 
     Rule rule = new Rule("Java");
     List<String> ids = new ArrayList<String>();
