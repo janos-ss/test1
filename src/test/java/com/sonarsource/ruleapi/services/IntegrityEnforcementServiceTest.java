@@ -236,4 +236,10 @@ public class IntegrityEnforcementServiceTest {
     assertThat(specificReferences).hasSize(1);
     assertThat(specificReferences).contains(" MISRA C:2004, 20.3");
   }
+
+  @Test
+  public void testtest(){
+    Pylint pylint = new Pylint();
+    System.out.print(pylint.getSummaryReport("http://localhost:9000"));
+  }
 }
