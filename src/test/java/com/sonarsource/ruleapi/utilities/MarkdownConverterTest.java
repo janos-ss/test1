@@ -144,6 +144,14 @@ public class MarkdownConverterTest {
             "<p>Some smaller, more specific exception type should be caught instead.</p>\n";
 
     assertThat(mc.transform(markdown,"")).isEqualTo(html);
+
+    markdown = "*C99*\n" +
+            "{{inline}}, {{restrict}}, {{_Bool}}, {{_Complex}}, {{_Noreturn}}, {{_Static_assert}}, {{_Thread_local}}";
+    html = "<p><strong>C99</strong></p>\n" +
+            "<p><code>inline</code>, <code>restrict</code>, <code>_Bool</code>, <code>_Complex</code>, <code>_Noreturn</code>, <code>_Static_assert</code>, <code>_Thread_local</code></p>\n";
+
+    assertThat(mc.transform(markdown,"")).isEqualTo(html);
+
   }
 
   @Test

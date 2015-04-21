@@ -353,11 +353,21 @@ public class MarkdownConverter {
   }
 
   protected String handleBold(String arg) {
+
+    return applyFormatting(arg, '*', "<strong>", "</strong>");
+  }
+
+  protected String handleItal(String arg) {
+
+    return applyFormatting(arg, '_', "<em>", "</em>");
+  }
+
+  private String applyFormatting(String arg, char indicator, String open, String close) {
     String line = arg;
 
     boolean boldOpen = false;
     int lastPos = -1;
-    int pos = line.indexOf('*');
+    int pos = line.indexOf(indicator);
 
     while (pos > -1) {
       int openCode = line.indexOf(CODE_OPEN, lastPos);
@@ -372,37 +382,17 @@ public class MarkdownConverter {
         }
 
         if (boldOpen) {
-          line = left + "</strong>" + right;
+          line = left + close + right;
           boldOpen = false;
         } else if ("".equals(left) || left.matches(".* ")) {
-          line = left + "<strong>" + right;
+          line = left + open + right;
           boldOpen = true;
         }
       }
 
       lastPos = pos;
-      pos = line.indexOf('*', pos+1);
+      pos = line.indexOf(indicator, pos+1);
     }
-
-    return line;
-  }
-
-  protected String handleItal(String arg) {
-    String line = arg;
-    boolean italOpen = false;
-
-    while (line.matches(".*([ .>]_|_[ .<]).*")) {
-      if (italOpen) {
-        line = line.replaceFirst("_([ .<])", "</em>$1");
-        italOpen = false;
-      } else {
-        line = line.replaceFirst("([ .>])_", "$1<em>");
-        italOpen = true;
-      }
-    }
-
-    line = line.replaceAll("^_", "<em>");
-    line = line.replaceAll("_$", "</em>");
 
     return line;
   }
