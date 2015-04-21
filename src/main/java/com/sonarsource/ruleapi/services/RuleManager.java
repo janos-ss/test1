@@ -51,8 +51,10 @@ public class RuleManager {
   }
 
   protected String getNormalKey(String legacyKey, Language language) {
-    String key = legacyKey;
-    if (! legacyKey.matches("RSPEC-\\d+")) {
+
+    String key = RuleMaker.normalizeKey(legacyKey);
+
+    if (! key.matches("RSPEC-\\d+")) {
 
       Rule freshFetch = RuleMaker.getRuleByKey(legacyKey, language.getRspec());
       key = freshFetch.getKey();
