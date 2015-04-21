@@ -111,6 +111,12 @@ public class MarkdownConverterTest {
     String html = "<p><code>SELECT *</code> should be avoided because it releases control of the returned columns and could therefore lead to errors and potentially to performance issues.</p>\n";
 
     assertThat(mc.transform(markdown, "")).isEqualTo(html);
+
+    markdown = "* MISRA C++:2008, 16-2-4 - The ', \", /* or // characters shall not occur in a header file name.";
+    html = "<ul>\n<li> MISRA C++:2008, 16-2-4 - The ', \", /* or // characters shall not occur in a header file name.</li>\n</ul>\n";
+
+    assertThat(mc.transform(markdown, "")).isEqualTo(html);
+
   }
 
   @Test

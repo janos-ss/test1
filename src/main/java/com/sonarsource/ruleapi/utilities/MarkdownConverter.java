@@ -374,7 +374,7 @@ public class MarkdownConverter {
         if (boldOpen) {
           line = left + "</strong>" + right;
           boldOpen = false;
-        } else {
+        } else if ("".equals(left) || left.matches(".* ")) {
           line = left + "<strong>" + right;
           boldOpen = true;
         }
