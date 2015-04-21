@@ -55,17 +55,20 @@ public class RuleUpdater {
       String fieldId = fieldIds.get(entry.getKey());
       Map<String,String> allowedValues = getAllowedValues(fieldsMeta, fieldId);
       JSONObject fieldMeta = (JSONObject) fieldsMeta.get(fieldId);
-      String fieldType = ((JSONObject)fieldMeta.get("schema")).get("type").toString();
+      if (fieldMeta != null) {
+        String fieldType = ((JSONObject) fieldMeta.get("schema")).get("type").toString();
 
-      Object entryValue = entry.getValue();
-      if (allowedValues != null) {
-        updateFields.put(fieldId, handleConstrainedValueList(entryValue, allowedValues, fieldId));
-      } else if ("array".equals(fieldType)) {
-        updateFields.put(fieldId, handleArrayType(entryValue));
-      } else {
-        updateFields.put(fieldId, handleFreeEntry(entryValue));
+        Object entryValue = entry.getValue();
+        if (allowedValues != null) {
+          updateFields.put(fieldId, handleConstrainedValueList(entryValue, allowedValues, fieldId));
+        } else if ("array".equals(fieldType)) {
+          updateFields.put(fieldId, handleArrayType(entryValue));
+        } else {
+          updateFields.put(fieldId, handleFreeEntry(entryValue));
+        }
       }
     }
+
     return request;
   }
 
