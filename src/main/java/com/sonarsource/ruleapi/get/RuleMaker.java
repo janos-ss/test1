@@ -343,7 +343,7 @@ public class RuleMaker {
     return null;
   }
 
-  protected static String normalizeKey(String key) {
+  public static String normalizeKey(String key) {
 
     return key.replaceAll("^(.+:)?S0*(\\d+)$", "RSPEC-$2");
   }
