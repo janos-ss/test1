@@ -133,6 +133,10 @@ public class MarkdownConverterTest {
     assertThat(mc.handleItal(markdown2)).isEqualTo(html2);
     assertThat(mc.handleItal(regex)).isEqualTo(regex);
 
+    markdown1 = "A possible programming error in C++ is to apply the {{sizeof}} operator to an expression and expect the expression to be evaluated. However, the expression is not evaluated because {{sizeof}} only acts on the _type_ of the expression. To avoid this error, {{sizeof}} should not be used on expressions that would contain side effects if they were used elsewhere, since the side effects will not occur.";
+    html1 = "<p>A possible programming error in C++ is to apply the <code>sizeof</code> operator to an expression and expect the expression to be evaluated. However, the expression is not evaluated because <code>sizeof</code> only acts on the <em>type</em> of the expression. To avoid this error, <code>sizeof</code> should not be used on expressions that would contain side effects if they were used elsewhere, since the side effects will not occur.</p>\n";
+
+    assertThat(mc.transform(markdown1,"")).isEqualTo(html1);
   }
 
   @Test

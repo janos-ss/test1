@@ -365,15 +365,13 @@ public class MarkdownConverter {
   private String applyFormatting(String arg, char indicator, String open, String close) {
     String line = arg;
 
-    boolean boldOpen = false;
+    boolean tagIsOpen = false;
     int lastPos = -1;
     int pos = line.indexOf(indicator);
 
     while (pos > -1) {
-      int openCode = line.indexOf(CODE_OPEN, lastPos);
-      int closeCode = line.indexOf(CODE_CLOSE, pos);
 
-      if (openCode > pos || closeCode < pos) {
+      if (!isIndicatorInsideCodeTags(line, pos, lastPos)) {
 
         String left = line.substring(0, pos);
         String right = "";
@@ -381,12 +379,12 @@ public class MarkdownConverter {
           right = line.substring(pos + 1);
         }
 
-        if (boldOpen) {
+        if (tagIsOpen) {
           line = left + close + right;
-          boldOpen = false;
+          tagIsOpen = false;
         } else if ("".equals(left) || left.matches(".* ")) {
           line = left + open + right;
-          boldOpen = true;
+          tagIsOpen = true;
         }
       }
 
@@ -395,6 +393,13 @@ public class MarkdownConverter {
     }
 
     return line;
+  }
+
+  private boolean isIndicatorInsideCodeTags(String line, int pos, int lastPos) {
+    int openCode = line.indexOf(CODE_OPEN, lastPos);
+    int firstCloseCode = line.indexOf(CODE_CLOSE, openCode);
+
+    return openCode < pos && firstCloseCode > pos;
   }
 
   protected int findBefore(String line, int start, char ch) {
