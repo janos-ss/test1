@@ -5,9 +5,6 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
-import oracle.net.aso.p;
-import oracle.net.aso.s;
-
 import java.util.LinkedList;
 
 /**
@@ -396,10 +393,21 @@ public class MarkdownConverter {
   }
 
   private boolean isIndicatorInsideCodeTags(String line, int pos, int lastPos) {
-    int openCode = line.indexOf(CODE_OPEN, lastPos);
+    int openCode = findBefore(line, pos, CODE_OPEN);
     int firstCloseCode = line.indexOf(CODE_CLOSE, openCode);
 
-    return openCode < pos && firstCloseCode > pos;
+    return openCode > -1 && openCode < pos && firstCloseCode > pos;
+  }
+
+
+  protected int findBefore(String line, int start, String str) {
+    for (int i = start - 1; i >= 0; i--) {
+      if (line.substring(i).startsWith(str)) {
+        return i;
+      }
+    }
+
+    return -1;
   }
 
   protected int findBefore(String line, int start, char ch) {
