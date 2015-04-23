@@ -359,7 +359,7 @@ public class MarkdownConverter {
     return applyFormatting(arg, '_', "<em>", "</em>");
   }
 
-  private String applyFormatting(String arg, char indicator, String open, String close) {
+  protected String applyFormatting(String arg, char indicator, String open, String close) {
     String line = arg;
 
     boolean tagIsOpen = false;
@@ -368,13 +368,10 @@ public class MarkdownConverter {
 
     while (pos > -1) {
 
-      if (!isIndicatorInsideCodeTags(line, pos, lastPos)) {
+      if (!isIndicatorInsideCodeTags(line, pos)) {
 
         String left = line.substring(0, pos);
-        String right = "";
-        if (pos < line.length()) {
-          right = line.substring(pos + 1);
-        }
+        String right = line.substring(pos + 1);
 
         if (tagIsOpen) {
           line = left + close + right;
@@ -392,7 +389,7 @@ public class MarkdownConverter {
     return line;
   }
 
-  private boolean isIndicatorInsideCodeTags(String line, int pos, int lastPos) {
+  protected boolean isIndicatorInsideCodeTags(String line, int pos) {
     int openCode = findBefore(line, pos, CODE_OPEN);
     int firstCloseCode = line.indexOf(CODE_CLOSE, openCode);
 

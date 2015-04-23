@@ -93,8 +93,6 @@ public class RuleUpdaterTest {
   @Test
   public void testConstrainedValueSad () {
 
-    JSONObject obj = null;
-
     JSONParser parser = new JSONParser();
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
@@ -106,6 +104,24 @@ public class RuleUpdaterTest {
     } catch (Exception e) {
       assertThat(e).isInstanceOf(RuleException.class);
     }
+  }
+
+  @Test
+  public void testFieldNameNotFound() {
+
+    JSONParser parser = new JSONParser();
+    try {
+      JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
+      Map<String, Object> map = new HashMap<String, Object>();
+      map.put("Unknown Field", "Green");
+
+      JSONObject obj = RuleUpdater.prepareRequest(map, fieldsMeta);
+      Assertions.assertThat((JSONObject)obj.get("fields")).hasSize(0);
+
+    } catch (Exception e) {
+      fail("Unexpected exception thwon");
+    }
+
   }
 
   @Test

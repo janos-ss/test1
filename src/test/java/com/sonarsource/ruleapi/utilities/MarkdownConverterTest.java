@@ -512,4 +512,12 @@ public class MarkdownConverterTest {
     expectedHtml = "<p>Some <strong>bold</strong> text before, some <code>.*code.*</code>, and some <strong>bold</strong> text after.</p>\n";
     assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
   }
+
+  @Test
+  public void testIsIndicatorInsideCodeTags() {
+
+    String line = "This is a line with no code";
+    assertThat(mc.isIndicatorInsideCodeTags(line, 5)).isFalse();
+
+  }
 }
