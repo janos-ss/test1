@@ -363,7 +363,6 @@ public class MarkdownConverter {
     String line = arg;
 
     boolean tagIsOpen = false;
-    int lastPos = -1;
     int pos = line.indexOf(indicator);
 
     while (pos > -1) {
@@ -382,7 +381,6 @@ public class MarkdownConverter {
         }
       }
 
-      lastPos = pos;
       pos = line.indexOf(indicator, pos+1);
     }
 
