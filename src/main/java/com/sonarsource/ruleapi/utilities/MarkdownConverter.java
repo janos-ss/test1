@@ -64,12 +64,12 @@ public class MarkdownConverter {
           if (!codeOpen) {
 
             lines[i] = handleLinebreaksInTables(lines, i);
+            lines[i] = handleDoubleCurly(lines[i]);
             lines[i] = handleTable(lines[i], sb);
             lines[i] = handleHref(lines[i]);
             lines[i] = handleRuleLinks(lines[i], language);
             lines[i] = handleHeading(lines[i]);
             lines[i] = handleBq(lines[i]);
-            lines[i] = handleDoubleCurly(lines[i]);
             lines[i] = handleList(sb, lines[i]);
             lines[i] = handleBold(lines[i]);
             lines[i] = handleItal(lines[i]);
@@ -277,7 +277,19 @@ public class MarkdownConverter {
         pos = line.length();
       }
       line = "<tr><td>" + line.substring(1, pos) + "</td></tr>";
-      line = line.replace("|", "</td><td>");
+
+      pos = line.indexOf('|');
+      while (pos >-1) {
+        if (!isIndicatorInsideCodeTags(line, pos)) {
+          String left = line.substring(0, pos);
+          String right = line.substring(pos + 1);
+
+          line = left + "</td><td>" + right;
+        }
+        pos = line.indexOf('|', pos+1);
+
+      }
+
       paragraph = false;
     }
 

@@ -520,4 +520,25 @@ public class MarkdownConverterTest {
     assertThat(mc.isIndicatorInsideCodeTags(line, 5)).isFalse();
 
   }
+
+  @Test
+  public void testCodePipesInTables() {
+
+    String markdown = "| |{{+}}, {{-}}, {{*}}, {{/}}, {{%}}|{{<<}}, {{>>}}, {{>>>}}|{{&}}|{{^}}| {{|}} |\n" +
+            "|{{+}}, {{-}}, {{*}}, {{/}}, {{%}}| |x|x|x|x|\n" +
+            "|{{<<}}, {{>>}}, {{>>>}}|x| |x|x|x|\n" +
+            "|{{&}}|x|x| |x|x|\n" +
+            "|{{^}}|x|x|x| |x|\n" +
+            "| {{|}} |x|x|x|x| |";
+    String html = "<table>\n" +
+            "<tr><td> </td><td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code></td><td><code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>&gt;&gt;&gt;</code></td><td><code>&amp;</code></td><td><code>^</code></td><td> <code>|</code> </td></tr>\n" +
+            "<tr><td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code></td><td> </td><td>x</td><td>x</td><td>x</td><td>x</td></tr>\n" +
+            "<tr><td><code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>&gt;&gt;&gt;</code></td><td>x</td><td> </td><td>x</td><td>x</td><td>x</td></tr>\n" +
+            "<tr><td><code>&amp;</code></td><td>x</td><td>x</td><td> </td><td>x</td><td>x</td></tr>\n" +
+            "<tr><td><code>^</code></td><td>x</td><td>x</td><td>x</td><td> </td><td>x</td></tr>\n" +
+            "<tr><td> <code>|</code> </td><td>x</td><td>x</td><td>x</td><td>x</td><td> </td></tr>\n" +
+            "</table>\n";
+
+    assertThat(mc.transform(markdown, "")).isEqualTo(html);
+  }
 }
