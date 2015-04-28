@@ -368,4 +368,23 @@ public class ComparisonUtilitiesTest {
     assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
     assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl2)).isTrue();
   }
+
+  @Test
+  public void testSpaceAroundBlockquote() {
+
+    String spec = "<p>The <code>eval</code> function is a way to run arbitrary code at run-time. </p>\n" +
+            "<p>According to the PHP documentation</p>\n" +
+            "<blockquote>\n" +
+            "<p>The eval() language construct is very dangerous because it allows execution of arbitrary PHP code. Its use thus is discouraged. If you have carefully verified that there is no other option than to use this construct, pay special attention not to pass any user provided data into it without properly validating it beforehand.</p>\n" +
+            "</blockquote>\n";
+
+    String impl = "<p>\n" +
+            "  The <code>eval</code> function is a way to run arbitrary code at run-time.\n" +
+            "</p>\n" +
+            "<p>According to the PHP documentation</p>\n" +
+            "<blockquote>The eval() language construct is very dangerous because it allows execution of arbitrary PHP code. Its use thus is discouraged. If you have carefully verified that there is no other option than to use this construct, pay special attention not to pass any user provided data into it without properly validating it beforehand.</blockquote>\n" +
+            "\n";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
+  }
 }
