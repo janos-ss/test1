@@ -387,4 +387,14 @@ public class ComparisonUtilitiesTest {
 
     assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
   }
+
+  @Test
+  public void testQuoteVsQuoteEntity() {
+
+    String spec = "The maximum number of lines allowed in an \"IF\" block";
+    String impl = "The maximum number of lines allowed in an &quot;IF&quot; block";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
+
+  }
 }

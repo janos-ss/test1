@@ -176,7 +176,7 @@ public class ComparisonUtilities {
     String htmlTags = "(</?(code|th|td|li|blockquote|h\\d)>)";
 
     return a.replaceAll(unneededWhitespace, " ").replaceAll(pTags, " ").replaceAll(brTags," ")
-            .replaceAll(htmlTags, " $1 ").replaceAll("\"", " \" ")
+            .replaceAll(htmlTags, " $1 ").replaceAll("&quot;","\"").replaceAll("\"", " \" ")
             .replaceAll("[.,]", "").replaceAll(" +", " ").trim();
   }
 
