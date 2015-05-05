@@ -113,7 +113,9 @@ public class MarkdownConverterTest {
     assertThat(mc.transform(markdown, "")).isEqualTo(html);
 
     markdown = "* MISRA C++:2008, 16-2-4 - The ', \", /* or // characters shall not occur in a header file name.";
-    html = "<ul>\n<li> MISRA C++:2008, 16-2-4 - The ', \", /* or // characters shall not occur in a header file name.</li>\n</ul>\n";
+    html = "<ul>\n" +
+            "<li> MISRA C++:2008, 16-2-4 - The ', \", /* or // characters shall not occur in a header file name.\n" +
+            "</li></ul>\n";
 
     assertThat(mc.transform(markdown, "")).isEqualTo(html);
 
@@ -166,31 +168,89 @@ public class MarkdownConverterTest {
   @Test
   public void testSimpleUl() throws Exception {
     String markdown = "* a\r\n* b\r\n* c\r\n";
-    String html = "<ul>\n<li> a</li>\n<li> b</li>\n<li> c</li>\n</ul>\n";
+    String html = "<ul>\n" +
+            "<li> a\n" +
+            "</li><li> b\n" +
+            "</li><li> c\n" +
+            "</li></ul>\n";
 
     assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
   }
 
   @Test
   public void testNestedUl() throws Exception {
-    String markdown = "* a\r\n** a1\r\n** a1\r\n* b\r\n* c\r\n";
-    String html = "<ul>\n<li> a</li>\n<ul>\n<li> a1</li>\n<li> a1</li>\n</ul>\n<li> b</li>\n<li> c</li>\n</ul>\n";
+    String markdown = "* a\r\n" +
+                        "** a1\r\n" +
+                        "** a1\r\n" +
+                      "* b\r\n" +
+                      "* c\r\n";
+
+    String html = "<ul>\n" +
+            "<li> a\n" +
+            "<ul>\n" +
+            "<li> a1\n" +
+            "</li><li> a1\n" +
+            "</li></ul>\n" +
+            "</li><li> b\n" +
+            "</li><li> c\n" +
+            "</li></ul>\n";
+
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
+  }
+
+  @Test
+  public void testDeeplyNestedList() {
+
+    String markdown = "* a\r\n" +
+                        "** b\r\n" +
+                        "*** c\r\n" +
+                      "* d\r\n" +
+                      "blah";
+    String html = "<ul>\n" +
+            "<li> a\n" +
+            "<ul>\n" +
+            "<li> b\n" +
+            "<ul>\n" +
+            "<li> c\n" +
+            "</li></ul>\n" +
+            "</li></ul>\n" +
+            "</li><li> d\n" +
+            "</li></ul>\n" +
+            "<p>blah</p>\n";
 
     assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
   }
 
   @Test
   public void testSimpleOl() throws Exception {
-    String markdown = "# a\r\n# b\r\n# c\r\n";
-    String html = "<ol>\n<li> a</li>\n<li> b</li>\n<li> c</li>\n</ol>\n";
+    String markdown = "# a\r\n" +
+                      "# b\r\n" +
+                      "# c\r\n";
+    String html = "<ol>\n" +
+                    "<li> a\n" +
+                    "</li><li> b\n" +
+                    "</li><li> c\n" +
+                    "</li></ol>\n";
 
     assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
   }
 
   @Test
   public void testNestedOl() throws Exception {
-    String markdown = "# a\r\n## a1\r\n## a1\r\n# b\r\n# c\r\n";
-    String html = "<ol>\n<li> a</li>\n<ol>\n<li> a1</li>\n<li> a1</li>\n</ol>\n<li> b</li>\n<li> c</li>\n</ol>\n";
+    String markdown = "# a\r\n" +
+                        "## a1\r\n" +
+                        "## a1\r\n" +
+                      "# b\r\n" +
+                      "# c\r\n";
+    String html = "<ol>\n" +
+            "<li> a\n" +
+            "<ol>\n" +
+            "<li> a1\n" +
+            "</li><li> a1\n" +
+            "</li></ol>\n" +
+            "</li><li> b\n" +
+            "</li><li> c\n" +
+            "</li></ol>\n";
 
     assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
   }
@@ -198,7 +258,15 @@ public class MarkdownConverterTest {
   @Test
   public void testMixedList() throws Exception {
     String markdown = "# a\r\n#* a1\r\n#* a1\r\n# b\r\n# c\r\n";
-    String html = "<ol>\n<li> a</li>\n<ul>\n<li> a1</li>\n<li> a1</li>\n</ul>\n<li> b</li>\n<li> c</li>\n</ol>\n";
+    String html = "<ol>\n" +
+            "<li> a\n" +
+            "<ul>\n" +
+            "<li> a1\n" +
+            "</li><li> a1\n" +
+            "</li></ul>\n" +
+            "</li><li> b\n" +
+            "</li><li> c\n" +
+            "</li></ol>\n";
 
     assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
   }
@@ -206,7 +274,19 @@ public class MarkdownConverterTest {
   @Test
   public void testSequentialList() throws Exception {
     String markdown = "The following Javadoc elements are required:\r\n* Parameters, using <code>@param parameterName</code>.\r\n* Method return values, using <code>@return</code>.\r\n* Generic types, using <code>@param <T></code>.\r\n\r\nThe following public methods and constructors are not taken into account by this rule:\r\n* Getters and setters.\r\n* Methods with @Override annotation.\r\n* Empty constructors.\r\n* Static constants.\r\n";
-    String html = "<p>The following Javadoc elements are required:</p>\n<ul>\n<li> Parameters, using <code>@param parameterName</code>.</li>\n<li> Method return values, using <code>@return</code>.</li>\n<li> Generic types, using <code>@param &lt;T&gt;</code>.</li>\n</ul>\n<p>The following public methods and constructors are not taken into account by this rule:</p>\n<ul>\n<li> Getters and setters.</li>\n<li> Methods with @Override annotation.</li>\n<li> Empty constructors.</li>\n<li> Static constants.</li>\n</ul>\n";
+    String html = "<p>The following Javadoc elements are required:</p>\n" +
+            "<ul>\n" +
+            "<li> Parameters, using <code>@param parameterName</code>.\n" +
+            "</li><li> Method return values, using <code>@return</code>.\n" +
+            "</li><li> Generic types, using <code>@param &lt;T&gt;</code>.\n" +
+            "</li></ul>\n" +
+            "<p>The following public methods and constructors are not taken into account by this rule:</p>\n" +
+            "<ul>\n" +
+            "<li> Getters and setters.\n" +
+            "</li><li> Methods with @Override annotation.\n" +
+            "</li><li> Empty constructors.\n" +
+            "</li><li> Static constants.\n" +
+            "</li></ul>\n";
 
     assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
   }
@@ -305,10 +385,10 @@ public class MarkdownConverterTest {
             "\n" +
             "<p>The following cases are ignored</p>\n" +
             "<ul>\n" +
-            "<li> overriding methods.</li>\n" +
-            "<li> all methods in classes implementing one or more interfaces.</li>\n" +
-            "<li> methods which are empty or where the body consists of a single comment or a single <code>throw</code> statement (i.e. where the intention is apparently to simulate an abstract class).</li>\n" +
-            "</ul>\n" +
+            "<li> overriding methods.\n" +
+            "</li><li> all methods in classes implementing one or more interfaces.\n" +
+            "</li><li> methods which are empty or where the body consists of a single comment or a single <code>throw</code> statement (i.e. where the intention is apparently to simulate an abstract class).\n" +
+            "</li></ul>\n" +
             "<pre>\n" +
             "override function doSomething(a:int):void {    // ignored\n" +
             "  compute(a);\n" +
@@ -451,8 +531,8 @@ public class MarkdownConverterTest {
     String line1 = "* Rule S1656 - Implements a check on {{=}}.";
     String line1Out1 = "* Rule {rule:squid:S1656} - Implements a check on {{=}}.";
     String line1Out2 = "<ul>\n" +
-            "<li> Rule {rule:squid:S1656} - Implements a check on <code>=</code>.</li>\n" +
-            "</ul>\n";
+            "<li> Rule {rule:squid:S1656} - Implements a check on <code>=</code>.\n" +
+            "</li></ul>\n";
 
     String line2 = "This is a test of the emergency broadcast system.";
 
@@ -471,8 +551,8 @@ public class MarkdownConverterTest {
 
     line1Out1 = "* Rule {rule:javascript:S1656} - Implements a check on {{=}}.";
     line1Out2 = "<ul>\n" +
-            "<li> Rule {rule:javascript:S1656} - Implements a check on <code>=</code>.</li>\n" +
-            "</ul>\n";
+            "<li> Rule {rule:javascript:S1656} - Implements a check on <code>=</code>.\n" +
+            "</li></ul>\n";
 
     assertThat(mc.handleRuleLinks(line1, "JavaScript")).isEqualTo(line1Out1);
     assertThat(mc.handleRuleLinks(line1, "")).isEqualTo(line1);

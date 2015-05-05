@@ -147,7 +147,12 @@ public class RuleMakerTest {
   @Test
   public void testSetMarkdownReferences() throws Exception {
     String markdown = "h2. See\r\n* MISRA C++:2008, 2-13-4 \r\n* MISRA C:2012, 7.3\r\n";
-    String html = "<h2>See</h2>\n\n<ul>\n<li> MISRA C++:2008, 2-13-4 </li>\n<li> MISRA C:2012, 7.3</li>\n</ul>\n";
+    String html = "<h2>See</h2>\n" +
+            "\n" +
+            "<ul>\n" +
+            "<li> MISRA C++:2008, 2-13-4 \n" +
+            "</li><li> MISRA C:2012, 7.3\n" +
+            "</li></ul>\n";
 
     Rule rule = new Rule("C");
     RuleMaker.setDescription(rule, markdown,true);

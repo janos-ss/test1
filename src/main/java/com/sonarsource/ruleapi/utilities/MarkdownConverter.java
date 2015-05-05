@@ -17,6 +17,7 @@ public class MarkdownConverter {
   private boolean paragraph = true;
   private boolean quoteOpen = false;
   private LinkedList<String> listCloses;
+  private LinkedList<String> liCloses;
 
   private static final String BQ_OPEN = "<blockquote>";
   private static final String BQ_CLOSE = "</blockquote>";
@@ -43,6 +44,7 @@ public class MarkdownConverter {
       wrongLanguage = false;
       paragraph = true;
       listCloses = new LinkedList<String>();
+      liCloses = new LinkedList<>();
       StringBuilder sb = new StringBuilder();
 
       boolean hasLangCodeSample = hasLanguageCodeSample(language, markdown);
@@ -156,8 +158,9 @@ public class MarkdownConverter {
    * Should only be called at End Of Document
    */
   protected void closeWhatsOpen(StringBuilder sb) {
-    while ( ! listCloses.isEmpty()) {
-      sb.append(listCloses.pop());
+
+    while (! liCloses.isEmpty() && !listCloses.isEmpty()) {
+      sb.append(liCloses.pop()).append(listCloses.pop());
     }
     if (codeOpen) {
       sb.append("</pre>\n");
@@ -334,8 +337,12 @@ public class MarkdownConverter {
 
     if (line.matches("[*#]+ +.*")) {
 
-      if (listCloses.size() > firstSpace) {
-        sb.append(listCloses.pop());
+      while (listCloses.size() > firstSpace && liCloses.size() > firstSpace) {
+        sb.append(liCloses.pop()).append(listCloses.pop());
+      }
+
+      if (liCloses.size() == firstSpace) {
+        sb.append(liCloses.pop());
       }
 
       if (listCloses.size() < firstSpace) {
@@ -350,7 +357,10 @@ public class MarkdownConverter {
 
       return handleLi(line);
     } else if (! listCloses.isEmpty()) {
-      sb.append(listCloses.pop());
+
+      while (!liCloses.isEmpty() && !listCloses.isEmpty()) {
+        sb.append(liCloses.pop()).append(listCloses.pop());
+      }
     }
 
     return line;
@@ -359,7 +369,9 @@ public class MarkdownConverter {
   private String handleLi(String line) {
     int pos = line.indexOf(' ');
     paragraph = false;
-    return "<li>" + line.substring(pos) + "</li>";
+
+    liCloses.push("</li>");
+    return "<li>" + line.substring(pos);
   }
 
   protected String handleBold(String arg) {
