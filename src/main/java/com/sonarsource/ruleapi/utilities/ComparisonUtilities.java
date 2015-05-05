@@ -326,7 +326,7 @@ public class ComparisonUtilities {
     }
 
     if (a != null && b != null) {
-      return a.compareToIgnoreCase(b);
+      return a.trim().compareToIgnoreCase(b.trim());
     }
     if (a == null) {
       return -1;
