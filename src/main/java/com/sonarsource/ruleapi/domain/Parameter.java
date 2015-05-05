@@ -50,7 +50,7 @@ public class Parameter implements Comparable<Parameter> {
   @Override
   public int compareTo(Parameter parameter) {
 
-    int result = key.compareTo(parameter.getKey());
+    int result = key.compareToIgnoreCase(parameter.getKey());
     if (result != 0) {
       return result;
     }

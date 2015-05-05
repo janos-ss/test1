@@ -112,4 +112,21 @@ public class ParameterTest {
 
     assertThat(param.toString()).isEqualTo("* key = key\n* type = boolean");
   }
+
+  @Test
+  public void testKeyCompare() {
+
+    String key = "Key";
+    Parameter param1 = new Parameter();
+    param1.setKey(key);
+
+    Parameter param2 = new Parameter();
+    param2.setKey(key);
+
+    assertThat(param1.compareTo(param2)).isEqualTo(0);
+
+    param2.setKey(key.toLowerCase());
+    assertThat(param1.compareTo(param2)).isEqualTo(0);
+
+  }
 }
