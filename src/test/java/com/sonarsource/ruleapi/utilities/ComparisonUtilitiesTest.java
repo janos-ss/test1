@@ -164,7 +164,7 @@ public class ComparisonUtilitiesTest {
   @Test
   public void handleEntitiesAndAmpersands() {
 
-    String rspec = "<h2>Compliant Solution</h2>\n" +
+    String spec = "<h2>Compliant Solution</h2>\n" +
             "\n" +
             "<pre>\n" +
             "NEW cl_sql_statement( )-&gt;execute_ddl(\n" +
@@ -183,7 +183,15 @@ public class ComparisonUtilitiesTest {
             "      `  PRIMARY KEY (val1) )` ).\n" +
             "</pre>\n";
 
-    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(rspec, impl)).isTrue();
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
+
+
+    spec = "(<code>~</code> and <code>&lt;&lt;</code>)";
+    impl = "(<code>~</code> and <code><<</code>)";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
+
+
   }
 
   @Test

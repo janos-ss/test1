@@ -234,12 +234,8 @@ public class ComparisonUtilities {
     String b = implTok;
     String hasEntities = ".*&\\w+;.*";
 
-    if (!a.matches(hasEntities)) {
-      a = MarkdownConverter.handleEntities(a);
-    }
-    if (!b.matches(hasEntities)) {
-      b = MarkdownConverter.handleEntities(b);
-    }
+    a = MarkdownConverter.handleEntities(a);
+    b = MarkdownConverter.handleEntities(b);
 
     a = a.replaceAll("[\\[\\]()]","");
     b = b.replaceAll("[\\[\\]()]","");
