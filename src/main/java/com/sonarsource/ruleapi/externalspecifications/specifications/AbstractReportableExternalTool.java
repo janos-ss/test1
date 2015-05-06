@@ -11,7 +11,6 @@ import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
-import oracle.net.aso.k;
 
 import java.util.*;
 
@@ -24,6 +23,10 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   protected int implemented = 0;
 
   private boolean isHtml = false;
+
+  private static final String TABLE_OPEN = "<table>";
+  private static final String TABLE_CLOSE = "</table><br/><br/>";
+  private static final String TD = "</td><td>";
 
 
   @Override
@@ -78,7 +81,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
     StringBuilder sb = new StringBuilder();
     sb.append("<h3>Summary</h3>");
-    sb.append("<table>")
+    sb.append(TABLE_OPEN)
             .append(formatLine("Total rule count:", count, 100))
             .append(formatLine("&nbsp;&nbsp;rejected:", skipped, ((double)skipped/count)*100))
             .append(formatLine("&nbsp;&nbsp;remaining:", implementable, ((double) implementable / count) * 100));
@@ -88,7 +91,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
             .append(formatLine("&nbsp;&nbsp;planned:", specified-implemented, ((double)(specified-implemented)/implementable)*100))
             .append(formatLine("&nbsp;&nbsp;implemented:", implemented, ((double) implemented / implementable) * 100));
 
-    sb.append("</table><br/><br/>");
+    sb.append(TABLE_CLOSE);
 
     isHtml = false;
 
@@ -112,16 +115,16 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     });
 
     sb.append("<h3>Implemented replacements by SonarQube " + getLanguage().getRspec() + " key</h3>");
-    sb.append("<table>");
+    sb.append(TABLE_OPEN);
 
     for (Rule rule : sortedRuleList) {
       sb.append("<tr><td>").append(getLinkedRuleReference(instance, rule))
-              .append("</td><td>")
+              .append(TD)
               .append(ComparisonUtilities.listToString(ruleIdMap.get(rule), true))
               .append("</td></tr>");
     }
 
-    sb.append("</table><br/>");
+    sb.append(TABLE_CLOSE);
     return sb.toString();
   }
 
@@ -152,7 +155,9 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
     List<CodingStandardRuleCoverage> csrcList = new ArrayList<>(getRulesCoverage().values());
 
-    Comparator<CodingStandardRuleCoverage> toolKeyComparator = new Comparator<CodingStandardRuleCoverage>() {
+    Comparator<CodingStandardRuleCoverage> toolKeyComparator = new Comparator<CodingStandardRuleCoverage>()
+    {
+      @Override
       public int compare(CodingStandardRuleCoverage c1, CodingStandardRuleCoverage c2) {
         return c1.getCodingStandardRuleId().compareTo(c2.getCodingStandardRuleId());
       }
@@ -161,13 +166,13 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     Collections.sort(csrcList, toolKeyComparator);
 
     sb.append("<h3>Implemented replacements by " + getStandardName() + " key</h3>");
-    sb.append("<table>");
+    sb.append(TABLE_OPEN);
 
     for (CodingStandardRuleCoverage cov : csrcList) {
       if (!cov.getImplementedBy().isEmpty()) {
         sb.append("<tr><td>")
                 .append(cov.getCodingStandardRuleId())
-                .append("</td><td>");
+                .append(TD);
 
         for (Rule rule : cov.getImplementedBy()) {
           sb.append(getLinkedRuleReference(instance, rule));
@@ -177,7 +182,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
       }
     }
 
-    sb.append("</table><br/>");
+    sb.append(TABLE_CLOSE);
 
     return sb.toString();
   }
