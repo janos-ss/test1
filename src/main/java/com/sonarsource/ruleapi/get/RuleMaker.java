@@ -354,7 +354,7 @@ public class RuleMaker {
   }
 
   public static boolean isKeyNormal(String key) {
-    return key.matches("RSPEC-\\d+");
+    return key != null && key.matches("RSPEC-\\d+");
   }
 
   protected static boolean isLanguageMatch(String language, String candidate) {
