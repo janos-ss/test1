@@ -28,6 +28,21 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   private static final String TABLE_CLOSE = "</table><br/><br/>";
   private static final String TD = "</td><td>";
 
+  protected Comparator<CodingStandardRuleCoverage> toolKeyComparator = new Comparator<CodingStandardRuleCoverage>()
+  {
+    @Override
+    public int compare(CodingStandardRuleCoverage c1, CodingStandardRuleCoverage c2) {
+      return c1.getCodingStandardRuleId().compareTo(c2.getCodingStandardRuleId());
+    }
+  };
+
+  protected Comparator<Rule> ruleKeyComparator = new Comparator<Rule>() {
+    @Override
+    public int compare(Rule rule, Rule rule2) {
+      return rule.getKey().compareTo(rule2.getKey());
+    }
+  };
+
 
   @Override
   public String getReport(String instance) {
@@ -106,13 +121,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     Map<Rule,List<String>> ruleIdMap = getCoveringRules();
 
     List<Rule> sortedRuleList = new ArrayList<>(ruleIdMap.keySet());
-    Collections.sort(sortedRuleList, new Comparator<Rule>() {
-      @Override
-      public int compare(Rule rule, Rule rule2) {
-
-        return rule.getKey().compareTo(rule2.getKey());
-      }
-    });
+    Collections.sort(sortedRuleList, ruleKeyComparator);
 
     sb.append("<h3>Implemented replacements by SonarQube " + getLanguage().getRspec() + " key</h3>");
     sb.append(TABLE_OPEN);
@@ -154,14 +163,6 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     StringBuilder sb = new StringBuilder();
 
     List<CodingStandardRuleCoverage> csrcList = new ArrayList<>(getRulesCoverage().values());
-
-    Comparator<CodingStandardRuleCoverage> toolKeyComparator = new Comparator<CodingStandardRuleCoverage>()
-    {
-      @Override
-      public int compare(CodingStandardRuleCoverage c1, CodingStandardRuleCoverage c2) {
-        return c1.getCodingStandardRuleId().compareTo(c2.getCodingStandardRuleId());
-      }
-    };
 
     Collections.sort(csrcList, toolKeyComparator);
 
