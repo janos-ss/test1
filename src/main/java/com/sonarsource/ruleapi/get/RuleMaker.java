@@ -651,7 +651,7 @@ public class RuleMaker {
         sb.append(denormalizeKey(key));
       }
 
-      sb.insert(0,"\r\nThis rule is deprecated, use ");
+      sb.insert(0, "\r\n\r\nh2. Deprecated\r\nThis rule is deprecated, use ");
       sb.append(" instead.");
 
       sb.insert(0, fullDesc);
@@ -689,8 +689,11 @@ public class RuleMaker {
       } else if (piece.contains("Exceptions")) {
         rule.setExceptions(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
 
-      }  else if (piece.contains("See")) {
+      } else if (piece.contains("See")) {
         rule.setReferences(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
+
+      } else if (piece.contains("Deprecated")) {
+        rule.setDeprecation(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
       }
     }
   }
@@ -713,6 +716,9 @@ public class RuleMaker {
 
       } else if (piece.contains("See")) {
         rule.setReferences(HTML_H2 + piece);
+
+      } else if (piece.contains("Deprecated")) {
+        rule.setDeprecation(HTML_H2 + piece);
       }
     }
   }

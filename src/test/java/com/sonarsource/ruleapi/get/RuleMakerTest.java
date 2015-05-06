@@ -506,7 +506,7 @@ public class RuleMakerTest {
     assertThat(rule.getStatus()).isEqualTo(Rule.Status.DEPRECATED);
     assertThat(rule.getDeprecationLinks()).hasSize(1);
     assertThat(rule.getDeprecationLinks().get(0)).isEqualTo("RSPEC-1698");
-    assertThat(rule.getReferences()).endsWith("<p>This rule is deprecated, use {rule:squid:S1698} instead.</p>\n");
+    assertThat(rule.getDeprecation()).endsWith("<p>This rule is deprecated, use {rule:squid:S1698} instead.</p>\n");
 
   }
 }

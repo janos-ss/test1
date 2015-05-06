@@ -13,6 +13,16 @@ import com.google.common.base.Strings;
 
 public class Rule {
 
+  public String getDeprecation() {
+
+    return deprecation;
+  }
+
+  public void setDeprecation(String deprecation) {
+
+    this.deprecation = deprecation;
+  }
+
   public enum Status {
     BETA, READY, DEPRECATED
   }
@@ -111,6 +121,7 @@ public class Rule {
   private String compliant = "";
   private String exceptions = "";
   private String references = "";
+  private String deprecation = "";
 
   private String sqaleCharac = null;
   private Subcharacteristic sqaleSubCharac = null;
@@ -241,7 +252,7 @@ public class Rule {
   }
 
   public String getHtmlDescription() {
-    return description + nonCompliant + compliant + exceptions + references;
+    return description + nonCompliant + compliant + exceptions + references + deprecation;
   }
 
   public String getKey() {

@@ -119,6 +119,11 @@ public class RuleComparison{
     }
 
     result = compareException();
+    if (result != 0) {
+      return result;
+    }
+
+    result = compareDeprecation();
     return result;
   }
 
@@ -272,6 +277,9 @@ public class RuleComparison{
     logDifference(sb, "references",
             ComparisonUtilities.getFirstDifferingToken(spec.getReferences(), impl.getReferences()));
 
+    logDifference(sb, "deprecation",
+            ComparisonUtilities.getFirstDifferingToken(spec.getDeprecation(), impl.getDeprecation()));
+
     return sb.toString();
   }
 
@@ -332,6 +340,10 @@ public class RuleComparison{
 
   protected int compareException() {
     return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getExceptions(), impl.getExceptions());
+  }
+
+  protected int compareDeprecation() {
+    return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getDeprecation(), impl.getDeprecation());
   }
 
   protected int compareReference() {
