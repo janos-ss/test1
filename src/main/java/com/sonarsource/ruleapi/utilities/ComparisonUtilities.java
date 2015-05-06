@@ -232,7 +232,6 @@ public class ComparisonUtilities {
 
     String a = rspecTok;
     String b = implTok;
-    String hasEntities = ".*&\\w+;.*";
 
     a = MarkdownConverter.handleEntities(a);
     b = MarkdownConverter.handleEntities(b);

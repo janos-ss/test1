@@ -337,13 +337,7 @@ public class MarkdownConverter {
 
     if (line.matches("[*#]+ +.*")) {
 
-      while (listCloses.size() > firstSpace && liCloses.size() > firstSpace) {
-        sb.append(liCloses.pop()).append(listCloses.pop());
-      }
-
-      if (liCloses.size() == firstSpace) {
-        sb.append(liCloses.pop());
-      }
+      closeDanglingLisLists(sb, firstSpace);
 
       if (listCloses.size() < firstSpace) {
         if (line.charAt(firstSpace - 1) == '*') {
@@ -364,6 +358,17 @@ public class MarkdownConverter {
     }
 
     return line;
+  }
+
+  private void closeDanglingLisLists(StringBuilder sb, int firstSpace) {
+
+    while (listCloses.size() > firstSpace && liCloses.size() > firstSpace) {
+      sb.append(liCloses.pop()).append(listCloses.pop());
+    }
+
+    if (liCloses.size() == firstSpace) {
+      sb.append(liCloses.pop());
+    }
   }
 
   private String handleLi(String line) {
