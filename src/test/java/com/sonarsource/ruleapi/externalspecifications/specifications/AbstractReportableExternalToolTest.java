@@ -19,9 +19,12 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class AbstractReportableExternalToolTest {
 
-  FindBugs findBugsTestInstance = new FindBugs();
-  Rule rule = new Rule("Java");
-  List<String> list = new ArrayList<>();
+  private FindBugs findBugsTestInstance = new FindBugs();
+  private Rule rule = new Rule("Java");
+  private List<String> list = new ArrayList<>();
+
+  private static final String FB_KEY1 = FindBugs.StandardRule.AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION.name();
+  private static final String FB_KEY2 = FindBugs.StandardRule.BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS.name();
 
   public AbstractReportableExternalToolTest() {
     findBugsTestInstance.populateRulesCoverageMap();
@@ -30,8 +33,8 @@ public class AbstractReportableExternalToolTest {
     rule.setKey("S1234");
     rule.setTitle("X should (not) Y");
 
-    list.add(FindBugs.StandardRule.AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION.name());
-    list.add(FindBugs.StandardRule.BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS.name());
+    list.add(FB_KEY1);
+    list.add(FB_KEY2);
 
     findBugsTestInstance.setCodingStandardRuleCoverageImplemented(list, rule);
     findBugsTestInstance.setCodingStandardRuleCoverageSpecifiedBy(rule, list);
@@ -51,7 +54,8 @@ public class AbstractReportableExternalToolTest {
 
     Map<Rule, List<String>> map = findBugsTestInstance.getCoveringRules();
     assertThat(map.size()).isEqualTo(1);
-    assertThat(map.get(rule)).isEqualTo(list);
+    assertThat(map.get(rule)).contains(FB_KEY1);
+    assertThat(map.get(rule)).contains(FB_KEY2);
 
   }
 
