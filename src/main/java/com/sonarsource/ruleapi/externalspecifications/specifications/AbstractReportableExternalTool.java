@@ -6,18 +6,24 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
+import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
+import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
+import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
+import oracle.net.aso.k;
 
-import java.util.Iterator;
+import java.util.*;
 
 
-public abstract class AbstractReportableExternalTool extends AbstractReportableStandard {
+public abstract class AbstractReportableExternalTool extends AbstractReportableStandard implements CustomerReport{
 
   protected int implementable = 0;
   protected int skipped = 0;
   protected int specified = 0;
   protected int implemented = 0;
+
+  private boolean isHtml = false;
 
 
   @Override
@@ -46,6 +52,132 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     sb.append(formatLine("unspecified:", unspecified, ((double)unspecified/implementable)*100));
     sb.append(formatLine("specified:", specified, ((double)specified/implementable)*100));
     sb.append(formatLine("implemented:", implemented, ((double)implemented/implementable)*100));
+
+    return sb.toString();
+  }
+
+  @Override
+  public String getHtmlReport(String instance) {
+    return "<h2>" + getStandardName() + " deprecation</h2>" +
+            "<p>Implemented replacements <a href=\"#rule\">by SonarQube rule</a>, <a href=\"#tool\">by "+ getStandardName() +" rule</a></p>" +
+            getHtmlSummaryReport(instance) +
+            "<a name='rule'></a>" +
+            getHtmlDeprecationByRuleKey(instance) +
+            "<a name='tool'></a>" +
+            getHtmlDeprecationByToolKey(instance);
+  }
+
+  protected String getHtmlSummaryReport(String instance) {
+    initCoverageResults(instance);
+    computeCoverage();
+
+    int count = getCodingStandardRules().length;
+    int unspecified = count - specified - skipped;
+
+    isHtml = true;
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("<h3>Summary</h3>");
+    sb.append("<table>")
+            .append(formatLine("Total rule count:", count, 100))
+            .append(formatLine("&nbsp;&nbsp;rejected:", skipped, ((double)skipped/count)*100))
+            .append(formatLine("&nbsp;&nbsp;remaining:", implementable, ((double) implementable / count) * 100));
+
+    sb.append("<tr><td colspan='3'>").append("Of remaining rules:").append("</td></tr>")
+            .append(formatLine("&nbsp;&nbsp;pending:", unspecified, ((double) unspecified / implementable) * 100))
+            .append(formatLine("&nbsp;&nbsp;planned:", specified-implemented, ((double)(specified-implemented)/implementable)*100))
+            .append(formatLine("&nbsp;&nbsp;implemented:", implemented, ((double) implemented / implementable) * 100));
+
+    sb.append("</table><br/><br/>");
+
+    isHtml = false;
+
+    return sb.toString();
+  }
+
+  protected String getHtmlDeprecationByRuleKey(String instance) {
+
+    initCoverageResults(instance);
+    StringBuilder sb = new StringBuilder();
+
+    Map<Rule,List<String>> ruleIdMap = getCoveringRules();
+
+    List<Rule> sortedRuleList = new ArrayList<>(ruleIdMap.keySet());
+    Collections.sort(sortedRuleList, new Comparator<Rule>() {
+      @Override
+      public int compare(Rule rule, Rule rule2) {
+
+        return rule.getKey().compareTo(rule2.getKey());
+      }
+    });
+
+    sb.append("<h3>Implemented replacements by SonarQube " + getLanguage().getRspec() + " key</h3>");
+    sb.append("<table>");
+
+    for (Rule rule : sortedRuleList) {
+      sb.append("<tr><td>").append(getLinkedRuleReference(instance, rule))
+              .append("</td><td>")
+              .append(ComparisonUtilities.listToString(ruleIdMap.get(rule), true))
+              .append("</td></tr>");
+    }
+
+    sb.append("</table><br/>");
+    return sb.toString();
+  }
+
+  protected Map<Rule,List<String>> getCoveringRules() {
+
+    Map<Rule, List<String>> map = new HashMap<>();
+
+    for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
+      String csrId = cov.getCodingStandardRuleId();
+
+      for (Rule rule : cov.getImplementedBy()) {
+        List<String> csrIds = map.get(rule);
+        if (csrIds == null) {
+          csrIds = new ArrayList<>();
+          map.put(rule, csrIds);
+        }
+        csrIds.add(csrId);
+      }
+    }
+
+    return map;
+  }
+
+  protected String getHtmlDeprecationByToolKey(String instance) {
+
+    initCoverageResults(instance);
+    StringBuilder sb = new StringBuilder();
+
+    List<CodingStandardRuleCoverage> csrcList = new ArrayList<>(getRulesCoverage().values());
+
+    Comparator<CodingStandardRuleCoverage> toolKeyComparator = new Comparator<CodingStandardRuleCoverage>() {
+      public int compare(CodingStandardRuleCoverage c1, CodingStandardRuleCoverage c2) {
+        return c1.getCodingStandardRuleId().compareTo(c2.getCodingStandardRuleId());
+      }
+    };
+
+    Collections.sort(csrcList, toolKeyComparator);
+
+    sb.append("<h3>Implemented replacements by " + getStandardName() + " key</h3>");
+    sb.append("<table>");
+
+    for (CodingStandardRuleCoverage cov : csrcList) {
+      if (!cov.getImplementedBy().isEmpty()) {
+        sb.append("<tr><td>")
+                .append(cov.getCodingStandardRuleId())
+                .append("</td><td>");
+
+        for (Rule rule : cov.getImplementedBy()) {
+          sb.append(getLinkedRuleReference(instance, rule));
+        }
+
+        sb.append("</td></tr>");
+      }
+    }
+
+    sb.append("</table><br/>");
 
     return sb.toString();
   }
@@ -94,6 +226,10 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   }
 
   protected String formatLine(String label, int count, double percentage) {
+
+    if (isHtml) {
+      return String.format("<tr><td>%s</td><td>%3d</td><td>%.2f%%</td></tr>", label, count, percentage);
+    }
     return String.format("  %-15s %3d  %6.2f%%%n", label, count, percentage);
   }
 }
