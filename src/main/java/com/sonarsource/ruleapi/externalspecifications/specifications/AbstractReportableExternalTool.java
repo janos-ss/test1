@@ -25,16 +25,10 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   private boolean isHtml = false;
 
   private static final String TABLE_OPEN = "<table>";
-  private static final String TABLE_CLOSE = "</table><br/><br/>";
+  private static final String TABLE_CLOSE = "</table><br/><br/>\n";
   private static final String TD = "</td><td>";
-
-  protected Comparator<CodingStandardRuleCoverage> toolKeyComparator = new Comparator<CodingStandardRuleCoverage>()
-  {
-    @Override
-    public int compare(CodingStandardRuleCoverage c1, CodingStandardRuleCoverage c2) {
-      return c1.getCodingStandardRuleId().compareTo(c2.getCodingStandardRuleId());
-    }
-  };
+  private static final String TR_OPEN = "<tr><td>";
+  private static final String TR_CLOSE = "</td></tr>";
 
   protected Comparator<Rule> ruleKeyComparator = new Comparator<Rule>() {
     @Override
@@ -77,11 +71,8 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   @Override
   public String getHtmlReport(String instance) {
     return "<h2>" + getStandardName() + " deprecation</h2>" +
-            "<p>Implemented replacements <a href=\"#rule\">by SonarQube rule</a>, <a href=\"#tool\">by "+ getStandardName() +" rule</a></p>" +
             getHtmlSummaryReport(instance) +
-            "<a name='rule'></a>" +
             getHtmlDeprecationByRuleKey(instance) +
-            "<a name='tool'></a>" +
             getHtmlDeprecationByToolKey(instance);
   }
 
@@ -91,6 +82,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
     int count = getCodingStandardRules().length;
     int unspecified = count - specified - skipped;
+    int pending = unspecified + specified - implemented;
 
     isHtml = true;
 
@@ -98,13 +90,13 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     sb.append("<h3>Summary</h3>");
     sb.append(TABLE_OPEN)
             .append(formatLine("Total rule count:", count, 100))
-            .append(formatLine("&nbsp;&nbsp;rejected:", skipped, ((double)skipped/count)*100))
+            .append(formatLine("&nbsp;&nbsp;<a href='#standard_rejected'>rejected</a>:", skipped, ((double)skipped/count)*100))
             .append(formatLine("&nbsp;&nbsp;remaining:", implementable, ((double) implementable / count) * 100));
 
-    sb.append("<tr><td colspan='3'>").append("Of remaining rules:").append("</td></tr>")
-            .append(formatLine("&nbsp;&nbsp;pending:", unspecified, ((double) unspecified / implementable) * 100))
-            .append(formatLine("&nbsp;&nbsp;planned:", specified-implemented, ((double)(specified-implemented)/implementable)*100))
-            .append(formatLine("&nbsp;&nbsp;implemented:", implemented, ((double) implemented / implementable) * 100));
+
+    sb.append("<tr><td colspan='3'>").append("Of remaining rules:").append(TR_CLOSE)
+            .append(formatLine("&nbsp;&nbsp;<a href='#standard_pending'>pending</a>:", pending, ((double)(pending)/implementable)*100))
+            .append(formatLine("&nbsp;&nbsp;<a href='#standard_implemented'>implemented</a>:", implemented, ((double) implemented / implementable) * 100));
 
     sb.append(TABLE_CLOSE);
 
@@ -127,10 +119,10 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     sb.append(TABLE_OPEN);
 
     for (Rule rule : sortedRuleList) {
-      sb.append("<tr><td>").append(getLinkedRuleReference(instance, rule))
+      sb.append(TR_OPEN).append(getLinkedRuleReference(instance, rule))
               .append(TD)
               .append(ComparisonUtilities.listToString(ruleIdMap.get(rule), true))
-              .append("</td></tr>");
+              .append(TR_CLOSE);
     }
 
     sb.append(TABLE_CLOSE);
@@ -160,30 +152,53 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   protected String getHtmlDeprecationByToolKey(String instance) {
 
     initCoverageResults(instance);
+
     StringBuilder sb = new StringBuilder();
-
-    List<CodingStandardRuleCoverage> csrcList = new ArrayList<>(getRulesCoverage().values());
-
-    Collections.sort(csrcList, toolKeyComparator);
-
+    sb.append("<a name='standard_implemented'></a>");
     sb.append("<h3>Implemented replacements by " + getStandardName() + " key</h3>");
     sb.append(TABLE_OPEN);
 
-    for (CodingStandardRuleCoverage cov : csrcList) {
+    StringBuilder rejected = new StringBuilder();
+    rejected.append("<a name='standard_rejected'></a>");
+    rejected.append("<h3>Rejected " + getStandardName() + " rules</h3>");
+    rejected.append(TABLE_OPEN);
+
+    StringBuilder pending = new StringBuilder();
+    pending.append("<a name='standard_pending'></a>");
+    pending.append("<h3>Pending " + getStandardName() + " rules</h3>");
+    pending.append(TABLE_OPEN);
+
+
+    for (CodingStandardRule csr : getCodingStandardRules()) {
+
+      String id = csr.getCodingStandardRuleId();
+
+      CodingStandardRuleCoverage cov = getRulesCoverage().get(id);
       if (!cov.getImplementedBy().isEmpty()) {
-        sb.append("<tr><td>")
-                .append(cov.getCodingStandardRuleId())
-                .append(TD);
+        sb.append(TR_OPEN).append(id).append(TD);
 
         for (Rule rule : cov.getImplementedBy()) {
           sb.append(getLinkedRuleReference(instance, rule));
         }
+        sb.append(TR_CLOSE);
 
-        sb.append("</td></tr>");
+      } else if (Implementability.REJECTED.equals(csr.getImplementability())) {
+        rejected.append(TR_OPEN).append(id);
+        rejected.append(TR_CLOSE);
+
+      } else {
+        pending.append(TR_OPEN).append(id);
+        pending.append(TR_CLOSE);
+
       }
     }
 
     sb.append(TABLE_CLOSE);
+    rejected.append(TABLE_CLOSE);
+    pending.append(TABLE_CLOSE);
+
+    sb.append(rejected);
+    sb.append(pending);
 
     return sb.toString();
   }

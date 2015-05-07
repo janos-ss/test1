@@ -72,29 +72,12 @@ public class AbstractReportableExternalToolTest {
   }
 
   @Test
-  public void testToolKeyComparator(){
-
-    CodingStandardRuleCoverage csrc1 = new CodingStandardRuleCoverage();
-    csrc1.setCodingStandardRuleId("a");
-
-    CodingStandardRuleCoverage csrc2 = new CodingStandardRuleCoverage();
-    csrc2.setCodingStandardRuleId("b");
-
-    assertThat(findBugsTestInstance.toolKeyComparator.compare(csrc1, csrc2)).isEqualTo(-1);
-  }
-
-  @Test
   public void testHtmlReportPieces(){
     String byRuleKey = "<h3>Implemented replacements by SonarQube Java key</h3><table><tr><td><a href='/coding_rules#rule_key=squid%3AS1234'>S1234</a> X should (not) Y<br/>\n" +
-            "</td><td>BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS, AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION</td></tr></table><br/><br/>";
+            "</td><td>BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS, AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION</td></tr></table><br/><br/>\n";
 
     assertThat(findBugsTestInstance.getHtmlDeprecationByRuleKey("")).isEqualTo(byRuleKey);
 
-    String byToolKey = "<h3>Implemented replacements by FindBugs key</h3><table><tr><td>AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION</td><td><a href='/coding_rules#rule_key=squid%3AS1234'>S1234</a> X should (not) Y<br/>\n" +
-            "</td></tr><tr><td>BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS</td><td><a href='/coding_rules#rule_key=squid%3AS1234'>S1234</a> X should (not) Y<br/>\n" +
-            "</td></tr></table><br/><br/>";
-
-    assertThat(findBugsTestInstance.getHtmlDeprecationByToolKey("")).isEqualTo(byToolKey);
   }
 
   @Test
