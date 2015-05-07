@@ -107,8 +107,9 @@ public class Main {
     if (settings.orchestrator) {
       rs.writeReportsWithOrchestrator();
     } else {
-      rs.writeAllReports(settings.instance);
+      rs.writeInternalReports(settings.instance);
     }
+    rs.writeUserFacingReports();
 
   }
 

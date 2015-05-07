@@ -55,14 +55,35 @@ public class ReportService extends RuleManager {
     }
   }
 
-  public void writeAllReports(String instance) {
+  public void writeInternalReports(String instance) {
 
     writeDeprecationReports(instance);
     writeDetailedCoverageReports(instance);
     writeSummaryCoverageReports(instance);
-    writeCweCoverageReports();
-    writeOutdatedRulesReports(instance);
+    writeOutdatedRuleCountReportForWallboard(instance);
 
+  }
+
+  public void writeUserFacingReports() {
+
+    writeCweCoverageReports();
+
+    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
+
+      if (supportedStandard.getCodingStandard() instanceof CustomerReport) {
+
+        CustomerReport customerReport = (CustomerReport) supportedStandard.getCodingStandard();
+
+        LOGGER.info("Getting user-facing report for " + customerReport.getStandardName());
+
+        String report = customerReport.getHtmlReport(RuleManager.NEMO);
+        if (!Strings.isNullOrEmpty(report)) {
+          report = css + report;
+          writeFile(COVERAGE_DIR.concat(customerReport.getStandardName()).concat(".html").toLowerCase(), report);
+
+        }
+      }
+    }
   }
 
   public void writeCweCoverageReports() {
@@ -119,26 +140,6 @@ public class ReportService extends RuleManager {
     }
   }
 
-  public void writeUserFacingReports() {
-
-    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
-
-      if (supportedStandard.getCodingStandard() instanceof CustomerReport) {
-
-        CustomerReport customerReport = (CustomerReport) supportedStandard.getCodingStandard();
-
-        LOGGER.info("Getting user-facing report for " + customerReport.getStandardName());
-
-        String report = customerReport.getHtmlReport(RuleManager.NEMO);
-        if (!Strings.isNullOrEmpty(report)) {
-          report = css + report;
-          writeFile(COVERAGE_DIR.concat(customerReport.getStandardName()).concat(".html").toLowerCase(), report);
-
-        }
-      }
-    }
-  }
-
   private void writeFile(String fileName, String content) {
     if (content == null) {
       return;
@@ -183,7 +184,7 @@ public class ReportService extends RuleManager {
     }
   }
 
-  public void writeOutdatedRulesReports(String instance) {
+  public void writeOutdatedRuleCountReportForWallboard(String instance) {
 
     JSONArray results = new JSONArray();
 
@@ -256,7 +257,7 @@ public class ReportService extends RuleManager {
 
     String url = startOrchestrator();
 
-    writeAllReports(url);
+    writeInternalReports(url);
 
     stopOrchestrator();
   }
