@@ -621,4 +621,39 @@ public class MarkdownConverterTest {
 
     assertThat(mc.transform(markdown, "")).isEqualTo(html);
   }
+
+  @Test
+  public void testTrickyAmpersands(){
+    String markdown = "{code}" +
+            "  localtime_r(&amp;unix_epoch_time, &local_time); // Compliant\n" +
+            "  print_date_and_time(&local_time);\n" +
+            "\n" +
+            "  time(&amp;current_time);\n" +
+            "\n" +
+            "  localtime_r(&amp;current_time, &local_time); // Compliant\n" +
+            "\n" +
+            "  // As expected, this will print the current date and time, as expected\n" +
+            "  print_date_and_time(&local_time);\n" +
+            "\n" +
+            "  return 0;\n" +
+            "}\n" +
+            "{code}";
+    String expectedHtml = "<pre>" +
+            "  localtime_r(&amp;unix_epoch_time, &amp;local_time); // Compliant\n" +
+            "  print_date_and_time(&amp;local_time);\n" +
+            "\n" +
+            "  time(&amp;current_time);\n" +
+            "\n" +
+            "  localtime_r(&amp;current_time, &amp;local_time); // Compliant\n" +
+            "\n" +
+            "  // As expected, this will print the current date and time, as expected\n" +
+            "  print_date_and_time(&amp;local_time);\n" +
+            "\n" +
+            "  return 0;\n" +
+            "}\n" +
+            "</pre>\n";
+
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+
+  }
 }

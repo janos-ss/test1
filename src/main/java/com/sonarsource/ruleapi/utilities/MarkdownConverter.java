@@ -147,8 +147,8 @@ public class MarkdownConverter {
   }
 
   public static String handleEntities(String line) {
-    String l2 = line.replaceAll("&([^agl])","&amp;$1");
-    l2 = l2.replaceAll("&$", "&amp;");
+
+    String l2 = line.replaceAll("&(?!(gt;|amp;|lt;))","&amp;");
     l2 = l2.replaceAll("<","&lt;");
     l2 = l2.replaceAll(">", "&gt;");
     return l2;
