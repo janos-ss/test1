@@ -7,6 +7,7 @@ package com.sonarsource.ruleapi.get;
 
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.json.simple.parser.JSONParser;
@@ -431,17 +432,6 @@ public class RuleMakerTest {
     } catch (ParseException e) {
       e.printStackTrace();
     }
-  }
-
-  @Test
-  public void testNormalizeKeyNoAction() {
-    String key1 = "StrictMode";
-    String key2 = "S1111";
-    String key3 = "S000109";
-
-    assertThat(RuleMaker.normalizeKey(key1)).isEqualTo(key1);
-    assertThat(RuleMaker.normalizeKey(key2)).isEqualTo("RSPEC-1111");
-    assertThat(RuleMaker.normalizeKey(key3)).isEqualTo("RSPEC-109");
   }
 
   @Test

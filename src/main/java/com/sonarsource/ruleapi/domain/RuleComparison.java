@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
+import com.sonarsource.ruleapi.utilities.Utilities;
 
 /**
  * Provides nuanced comparison between rules, taking into account
@@ -199,7 +200,7 @@ public class RuleComparison{
 
     if (compareTags() != 0) {
       logDifference(sb,"tags:" + getTagDifferences(),
-              ComparisonUtilities.listToString(spec.getTags(), true), ComparisonUtilities.listToString(impl.getTags(), true));
+              Utilities.listToString(spec.getTags(), true), Utilities.listToString(impl.getTags(), true));
     }
 
     if (sb.length() > 0) {
@@ -450,14 +451,14 @@ public class RuleComparison{
 
     if (!missingFromSpec.isEmpty()) {
       sb.append(" +");
-      sb.append(ComparisonUtilities.listToString(missingFromSpec, true));
+      sb.append(Utilities.listToString(missingFromSpec, true));
     }
     if (!extraInSpec.isEmpty()) {
       if (sb.length() > 0) {
         sb.append(";");
       }
       sb.append(" -");
-      sb.append(ComparisonUtilities.listToString(extraInSpec, true));
+      sb.append(Utilities.listToString(extraInSpec, true));
     }
 
     return sb.toString();

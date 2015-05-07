@@ -5,7 +5,7 @@
  */
 package com.sonarsource.ruleapi.domain;
 
-import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
+import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +67,7 @@ public class CodingStandardRuleCoverage {
     for (Rule rule : rules) {
       ids.add(rule.getKey());
     }
-    return ComparisonUtilities.listToString(ids, true);
+    return Utilities.listToString(ids, true);
 
   }
 }

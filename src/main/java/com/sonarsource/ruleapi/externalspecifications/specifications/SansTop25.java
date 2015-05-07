@@ -12,6 +12,7 @@ import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.List;
 import java.util.Map;
@@ -113,7 +114,7 @@ public class SansTop25  extends AbstractReportableStandard {
       if (sb.length() > 0) {
         sb.append("; ");
       }
-      sb.append(rule.getKey()).append(" (").append(ComparisonUtilities.listToString(languages, true)).append(")");
+      sb.append(rule.getKey()).append(" (").append(Utilities.listToString(languages, true)).append(")");
     }
 
     return sb.toString();

@@ -13,8 +13,8 @@ import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 
-import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.fest.util.Strings;
 
 public abstract class AbstractReportableStandard implements CodingStandard {
@@ -178,7 +178,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     for (Language language : Language.values()) {
       repos.add(language.getSq());
     }
-    String tmp = ComparisonUtilities.listToString(repos, true);
+    String tmp = Utilities.listToString(repos, true);
     return tmp.replaceAll(" ", "");
   }
 
@@ -195,7 +195,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
   }
 
   protected String denormalizeRuleKey(String ruleKey) {
-    if (RuleMaker.isKeyNormal(ruleKey)) {
+    if (Utilities.isKeyNormal(ruleKey)) {
       return ruleKey.replace("RSPEC-", "S");
     }
     return ruleKey;

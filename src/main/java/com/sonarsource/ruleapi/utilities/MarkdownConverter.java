@@ -148,7 +148,7 @@ public class MarkdownConverter {
 
   public static String handleEntities(String line) {
 
-    String l2 = line.replaceAll("&(?!(gt;|amp;|lt;))","&amp;");
+    String l2 = line.replaceAll("&(?!(gt;|amp;|lt;))", "&amp;");
     l2 = l2.replaceAll("<","&lt;");
     l2 = l2.replaceAll(">", "&gt;");
     return l2;
@@ -204,7 +204,7 @@ public class MarkdownConverter {
         pos = line.indexOf("[http");
       }
       pos++;
-      int hrefStart = findBefore(line, pos, '[');
+      int hrefStart = Utilities.findBefore(line, pos, '[');
       int hrefEnd = line.indexOf(']', pos+1);
 
       String href = line.substring(pos, hrefEnd);
@@ -418,30 +418,10 @@ public class MarkdownConverter {
   }
 
   protected boolean isIndicatorInsideCodeTags(String line, int pos) {
-    int openCode = findBefore(line, pos, CODE_OPEN);
+    int openCode = Utilities.findBefore(line, pos, CODE_OPEN);
     int firstCloseCode = line.indexOf(CODE_CLOSE, openCode);
 
     return openCode > -1 && openCode < pos && firstCloseCode > pos;
-  }
-
-
-  protected int findBefore(String line, int start, String str) {
-    for (int i = start - 1; i >= 0; i--) {
-      if (line.substring(i).startsWith(str)) {
-        return i;
-      }
-    }
-
-    return -1;
-  }
-
-  protected int findBefore(String line, int start, char ch) {
-    for (int i = start - 1; i >= 0; i--) {
-      if (line.charAt(i) == ch) {
-        return i;
-      }
-    }
-    return -1;
   }
 
 }

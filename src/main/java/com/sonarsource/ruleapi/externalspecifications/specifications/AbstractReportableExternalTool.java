@@ -10,7 +10,7 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
-import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
+import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.*;
 
@@ -121,7 +121,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     for (Rule rule : sortedRuleList) {
       sb.append(TR_OPEN).append(getLinkedRuleReference(instance, rule))
               .append(TD)
-              .append(ComparisonUtilities.listToString(ruleIdMap.get(rule), true))
+              .append(Utilities.listToString(ruleIdMap.get(rule), true))
               .append(TR_CLOSE);
     }
 

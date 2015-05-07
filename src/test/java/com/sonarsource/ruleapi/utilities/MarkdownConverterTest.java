@@ -575,7 +575,7 @@ public class MarkdownConverterTest {
   @Test
   public void testFindBefore() {
     String str = "this is a test";
-    assertThat(mc.findBefore(str, 3, '*')).isEqualTo(-1);
+    assertThat(Utilities.findBefore(str, 3, '*')).isEqualTo(-1);
   }
 
   @Test

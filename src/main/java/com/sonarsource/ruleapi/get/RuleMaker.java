@@ -10,6 +10,7 @@ import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -105,7 +106,7 @@ public class RuleMaker {
 
       List<JSONObject> jsonActiveRules = fetcher.fetchRulesFromSonarQube(instance, SONARQUBE_PROFILE_QUERY + sonarQubeDefaultProfileKey);
       for (JSONObject jsonRule : jsonActiveRules) {
-        String key = normalizeKey((String) jsonRule.get("key"));
+        String key = Utilities.normalizeKey((String) jsonRule.get("key"));
 
         Rule rule = ruleMap.remove(key);
         if (rule != null) {
@@ -162,9 +163,9 @@ public class RuleMaker {
     Rule rule = new Rule((String) jsonRule.get("langName"));
 
     String rawKey = (String) jsonRule.get("key");
-    rule.setKey(normalizeKey(rawKey.split(":")[1]));
+    rule.setKey(Utilities.normalizeKey(rawKey.split(":")[1]));
 
-    if (!isKeyNormal(rule.getKey())) {
+    if (!Utilities.isKeyNormal(rule.getKey())) {
       rule.setLegacyKeys(new ArrayList<String>());
       rule.getLegacyKeys().add(rule.getKey());
     }
@@ -341,20 +342,6 @@ public class RuleMaker {
       }
     }
     return null;
-  }
-
-  public static String normalizeKey(String key) {
-
-    return key.replaceAll("^(.+:)?S0*(\\d+)$", "RSPEC-$2");
-  }
-
-  protected static String denormalizeKey(String key) {
-
-    return key.replaceAll("RSPEC-(\\d+)", "S$1");
-  }
-
-  public static boolean isKeyNormal(String key) {
-    return key != null && key.matches("RSPEC-\\d+");
   }
 
   protected static boolean isLanguageMatch(String language, String candidate) {
@@ -648,7 +635,7 @@ public class RuleMaker {
         if (sb.length() > 0) {
           sb.append(", ");
         }
-        sb.append(denormalizeKey(key));
+        sb.append(Utilities.denormalizeKey(key));
       }
 
       sb.insert(0, "\r\n\r\nh2. Deprecated\r\nThis rule is deprecated, use ");

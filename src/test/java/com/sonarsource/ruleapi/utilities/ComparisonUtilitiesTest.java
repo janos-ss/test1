@@ -405,4 +405,16 @@ public class ComparisonUtilitiesTest {
     assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
 
   }
+
+  @Test
+  public void testParenPipesInCodeTags() {
+    String spec = "<p>Most bitwise operators (<code>~</code>, <code>&gt;&gt;</code>, <code>&gt;&gt;=</code>, <code>&amp;</code>, <code>&amp;=</code>, <code>^</code>, <code>^=</code>, <code>|</code>, and <code>|=</code>) have implementation-dependent results when performed on signed operands, and bitwise left shift (<code>&lt;&lt;</code> and <code>&lt;&lt;=</code>) has undefined behavior when performed on negative operands. </p>\n";
+    String impl = "<p>\n" +
+            "  Most bitwise operators (<code>~</code>, <code>>></code>, <code>>>=</code>, <code>&amp;</code>, <code>&amp;=</code>, <code>^</code>, <code>^=</code>, <code>|</code>, and <code>|=</code>)\n" +
+            "  have implementation-dependent results when performed on signed operands, and bitwise left shift (<code><<</code> and <code><<=</code>)\n" +
+            "  has undefined behavior when performed on negative operands.\n" +
+            "</p>\n" +
+            "\n";
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
+  }
 }

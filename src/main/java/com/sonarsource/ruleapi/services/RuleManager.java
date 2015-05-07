@@ -10,6 +10,7 @@ import com.sonar.orchestrator.Orchestrator;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ public class RuleManager {
 
   protected String getNormalKey(String legacyKey, Language language) {
 
-    String key = RuleMaker.normalizeKey(legacyKey);
+    String key = Utilities.normalizeKey(legacyKey);
 
     if (! key.matches("RSPEC-\\d+")) {
 

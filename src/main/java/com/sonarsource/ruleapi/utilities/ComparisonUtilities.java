@@ -91,7 +91,7 @@ public class ComparisonUtilities {
     if (isEquivalent) {
       if (!implTokens.isEmpty()) {
         rspecTok = "";
-        implTok = listToString(implTokens, false);
+        implTok = Utilities.listToString(implTokens, false);
         isEquivalent = false;
       } else if (!rspecTokens.isEmpty()) {
         rspecTok = assembleExtendedRspecToken(rspecTokens, rspecTokens.remove(0), inRspecPre);
@@ -99,7 +99,7 @@ public class ComparisonUtilities {
 
         implTok = "";
         rspecTokens.add(0, rspecTok);
-        rspecTok = listToString(rspecTokens, false);
+        rspecTok = Utilities.listToString(rspecTokens, false);
       }
     }
 
@@ -200,16 +200,42 @@ public class ComparisonUtilities {
 
   private static boolean arePhraseOptionsPresent(String rspecTok) {
 
-    return rspecTok.contains(" ") && rspecTok.contains("|");
+    return rspecTok.contains(" ") && hasPipeForAlternative(rspecTok);
   }
 
   private static String getImplTok(List<String> implTokens, String rspecTok) {
 
     String implTok = implTokens.remove(0);
-    if (rspecTok.contains(" ") && !rspecTok.contains("|")) {
+    if (rspecTok.contains(" ") && !hasPipeForAlternative(rspecTok)) {
       implTok = assembleExtendedImplToken(implTokens, implTok, rspecTok);
     }
     return implTok;
+  }
+
+  /**
+   * differentiates between these two:
+   *   (red|blue)  // return true
+   * and
+   *   (<code>&</code>,<code>|</code>)  // return false
+   *
+   * @param rspecTok
+   * @return TRUE IFF | && ! <code>|</code>
+   */
+  private static boolean hasPipeForAlternative(String rspecTok) {
+
+    int pipe = rspecTok.indexOf('|');
+    int openCode = -1;
+    int closeCode = -1;
+
+    if (pipe > -1) {
+      openCode = Utilities.findBefore(rspecTok, pipe, "<code>");
+    }
+
+    if (openCode > -1) {
+      closeCode = rspecTok.indexOf("</code>", openCode);
+    }
+
+    return pipe > -1 && closeCode < pipe;
   }
 
   private static boolean isEquivalentToken(String implTok, String rspecTok) {
@@ -327,22 +353,6 @@ public class ComparisonUtilities {
       return -1;
     }
     return 1;
-  }
-
-  public static String listToString(List<String> list, boolean doCommas) {
-
-    StringBuilder sb = new StringBuilder();
-    for (String str : list) {
-      if (sb.length() > 0) {
-        if (doCommas) {
-          sb.append(",");
-        }
-        sb.append(" ");
-
-      }
-      sb.append(str);
-    }
-    return sb.toString();
   }
 
   public static String stripHtml(String source) {
