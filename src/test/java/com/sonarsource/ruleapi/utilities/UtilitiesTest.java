@@ -45,6 +45,7 @@ public class UtilitiesTest {
     assertThat(Utilities.isKeyNormal(key1)).isFalse();
     assertThat(Utilities.isKeyNormal(key2)).isTrue();
     assertThat(Utilities.isKeyNormal(key3)).isFalse();
+    assertThat(Utilities.isKeyNormal(null)).isFalse();
   }
 
   @Test
