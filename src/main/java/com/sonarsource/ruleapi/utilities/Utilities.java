@@ -5,11 +5,13 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Utilities {
 
+  private Utilities() {
+    // private constructor
+  }
 
   public static int findBefore(String line, int start, String str) {
     for (int i = start - 1; i >= 0; i--) {
