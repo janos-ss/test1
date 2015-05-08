@@ -81,8 +81,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     computeCoverage();
 
     int count = getCodingStandardRules().length;
-    int unspecified = count - specified - skipped;
-    int pending = unspecified + specified - implemented;
+    int pending = count - skipped - implemented;
 
     isHtml = true;
 
