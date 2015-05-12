@@ -454,4 +454,26 @@ public class ComparisonUtilitiesTest {
     assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
 
   }
+
+  @Test
+  public void testNegativeLinkMatching(){
+    String spec = "<h2>Deprecated</h2>\n" +
+            "\n" +
+            "<p>This rule is deprecated, use {rule:c:S1103} instead.</p>\n";
+
+    String impl = "<h2>Deprecated</h2>\n" +
+            "<p>\n" +
+            "  This rule is deprecated, use something else instead.\n" +
+            "</p>";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isFalse();
+
+    impl = "<h2>Deprecated</h2>\n" +
+            "<p>\n" +
+            "  This rule is deprecated, use Objc:<a href='/coding_rules#rule_key=objc:S000'>S000</a> instead.\n" +
+            "</p>";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isFalse();
+
+  }
 }
