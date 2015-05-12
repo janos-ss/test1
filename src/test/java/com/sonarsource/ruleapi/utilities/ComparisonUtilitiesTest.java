@@ -417,4 +417,41 @@ public class ComparisonUtilitiesTest {
             "\n";
     assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
   }
+
+  @Test
+  public void testCFamilyRuleDeprecation(){
+
+    String spec = "<h2>Deprecated</h2>\n" +
+            "\n" +
+            "<p>This rule is deprecated, use {rule:c:S1103} instead.</p>\n";
+
+    String impl = "<h2>Deprecated</h2>\n" +
+            "<p>\n" +
+            "  This rule is deprecated, use c:<a href='/coding_rules#rule_key=c:S1103'>S1103</a> - cpp:<a href='/coding_rules#rule_key=cpp:S1103'>S1103</a> - objc:<a href='/coding_rules#rule_key=objc:S1103'>S1103</a> instead.\n" +
+            "</p>";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
+
+    impl = "<h2>Deprecated</h2>\n" +
+            "<p>\n" +
+            "  This rule is deprecated, use C:<a href='/coding_rules#rule_key=c:S1103'>S1103</a> instead.\n" +
+            "</p>";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
+
+    impl = "<h2>Deprecated</h2>\n" +
+            "<p>\n" +
+            "  This rule is deprecated, use objc:<a href='/coding_rules#rule_key=objc:S1103'>S1103</a> instead.\n" +
+            "</p>";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
+
+    impl = "<h2>Deprecated</h2>\n" +
+            "<p>\n" +
+            "  This rule is deprecated, use Objc:<a href='/coding_rules#rule_key=objc:S1103'>S1103</a> - c:<a href='/coding_rules#rule_key=c:S1103'>S1103</a> - cpp:<a href='/coding_rules#rule_key=cpp:S1103'>S1103</a> instead.\n" +
+            "</p>";
+
+    assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isTrue();
+
+  }
 }

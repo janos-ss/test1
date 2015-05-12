@@ -143,12 +143,18 @@ public class ComparisonUtilities {
    * @return true iff rule link macro and anchor link to same rule
    */
   protected static boolean isMatchingRuleLink(List<String> implTokens, String rspecTok, String implTok) {
-    if (!rspecTok.matches("\\{rule:.*") || !"<a".equals(implTok)) {
+    if (!rspecTok.matches("\\{rule:.*") || !implTok.contains("<a")) {
       return false;
+    }
+
+    if (implTok.startsWith("c") || implTok.startsWith("C") || implTok.startsWith("Obj") || implTok.startsWith("obj")) {
+
+      return isMatchingCFamilyRuleLink(implTokens, rspecTok, implTok);
     }
 
     StringBuilder sb = new StringBuilder(implTok);
     while (!sb.toString().endsWith("</a>")) {
+
       sb.append(" ").append(implTokens.remove(0));
     }
 
@@ -158,6 +164,28 @@ public class ComparisonUtilities {
             .trim();
 
     return rspecLink.equals(implLink);
+  }
+
+  private static boolean isMatchingCFamilyRuleLink(List<String> implTokens, String rspecTok, String implTok) {
+
+    String rspecLink = rspecTok.replaceAll("\\{rule:[^:]+:([^}]+)}","$1");
+
+    StringBuilder sb = new StringBuilder(implTok);
+    while (Utilities.listToString(implTokens, false).contains("coding_rules#rule_key")){
+      sb.append(" ").append(implTokens.remove(0));
+
+      if (sb.toString().matches(".*<a href=['\"].*rule_key=.*['\"]>\\w+</a>")) {
+        String implLink = sb.toString().replaceAll(".*rule_key=[a-z]+:([^\"]+)[\"|'].*", "$1").trim();
+
+        if (! implLink.equals(rspecLink)) {
+          return false;
+        }
+
+        sb = new StringBuilder();
+
+      }
+    }
+    return true;
   }
 
   /**

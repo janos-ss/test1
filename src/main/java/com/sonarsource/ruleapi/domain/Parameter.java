@@ -15,30 +15,37 @@ public class Parameter implements Comparable<Parameter> {
   private String type;
 
   public String getKey() {
+
     return key;
   }
 
   public void setKey(String key) {
+
     this.key = key;
   }
 
   public String getDescription() {
+
     return description;
   }
 
   public void setDescription(String description) {
+
     this.description = description;
   }
 
   public String getDefaultVal() {
+
     return defaultVal;
   }
 
   public void setDefaultVal(String defaultVal) {
+
     this.defaultVal = defaultVal;
   }
 
   public String getType() {
+
     return type;
   }
 
