@@ -77,13 +77,18 @@ public class RuleUpdater {
     if (candidateFieldValue instanceof String) {
       String passedVal = (String) candidateFieldValue;
       return jsonObjectOrException(allowedValues, fieldId, passedVal);
+
     } else if (candidateFieldValue instanceof List) {
       JSONArray arr = new JSONArray();
       for (String item : (List<String>)candidateFieldValue) {
         arr.add(jsonObjectOrException(allowedValues, fieldId, item));
       }
       return arr;
+
+    } else if (candidateFieldValue instanceof Boolean) {
+      return jsonObjectOrException(allowedValues, fieldId, (Boolean) candidateFieldValue ? "Yes" : "No");
     }
+
     return new JSONObject();
   }
 

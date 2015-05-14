@@ -84,7 +84,7 @@ public class Main {
         break;
 
       case INTEGRITY :
-        enforcer.enforceTagReferenceIntegrity(settings.login, settings.password);
+        enforcer.enforceIntegrity(settings.login, settings.password);
         break;
 
       case REPORTS:

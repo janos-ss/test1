@@ -27,6 +27,42 @@ public class IntegrityEnforcementService extends RuleManager {
   private static final Logger LOGGER = Logger.getLogger(IntegrityEnforcementService.class.getName());
 
 
+  public void enforceIntegrity(String login, String password) {
+    enforceTagReferenceIntegrity(login, password);
+    cleanUpDeprecatedRules(login, password);
+  }
+
+  public void cleanUpDeprecatedRules(String login, String password) {
+
+    List<Rule> rules = RuleMaker.getRulesByJql(" issueFunction in hasLinks(\"is deprecated by\")", "");
+    for (Rule rule : rules) {
+
+      Map<String,Object> updates = new HashMap<String,Object>();
+      if (!rule.getTargetedLanguages().isEmpty()) {
+        LOGGER.info("Removing targeted langauges for deprecated rule: " + rule.getKey());
+        rule.getTargetedLanguages().clear();
+        updates.put("Targeted languages", rule.getTargetedLanguages());
+      }
+
+      if (rule.getDefaultActive()) {
+        LOGGER.info("Setting inactive by default for deprecated rule: " + rule.getKey());
+        rule.setDefaultActive(Boolean.FALSE);
+        updates.put("Activated by default", Boolean.FALSE);
+      }
+
+      if (!rule.getTags().isEmpty()) {
+        LOGGER.info("Removing tags for deprecated rule " + rule.getKey());
+        rule.getTags().clear();
+        updates.put("Labels", rule.getTags());
+      }
+
+      if (!updates.isEmpty()) {
+        RuleUpdater.updateRule(rule.getKey(), updates, login, password);
+      }
+    }
+  }
+
+
   public void setCoveredLanguages(String login, String password) {
 
     String url = startOrchestrator();
