@@ -148,6 +148,26 @@ public class RuleUpdaterTest {
   }
 
   @Test
+  public void testBooleanValue() {
+    JSONObject obj = null;
+
+    JSONParser parser = new JSONParser();
+    try {
+      JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
+      Map<String, Object> map = new HashMap<String, Object>();
+
+      map.put("Activated by default", Boolean.FALSE);
+
+      obj = RuleUpdater.prepareRequest(map, fieldsMeta);
+
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+
+    assertThat(obj.toJSONString()).isEqualTo("{\"fields\":{\"customfield_10021\":{\"id\":\"10114\"}}}");
+  }
+
+  @Test
   public void testArrayValue () {
     JSONObject obj = null;
 
