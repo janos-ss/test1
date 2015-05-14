@@ -9,7 +9,6 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.Language;
-import org.apache.commons.codec.language.bm.Lang;
 
 import java.util.List;
 
