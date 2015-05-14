@@ -262,17 +262,20 @@ public class RuleMaker {
 
   protected static void setReferences(Rule rule, JSONObject issue) {
 
-    rule.setFindbugs(getCustomFieldValueAsList(issue, "FindBugs"));
-    rule.setPmd(getCustomFieldValueAsList(issue, "PMD"));
-    rule.setCheckstyle(getCustomFieldValueAsList(issue, "Checkstyle"));
+    rule.setCwe(getCustomFieldValueAsList(issue, "CWE"));
+    rule.setCert(getCustomFieldValueAsList(issue, "CERT"));
     rule.setMisraC04(getCustomFieldValueAsList(issue, "MISRA C 2004"));
     rule.setMisraC12(getCustomFieldValueAsList(issue, "MISRA C 2012"));
     rule.setMisraCpp(getCustomFieldValueAsList(issue, "MISRA C++ 2008"));
+    rule.setFindbugs(getCustomFieldValueAsList(issue, "FindBugs"));
+    rule.setFbContrib(getCustomFieldValueAsList(issue, "fb-contrib"));
     rule.setFindSecBugs(getCustomFieldValueAsList(issue, "FindSecBugs"));
-    rule.setCert(getCustomFieldValueAsList(issue, "CERT"));
     rule.setOwasp(getCustomFieldValueAsList(issue, "OWASP"));
+    rule.setPmd(getCustomFieldValueAsList(issue, "PMD"));
+    rule.setCheckstyle(getCustomFieldValueAsList(issue, "Checkstyle"));
     rule.setPhpFig(getCustomFieldValueAsList(issue, "PHP-FIG"));
-    rule.setCwe(getCustomFieldValueAsList(issue, "CWE"));
+    rule.setResharper(getCustomFieldValueAsList(issue, "ReSharper"));
+    rule.setCppCheck(getCustomFieldValueAsList(issue, "CPPCheck"));
     rule.setPylint(getCustomFieldValueAsList(issue, "Pylint"));
   }
 

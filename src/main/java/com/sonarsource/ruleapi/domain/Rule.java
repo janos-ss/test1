@@ -5,23 +5,11 @@
  */
 package com.sonarsource.ruleapi.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.base.Strings;
 
 public class Rule {
-
-  public String getDeprecation() {
-
-    return deprecation;
-  }
-
-  public void setDeprecation(String deprecation) {
-
-    this.deprecation = deprecation;
-  }
 
   public enum Status {
     BETA, READY, DEPRECATED
@@ -138,19 +126,21 @@ public class Rule {
   private List<String> coveredLanguages = new ArrayList<String>();
   private List<String> irrelevantLanguages = new ArrayList<String>();
 
-  private List<String> findbugs = new ArrayList<String>();
-  private List<String> pmd = new ArrayList<String>();
-  private List<String> checkstyle = new ArrayList<String>();
+  private List<String> cwe = new ArrayList<String>();
+  private List<String> cert = new ArrayList<String>();
   private List<String> misraC12 = new ArrayList<String>();
   private List<String> misraC04 = new ArrayList<String>();
   private List<String> misraCpp = new ArrayList<String>();
+  private List<String> findbugs = new ArrayList<String>();
+  private List<String> fbContrib = new ArrayList<>();
   private List<String> findSecBugs = new ArrayList<String>();
-  private List<String> cert = new ArrayList<String>();
   private List<String> owasp = new ArrayList<String>();
+  private List<String> pmd = new ArrayList<String>();
+  private List<String> checkstyle = new ArrayList<String>();
   private List<String> phpFig = new ArrayList<String>();
-  private List<String> cwe = new ArrayList<String>();
+  private List<String> resharper = new ArrayList<>();
+  private List<String> cppCheck = new ArrayList<>();
   private List<String> pylint = new ArrayList<String>();
-
 
   public Rule(String language) {
     this.language = language;
@@ -630,5 +620,46 @@ public class Rule {
 
     this.pylint = pylint;
   }
+
+  public String getDeprecation() {
+
+    return deprecation;
+  }
+
+  public void setDeprecation(String deprecation) {
+
+    this.deprecation = deprecation;
+  }
+
+  public List<String> getFbContrib() {
+
+    return fbContrib;
+  }
+
+  public void setFbContrib(List<String> fbContrib) {
+
+    this.fbContrib = fbContrib;
+  }
+
+  public List<String> getResharper() {
+
+    return resharper;
+  }
+
+  public void setResharper(List<String> resharper) {
+
+    this.resharper = resharper;
+  }
+
+  public List<String> getCppCheck() {
+
+    return cppCheck;
+  }
+
+  public void setCppCheck(List<String> cppCheck) {
+
+    this.cppCheck = cppCheck;
+  }
+
 
 }
