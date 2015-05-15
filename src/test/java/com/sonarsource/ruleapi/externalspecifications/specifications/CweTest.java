@@ -78,7 +78,7 @@ public class CweTest {
   public void testPopulateCweMap() {
     Cwe cwe1 = new Cwe();
 
-    Map<String,ArrayList<Rule>> cweRules = new TreeMap<String, ArrayList<Rule>>();
+    Map<String,List<Rule>> cweRules = new TreeMap<String, List<Rule>>();
 
     Rule sq = new Rule("Java");
     Rule rspec = sq;
@@ -106,7 +106,7 @@ public class CweTest {
     Cwe cwe1 = new Cwe();
     cwe1.setLanguage(Language.ABAP);
 
-    Map<String,ArrayList<Rule>> cweRules = new TreeMap<String, ArrayList<Rule>>();
+    Map<String,List<Rule>> cweRules = new TreeMap<String, List<Rule>>();
 
     assertThat(cwe1.generateReport("http://localhost:9000", cweRules)).isNull();
 

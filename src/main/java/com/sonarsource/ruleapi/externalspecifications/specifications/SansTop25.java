@@ -249,13 +249,13 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     }
   }
 
-  protected void populateStandardMap(Map<String, ArrayList<Rule>> standardRules, Rule sq, Rule rspec) {
+  protected void populateStandardMap(Map<String, List<Rule>> standardRules, Rule sq, Rule rspec) {
 
     for (String id : getRspecReferenceFieldValues(rspec)) {
 
       if (StandardRule.fromString(id) != null) {
 
-        ArrayList<Rule> rules = standardRules.get(id);
+        List<Rule> rules = standardRules.get(id);
         if (rules == null) {
           rules = new ArrayList<>();
           standardRules.put(id, rules);
@@ -266,17 +266,17 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
   }
 
   @Override
-  protected String generateReport(String instance, Map<String, ArrayList<Rule>> standardRules) {
+  protected String generateReport(String instance, Map<String, List<Rule>> standardRules) {
 
     if (standardRules.isEmpty()) {
       return null;
     }
 
-    Map<Category,Map<StandardRule, ArrayList<Rule>>> metaMap = new HashMap<>();
-    for (Map.Entry<String,ArrayList<Rule>> entry : standardRules.entrySet()) {
+    Map<Category,Map<StandardRule, List<Rule>>> metaMap = new HashMap<>();
+    for (Map.Entry<String,List<Rule>> entry : standardRules.entrySet()) {
       StandardRule csr = StandardRule.fromString(entry.getKey());
 
-      Map<StandardRule, ArrayList<Rule>> miniMap = metaMap.get(csr.category);
+      Map<StandardRule, List<Rule>> miniMap = metaMap.get(csr.category);
       if (miniMap == null) {
         miniMap = new HashMap<>();
         metaMap.put(csr.category, miniMap);
@@ -290,12 +290,12 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
             .append(" coverage of the <a href='http://www.sans.org/top25-software-errors/' target='_blank'>SANS TOP 25</a> Most Dangerous Software Errors </h2>\n");
     sb.append("<table>\n");
 
-    for (Map.Entry<Category, Map<StandardRule, ArrayList<Rule>>> metaEntry : metaMap.entrySet()) {
+    for (Map.Entry<Category, Map<StandardRule, List<Rule>>> metaEntry : metaMap.entrySet()) {
       sb.append("<tr><td colspan='2'><h2><a href='")
               .append(metaEntry.getKey().getUrl()).append("' target='_blank'>").append(metaEntry.getKey().getName())
               .append("</a></h2                                                                                                                                               ></td></tr>");
 
-      for (Map.Entry<StandardRule, ArrayList<Rule>> miniEntry : metaEntry.getValue().entrySet()) {
+      for (Map.Entry<StandardRule, List<Rule>> miniEntry : metaEntry.getValue().entrySet()) {
 
         String id = miniEntry.getKey().getCodingStandardRuleId();
 

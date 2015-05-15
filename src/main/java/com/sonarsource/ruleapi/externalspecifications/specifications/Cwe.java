@@ -8,7 +8,6 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
-import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 
 import java.util.*;
@@ -106,12 +105,12 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
       return null;
     }
 
-    Map<String, ArrayList<Rule>> cweRules = initCoverage(instance);
+    Map<String, List<Rule>> cweRules = initCoverage(instance);
     return generateReport(instance, cweRules);
   }
 
   @Override
-  protected String generateReport(String instance, Map<String, ArrayList<Rule>> standardRules) {
+  protected String generateReport(String instance, Map<String, List<Rule>> standardRules) {
 
     if (standardRules.isEmpty()) {
       return null;
@@ -121,7 +120,7 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
     sb.append("<h2>").append(language.getRspec()).append(" coverage of CWE</h2>\n");
     sb.append("<table>\n");
 
-    for (Map.Entry<String, ArrayList<Rule>> entry : standardRules.entrySet()) {
+    for (Map.Entry<String, List<Rule>> entry : standardRules.entrySet()) {
 
       Integer key = Integer.valueOf(entry.getKey().split("-")[1]);
       sb.append("<tr><td><a href='http://cwe.mitre.org/data/definitions/").append(key)

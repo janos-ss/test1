@@ -6,7 +6,6 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 
@@ -16,9 +15,9 @@ import java.util.logging.Logger;
 
 public abstract class AbstractMultiLanguageStandard extends AbstractReportableStandard {
 
-  abstract protected String generateReport(String instance, Map<String, ArrayList<Rule>> standardRules);
+  protected abstract String generateReport(String instance, Map<String, List<Rule>> standardRules);
 
-  abstract protected void setLanguage(Language language);
+  protected abstract void setLanguage(Language language);
 
 
   private static final Logger LOGGER = Logger.getLogger(AbstractMultiLanguageStandard.class.getName());
@@ -46,35 +45,35 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
     }
 
     setLanguage(language);
-    Map<String, ArrayList<Rule>> standardRules = initCoverage(instance);
+    Map<String, List<Rule>> standardRules = initCoverage(instance);
     return generateReport(instance, standardRules);
 
   }
 
 
-  protected Map<String, ArrayList<Rule>> initCoverage(String instance) {
+  protected Map<String, List<Rule>> initCoverage(String instance) {
 
     if (getLanguage() == null) {
       return null;
     }
 
-    TreeMap<String, ArrayList<Rule>> stamdardRules = new TreeMap<String, ArrayList<Rule>>();
+    Map<String, List<Rule>> standardRules = new TreeMap<String, List<Rule>>();
 
     List<Rule> sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(getLanguage(), instance);
     for (Rule sq : sqImplemented) {
 
       Rule rspec = RuleMaker.getRuleByKey(sq.getKey(), getLanguage().getRspec());
-      populateStandardMap(stamdardRules, sq, rspec);
+      populateStandardMap(standardRules, sq, rspec);
     }
 
-    return stamdardRules;
+    return standardRules;
   }
 
-  protected void populateStandardMap(Map<String, ArrayList<Rule>> standardRules, Rule sq, Rule rspec) {
+  protected void populateStandardMap(Map<String, List<Rule>> standardRules, Rule sq, Rule rspec) {
 
     for (String id : getRspecReferenceFieldValues(rspec)) {
 
-      ArrayList<Rule> rules = standardRules.get(id);
+      List<Rule> rules = standardRules.get(id);
       if (rules == null) {
         rules = new ArrayList<>();
         standardRules.put(id, rules);

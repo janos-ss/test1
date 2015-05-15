@@ -57,7 +57,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
   }
 
   @Override
-  protected String generateReport(String instance, Map<String, ArrayList<Rule>> standardRules) {
+  protected String generateReport(String instance, Map<String, List<Rule>> standardRules) {
 
     if (standardRules.isEmpty()) {
       return null;
@@ -67,7 +67,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
     sb.append("<h2>").append(getReportHeader()).append("</h2>\n");
     sb.append("<table>\n");
 
-    for (Map.Entry<String, ArrayList<Rule>> entry : standardRules.entrySet()) {
+    for (Map.Entry<String, List<Rule>> entry : standardRules.entrySet()) {
 
       StandardRule owasp = StandardRule.valueOf(entry.getKey());
       sb.append("<tr><td><a href='").append(owasp.getUrl()).append("' target='_blank'>")
@@ -85,6 +85,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
     return sb.toString();
   }
 
+  @Override
   public void setLanguage(Language language) {
     this.language = language;
     resetRulesCoverageMap();
