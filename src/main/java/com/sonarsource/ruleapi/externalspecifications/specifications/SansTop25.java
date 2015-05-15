@@ -14,12 +14,14 @@ import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 
-public class SansTop25  extends AbstractReportableStandard {
+public class SansTop25  extends AbstractMultiLanguageStandard {
 
   private static final Logger LOGGER = Logger.getLogger(SansTop25.class.getName());
 
@@ -247,15 +249,92 @@ public class SansTop25  extends AbstractReportableStandard {
     }
   }
 
+  protected void populateStandardMap(Map<String, ArrayList<Rule>> standardRules, Rule sq, Rule rspec) {
+
+    for (String id : getRspecReferenceFieldValues(rspec)) {
+
+      if (StandardRule.fromString(id) != null) {
+
+        ArrayList<Rule> rules = standardRules.get(id);
+        if (rules == null) {
+          rules = new ArrayList<>();
+          standardRules.put(id, rules);
+        }
+        rules.add(sq);
+      }
+    }
+  }
+
+  @Override
+  protected String generateReport(String instance, Map<String, ArrayList<Rule>> standardRules) {
+
+    if (standardRules.isEmpty()) {
+      return null;
+    }
+
+    Map<Category,Map<StandardRule, ArrayList<Rule>>> metaMap = new HashMap<>();
+    for (Map.Entry<String,ArrayList<Rule>> entry : standardRules.entrySet()) {
+      StandardRule csr = StandardRule.fromString(entry.getKey());
+
+      Map<StandardRule, ArrayList<Rule>> miniMap = metaMap.get(csr.category);
+      if (miniMap == null) {
+        miniMap = new HashMap<>();
+        metaMap.put(csr.category, miniMap);
+      }
+      miniMap.put(csr, entry.getValue());
+    }
+
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("<h2>").append(language.getRspec())
+            .append(" coverage of the <a href='http://www.sans.org/top25-software-errors/' target='_blank'>SANS TOP 25</a> Most Dangerous Software Errors </h2>\n");
+    sb.append("<table>\n");
+
+    for (Map.Entry<Category, Map<StandardRule, ArrayList<Rule>>> metaEntry : metaMap.entrySet()) {
+      sb.append("<tr><td colspan='2'><h2><a href='")
+              .append(metaEntry.getKey().getUrl()).append("' target='_blank'>").append(metaEntry.getKey().getName())
+              .append("</a></h2                                                                                                                                               ></td></tr>");
+
+      for (Map.Entry<StandardRule, ArrayList<Rule>> miniEntry : metaEntry.getValue().entrySet()) {
+
+        String id = miniEntry.getKey().getCodingStandardRuleId();
+
+        sb.append("<tr><td><a href='http://cwe.mitre.org/data/definitions/").append(id)
+                .append("' target='_blank'>").append(id).append("</a></td>\n<td>");
+
+        for (Rule rule : miniEntry.getValue()) {
+          sb.append(getLinkedRuleReference(instance, rule));
+        }
+
+        sb.append("</td></tr>\n");
+      }
+    }
+
+    sb.append("</table>");
+
+    return sb.toString();
+  }
+
+  @Override
+  protected void setLanguage(Language language) {
+    this.language = language;
+  }
+
   public enum Category implements DerivativeTaggableStandard {
-    INSECURE_INTERACTION("Insecure Interaction Between Components"),
-    RISKY_RESOURCE("Risky Resource Management"),
-    POROUS_DEFENSES("Porous Defenses");
+    INSECURE_INTERACTION("Insecure Interaction Between Components", "http://www.sans.org/top25-software-errors/#cat1"),
+    RISKY_RESOURCE("Risky Resource Management", "http://www.sans.org/top25-software-errors/#cat2"),
+    POROUS_DEFENSES("Porous Defenses", "http://www.sans.org/top25-software-errors/#cat3");
 
     private String name;
+    private String url;
 
-    Category (String name) {
+    Category (String name, String url) {
       this.name = name;
+      this.url = url;
+    }
+
+    public String getUrl() {
+      return url;
     }
 
     public String getName(){
@@ -427,6 +506,17 @@ public class SansTop25  extends AbstractReportableStandard {
     @Override
     public Implementability getImplementability() {
       return this.implementability;
+    }
+
+    public static StandardRule fromString(String id) {
+
+      String tmp = id.replace("-", "_");
+      for (StandardRule sr : StandardRule.values()){
+        if (sr.name().equals(tmp)) {
+          return sr;
+        }
+      }
+      return null;
     }
 
   }

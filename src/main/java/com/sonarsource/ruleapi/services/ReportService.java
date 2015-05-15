@@ -66,13 +66,12 @@ public class ReportService extends RuleManager {
 
   public void writeUserFacingReports() {
 
-    writeCweCoverageReports();
-
     for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
+      CodingStandard standard = supportedStandard.getCodingStandard();
 
-      if (supportedStandard.getCodingStandard() instanceof CustomerReport) {
+      if (standard instanceof CustomerReport) {
 
-        CustomerReport customerReport = (CustomerReport) supportedStandard.getCodingStandard();
+        CustomerReport customerReport = (CustomerReport) standard;
 
         LOGGER.info("Getting user-facing report for " + customerReport.getStandardName());
 
@@ -82,28 +81,22 @@ public class ReportService extends RuleManager {
           writeFile(COVERAGE_DIR.concat(customerReport.getStandardName()).concat(".html").toLowerCase(), report);
 
         }
+      } else if (standard instanceof AbstractMultiLanguageStandard) {
+
+        AbstractMultiLanguageStandard multiLanguageStandard = (AbstractMultiLanguageStandard)standard;
+
+        LOGGER.info("Getting user-facing report for " + multiLanguageStandard.getStandardName());
+
+        Map<Language, String> reports = multiLanguageStandard.getHtmlLangaugeReports(RuleManager.NEMO);
+        for (Map.Entry<Language, String> entry : reports.entrySet()) {
+
+          String standardName = multiLanguageStandard.getStandardName();
+          String fileName = COVERAGE_DIR.concat(standardName).concat("/").concat(entry.getKey().getSq())
+                  .concat("_").concat(standardName).concat("_coverage.html").toLowerCase();
+
+          writeFile(fileName, css + entry.getValue());
+        }
       }
-    }
-  }
-
-  public void writeCweCoverageReports() {
-
-    for (Language language : Language.values()) {
-
-      LOGGER.info("Getting CWE coverage report for " + language.getRspec());
-
-      writeCweCoverageReport(language);
-    }
-  }
-
-  public void writeCweCoverageReport(Language language) {
-
-    Cwe cwe = new Cwe();
-    cwe.setLanguage(language);
-    String report = cwe.getReport(RuleManager.NEMO);
-    if (report != null) {
-      report = css + report;
-      writeFile(COVERAGE_DIR + language.getSq()+"_cwe_coverage.html", report);
     }
   }
 
@@ -117,8 +110,10 @@ public class ReportService extends RuleManager {
 
       CodingStandard standard = supportedStandard.getCodingStandard();
       if (standard instanceof AbstractReportableStandard) {
-
-        sb.append(((AbstractReportableStandard)standard).getSummaryReport(instance)).append("\n\n");
+        String report = ((AbstractReportableStandard)standard).getSummaryReport(instance);
+        if (report != null) {
+          sb.append(report).append("\n\n");
+        }
       }
     }
     writeFile(COVERAGE_DIR.concat("summary_coverage_reports.txt"), sb.toString());

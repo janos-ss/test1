@@ -13,7 +13,7 @@ import com.sonarsource.ruleapi.utilities.Language;
 
 import java.util.*;
 
-public class Cwe extends AbstractReportableStandard implements TaggableStandard {
+public class Cwe extends AbstractMultiLanguageStandard implements TaggableStandard {
 
   private static final String TAG = "cwe";
   private static final String REFERENCE_PATTERN = "CWE-\\d+";
@@ -99,38 +99,6 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
   }
 
 
-  private Map<Integer, ArrayList<Rule>> initCoverage(String instance) {
-
-    if (language == null) {
-      return null;
-    }
-
-    TreeMap<Integer, ArrayList<Rule>> cweRules = new TreeMap<Integer, ArrayList<Rule>>();
-
-    List<Rule> sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
-    for (Rule sq : sqImplemented) {
-
-      Rule rspec = RuleMaker.getRuleByKey(sq.getKey(), language.getRspec());
-      populateCweMap(cweRules, sq, rspec);
-    }
-
-    return cweRules;
-  }
-
-  protected void populateCweMap(Map<Integer, ArrayList<Rule>> cweRules, Rule sq, Rule rspec) {
-
-    for (String cwe : rspec.getCwe()) {
-      Integer num = Integer.valueOf(cwe.split("-")[1]);
-
-      ArrayList<Rule> rules = cweRules.get(num);
-      if (rules == null) {
-        rules = new ArrayList<Rule>();
-        cweRules.put(num, rules);
-      }
-      rules.add(sq);
-    }
-  }
-
   @Override
   public String getReport(String instance) {
 
@@ -138,13 +106,14 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
       return null;
     }
 
-    Map<Integer, ArrayList<Rule>> cweRules = initCoverage(instance);
+    Map<String, ArrayList<Rule>> cweRules = initCoverage(instance);
     return generateReport(instance, cweRules);
   }
 
-  protected String generateReport(String instance, Map<Integer, ArrayList<Rule>> cweRules) {
+  @Override
+  protected String generateReport(String instance, Map<String, ArrayList<Rule>> standardRules) {
 
-    if (cweRules.isEmpty()) {
+    if (standardRules.isEmpty()) {
       return null;
     }
 
@@ -152,9 +121,9 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
     sb.append("<h2>").append(language.getRspec()).append(" coverage of CWE</h2>\n");
     sb.append("<table>\n");
 
-    for (Map.Entry<Integer, ArrayList<Rule>> entry : cweRules.entrySet()) {
+    for (Map.Entry<String, ArrayList<Rule>> entry : standardRules.entrySet()) {
 
-      Integer key = entry.getKey();
+      Integer key = Integer.valueOf(entry.getKey().split("-")[1]);
       sb.append("<tr><td><a href='http://cwe.mitre.org/data/definitions/").append(key)
               .append("' target='_blank'>CWE-").append(key).append("</a></td>\n<td>");
 
@@ -180,8 +149,8 @@ public class Cwe extends AbstractReportableStandard implements TaggableStandard 
     return language;
   }
 
-  public void setLanguage(Language language){
-
+  @Override
+  public void setLanguage(Language language) {
     this.language = language;
   }
 

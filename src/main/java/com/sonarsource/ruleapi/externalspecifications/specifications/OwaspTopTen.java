@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import static com.sonarsource.ruleapi.externalspecifications.Implementability.IMPLEMENTABLE;
 
 
-public class OwaspTopTen extends AbstractReportableStandard {
+public class OwaspTopTen extends AbstractMultiLanguageStandard {
 
   private static final Logger LOGGER = Logger.getLogger(OwaspTopTen.class.getName());
 
@@ -54,6 +54,35 @@ public class OwaspTopTen extends AbstractReportableStandard {
   public void setRspecReferenceFieldValues(Rule rule, List<String> ids) {
 
     rule.setOwasp(ids);
+  }
+
+  @Override
+  protected String generateReport(String instance, Map<String, ArrayList<Rule>> standardRules) {
+
+    if (standardRules.isEmpty()) {
+      return null;
+    }
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("<h2>").append(getReportHeader()).append("</h2>\n");
+    sb.append("<table>\n");
+
+    for (Map.Entry<String, ArrayList<Rule>> entry : standardRules.entrySet()) {
+
+      StandardRule owasp = StandardRule.valueOf(entry.getKey());
+      sb.append("<tr><td><a href='").append(owasp.getUrl()).append("' target='_blank'>")
+              .append(owasp.name()).append(" ").append(owasp.getTitle())
+              .append("</a></td>\n<td>");
+
+      for (Rule rule : entry.getValue()) {
+        sb.append(getLinkedRuleReference(instance, rule));
+      }
+
+      sb.append("</td></tr>\n");
+    }
+    sb.append("</table>");
+
+    return sb.toString();
   }
 
   public void setLanguage(Language language) {
@@ -153,6 +182,11 @@ public class OwaspTopTen extends AbstractReportableStandard {
 
     public String getTitle() {
       return title;
+    }
+
+    public String getUrl() {
+
+      return "https://www.owasp.org/index.php/Top_10_2013-" + name() + "-" + title.replaceAll(" ", "_");
     }
 
     @Override

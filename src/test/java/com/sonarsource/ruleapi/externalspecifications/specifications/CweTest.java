@@ -78,26 +78,26 @@ public class CweTest {
   public void testPopulateCweMap() {
     Cwe cwe1 = new Cwe();
 
-    Map<Integer,ArrayList<Rule>> cweRules = new TreeMap<Integer, ArrayList<Rule>>();
+    Map<String,ArrayList<Rule>> cweRules = new TreeMap<String, ArrayList<Rule>>();
 
     Rule sq = new Rule("Java");
     Rule rspec = sq;
-    cwe1.populateCweMap(cweRules, sq, rspec);
+    cwe1.populateStandardMap(cweRules, sq, rspec);
 
     assertThat(cweRules).isEmpty();
 
     sq.getCwe().add("CWE-234");
-    cwe1.populateCweMap(cweRules, sq, rspec);
+    cwe1.populateStandardMap(cweRules, sq, rspec);
 
     Rule sq2 = new Rule("Java");
     Rule rspec2 = sq2;
     sq2.getCwe().add("CWE-123");
     sq2.getCwe().add("CWE-234");
 
-    cwe1.populateCweMap(cweRules, sq2, rspec2);
+    cwe1.populateStandardMap(cweRules, sq2, rspec2);
 
-    assertThat(cweRules.get(123)).isEqualTo(Arrays.asList(sq2));
-    assertThat(cweRules.get(234)).contains(sq);
+    assertThat(cweRules.get("CWE-123")).isEqualTo(Arrays.asList(sq2));
+    assertThat(cweRules.get("CWE-234")).contains(sq);
     assertThat(cweRules.values()).hasSize(2);
   }
 
@@ -106,7 +106,7 @@ public class CweTest {
     Cwe cwe1 = new Cwe();
     cwe1.setLanguage(Language.ABAP);
 
-    Map<Integer,ArrayList<Rule>> cweRules = new TreeMap<Integer, ArrayList<Rule>>();
+    Map<String,ArrayList<Rule>> cweRules = new TreeMap<String, ArrayList<Rule>>();
 
     assertThat(cwe1.generateReport("http://localhost:9000", cweRules)).isNull();
 
@@ -116,7 +116,7 @@ public class CweTest {
     sq2.getCwe().add("CWE-234");
     sq2.setKey("NonNormalKey");
 
-    cwe1.populateCweMap(cweRules, sq2, rspec2);
+    cwe1.populateStandardMap(cweRules, sq2, rspec2);
 
     String expectedReport = "<h2>ABAP coverage of CWE</h2>\n" +
             "<table>\n" +
