@@ -249,6 +249,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     }
   }
 
+  @Override
   protected void populateStandardMap(Map<String, List<Rule>> standardRules, Rule sq, Rule rspec) {
 
     for (String id : getRspecReferenceFieldValues(rspec)) {
@@ -293,7 +294,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     for (Map.Entry<Category, Map<StandardRule, List<Rule>>> metaEntry : metaMap.entrySet()) {
       sb.append("<tr><td colspan='2'><h2><a href='")
               .append(metaEntry.getKey().getUrl()).append("' target='_blank'>").append(metaEntry.getKey().getName())
-              .append("</a></h2                                                                                                                                               ></td></tr>");
+              .append("</a></h2></td></tr>");
 
       for (Map.Entry<StandardRule, List<Rule>> miniEntry : metaEntry.getValue().entrySet()) {
 
