@@ -59,7 +59,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
   @Override
   protected String generateReport(String instance, Map<String, List<Rule>> standardRules) {
 
-    if (standardRules.isEmpty()) {
+    if (standardRules.isEmpty() || language == null) {
       return null;
     }
 

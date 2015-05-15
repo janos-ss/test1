@@ -104,11 +104,8 @@ public class CweTest {
   @Test
   public void testGetReport(){
     Cwe cwe1 = new Cwe();
-    cwe1.setLanguage(Language.ABAP);
-
+    String instance = "http://localhost:9000";
     Map<String,List<Rule>> cweRules = new TreeMap<String, List<Rule>>();
-
-    assertThat(cwe1.generateReport("http://localhost:9000", cweRules)).isNull();
 
     Rule sq2 = new Rule("Java");
     Rule rspec2 = sq2;
@@ -116,7 +113,18 @@ public class CweTest {
     sq2.getCwe().add("CWE-234");
     sq2.setKey("NonNormalKey");
 
+    assertThat(cwe1.generateReport(instance, cweRules)).isNull();
+
+    cwe1.setLanguage(Language.ABAP);
+
+    assertThat(cwe1.generateReport(instance, cweRules)).isNull();
+
+    cwe1.setLanguage(null);
     cwe1.populateStandardMap(cweRules, sq2, rspec2);
+
+    assertThat(cwe1.generateReport(instance, cweRules)).isNull();
+
+    cwe1.setLanguage(Language.ABAP);
 
     String expectedReport = "<h2>ABAP coverage of CWE</h2>\n" +
             "<table>\n" +
@@ -128,7 +136,7 @@ public class CweTest {
             "</td></tr>\n" +
             "</table>";
 
-    assertThat(cwe1.generateReport("http://localhost:9000", cweRules)).isEqualTo(expectedReport);
+    assertThat(cwe1.generateReport(instance, cweRules)).isEqualTo(expectedReport);
 
   }
 

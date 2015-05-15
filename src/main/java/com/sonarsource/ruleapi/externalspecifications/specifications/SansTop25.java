@@ -269,7 +269,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
   @Override
   protected String generateReport(String instance, Map<String, List<Rule>> standardRules) {
 
-    if (standardRules.isEmpty()) {
+    if (standardRules.isEmpty() || getLanguage() == null) {
       return null;
     }
 
@@ -298,7 +298,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
 
       for (Map.Entry<StandardRule, List<Rule>> miniEntry : metaEntry.getValue().entrySet()) {
 
-        String id = miniEntry.getKey().getCodingStandardRuleId();
+        Integer id = Integer.valueOf(miniEntry.getKey().getCodingStandardRuleId().split("-")[1]);
 
         sb.append("<tr><td><a href='http://cwe.mitre.org/data/definitions/").append(id)
                 .append("' target='_blank'>").append(id).append("</a></td>\n<td>");

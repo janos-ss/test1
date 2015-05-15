@@ -10,10 +10,7 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -226,5 +223,60 @@ public class SansTop25Test {
 
   }
 
+  @Test
+  public void testPopulateStandardMap() {
+    SansTop25 sans = new SansTop25();
+
+    String id = "CWE-120";
+
+    Rule rule = new Rule("");
+    List<String> list = sans.getRspecReferenceFieldValues(rule);
+    list.add(id);
+    list.add("CWE-234");
+
+    Map<String, List<Rule>> standardRules = new TreeMap<String, List<Rule>>();
+    sans.populateStandardMap(standardRules, rule, rule);
+
+    assertThat(standardRules).hasSize(1);
+    List<Rule> ruleList = standardRules.get(id);
+    assertThat(ruleList).hasSize(1);
+    assertThat(ruleList.contains(rule)).isTrue();
+
+  }
+
+  @Test
+  public void testGenerateReport() {
+
+    String instance = "http://localhost:9000";
+
+    SansTop25 sans = new SansTop25();
+    Map<String, List<Rule>> standardRules = new TreeMap<String, List<Rule>>();
+
+    String id = "CWE-120";
+
+    Rule rule = new Rule("");
+    List<String> list = sans.getRspecReferenceFieldValues(rule);
+    list.add(id);
+    list.add("89");
+
+
+    assertThat(sans.generateReport(instance, standardRules)).isNull();
+
+    sans.setLanguage(Language.C);
+    assertThat(sans.generateReport(instance, standardRules)).isNull();
+
+    sans.populateStandardMap(standardRules, rule, rule);
+    sans.setLanguage(null);
+    assertThat(sans.generateReport(instance, standardRules)).isNull();
+
+    sans.setLanguage(Language.C);
+    String report = sans.generateReport(instance, standardRules);
+
+    assertThat(report).isNotNull();
+    assertThat(report).contains("http://www.sans.org/top25-software-errors/");
+    assertThat(report).contains("http://cwe.mitre.org/data/definitions/120");
+    assertThat(report).contains("http://www.sans.org/top25-software-errors/#cat2");
+
+  }
 
 }

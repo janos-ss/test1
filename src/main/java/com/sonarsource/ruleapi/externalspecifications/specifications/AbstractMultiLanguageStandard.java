@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
+import org.fest.util.Strings;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -23,7 +24,11 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
   private static final Logger LOGGER = Logger.getLogger(AbstractMultiLanguageStandard.class.getName());
 
 
-  public Map<Language, String> getHtmlLangaugeReports(String instance) {
+  public Map<Language, String> getHtmlLanguageReports(String instance) {
+
+    if (instance == null) {
+      return null;
+    }
 
     Map<Language, String> reports = new HashMap<>();
 
@@ -38,9 +43,9 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
     return reports;
   }
 
-  protected String getHtmlLanguageReport(String instance, Language language) {
+  public String getHtmlLanguageReport(String instance, Language language) {
 
-    if (language == null) {
+    if (language == null || Strings.isNullOrEmpty(instance)) {
       return null;
     }
 

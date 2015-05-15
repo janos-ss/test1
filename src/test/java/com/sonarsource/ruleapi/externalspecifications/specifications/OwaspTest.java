@@ -8,12 +8,10 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
+import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -155,6 +153,37 @@ public class OwaspTest {
     assertThat(updates).hasSize(1);
     assertThat(updates.containsKey("Labels")).isTrue();
     assertThat((List)updates.get("Labels")).isEmpty();
+  }
+
+  @Test
+  public void testGenerateReport(){
+
+    String instance = "http://localhost:9000";
+
+    OwaspTopTen owasp = new OwaspTopTen();
+    Map<String, List<Rule>> standardRules = new TreeMap<String, List<Rule>>();
+
+    Rule rule = new Rule("");
+    List<String> list = owasp.getRspecReferenceFieldValues(rule);
+    list.add("A1");
+    list.add("A2");
+
+    assertThat(owasp.generateReport(instance, standardRules)).isNull();
+
+    owasp.setLanguage(Language.C);
+    assertThat(owasp.generateReport(instance, standardRules)).isNull();
+
+    owasp.populateStandardMap(standardRules, rule, rule);
+    owasp.setLanguage(null);
+    assertThat(owasp.generateReport(instance, standardRules)).isNull();
+
+    owasp.setLanguage(Language.C);
+
+    String report = owasp.generateReport(instance, standardRules);
+
+    assertThat(report).isNotNull();
+    assertThat(report).contains("https://www.owasp.org/index.php/Top_10_2013-A1-Injection");
+
   }
 
 }

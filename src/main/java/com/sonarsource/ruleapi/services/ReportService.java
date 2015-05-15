@@ -87,7 +87,7 @@ public class ReportService extends RuleManager {
 
         LOGGER.info("Getting user-facing report for " + multiLanguageStandard.getStandardName());
 
-        Map<Language, String> reports = multiLanguageStandard.getHtmlLangaugeReports(RuleManager.NEMO);
+        Map<Language, String> reports = multiLanguageStandard.getHtmlLanguageReports(RuleManager.NEMO);
         for (Map.Entry<Language, String> entry : reports.entrySet()) {
 
           String standardName = multiLanguageStandard.getStandardName();
