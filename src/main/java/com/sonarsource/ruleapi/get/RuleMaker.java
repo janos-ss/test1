@@ -217,6 +217,7 @@ public class RuleMaker {
     if (tmp != null) {
       rule.setDefaultActive("Yes".equals(tmp));
     }
+    setDefaultProfiles(rule, issue);
 
     rule.setLegacyKeys(getCustomFieldValueAsList(issue, "Legacy Key"));
 
@@ -238,6 +239,16 @@ public class RuleMaker {
     rule.setTags(getListFromJsonFieldValue(issue, "labels"));
 
     setReferences(rule, issue);
+  }
+
+  protected static void setDefaultProfiles(Rule rule, JSONObject issue) {
+    List<String> profileNames = getCustomFieldStoredAsList(issue, "Default Quality Profiles");
+    for (String name : profileNames){
+      Rule.Profile p = Rule.Profile.fromString(name);
+      if (p != null) {
+        rule.getDefaultProfiles().add(p);
+      }
+    }
   }
 
   protected static void setStatusFromLinks(Rule rule, JSONObject issue) {

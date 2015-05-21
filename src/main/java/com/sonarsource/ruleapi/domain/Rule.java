@@ -90,6 +90,32 @@ public class Rule {
     }
   }
 
+  public enum Profile {
+    SONARQUBE("SonarQube Way"),
+    SECURITY("Security Way"),
+    DRUPAL("Drupal"),
+    PSR2("PSR-2");
+
+    protected final String profileName;
+
+    Profile(String profileName) {
+      this.profileName = profileName;
+    }
+
+    public String getProfileName(){
+      return profileName;
+    }
+
+    public static Profile fromString(String str){
+      for (Profile p : Profile.values()){
+        if (p.profileName.equalsIgnoreCase(str)) {
+          return p;
+        }
+      }
+      return null;
+    }
+  }
+
   private String language = null;
   private String key = null;
   private Status status = null;
@@ -97,9 +123,11 @@ public class Rule {
   private List<String> deprecationLinks = new ArrayList<String>();
 
   private Severity severity = null;
-  private Boolean defaultActive = null;
   private boolean template = false;
   private List<String> legacyKeys = null;
+
+  private Boolean defaultActive = null;
+  private List<Profile> defaultProfiles = new ArrayList<>();
 
   private String title = null;
   private String message = null;
@@ -661,5 +689,14 @@ public class Rule {
     this.cppCheck = cppCheck;
   }
 
+  public List<Profile> getDefaultProfiles() {
+
+    return defaultProfiles;
+  }
+
+  public void setDefaultProfiles(List<Profile> defaultProfiles) {
+
+    this.defaultProfiles = defaultProfiles;
+  }
 
 }
