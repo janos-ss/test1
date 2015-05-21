@@ -74,14 +74,19 @@ public class RuleUpdater {
 
 
   protected static Object handleConstrainedValueList(Object candidateFieldValue, Map<String, String> allowedValues, String fieldId) {
+
     if (candidateFieldValue instanceof String) {
       String passedVal = (String) candidateFieldValue;
       return jsonObjectOrException(allowedValues, fieldId, passedVal);
 
     } else if (candidateFieldValue instanceof List) {
       JSONArray arr = new JSONArray();
-      for (String item : (List<String>)candidateFieldValue) {
-        arr.add(jsonObjectOrException(allowedValues, fieldId, item));
+      for (Object item : (List<String>) candidateFieldValue) {
+        if (item instanceof String) {
+          arr.add(jsonObjectOrException(allowedValues, fieldId, (String) item));
+        } else {
+          arr.add(jsonObjectOrException(allowedValues, fieldId, item.toString()));
+        }
       }
       return arr;
 

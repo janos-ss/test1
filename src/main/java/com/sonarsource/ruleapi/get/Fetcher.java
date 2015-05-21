@@ -32,7 +32,7 @@ public class Fetcher {
   private static final String LEGACY_SEARCH1 = "\"Legacy Key\"~\"";
   private static final String LEGACY_SEARCH2 = "\"";
 
-  private static final String SEARCH = "search?expand=names&maxResults=500&jql=";
+  private static final String SEARCH = "search?expand=names&maxResults=1000&jql=";
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
   private static final String EXPAND = "?expand=names";
 
