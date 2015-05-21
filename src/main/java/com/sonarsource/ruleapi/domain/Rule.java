@@ -114,6 +114,10 @@ public class Rule {
       }
       return null;
     }
+
+    public String toString(){
+      return profileName;
+    }
   }
 
   private String language = null;
