@@ -24,8 +24,8 @@ public class CheckstyleTest {
     checkstyle.populateRulesCoverageMap();
     checkstyle.computeCoverage();
 
-    assertThat(checkstyle.implementable).isEqualTo(108);
-    assertThat(checkstyle.skipped).isEqualTo(37);
+    assertThat(checkstyle.implementable).isEqualTo(99);
+    assertThat(checkstyle.skipped).isEqualTo(46);
     assertThat(checkstyle.specified).isEqualTo(0);
     assertThat(checkstyle.implemented).isEqualTo(0);
   }
