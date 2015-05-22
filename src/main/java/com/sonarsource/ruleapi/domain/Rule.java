@@ -115,8 +115,9 @@ public class Rule {
       return null;
     }
 
+    @Override
     public String toString(){
-      return profileName;
+      return getProfileName();
     }
   }
 
