@@ -97,7 +97,7 @@ public class Parameter implements Comparable<Parameter> {
 
     Parameter parameter = (Parameter) o;
 
-    if (defaultVal != null ? !defaultVal.equals(parameter.defaultVal) : parameter.defaultVal != null) {
+    if (defaultVal != null ? !defaultVal.equals(parameter.defaultVal) : (parameter.defaultVal != null)) {
       return false;
     }
     if (!ComparisonUtilities.isTextFunctionallyEquivalent(description, parameter.description)) {
