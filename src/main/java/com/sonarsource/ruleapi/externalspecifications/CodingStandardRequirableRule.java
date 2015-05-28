@@ -6,5 +6,5 @@
 package com.sonarsource.ruleapi.externalspecifications;
 
 public interface CodingStandardRequirableRule extends CodingStandardRule {
-  public boolean isRuleRequired();
+  boolean isRuleRequired();
 }
