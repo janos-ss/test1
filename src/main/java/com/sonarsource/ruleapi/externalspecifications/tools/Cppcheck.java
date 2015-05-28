@@ -23,7 +23,7 @@ public class Cppcheck extends AbstractReportableExternalTool {
   @Override
   public Language getLanguage() {
 
-    return null;
+    return language;
   }
 
   @Override
