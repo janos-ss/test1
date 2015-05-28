@@ -161,6 +161,7 @@ public class Rule {
 
   private List<String> cwe = new ArrayList<String>();
   private List<String> cert = new ArrayList<String>();
+  private List<String> cppCheck = new ArrayList<>();
   private List<String> misraC12 = new ArrayList<String>();
   private List<String> misraC04 = new ArrayList<String>();
   private List<String> misraCpp = new ArrayList<String>();
@@ -172,7 +173,6 @@ public class Rule {
   private List<String> checkstyle = new ArrayList<String>();
   private List<String> phpFig = new ArrayList<String>();
   private List<String> resharper = new ArrayList<>();
-  private List<String> cppCheck = new ArrayList<>();
   private List<String> pylint = new ArrayList<String>();
 
   public Rule(String language) {

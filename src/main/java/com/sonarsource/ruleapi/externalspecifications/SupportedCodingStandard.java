@@ -16,6 +16,7 @@ public enum SupportedCodingStandard {
   PMD(new Pmd()),
   CHECKSTYLE(new Checkstyle()),
   PYLINT(new Pylint()),
+  CPP_CHECK(new Cppcheck()),
   CWE(new Cwe()),
   OWASP(new OwaspTopTen()),  // ReportableStandard
   OWASP_A1(OwaspTopTen.StandardRule.A1),  // TaggableStandards
