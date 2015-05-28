@@ -4,14 +4,13 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.ruleapi.externalspecifications.specifications;
+package com.sonarsource.ruleapi.externalspecifications;
 
 import com.sonarsource.ruleapi.domain.*;
-import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
-import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
-import com.sonarsource.ruleapi.externalspecifications.Implementability;
-import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
+import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
+import org.fest.util.Strings;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -24,15 +23,6 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   public static final double PERCENT_FACTOR = 100.0d;
 
 
-  public abstract boolean isRuleMandatory(String ruleKey);
-
-  public abstract int getMandatoryRulesToCoverCount();
-
-  public abstract int getOptionalRulesToCoverCount();
-
-  public abstract CodingStandardRule getCodingStandardRuleFromId(String id);
-
-
   private static final Logger LOGGER = Logger.getLogger(AbstractMisraSpecification.class.getName());
 
   private static final String TAG = "misra";
@@ -41,6 +31,52 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   protected int optionalRulesImplemented = 0;
   protected int totalRulesImplemented = 0;
 
+  private CodingStandardRequirableRule [] codingStandardRequirableRules = {};
+  private Map<String, CodingStandardRule> ruleMap = new HashMap<String, CodingStandardRule>();
+  private int mandatoryRulesToCover = 0;
+  private int optionalRulesToCover = 0;
+
+
+  public AbstractMisraSpecification(CodingStandardRequirableRule [] codingStandardRequirableRules1equirableRules){
+    this.codingStandardRequirableRules = codingStandardRequirableRules1equirableRules;
+
+    for (CodingStandardRequirableRule standardRule: this.codingStandardRequirableRules) {
+      ruleMap.put(standardRule.getCodingStandardRuleId(), (CodingStandardRule)standardRule);
+
+      if (Implementability.IMPLEMENTABLE.equals(standardRule.getImplementability())) {
+        if (standardRule.isRuleRequired()) {
+          mandatoryRulesToCover++;
+        } else {
+          optionalRulesToCover++;
+        }
+      }
+    }
+
+  }
+
+  public CodingStandardRule getCodingStandardRuleFromId(String id) {
+
+    return ruleMap.get(id);
+  }
+
+  public boolean isRuleMandatory(String ruleKey) {
+    if (Strings.isNullOrEmpty(ruleKey)) {
+      return false;
+    }
+    CodingStandardRequirableRule sr = (CodingStandardRequirableRule) ruleMap.get(ruleKey);
+    if (sr != null) {
+      return sr.isRuleRequired();
+    }
+    return false;
+  }
+
+  public int getMandatoryRulesToCoverCount() {
+    return mandatoryRulesToCover;
+  }
+
+  public int getOptionalRulesToCoverCount() {
+    return optionalRulesToCover;
+  }
 
   @Override
   public String getTag() {

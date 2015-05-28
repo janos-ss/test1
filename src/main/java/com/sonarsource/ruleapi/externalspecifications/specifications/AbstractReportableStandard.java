@@ -50,7 +50,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     return rules;
   }
 
-  protected Map<String, CodingStandardRuleCoverage> getRulesCoverage(){
+  public Map<String, CodingStandardRuleCoverage> getRulesCoverage(){
     return rulesCoverage;
   }
 

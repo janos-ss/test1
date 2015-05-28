@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
 import com.sonarsource.ruleapi.externalspecifications.tools.FindBugs;
 import org.junit.Test;
 

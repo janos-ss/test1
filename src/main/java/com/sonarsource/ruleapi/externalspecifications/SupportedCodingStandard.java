@@ -5,6 +5,9 @@
  */
 package com.sonarsource.ruleapi.externalspecifications;
 
+import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
+import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2012;
+import com.sonarsource.ruleapi.externalspecifications.misra.MisraCPP2008;
 import com.sonarsource.ruleapi.externalspecifications.specifications.*;
 import com.sonarsource.ruleapi.externalspecifications.tools.*;
 

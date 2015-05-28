@@ -3,17 +3,16 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.externalspecifications.specifications;
+package com.sonarsource.ruleapi.externalspecifications.misra;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.AbstractMisraSpecification;
+import com.sonarsource.ruleapi.externalspecifications.CodingStandardRequirableRule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.Language;
-import org.fest.util.Strings;
 
 
 public class MisraC2004 extends AbstractMisraSpecification {
@@ -22,14 +21,9 @@ public class MisraC2004 extends AbstractMisraSpecification {
   private static final String SEE_SECTION_SEARCH_STRING = "MISRA C:2004,";
   private static final String REFERENCE_PATTERN = "\\d\\d?\\.\\d\\d?";
 
-  private Map<String, CodingStandardRule> ruleMap = new HashMap<String, CodingStandardRule>();
-
   private Language language = Language.C;
 
-  private int mandatoryRulesToCover = 0;
-  private int optionalRulesToCover = 0;
-
-  public enum StandardRule implements CodingStandardRule {
+  public enum StandardRule implements CodingStandardRequirableRule {
 
     MISRAC2004_1POINT1 ("1.1", Boolean.TRUE, Implementability.NOT_IMPLEMENTABLE),
     MISRAC2004_1POINT2 ("1.2", Boolean.TRUE, Implementability.NOT_IMPLEMENTABLE),
@@ -213,21 +207,15 @@ public class MisraC2004 extends AbstractMisraSpecification {
     public Implementability getImplementability() {
       return implementability;
     }
+
+    @Override
+    public boolean isRuleRequired() {
+      return isMandatory;
+    }
   }
 
   public MisraC2004(){
-
-    for (StandardRule standardRule : StandardRule.values()) {
-      ruleMap.put(standardRule.getCodingStandardRuleId(), (CodingStandardRule)standardRule);
-
-      if (Implementability.IMPLEMENTABLE.equals(standardRule.getImplementability())) {
-        if (standardRule.isMandatory) {
-          mandatoryRulesToCover++;
-        } else {
-          optionalRulesToCover++;
-        }
-      }
-    }
+    super(StandardRule.values());
   }
 
   @Override
@@ -246,18 +234,6 @@ public class MisraC2004 extends AbstractMisraSpecification {
   @Override
   public CodingStandardRule[] getCodingStandardRules() {
     return StandardRule.values();
-  }
-
-  @Override
-  public boolean isRuleMandatory(String ruleKey) {
-    if (Strings.isNullOrEmpty(ruleKey)) {
-      return false;
-    }
-    StandardRule sr = (StandardRule) ruleMap.get(ruleKey);
-    if (sr != null) {
-      return sr.isMandatory;
-    }
-    return false;
   }
 
   @Override
@@ -283,22 +259,6 @@ public class MisraC2004 extends AbstractMisraSpecification {
   @Override
   public String getRSpecReferenceFieldName() {
     return NAME;
-  }
-
-  @Override
-  public int getOptionalRulesToCoverCount() {
-    return optionalRulesToCover;
-  }
-
-  @Override
-  public CodingStandardRule getCodingStandardRuleFromId(String id) {
-
-    return ruleMap.get(id);
-  }
-
-  @Override
-  public int getMandatoryRulesToCoverCount() {
-    return mandatoryRulesToCover;
   }
 
 }

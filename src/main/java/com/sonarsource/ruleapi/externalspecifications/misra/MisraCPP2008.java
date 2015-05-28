@@ -3,17 +3,16 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.externalspecifications.specifications;
+package com.sonarsource.ruleapi.externalspecifications.misra;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.AbstractMisraSpecification;
+import com.sonarsource.ruleapi.externalspecifications.CodingStandardRequirableRule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.Language;
-import org.fest.util.Strings;
 
 
 public class MisraCPP2008 extends AbstractMisraSpecification {
@@ -22,14 +21,9 @@ public class MisraCPP2008 extends AbstractMisraSpecification {
   private static final String SEE_SECTION_SEARCH_STRING = "MISRA C++:2008,";
   private static final String REFERENCE_PATTERN = "\\d\\d?-\\d\\d?-\\d\\d?";
 
-  private Map<String, CodingStandardRule> ruleMap = new HashMap<String, CodingStandardRule>();
-
   private Language language = Language.CPP;
 
-  private int mandatoryRulesToCover = 0;
-  private int optionalRulesToCover = 0;
-
-  public enum StandardRule implements CodingStandardRule {
+  public enum StandardRule implements CodingStandardRequirableRule {
 
     MISRACPP2008_0_1_1 ("0-1-1", Boolean.TRUE, Implementability.IMPLEMENTABLE),
     MISRACPP2008_0_1_2 ("0-1-2", Boolean.TRUE, Implementability.IMPLEMENTABLE),
@@ -348,23 +342,18 @@ public class MisraCPP2008 extends AbstractMisraSpecification {
     public Implementability getImplementability() {
       return implementability;
     }
+
+    @Override
+    public boolean isRuleRequired() {
+      return isMandatory;
+    }
   }
 
   public MisraCPP2008 () {
 
-    for (StandardRule standardRule : StandardRule.values()) {
-      ruleMap.put(standardRule.getCodingStandardRuleId(), (CodingStandardRule)standardRule);
+    super(StandardRule.values());
 
-      if (Implementability.IMPLEMENTABLE.equals(standardRule.getImplementability())) {
-        if (standardRule.isMandatory) {
-          mandatoryRulesToCover++;
-        } else {
-          optionalRulesToCover++;
-        }
-      }
-    }
   }
-
 
   @Override
   public String getSeeSectionSearchString() {
@@ -376,20 +365,6 @@ public class MisraCPP2008 extends AbstractMisraSpecification {
   public String getReferencePattern() {
 
     return REFERENCE_PATTERN;
-  }
-
-
-  @Override
-  public boolean isRuleMandatory(String ruleKey) {
-    if (Strings.isNullOrEmpty(ruleKey)) {
-      return false;
-    }
-
-    StandardRule sr = (StandardRule) ruleMap.get(ruleKey);
-    if (sr != null) {
-      return sr.isMandatory;
-    }
-    return false;
   }
 
   @Override
@@ -420,22 +395,6 @@ public class MisraCPP2008 extends AbstractMisraSpecification {
   @Override
   public CodingStandardRule[] getCodingStandardRules() {
     return StandardRule.values();
-  }
-
-  @Override
-  public int getOptionalRulesToCoverCount() {
-    return optionalRulesToCover;
-  }
-
-  @Override
-  public CodingStandardRule getCodingStandardRuleFromId(String id) {
-
-    return ruleMap.get(id);
-  }
-
-  @Override
-  public int getMandatoryRulesToCoverCount() {
-    return mandatoryRulesToCover;
   }
 
 }

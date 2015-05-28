@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
 import com.sonarsource.ruleapi.externalspecifications.specifications.*;
 import org.junit.Test;
 
