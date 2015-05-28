@@ -3,11 +3,12 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.externalspecifications.specifications;
+package com.sonarsource.ruleapi.externalspecifications;
 
-import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
+import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.externalspecifications.tools.FindBugs;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -87,6 +88,38 @@ public class AbstractReportableExternalToolTest {
 
     assertThat(findBugsTestInstance.getDeprecationReport("")).isEqualTo(expectedReport);
 
+  }
+
+  private static String FB_ID = "BC_IMPOSSIBLE_CAST";
+
+
+  @Test
+  public void testComputeCoverage(){
+    FindBugs fb = new FindBugs();
+
+    ((AbstractReportableExternalTool)fb).populateRulesCoverageMap();
+    fb.computeCoverage();
+
+    assertThat(fb.implementable).isGreaterThan(0);
+    assertThat(fb.skipped).isGreaterThan(0);
+    assertThat(fb.specified).isEqualTo(0);
+    assertThat(fb.implemented).isEqualTo(0);
+
+    Rule rule = new Rule("Java");
+    List<String> ids = new ArrayList<String>();
+    ids.add(FB_ID);
+
+    fb = new FindBugs();
+    fb.populateRulesCoverageMap();
+
+    fb.setCodingStandardRuleCoverageImplemented(ids,rule);
+    fb.setCodingStandardRuleCoverageSpecifiedBy(rule, ids);
+
+    fb.computeCoverage();
+    assertThat(fb.implementable).isGreaterThan(0);
+    assertThat(fb.skipped).isGreaterThan(0);
+    assertThat(fb.specified).isEqualTo(1);
+    assertThat(fb.implemented).isEqualTo(1);
   }
 
 }

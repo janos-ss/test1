@@ -74,7 +74,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     }
   }
 
-  protected void populateRulesCoverageMap() {
+  public void populateRulesCoverageMap() {
 
     rulesCoverage = new HashMap<String, CodingStandardRuleCoverage>();
 
@@ -130,7 +130,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     }
   }
 
-  protected void setCodingStandardRuleCoverageSpecifiedBy(Rule rspecRule, List<String> ids) {
+  public void setCodingStandardRuleCoverageSpecifiedBy(Rule rspecRule, List<String> ids) {
 
     if (ids != null && ! ids.isEmpty()) {
       for (String id : ids) {
@@ -182,7 +182,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     return tmp.replaceAll(" ", "");
   }
 
-  protected void setCodingStandardRuleCoverageImplemented(List<String> ids, Rule rule) {
+  public void setCodingStandardRuleCoverageImplemented(List<String> ids, Rule rule) {
 
     if (ids != null && ! ids.isEmpty()) {
       for (String id : ids) {

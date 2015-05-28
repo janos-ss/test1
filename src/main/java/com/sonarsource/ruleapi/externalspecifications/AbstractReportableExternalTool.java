@@ -3,13 +3,14 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.externalspecifications.specifications;
+package com.sonarsource.ruleapi.externalspecifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
+import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.*;
@@ -219,7 +220,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     return sb.toString();
   }
 
-  protected void computeCoverage() {
+  public void computeCoverage() {
 
     if (implementable == 0) {
       for (CodingStandardRule csr : getCodingStandardRules()) {

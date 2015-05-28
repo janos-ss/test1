@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.externalspecifications;
 
 import com.sonarsource.ruleapi.externalspecifications.specifications.*;
+import com.sonarsource.ruleapi.externalspecifications.tools.*;
 
 public enum SupportedCodingStandard {
 
