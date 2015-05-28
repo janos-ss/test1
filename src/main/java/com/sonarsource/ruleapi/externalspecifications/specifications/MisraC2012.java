@@ -294,10 +294,6 @@ public class MisraC2012 extends AbstractMisraSpecification {
   @Override
   public CodingStandardRule getCodingStandardRuleFromId(String id) {
 
-    if (id == null) {
-      return null;
-    }
-
     return ruleMap.get(id);
   }
 
