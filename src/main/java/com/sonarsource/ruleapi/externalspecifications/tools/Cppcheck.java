@@ -17,7 +17,7 @@ import java.util.List;
 public class Cppcheck extends AbstractReportableExternalTool {
 
   private String toolName = "CPPCheck";
-  private Language language = Language.C;
+  private Language language = Language.CPP;
 
 
   @Override
@@ -60,10 +60,10 @@ public class Cppcheck extends AbstractReportableExternalTool {
     ASSIGNMENTINTEGERTOADDRESS("AssignmentIntegerToAddress", Implementability.IMPLEMENTABLE),
     CASTADDRESSTOINTEGERATRETURN("CastAddressToIntegerAtReturn", Implementability.IMPLEMENTABLE),
     CASTINTEGERTOADDRESSATRETURN("CastIntegerToAddressAtReturn", Implementability.IMPLEMENTABLE),
-    CONFIGURATIONNOTCHECKED("ConfigurationNotChecked", Implementability.IMPLEMENTABLE),
+    CONFIGURATIONNOTCHECKED("ConfigurationNotChecked", Implementability.REJECTED),
     IOWITHOUTPOSITIONING("IOWithoutPositioning", Implementability.IMPLEMENTABLE),
     STLMISSINGCOMPARISON("StlMissingComparison", Implementability.IMPLEMENTABLE),
-    ARGUMENTSIZE("argumentSize", Implementability.IMPLEMENTABLE),
+    ARGUMENTSIZE("argumentSize", Implementability.REJECTED),
     ARITHOPERATIONSONVOIDPOINTER("arithOperationsOnVoidPointer", Implementability.IMPLEMENTABLE),
     ARRAYINDEXOUTOFBOUNDS("arrayIndexOutOfBounds", Implementability.IMPLEMENTABLE),
     ARRAYINDEXOUTOFBOUNDSCOND("arrayIndexOutOfBoundsCond", Implementability.IMPLEMENTABLE),
@@ -97,7 +97,7 @@ public class Cppcheck extends AbstractReportableExternalTool {
     CONSTSTATEMENT("constStatement", Implementability.IMPLEMENTABLE),
     COPYCTORPOINTERCOPYING("copyCtorPointerCopying", Implementability.IMPLEMENTABLE),
     COUTCERRMISUSAGE("coutCerrMisusage", Implementability.IMPLEMENTABLE),
-    CPPCHECKERROR("cppcheckError", Implementability.IMPLEMENTABLE),
+    CPPCHECKERROR("cppcheckError", Implementability.REJECTED),
     CSTYLECAST("cstyleCast", Implementability.IMPLEMENTABLE),
     DANGEROUSUSAGESTRTOL("dangerousUsageStrtol", Implementability.IMPLEMENTABLE),
     DEADPOINTER("deadpointer", Implementability.IMPLEMENTABLE),
@@ -321,7 +321,7 @@ public class Cppcheck extends AbstractReportableExternalTool {
     SUSPICIOUSEQUALITYCOMPARISON("suspiciousEqualityComparison", Implementability.IMPLEMENTABLE),
     SUSPICIOUSSEMICOLON("suspiciousSemicolon", Implementability.IMPLEMENTABLE),
     SWITCHCASEFALLTHROUGH("switchCaseFallThrough", Implementability.IMPLEMENTABLE),
-    SYNTAXERROR("syntaxError", Implementability.IMPLEMENTABLE),
+    SYNTAXERROR("syntaxError", Implementability.REJECTED),
     TERMINATESTRNCPY("terminateStrncpy", Implementability.IMPLEMENTABLE),
     THISSUBTRACTION("thisSubtraction", Implementability.IMPLEMENTABLE),
     TOOBIGSLEEPTIME("tooBigSleepTime", Implementability.IMPLEMENTABLE),
