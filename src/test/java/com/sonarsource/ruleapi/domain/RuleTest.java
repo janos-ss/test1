@@ -27,9 +27,12 @@ public class RuleTest {
     r2.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
     r2.setSqaleConstantCostOrLinearThreshold("10min");
 
-    r2.mergeSqalePieces(r2);
+    r1.mergeSqalePieces(r2);
 
-    assertThat(r1.equals(r2));
+    assertThat(r1.getSqaleCharac()).isEqualTo(r2.getSqaleCharac());
+    assertThat(r1.getSqaleSubCharac()).isEqualTo(r2.getSqaleSubCharac());
+    assertThat(r1.getSqaleRemediationFunction()).isEqualTo(r2.getSqaleRemediationFunction());
+    assertThat(r1.getSqaleConstantCostOrLinearThreshold()).isEqualTo(r2.getSqaleConstantCostOrLinearThreshold());
   }
 
   @Test

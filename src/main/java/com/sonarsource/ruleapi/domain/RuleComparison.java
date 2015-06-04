@@ -85,7 +85,7 @@ public class RuleComparison{
     return result;
   }
 
-  private int checkForNulls(Object spec, Object impl) {
+  private static int checkForNulls(Object spec, Object impl) {
     if (spec == null && impl == null) {
       return 0;
     }

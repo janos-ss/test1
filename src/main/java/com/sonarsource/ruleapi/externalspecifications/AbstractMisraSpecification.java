@@ -196,7 +196,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     return buff.toString();
   }
 
-  private void appendSummaryLine(StringBuilder buff, int toCover, int covered, double percent, String indent, String linebreak) {
+  private static void appendSummaryLine(StringBuilder buff, int toCover, int covered, double percent, String indent, String linebreak) {
     buff.append(String.format("%sSpecified: %d%sImplemented: %d%s=> %.2f%%%n", indent, toCover, indent, covered, indent, percent ));
   }
 

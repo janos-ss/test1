@@ -14,10 +14,7 @@ import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 
@@ -273,7 +270,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
       return null;
     }
 
-    Map<Category,Map<StandardRule, List<Rule>>> metaMap = new HashMap<>();
+    Map<Category,Map<StandardRule, List<Rule>>> metaMap = new EnumMap<>(Category.class);
     for (Map.Entry<String,List<Rule>> entry : standardRules.entrySet()) {
       StandardRule csr = StandardRule.fromString(entry.getKey());
 

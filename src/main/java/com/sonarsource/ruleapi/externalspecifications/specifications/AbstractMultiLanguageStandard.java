@@ -30,7 +30,7 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
       return null;
     }
 
-    Map<Language, String> reports = new HashMap<>();
+    Map<Language, String> reports = new EnumMap<Language, String>(Language.class);
 
     for (Language language : Language.values()) {
       LOGGER.info("Getting " + getStandardName() + " coverage report for " + language.getRspec());
