@@ -360,17 +360,20 @@ public class RuleMaker {
 
   protected static boolean isLanguageMatch(String language, String candidate) {
 
-    if (isCFamilyMatch(language)) {
-      return isCFamilyMatch(candidate);
+    String ucLanguage = language.toUpperCase();
+    String ucCandidate = candidate.toUpperCase();
+
+    if (isCFamilyMatch(ucLanguage)) {
+      return isCFamilyMatch(ucCandidate);
     }
 
-    if (language.equals(candidate)) {
+    if (ucLanguage.equals(ucCandidate)) {
       return true;
     }
-    if (!candidate.startsWith(language)) {
+    if (!ucCandidate.startsWith(ucLanguage)) {
       return false;
     }
-    return candidate.matches(language + "\\W.*");
+    return ucCandidate.matches(ucLanguage + "\\W.*");
   }
 
   protected static boolean isCFamilyMatch(String candidate) {
