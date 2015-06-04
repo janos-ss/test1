@@ -11,8 +11,11 @@ import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.utilities.Language;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Cwe extends AbstractMultiLanguageStandard implements TaggableStandard {
+
+  private static final Logger LOGGER = Logger.getLogger(Cwe.class.getName());
 
   private static final String TAG = "cwe";
   private static final String REFERENCE_PATTERN = "CWE-\\d+";
@@ -68,35 +71,21 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
   }
 
   @Override
-  public boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule) {
+  public boolean doesReferenceNeedUpdating(String reference, List<String> replacements, String ruleKey){
 
-    List<String> references = getRspecReferenceFieldValues(rule);
-
-    boolean needUpdating = false;
-
-    List<String> replacements = new ArrayList<String>();
-    for (int i = 0; i < references.size(); i++) {
-      String ref = references.get(i);
-      if (ref.matches("\\d+")) {
-        replacements.add(NAME + "-" + ref);
-        needUpdating = true;
-      } else if (ref.matches(REFERENCE_PATTERN)) {
-        replacements.add(ref);
-      } else {
-        // reference in unrecognized format; bail!
-        needUpdating = false;
-        break;
+    if (reference.matches("\\d+")) {
+      replacements.add(NAME + "-" + reference);
+      return true;
+    } else {
+      if (!reference.matches(REFERENCE_PATTERN)) {
+        LOGGER.info("Unrecognized CWE reference pattern " + reference + " in " + ruleKey);
       }
+
+      replacements.add(reference);
     }
 
-    if (needUpdating) {
-      setRspecReferenceFieldValues(rule, replacements);
-      updates.put(getRSpecReferenceFieldName(), replacements);
-    }
-
-    return needUpdating;
+    return false;
   }
-
 
   @Override
   public String getReport(String instance) {

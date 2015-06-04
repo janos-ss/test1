@@ -217,6 +217,11 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
 
     @Override
     public void addTagIfMissing(Rule rule, Map<String, Object> updates) {
+
+      if (Rule.Status.DEPRECATED.equals(rule.getStatus())) {
+        return;
+      }
+
       String tag = getTag();
       List tags = rule.getTags();
 
@@ -258,28 +263,20 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
     }
 
     @Override
-    public boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule) {
+    public boolean doesReferenceNeedUpdating(String ref, List<String> replacements, String ruleKey) {
 
-      List<String> references = getRspecReferenceFieldValues(rule);
-
-      boolean needUpdating = false;
-      List<String> replacements = new ArrayList<String>();
-      for (int i = 0; i < references.size(); i++) {
-        String ref = references.get(i);
-        if (ref.matches(".+"+REFERENCE_PATTERN+".+")) {
-          replacements.add(ref.replaceAll(".+("+REFERENCE_PATTERN+").+","$1"));
-          needUpdating = true;
-        } else {
-          replacements.add(ref);
+      if (ref.matches(".+"+REFERENCE_PATTERN+".+")) {
+        replacements.add(ref.replaceAll(".+("+REFERENCE_PATTERN+").+","$1"));
+        return true;
+      } else {
+        if (!ref.matches(REFERENCE_PATTERN)) {
+          LOGGER.info("Unrecognized OWASP reference pattern " + ref + " in " + ruleKey);
         }
+
+        replacements.add(ref);
       }
 
-      if (needUpdating) {
-        setRspecReferenceFieldValues(rule, replacements);
-        updates.put(getRSpecReferenceFieldName(), replacements);
-      }
-
-      return needUpdating;
+      return false;
     }
 
     @Override

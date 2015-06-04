@@ -24,26 +24,20 @@ public class CertTest {
   public void testBadFormatNoUpdates() {
 
     Rule rule = new Rule("");
-    List<String> refs = new ArrayList<String>();
-    refs.add("ABC01-Q");
-    refs.add("ABC01-CPP");
 
-    cert.setRspecReferenceFieldValues(rule, refs);
+    List<String> updates = new ArrayList<>();
 
-    Map<String, Object> updates = new HashMap<String, Object>();
-
-    assertThat(cert.isFieldEntryFormatNeedUpdating(updates, rule)).isFalse();
-    assertThat(updates).isEmpty();
-
-    refs.add("413");
-    assertThat(cert.isFieldEntryFormatNeedUpdating(updates,rule)).isFalse();
-    assertThat(updates).isEmpty();
-
-    refs.add("ABC43-Java.");
-    assertThat(cert.isFieldEntryFormatNeedUpdating(updates, rule)).isTrue();
+    assertThat(cert.doesReferenceNeedUpdating("ABC01-Q",updates, rule.getKey())).isFalse();
     assertThat(updates).hasSize(1);
 
-    List<String> ids = (List<String>) updates.get(cert.getRSpecReferenceFieldName());
-    assertThat(ids).hasSize(4);
+    assertThat(cert.doesReferenceNeedUpdating("ABC01-CPP",updates, rule.getKey())).isFalse();
+    assertThat(updates).hasSize(2);
+
+    assertThat(cert.doesReferenceNeedUpdating("413",updates, rule.getKey())).isFalse();
+    assertThat(updates).hasSize(3);
+
+    assertThat(cert.doesReferenceNeedUpdating("ABC43-Java.",updates, rule.getKey())).isTrue();
+    assertThat(updates).hasSize(4);
+
   }
 }

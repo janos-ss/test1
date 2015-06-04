@@ -40,38 +40,19 @@ public class CweTest {
     rule.setKey("test");
 
     List<String> references = new ArrayList<String>();
-    references.add("CWE-123");
-    references.add("456");
     cwe.setRspecReferenceFieldValues(rule, references);
 
-    Map<String, Object> updates = new HashMap<String, Object>();
+    List<String> updates = new ArrayList<>();
 
+    assertThat(cwe.doesReferenceNeedUpdating("CWE-123",updates, rule.getKey())).isFalse();
+    assertThat(updates).hasSize(1).contains("CWE-123");
 
-    cwe.isFieldEntryFormatNeedUpdating(updates, rule);
-    List<String> ups = (List<String>) updates.get("CWE");
+    assertThat(cwe.doesReferenceNeedUpdating("456",updates, rule.getKey())).isTrue();
+    assertThat(updates).hasSize(2).contains("CWE-456");
 
-    assertThat(updates).hasSize(1);
-    assertThat(rule.getCwe()).hasSize(2).contains("CWE-123").contains("CWE-456");
-    assertThat(rule.getCwe()).isEqualTo(ups);
-  }
+    assertThat(cwe.doesReferenceNeedUpdating("CWE234",updates, rule.getKey())).isFalse();
+    assertThat(updates).hasSize(3).contains("CWE234");
 
-  @Test
-  public void testIsCweEntryFormatValidNot() {
-
-    Rule rule = new Rule("");
-    rule.setKey("test");
-
-    List<String> references = new ArrayList<String>();
-    references.add("CWE123");
-    references.add("456");
-    cwe.setRspecReferenceFieldValues(rule, references);
-
-    Map<String, Object> updates = new HashMap<String, Object>();
-
-    cwe.isFieldEntryFormatNeedUpdating(updates, rule);
-    List<String> ups = (List<String>) updates.get("CWE");
-
-    assertThat(updates).hasSize(0);
   }
 
   @Test

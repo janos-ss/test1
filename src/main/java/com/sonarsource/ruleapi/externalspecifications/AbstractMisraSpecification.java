@@ -91,16 +91,10 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   }
 
   @Override
-  public boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule) {
+  public boolean doesReferenceNeedUpdating(String ref, List<String> updates, String ruleKey) {
 
-    List<String> references = getRspecReferenceFieldValues(rule);
-
-    for (int i = 0; i < references.size(); i++) {
-      String ref = references.get(i);
-
-      if (getCodingStandardRuleFromId(ref) == null) {
-        LOGGER.info("Unrecognized " + getRSpecReferenceFieldName() + " value, " + ref + ", in " + rule.getKey());
-      }
+    if (getCodingStandardRuleFromId(ref) == null) {
+      LOGGER.info("Unrecognized " + getRSpecReferenceFieldName() + " value, " + ref + ", in " + ruleKey);
     }
 
     return false;

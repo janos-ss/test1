@@ -37,6 +37,23 @@ public class SansTop25Test {
   }
 
   @Test
+  public void testAddTagIfMissingDeprecated() {
+
+    Rule rule = new Rule("");
+    rule.setStatus(Rule.Status.DEPRECATED);
+    rule.setTags(new ArrayList<String>());
+
+    rule.getCwe().add("CWE-89");
+
+    Map<String, Object> updates = new HashMap<String, Object>();
+
+    SansTop25.Category.INSECURE_INTERACTION.addTagIfMissing(rule, updates);
+    assertThat(updates).hasSize(0);
+    assertThat(rule.getTags()).hasSize(0);
+
+  }
+
+  @Test
   public void testAddTagIfMissingDoNothing(){
 
     Rule rule = new Rule("");

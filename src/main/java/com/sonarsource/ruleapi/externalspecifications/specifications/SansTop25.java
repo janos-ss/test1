@@ -364,7 +364,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     }
 
     @Override
-    public boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule) {
+    public boolean doesReferenceNeedUpdating(String reference, List<String> updates, String ruleKey) {
 
       return false;
     }
@@ -440,6 +440,10 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
 
     @Override
     public void addTagIfMissing(Rule rule, Map<String, Object> updates) {
+
+      if (Rule.Status.DEPRECATED.equals(rule.getStatus())) {
+        return;
+      }
 
       String tag = getTag();
       List tags = rule.getTags();

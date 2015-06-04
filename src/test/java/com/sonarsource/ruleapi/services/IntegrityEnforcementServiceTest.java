@@ -55,9 +55,20 @@ public class IntegrityEnforcementServiceTest {
     assertThat(rule.getTags()).hasSize(1).contains("cwe");
     assertThat(updates).hasSize(1);
 
+    updates.clear();
+
     enforcer.addTagIfMissing(rule, updates, "cwe");
     assertThat(rule.getTags()).hasSize(1).contains("cwe");
-    assertThat(updates).hasSize(1);
+    assertThat(updates).hasSize(0);
+
+    updates.clear();
+    rule.getTags().clear();
+    rule.setStatus(Rule.Status.DEPRECATED);
+
+    enforcer.addTagIfMissing(rule, updates, "cwe");
+    assertThat(rule.getTags()).isEmpty();
+    assertThat(updates).isEmpty();
+
   }
 
   @Test

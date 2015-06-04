@@ -120,13 +120,9 @@ public class AbstractMisraSpecificationTest {
     rule.setKey("RSPEC-1345");
     rule.getMisraC04().add("hello");
 
-    Map<String, Object> map = new HashMap<String, Object>();
+    List<String> updates = new ArrayList<>();
 
-    assertThat(map).isEmpty();
-
-    misra.isFieldEntryFormatNeedUpdating(map, rule);
-
-    assertThat(map).isEmpty();
+    assertThat(misra.doesReferenceNeedUpdating("hello",updates, rule.getKey())).isFalse();
 
   }
 

@@ -34,25 +34,21 @@ public class OwaspTest {
   }
 
   @Test
-  public void testBadFormatNoUpdates() {
+  public void testBadFormat() {
     Rule rule = new Rule("");
-    List<String> refs = new ArrayList<String>();
-    refs.add("A1");
-    refs.add("A2");
 
     TaggableStandard taggable = OwaspTopTen.StandardRule.A3;
 
-    taggable.setRspecReferenceFieldValues(rule, refs);
+    List<String> updates = new ArrayList<>();
 
-    Map<String, Object> updates = new HashMap<String, Object>();
-
-    assertThat(taggable.isFieldEntryFormatNeedUpdating(updates, rule)).isFalse();
-    assertThat(updates).isEmpty();
-
-    refs.add("blah A3 blah");
-    assertThat(taggable.isFieldEntryFormatNeedUpdating(updates, rule)).isTrue();
+    assertThat(taggable.doesReferenceNeedUpdating("A1",updates, rule.getKey())).isFalse();
     assertThat(updates).hasSize(1);
 
+    assertThat(taggable.doesReferenceNeedUpdating("A2",updates, rule.getKey())).isFalse();
+    assertThat(updates).hasSize(2);
+
+    assertThat(taggable.doesReferenceNeedUpdating("blah A3 blah",updates, rule.getKey())).isTrue();
+    assertThat(updates).hasSize(3);
   }
 
   @Test
@@ -153,6 +149,15 @@ public class OwaspTest {
     assertThat(updates).hasSize(1);
     assertThat(updates.containsKey("Labels")).isTrue();
     assertThat((List)updates.get("Labels")).isEmpty();
+
+    rule.setStatus(Rule.Status.DEPRECATED);
+    rule.getOwasp().add("A1");
+    updates.clear();
+
+    // !hasTag && needsTag BUT deprecated
+    OwaspTopTen.StandardRule.A1.addTagIfMissing(rule, updates);
+    assertThat(updates).hasSize(0);
+
   }
 
   @Test

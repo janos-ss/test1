@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -21,7 +22,7 @@ public interface TaggableStandard extends CodingStandard {
 
   String getReferencePattern();
 
-  boolean isFieldEntryFormatNeedUpdating(Map<String, Object> updates, Rule rule);
+  boolean doesReferenceNeedUpdating(String reference, List<String> replacements, String ruleKey);
 
 
 }

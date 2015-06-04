@@ -62,6 +62,28 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
+  private boolean isFieldEntryFormatNeedUpdating(TaggableStandard taggable, Map<String, Object> updates, Rule rule) {
+
+    List<String> references = taggable.getRspecReferenceFieldValues(rule);
+
+    boolean needUpdating = false;
+    List<String> replacements = new ArrayList<String>();
+    for (int i = 0; i < references.size(); i++) {
+      String ref = references.get(i);
+
+      if (taggable.doesReferenceNeedUpdating(ref, replacements, rule.getKey())) {
+        needUpdating = true;
+      }
+    }
+
+    if (needUpdating) {
+      taggable.setRspecReferenceFieldValues(rule, replacements);
+      updates.put(taggable.getRSpecReferenceFieldName(), replacements);
+    }
+
+    return needUpdating;
+  }
+
 
   public void setCoveredLanguages(String login, String password) {
 
@@ -180,7 +202,7 @@ public class IntegrityEnforcementService extends RuleManager {
       }
     }else {
 
-      if (taggable.isFieldEntryFormatNeedUpdating(updates, rule)) {
+      if (isFieldEntryFormatNeedUpdating(taggable, updates, rule)) {
         referenceFieldValues = taggable.getRspecReferenceFieldValues(rule);
       }
 
@@ -226,6 +248,10 @@ public class IntegrityEnforcementService extends RuleManager {
   }
 
   protected void addTagIfMissing(Rule rule, Map<String, Object> updates, String tag) {
+
+    if (Rule.Status.DEPRECATED.equals(rule.getStatus())) {
+      return;
+    }
 
     List tags = rule.getTags();
     if (!tags.contains(tag)) {
