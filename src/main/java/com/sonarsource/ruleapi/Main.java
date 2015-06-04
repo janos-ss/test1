@@ -11,6 +11,7 @@ import com.beust.jcommander.Parameter;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.services.RuleManager;
+import com.sonarsource.ruleapi.utilities.Language;
 import org.fest.util.Strings;
 
 import java.util.ArrayList;
@@ -77,6 +78,7 @@ public class Main {
 
     IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
     ReportService rs = new ReportService();
+    Language language = Language.fromString(settings.language);
 
     switch (option) {
       case OUTDATED :
@@ -94,6 +96,9 @@ public class Main {
       case GENERATE:
         rs.generateRuleDescriptions(settings.ruleKeys, settings.language);
         break;
+
+      case DIFF:
+        rs.writeOutdatedRulesReport(language, settings.instance);
 
       default:
         printHelpMessage();
@@ -151,7 +156,8 @@ public class Main {
     REPORTS(false,  "Generates all reports based on Nemo (default) or a particular -instance http:..., or -latestSnapshot."),
     OUTDATED(true,  "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
     INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
-    GENERATE(false, "Generates html description file specified by -rule and -langauge parameters.");
+    GENERATE(false, "Generates html description file specified by -rule and -langauge parameters."),
+    DIFF(false, "Generates a diff report for the specified -language and -instance");
 
     private String description;
     private boolean requiresCredentials;

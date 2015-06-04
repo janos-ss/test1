@@ -203,6 +203,11 @@ public class ReportService extends RuleManager {
    */
   public int writeOutdatedRulesReport(Language language, String instance) {
 
+    if (language == null || Strings.isNullOrEmpty(instance)) {
+      throw new RuleException("Language and instance required to write outdated report. Received " +
+              language + " " + instance);
+    }
+
     LOGGER.info("Getting outdated rules report for " + language.getRspec() + " on " + instance);
 
     String fileName = "target/reports/outdated/".concat(language.getSq()).concat("_outdated_rules.txt").toLowerCase();
