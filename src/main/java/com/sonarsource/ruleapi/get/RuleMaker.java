@@ -54,9 +54,7 @@ public class RuleMaker {
     String extendedKey = language.getSq() + ":" + ruleKey;
 
     JSONObject jsonRule = fetcher.fetchRuleFromSonarQube(sonarQubeInstance, extendedKey);
-    Rule rule =  populateFieldsFromSonarQube(jsonRule);
-
-    return rule;
+    return  populateFieldsFromSonarQube(jsonRule);
   }
 
   /**

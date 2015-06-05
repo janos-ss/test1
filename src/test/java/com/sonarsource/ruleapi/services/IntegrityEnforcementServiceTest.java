@@ -255,7 +255,7 @@ public class IntegrityEnforcementServiceTest {
     Rule rule = new Rule("");
     Map<String, Object> updates = enforcer.getDeprecationUpdates(rule);
 
-    assertThat(updates.isEmpty());
+    assertThat(updates).isEmpty();
 
     rule.getTargetedLanguages().add("Java");
     rule.getDefaultProfiles().add(Rule.Profile.SONARQUBE);
