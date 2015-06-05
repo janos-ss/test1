@@ -5,11 +5,7 @@
  */
 package com.sonarsource.ruleapi.externalspecifications;
 
-import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
-
 import java.util.List;
-import java.util.Map;
 
 
 public interface TaggableStandard extends CodingStandard {

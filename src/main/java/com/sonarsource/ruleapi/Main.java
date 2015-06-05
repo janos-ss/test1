@@ -99,6 +99,7 @@ public class Main {
 
       case DIFF:
         rs.writeOutdatedRulesReport(language, settings.instance);
+        break;
 
       default:
         printHelpMessage();

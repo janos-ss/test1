@@ -62,7 +62,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  private boolean isFieldEntryFormatNeedUpdating(TaggableStandard taggable, Map<String, Object> updates, Rule rule) {
+  private static boolean isFieldEntryFormatNeedUpdating(TaggableStandard taggable, Map<String, Object> updates, Rule rule) {
 
     List<String> references = taggable.getRspecReferenceFieldValues(rule);
 
