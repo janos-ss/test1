@@ -298,41 +298,6 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void testCompareDefaultActive() throws Exception {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    spec.setDefaultActive(Boolean.TRUE);
-    impl.setDefaultActive(Boolean.TRUE);
-
-    assertThat(rc.compare()).isEqualTo(0);
-  }
-
-  @Test
-  public void testCompareDefaultActiveNeq() throws Exception {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    spec.setDefaultActive(Boolean.TRUE);
-    impl.setDefaultActive(Boolean.FALSE);
-
-    assertThat(rc.compare()).isEqualTo(0);
-  }
-
-  @Test
-  public void testCompareDefaultActiveNeqWithNull() throws Exception {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    spec.setDefaultActive(Boolean.TRUE);
-
-    assertThat(rc.compare()).isEqualTo(0);
-  }
-
-  @Test
   public void testCompareTemplate() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
@@ -523,17 +488,6 @@ public class RuleComparisonTest {
             "    impl: MAJOR\n");
   }
 
-  @Test
-  public void testToStringDefaultActive() throws Exception {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    spec.setDefaultActive(Boolean.TRUE);
-    impl.setDefaultActive(Boolean.TRUE);
-
-    assertThat(rc.toString()).hasSize(0);
-  }
 
   @Test
   public void testToStringTemplate() throws Exception {

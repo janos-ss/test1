@@ -67,19 +67,6 @@ public class RuleTest {
   }
 
   @Test
-  public void testMergeDefaultActive() throws Exception {
-    Rule rule = new Rule(LANG);
-    rule.setDefaultActive(Boolean.FALSE);
-    Rule subRule = new Rule(LANG);
-    subRule.setTitle(LANG);
-    subRule.setDefaultActive(Boolean.TRUE);
-
-    rule.merge(subRule);
-
-    assertThat(rule.getDefaultActive()).isEqualTo(subRule.getDefaultActive());
-  }
-
-  @Test
   public void testMergeSeverity() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setSeverity(Rule.Severity.CRITICAL);

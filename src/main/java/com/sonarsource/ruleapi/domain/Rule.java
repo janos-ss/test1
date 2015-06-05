@@ -131,7 +131,6 @@ public class Rule {
   private boolean template = false;
   private List<String> legacyKeys = null;
 
-  private Boolean defaultActive = null;
   private List<Profile> defaultProfiles = new ArrayList<>();
 
   private String title = null;
@@ -189,9 +188,6 @@ public class Rule {
       this.message = subRule.message;
     }
 
-    if (subRule.defaultActive != null) {
-      this.defaultActive = subRule.defaultActive;
-    }
     if (subRule.severity != null) {
       this.severity = subRule.severity;
     }
@@ -363,14 +359,6 @@ public class Rule {
 
   public void setSeverity(Severity severity) {
     this.severity = severity;
-  }
-
-  public Boolean getDefaultActive() {
-    return defaultActive;
-  }
-
-  public void setDefaultActive(Boolean defaultActive) {
-    this.defaultActive = defaultActive;
   }
 
   public List<String> getLegacyKeys() {

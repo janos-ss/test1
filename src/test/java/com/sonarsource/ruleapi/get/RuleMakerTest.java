@@ -259,7 +259,6 @@ public class RuleMakerTest {
     assertThat(rule.getSeverity()).isNull();
     assertThat(rule.getSqaleCharac()).isNull();
     assertThat(rule.getSqaleSubCharac()).isNull();
-    assertThat(rule.getDefaultActive()).isNull();
   }
 
   @Test
@@ -338,7 +337,6 @@ public class RuleMakerTest {
     }
 
     assertThat(rule.getSeverity()).isEqualTo(Rule.Severity.CRITICAL);
-    assertThat(rule.getDefaultActive()).isTrue();
     assertThat(rule.getStatus()).isEqualTo(Rule.Status.READY);
     assertThat(rule.getTags().size()).isEqualTo(1);
     assertThat(rule.getTags().get(0)).isEqualTo("bug");

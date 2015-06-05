@@ -56,14 +56,6 @@ public class RuleMaker {
     JSONObject jsonRule = fetcher.fetchRuleFromSonarQube(sonarQubeInstance, extendedKey);
     Rule rule =  populateFieldsFromSonarQube(jsonRule);
 
-    List<JSONObject> jsonList = fetcher.fetchRulesFromSonarQube(sonarQubeInstance,
-            SONARQUBE_PROFILE_QUERY + language.getSqProfileKey() + "&rule_key=" + extendedKey);
-    if (jsonList.size() == 1) {
-      rule.setDefaultActive(Boolean.TRUE);
-    } else {
-      rule.setDefaultActive(Boolean.FALSE);
-    }
-
     return rule;
   }
 
@@ -96,26 +88,6 @@ public class RuleMaker {
 
     for (JSONObject jsonRule : jsonRules) {
       rules.add(populateFieldsFromSonarQube(jsonRule));
-    }
-
-    if ( ! Strings.isNullOrEmpty(sonarQubeDefaultProfileKey)) {
-      Map<String, Rule> ruleMap = new HashMap<String, Rule>();
-      for (Rule rule : rules) {
-        ruleMap.put(rule.getKey(), rule);
-      }
-
-      List<JSONObject> jsonActiveRules = fetcher.fetchRulesFromSonarQube(instance, SONARQUBE_PROFILE_QUERY + sonarQubeDefaultProfileKey);
-      for (JSONObject jsonRule : jsonActiveRules) {
-        String key = Utilities.normalizeKey((String) jsonRule.get("key"));
-
-        Rule rule = ruleMap.remove(key);
-        if (rule != null) {
-          rule.setDefaultActive(Boolean.TRUE);
-        }
-      }
-      for (Rule rule : ruleMap.values()) {
-        rule.setDefaultActive(Boolean.FALSE);
-      }
     }
 
     return rules;
@@ -211,10 +183,6 @@ public class RuleMaker {
       rule.setSeverity(Rule.Severity.valueOf(tmp.toUpperCase()));
     }
 
-    tmp = getCustomFieldValue(issue, "Activated by default");
-    if (tmp != null) {
-      rule.setDefaultActive("Yes".equals(tmp));
-    }
     setDefaultProfiles(rule, issue);
 
     rule.setLegacyKeys(getCustomFieldValueAsList(issue, "Legacy Key"));

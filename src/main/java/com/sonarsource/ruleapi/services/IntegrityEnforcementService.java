@@ -37,29 +37,35 @@ public class IntegrityEnforcementService extends RuleManager {
     List<Rule> rules = RuleMaker.getRulesByJql(" issueFunction in hasLinks(\"is deprecated by\")", "");
     for (Rule rule : rules) {
 
-      Map<String,Object> updates = new HashMap<String,Object>();
-      if (!rule.getTargetedLanguages().isEmpty()) {
-        LOGGER.info("Removing targeted langauges for deprecated rule: " + rule.getKey());
-        rule.getTargetedLanguages().clear();
-        updates.put("Targeted languages", rule.getTargetedLanguages());
-      }
-
-      if (rule.getDefaultActive()) {
-        LOGGER.info("Setting inactive by default for deprecated rule: " + rule.getKey());
-        rule.setDefaultActive(Boolean.FALSE);
-        updates.put("Activated by default", Boolean.FALSE);
-      }
-
-      if (!rule.getTags().isEmpty()) {
-        LOGGER.info("Removing tags for deprecated rule " + rule.getKey());
-        rule.getTags().clear();
-        updates.put("Labels", rule.getTags());
-      }
+      Map<String, Object> updates = getDeprecationUpdates(rule);
 
       if (!updates.isEmpty()) {
         RuleUpdater.updateRule(rule.getKey(), updates, login, password);
       }
     }
+  }
+
+  protected Map<String, Object> getDeprecationUpdates(Rule rule) {
+
+    Map<String,Object> updates = new HashMap<String,Object>();
+    if (!rule.getTargetedLanguages().isEmpty()) {
+      LOGGER.info("Removing targeted langauges for deprecated rule: " + rule.getKey());
+      rule.getTargetedLanguages().clear();
+      updates.put("Targeted languages", rule.getTargetedLanguages());
+    }
+
+    if (!rule.getDefaultProfiles().isEmpty()) {
+      LOGGER.info("Removing default profiles for deprecated rule: " + rule.getKey());
+      rule.getDefaultProfiles().clear();
+      updates.put("Default Quality Profiles", rule.getDefaultProfiles());
+    }
+
+    if (!rule.getTags().isEmpty()) {
+      LOGGER.info("Removing tags for deprecated rule " + rule.getKey());
+      rule.getTags().clear();
+      updates.put("Labels", rule.getTags());
+    }
+    return updates;
   }
 
   private static boolean isFieldEntryFormatNeedUpdating(TaggableStandard taggable, Map<String, Object> updates, Rule rule) {

@@ -249,4 +249,23 @@ public class IntegrityEnforcementServiceTest {
     assertThat(specificReferences).contains(" MISRA C:2004, 20.3");
   }
 
+  @Test
+  public void testGetDeprecationUpdates() {
+
+    Rule rule = new Rule("");
+    Map<String, Object> updates = enforcer.getDeprecationUpdates(rule);
+
+    assertThat(updates.isEmpty());
+
+    rule.getTargetedLanguages().add("Java");
+    rule.getDefaultProfiles().add(Rule.Profile.SONARQUBE);
+    rule.getTags().add("misra");
+
+    updates = enforcer.getDeprecationUpdates(rule);
+    assertThat(updates).hasSize(3);
+    assertThat(rule.getTargetedLanguages()).isEmpty();
+    assertThat(rule.getDefaultProfiles()).isEmpty();
+    assertThat(rule.getTags()).isEmpty();
+  }
+
 }
