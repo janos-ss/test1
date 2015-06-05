@@ -204,6 +204,9 @@ public abstract class AbstractReportableStandard implements CodingStandard {
   protected String getLinkedRuleReference(String instance, Rule rule) {
 
     String ruleKey = denormalizeRuleKey(rule.getKey());
+    if (rule.getLegacyKeys() != null && rule.getLegacyKeys().size() >0) {
+      ruleKey = rule.getLegacyKeys().get(0);
+    }
 
     StringBuilder sb = new StringBuilder();
     // http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS2066

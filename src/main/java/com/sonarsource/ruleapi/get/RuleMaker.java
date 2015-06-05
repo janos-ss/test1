@@ -162,13 +162,11 @@ public class RuleMaker {
   protected static Rule populateFieldsFromSonarQube(JSONObject jsonRule) {
     Rule rule = new Rule((String) jsonRule.get("langName"));
 
-    String rawKey = (String) jsonRule.get("key");
-    rule.setKey(Utilities.normalizeKey(rawKey.split(":")[1]));
+    String rawKey = ((String) jsonRule.get("key")).split(":")[1];
+    rule.setKey(Utilities.normalizeKey(rawKey));
 
-    if (!Utilities.isKeyNormal(rule.getKey())) {
-      rule.setLegacyKeys(new ArrayList<String>());
-      rule.getLegacyKeys().add(rule.getKey());
-    }
+    rule.setLegacyKeys(new ArrayList<String>());
+    rule.getLegacyKeys().add(rawKey);
 
     rule.setStatus(Rule.Status.valueOf((String) jsonRule.get("status")));
     rule.setSeverity(Rule.Severity.valueOf((String) jsonRule.get("severity")));
