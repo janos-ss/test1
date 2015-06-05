@@ -204,7 +204,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
   protected String getLinkedRuleReference(String instance, Rule rule) {
 
     String ruleKey = denormalizeRuleKey(rule.getKey());
-    if (rule.getLegacyKeys() != null && rule.getLegacyKeys().size() >0) {
+    if (rule.getLegacyKeys() != null && ! rule.getLegacyKeys().isEmpty()) {
       ruleKey = rule.getLegacyKeys().get(0);
     }
 

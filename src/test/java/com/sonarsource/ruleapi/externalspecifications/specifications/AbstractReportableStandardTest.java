@@ -169,6 +169,15 @@ public class AbstractReportableStandardTest {
     MisraC2004 misraC2004 = new MisraC2004();
     assertThat(misraC2004.getLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
 
+    List<String> legacyKeys = new ArrayList<>();
+    rule.setLegacyKeys(legacyKeys);
+    expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3AS1234'>S1234</a> This is a rule title<br/>\n";
+    assertThat(misraC2004.getLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
+
+
+    legacyKeys.add("blue");
+    expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3Ablue'>blue</a> This is a rule title<br/>\n";
+    assertThat(misraC2004.getLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
 
   }
 
