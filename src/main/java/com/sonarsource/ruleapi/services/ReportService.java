@@ -220,7 +220,6 @@ public class ReportService extends RuleManager {
 
     int notAlike = 0;
     StringBuilder sb = new StringBuilder();
-    sb.append("\nOn ").append(instance).append("\n");
     for (Rule sqRule : sqCovered) {
 
       if (specNotFoundForLegacyKey.contains(sqRule)) {
@@ -240,7 +239,8 @@ public class ReportService extends RuleManager {
         }
       }
     }
-    if (sb.length() > 0 && notAlike > 0) {
+    if (notAlike > 0) {
+      sb.insert(0, "\n").insert(0, instance).insert(0,"\nOn ");
       sb.insert(0, sqCovered.size());
       sb.insert(0, " different out of ");
       sb.insert(0, notAlike);
