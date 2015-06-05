@@ -257,4 +257,12 @@ public class RuleTest {
 
   }
 
+  @Test
+  public void testProfileName() {
+
+    assertThat(Rule.Profile.SECURITY.toString()).isEqualTo("Security Way");
+    assertThat(Rule.Profile.SECURITY.toString()).isEqualTo(Rule.Profile.SECURITY.getProfileName());
+
+  }
+
 }

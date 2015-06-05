@@ -250,13 +250,14 @@ public class SansTop25Test {
     List<String> list = sans.getRspecReferenceFieldValues(rule);
     list.add(id);
     list.add("CWE-234");
+    list.add(id);
 
     Map<String, List<Rule>> standardRules = new TreeMap<String, List<Rule>>();
     sans.populateStandardMap(standardRules, rule, rule);
 
     assertThat(standardRules).hasSize(1);
     List<Rule> ruleList = standardRules.get(id);
-    assertThat(ruleList).hasSize(1);
+    assertThat(ruleList).hasSize(2);
     assertThat(ruleList.contains(rule)).isTrue();
 
   }

@@ -86,7 +86,21 @@ public class ParameterTest {
     copy.setKey(full.getKey());
     copy.setDescription(full.getDescription());
 
-    assertThat(full.equals(copy)).isFalse();
+    assertThat(copy.equals(full)).isFalse();
+  }
+
+  @Test
+  public void testEqualsBothDefaultNull() {
+    Parameter copy = new Parameter();
+    copy.setKey(full.getKey());
+    copy.setDescription(full.getDescription());
+
+    Parameter p2 = new Parameter();
+    p2.setKey(copy.getKey());
+    p2.setDescription(copy.getDescription());
+
+    assertThat(copy.equals(p2)).isTrue();
+
   }
 
   @Test

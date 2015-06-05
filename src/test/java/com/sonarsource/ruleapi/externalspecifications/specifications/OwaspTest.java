@@ -34,7 +34,7 @@ public class OwaspTest {
   }
 
   @Test
-  public void testBadFormat() {
+  public void testBadReferenceFormat() {
     Rule rule = new Rule("");
 
     TaggableStandard taggable = OwaspTopTen.StandardRule.A3;
@@ -49,6 +49,21 @@ public class OwaspTest {
 
     assertThat(taggable.doesReferenceNeedUpdating("blah A3 blah",updates, rule.getKey())).isTrue();
     assertThat(updates).hasSize(3);
+  }
+
+  @Test
+  public void testSetFieldValues() {
+
+    Rule rule = new Rule("");
+    List<String> ids = new ArrayList<>();
+    ids.add("A1");
+    ids.add("A2");
+
+    OwaspTopTen owasp = new OwaspTopTen();
+    owasp.setRspecReferenceFieldValues(rule, ids);
+
+    assertThat(rule.getOwasp()).isEqualTo(ids);
+
   }
 
   @Test

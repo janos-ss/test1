@@ -89,9 +89,6 @@ public class RuleUpdater {
         }
       }
       return arr;
-
-    } else if (candidateFieldValue instanceof Boolean) {
-      return jsonObjectOrException(allowedValues, fieldId, (Boolean) candidateFieldValue ? "Yes" : "No");
     }
 
     return new JSONObject();
