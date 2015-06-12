@@ -467,7 +467,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     CWE_120 (3,  Category.RISKY_RESOURCE,       Implementability.IMPLEMENTABLE,     "Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')"),
     CWE_79  (4,  Category.INSECURE_INTERACTION, Implementability.IMPLEMENTABLE,     "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"),
     CWE_306 (5,  Category.POROUS_DEFENSES,      Implementability.NOT_IMPLEMENTABLE, "Missing Authentication for Critical Function"),
-    CWE_862 (6,  Category.POROUS_DEFENSES,      Implementability.NOT_IMPLEMENTABLE, "Missing Authorization"),
+    CWE_862 (6,  Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Missing Authorization"),
     CWE_798 (7,  Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Use of Hard-coded Credentials"),
     CWE_311 (8,  Category.POROUS_DEFENSES,      Implementability.IMPLEMENTABLE,     "Missing Encryption of Sensitive Data"),
     CWE_434 (9,  Category.INSECURE_INTERACTION, Implementability.IMPLEMENTABLE,     "Unrestricted Upload of File with Dangerous Type"),
