@@ -54,7 +54,7 @@ public class Checkstyle extends AbstractReportableExternalTool {
     EQUALSAVOIDNULL("EqualsAvoidNull", Implementability.IMPLEMENTABLE),
     EQUALSHASHCODE("EqualsHashCode", Implementability.IMPLEMENTABLE),
     EXECUTABLESTATEMENTCOUNT("ExecutableStatementCount", Implementability.REJECTED),
-    EXPLICITINITIALIZATION("ExplicitInitialization", Implementability.REJECTED),
+    EXPLICITINITIALIZATION("ExplicitInitialization", Implementability.IMPLEMENTABLE),
     FALLTHROUGH("FallThrough", Implementability.IMPLEMENTABLE),
     FILELENGTH("FileLength", Implementability.IMPLEMENTABLE),
     FILETABCHARACTER("FileTabCharacter", Implementability.IMPLEMENTABLE),
