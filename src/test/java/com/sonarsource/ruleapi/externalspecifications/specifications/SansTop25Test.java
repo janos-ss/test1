@@ -106,9 +106,9 @@ public class SansTop25Test {
     String expectedSummaryReport = newline +
             "SANS Top 25" + newline +
             "Insecure Interaction Between Components  6, unimplementable:  0  specified:  0,  implemented:  0" + newline +
-            "Porous Defenses                         11, unimplementable:  3  specified:  0,  implemented:  0" + newline +
+            "Porous Defenses                         11, unimplementable:  2  specified:  0,  implemented:  0" + newline +
             "Risky Resource Management                8, unimplementable:  1  specified:  0,  implemented:  0" + newline +
-            "Total                                   25, unimplementable:  4  specified:  0,  implemented:  0" + newline;
+            "Total                                   25, unimplementable:  3  specified:  0,  implemented:  0" + newline;
     String summaryReport = sans.getSummaryReport("");
 
     assertThat(summaryReport).isEqualTo(expectedSummaryReport);
