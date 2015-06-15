@@ -58,7 +58,7 @@ public class Pmd extends AbstractReportableExternalTool {
     ABSTRACTCLASSWITHOUTABSTRACTMETHOD("AbstractClassWithoutAbstractMethod", Implementability.IMPLEMENTABLE),
     ABSTRACTCLASSWITHOUTANYMETHOD("AbstractClassWithoutAnyMethod", Implementability.IMPLEMENTABLE),
     ABSTRACTNAMING("AbstractNaming", Implementability.IMPLEMENTABLE),
-    ACCESSORCLASSGENERATION("AccessorClassGeneration", Implementability.IMPLEMENTABLE),
+    ACCESSORCLASSGENERATION("AccessorClassGeneration", Implementability.REJECTED),
     ADDEMPTYSTRING("AddEmptyString", Implementability.IMPLEMENTABLE),
     APPENDCHARACTERWITHCHAR("AppendCharacterWithChar", Implementability.IMPLEMENTABLE),
     ARRAYISSTOREDDIRECTLY("ArrayIsStoredDirectly", Implementability.IMPLEMENTABLE),
