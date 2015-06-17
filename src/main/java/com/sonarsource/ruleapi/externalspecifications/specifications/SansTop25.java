@@ -276,7 +276,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
 
       Map<StandardRule, List<Rule>> miniMap = metaMap.get(csr.category);
       if (miniMap == null) {
-        miniMap = new HashMap<>();
+        miniMap = new EnumMap<StandardRule, List<Rule>>(StandardRule.class);
         metaMap.put(csr.category, miniMap);
       }
       miniMap.put(csr, entry.getValue());
