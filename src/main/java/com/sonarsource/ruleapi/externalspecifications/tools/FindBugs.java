@@ -53,7 +53,7 @@ public class FindBugs extends AbstractReportableExternalTool {
     CN_IDIOM(Implementability.IMPLEMENTABLE),
     CN_IDIOM_NO_SUPER_CALL(Implementability.IMPLEMENTABLE),
     CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE(Implementability.IMPLEMENTABLE),
-    CNT_ROUGH_CONSTANT_VALUE(Implementability.IMPLEMENTABLE),
+    CNT_ROUGH_CONSTANT_VALUE(Implementability.REJECTED),
     CO_ABSTRACT_SELF(Implementability.REJECTED),
     CO_COMPARETO_RESULTS_MIN_VALUE(Implementability.IMPLEMENTABLE),
     CO_SELF_NO_OBJECT(Implementability.REJECTED),
