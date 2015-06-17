@@ -22,6 +22,7 @@ public enum SupportedCodingStandard {
   PYLINT(new Pylint()),
   CPP_CHECK(new Cppcheck()),
   RESHARPER(new ReSharper()),
+  RESHARPER_VBNET(new ReSharperVbNet()),
   CWE(new Cwe()),
   OWASP(new OwaspTopTen()),  // ReportableStandard
   OWASP_A1(OwaspTopTen.StandardRule.A1),  // TaggableStandards
