@@ -6,20 +6,19 @@
 
 package com.sonarsource.ruleapi.services;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
+import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
+
+import java.util.*;
+import java.util.logging.Logger;
 
 
 public class IntegrityEnforcementService extends RuleManager {
@@ -39,11 +38,85 @@ public class IntegrityEnforcementService extends RuleManager {
 
       Map<String, Object> updates = getDeprecationUpdates(rule);
 
+      Map<Rule, Map<String, Object>> deprecatingRulesNeedingUpdate = getDeprecatingRulesNeedingUpdate(rule, updates);
+      if (deprecatingRulesNeedingUpdate != null) {
+
+        for (Map.Entry<Rule, Map<String,Object>> entry : deprecatingRulesNeedingUpdate.entrySet()) {
+          LOGGER.info("Adding references to replacement rule: " + rule.getKey());
+          RuleUpdater.updateRule(entry.getKey().getKey(), entry.getValue(), login, password);
+        }
+      }
+
       if (!updates.isEmpty()) {
         RuleUpdater.updateRule(rule.getKey(), updates, login, password);
       }
     }
   }
+
+  protected Map<Rule, Map<String, Object>> getDeprecatingRulesNeedingUpdate(Rule oldRule, Map<String, Object> oldRuleUpdates) {
+
+    Map<Rule,Map<String,Object>> newRules = new HashMap<>();
+    for (SupportedCodingStandard scs : SupportedCodingStandard.values()) {
+
+      CodingStandard cs = scs.getCodingStandard();
+      if (cs instanceof AbstractReportableStandard) {
+
+        moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, cs);
+      }
+    }
+
+    dropEmptyMapEntries(newRules);
+    return newRules;
+  }
+
+  protected void dropEmptyMapEntries(Map<Rule, Map<String, Object>> newRules) {
+
+    Iterator<Map.Entry<Rule, Map<String, Object>>> itr = newRules.entrySet().iterator();
+    while (itr.hasNext()) {
+      Map.Entry<Rule, Map<String, Object>> entry = itr.next();
+      if (entry.getValue().isEmpty()) {
+        itr.remove();
+      }
+    }
+  }
+
+  protected void moveReferencesToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
+                                        Map<Rule, Map<String, Object>> newRules,CodingStandard cs) {
+
+    List<String> oldReferences = cs.getRspecReferenceFieldValues(oldRule);
+    if (!oldReferences.isEmpty()) {
+
+      if (newRules.isEmpty()) {
+        for (String link : oldRule.getDeprecationLinks()) {
+          newRules.put(RuleMaker.getRuleByKey(link, ""), new HashMap<String, Object>());
+        }
+      }
+
+      for (Map.Entry<Rule, Map<String, Object>> entry : newRules.entrySet()) {
+        copyUniqueReferences(cs, oldReferences, entry);
+      }
+
+      LOGGER.info("Removing " + cs.getStandardName() + " references from deprecated rule: " + oldRule.getKey());
+
+      oldReferences.clear();
+      oldRuleUpdates.put(cs.getRSpecReferenceFieldName(), oldReferences);
+    }
+  }
+
+  private void copyUniqueReferences(CodingStandard cs, List<String> oldReferences, Map.Entry<Rule, Map<String, Object>> newRuleEntry) {
+
+    List<String> newReferences = cs.getRspecReferenceFieldValues(newRuleEntry.getKey());
+
+    for (String old : oldReferences) {
+      if (!newReferences.contains(old)) {
+        newReferences.add(old);
+        if (!newRuleEntry.getValue().containsKey(cs.getRSpecReferenceFieldName())) {
+          newRuleEntry.getValue().put(cs.getRSpecReferenceFieldName(), newReferences);
+        }
+      }
+    }
+  }
+
 
   protected Map<String, Object> getDeprecationUpdates(Rule rule) {
 

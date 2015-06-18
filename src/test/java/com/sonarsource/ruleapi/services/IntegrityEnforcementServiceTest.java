@@ -6,8 +6,10 @@
 package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
-import com.sonarsource.ruleapi.externalspecifications.specifications.*;
+import com.sonarsource.ruleapi.externalspecifications.specifications.Cwe;
+import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
 import org.junit.Test;
 
 import java.util.*;
@@ -18,6 +20,80 @@ import static org.fest.assertions.Assertions.assertThat;
 public class IntegrityEnforcementServiceTest {
 
   IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
+
+
+  @Test
+  public void testtest(){
+    enforcer.cleanUpDeprecatedRules("ann.campbell.2","me1112");
+  }
+
+
+  @Test
+  public void testDropEmptyMapEntries(){
+    Map <Rule, Map<String,Object>> map = new HashMap<>();
+    map.put(new Rule(""), new HashMap<String, Object>());
+
+    Map<String, Object> child = new HashMap<>();
+    child.put("blah", new Object());
+    map.put(new Rule("Java"), child);
+
+    assertThat(map.size()).isEqualTo(2);
+    enforcer.dropEmptyMapEntries(map);
+    assertThat(map.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void testMoveReferencesToNewRules() {
+
+    String cwe = "CWE-945";
+    String findbugs = "BH_BLAH_BLAH";
+
+    Rule oldRule = new Rule("");
+    oldRule.getCwe().add(cwe);
+    oldRule.getFindbugs().add(findbugs);
+
+    Map<String, Object> oldRuleUpdates = new HashMap<>();
+
+    Rule newRule = new Rule("");
+    newRule.getCwe().add("CWE-345");
+    Map<Rule, Map<String,Object>> newRules = new HashMap<>();
+    newRules.put(newRule, new HashMap<String, Object>());
+
+    assertThat(newRule.getCwe()).hasSize(1);
+    assertThat(newRule.getFindbugs()).hasSize(0);
+    assertThat(oldRule.getCwe()).hasSize(1);
+    assertThat(oldRule.getFindbugs()).hasSize(1);
+
+    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
+            SupportedCodingStandard.FINDBUGS.getCodingStandard());
+
+    assertThat(newRule.getCwe()).hasSize(1);
+    assertThat(newRule.getFindbugs()).hasSize(1);
+    assertThat(oldRule.getCwe()).hasSize(1);
+    assertThat(oldRule.getFindbugs()).hasSize(0);
+
+
+    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
+            SupportedCodingStandard.CWE.getCodingStandard());
+
+    assertThat(newRule.getCwe()).hasSize(2);
+    assertThat(newRule.getFindbugs()).hasSize(1);
+    assertThat(oldRule.getCwe()).hasSize(0);
+    assertThat(oldRule.getFindbugs()).hasSize(0);
+
+
+    assertThat(oldRule.getCert()).hasSize(0);
+    assertThat(newRule.getCert()).hasSize(0);
+
+    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
+            SupportedCodingStandard.CERT.getCodingStandard());
+
+    assertThat(oldRule.getCert()).hasSize(0);
+    assertThat(newRule.getCert()).hasSize(0);
+
+
+  }
+
 
 
   @Test
