@@ -23,12 +23,6 @@ public class IntegrityEnforcementServiceTest {
 
 
   @Test
-  public void testtest(){
-    enforcer.cleanUpDeprecatedRules("ann.campbell.2","me1112");
-  }
-
-
-  @Test
   public void testDropEmptyMapEntries(){
     Map <Rule, Map<String,Object>> map = new HashMap<>();
     map.put(new Rule(""), new HashMap<String, Object>());
@@ -47,15 +41,22 @@ public class IntegrityEnforcementServiceTest {
 
     String cwe = "CWE-945";
     String findbugs = "BH_BLAH_BLAH";
+    String misra = "1.1.1";
+
 
     Rule oldRule = new Rule("");
     oldRule.getCwe().add(cwe);
     oldRule.getFindbugs().add(findbugs);
+    List<String> misra4 = oldRule.getMisraC04();
+    misra4.add(misra);
+    misra4.add("1.2.3");
+    misra4.add("1.2.1");
 
     Map<String, Object> oldRuleUpdates = new HashMap<>();
 
     Rule newRule = new Rule("");
     newRule.getCwe().add("CWE-345");
+    newRule.getMisraC04().add(misra);
     Map<Rule, Map<String,Object>> newRules = new HashMap<>();
     newRules.put(newRule, new HashMap<String, Object>());
 
@@ -91,6 +92,14 @@ public class IntegrityEnforcementServiceTest {
     assertThat(oldRule.getCert()).hasSize(0);
     assertThat(newRule.getCert()).hasSize(0);
 
+    assertThat(oldRule.getMisraC04()).hasSize(3);
+    assertThat(newRule.getMisraC04()).hasSize(1);
+
+    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
+            SupportedCodingStandard.MISRA_C_2004.getCodingStandard());
+
+    assertThat(oldRule.getMisraC04()).hasSize(0);
+    assertThat(newRule.getMisraC04()).hasSize(3);
 
   }
 
