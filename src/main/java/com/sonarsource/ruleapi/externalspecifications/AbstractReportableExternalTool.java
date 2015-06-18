@@ -34,7 +34,8 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   private static final String TR_OPEN = "<tr><td>";
   private static final String TR_CLOSE = "</td></tr>";
 
-  protected Comparator<Rule> ruleKeyComparator = new Comparator<Rule>() {
+  protected Comparator<Rule> ruleKeyComparator = new RuleKeyComparator();
+  private static class RuleKeyComparator implements Comparator<Rule> {
     @Override
     public int compare(Rule rule, Rule rule2) {
       return rule.getKey().compareTo(rule2.getKey());
