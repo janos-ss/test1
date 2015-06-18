@@ -82,6 +82,7 @@ public class AbstractMisraSpecificationTest {
     misraC2004.computeCoverage();
 
     Rule rule = new Rule("C");
+    rule.setRepo("c");
     rule.setKey("RSPEC-1234");
     rule.setTitle("Rule title...");
     misraC2004.getRulesCoverage().get("2.1").addImplementedBy(rule);

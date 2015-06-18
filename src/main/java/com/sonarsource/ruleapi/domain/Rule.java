@@ -125,6 +125,7 @@ public class Rule {
 
   private String language = null;
   private String key = null;
+  private String repo = null;
   private Status status = null;
 
   private List<String> deprecationLinks = new ArrayList<String>();
@@ -694,4 +695,13 @@ public class Rule {
     this.defaultProfiles = defaultProfiles;
   }
 
+  public String getRepo() {
+
+    return repo;
+  }
+
+  public void setRepo(String repo) {
+
+    this.repo = repo;
+  }
 }

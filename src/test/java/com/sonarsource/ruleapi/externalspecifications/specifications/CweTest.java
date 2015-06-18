@@ -89,6 +89,7 @@ public class CweTest {
     Map<String,List<Rule>> cweRules = new TreeMap<String, List<Rule>>();
 
     Rule sq2 = new Rule("Java");
+    sq2.setRepo("abap");
     Rule rspec2 = sq2;
     sq2.getCwe().add("CWE-123");
     sq2.getCwe().add("CWE-234");

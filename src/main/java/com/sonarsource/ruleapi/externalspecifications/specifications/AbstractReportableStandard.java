@@ -213,7 +213,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     StringBuilder sb = new StringBuilder();
     // http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS2066
     sb.append("<a href='").append(instance).append("/coding_rules#rule_key=")
-            .append(getLanguage().getSq()).append("%3A").append(ruleKey).append("'>")
+            .append(rule.getRepo()).append("%3A").append(ruleKey).append("'>")
             .append(ruleKey).append("</a> ")
             .append(rule.getTitle()).append("<br/>\n");
     return sb.toString();

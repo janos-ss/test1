@@ -161,6 +161,7 @@ public class AbstractReportableStandardTest {
   @Test
   public void testGetLinkedRuleReference() {
     Rule rule = new Rule("C");
+    rule.setRepo("c");
     rule.setKey("RSPEC-1234");
     rule.setTitle("This is a rule title");
 

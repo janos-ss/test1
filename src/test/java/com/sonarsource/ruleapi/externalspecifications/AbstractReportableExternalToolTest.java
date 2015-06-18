@@ -29,6 +29,7 @@ public class AbstractReportableExternalToolTest {
     findBugsTestInstance.populateRulesCoverageMap();
     findBugsTestInstance.computeCoverage();
 
+    rule.setRepo("squid");
     rule.setKey("S1234");
     rule.setTitle("X should (not) Y");
 

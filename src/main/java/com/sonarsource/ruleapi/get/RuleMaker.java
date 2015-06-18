@@ -126,6 +126,7 @@ public class RuleMaker {
 
     String rawKey = ((String) jsonRule.get("key")).split(":")[1];
     rule.setKey(Utilities.normalizeKey(rawKey));
+    rule.setRepo((String) jsonRule.get("repo"));
 
     rule.setLegacyKeys(new ArrayList<String>());
     rule.getLegacyKeys().add(rawKey);
