@@ -40,7 +40,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     public int compare(Rule rule, Rule rule2) {
       return rule.getKey().compareTo(rule2.getKey());
     }
-  };
+  }
 
 
   @Override

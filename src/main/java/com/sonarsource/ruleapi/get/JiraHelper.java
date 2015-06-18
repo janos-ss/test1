@@ -23,6 +23,10 @@ public class JiraHelper {
   private static final String VALUE = "value";
 
 
+  private JiraHelper(){
+    // this space intentionally left blank
+  }
+
   static void handleMarkdown(Rule rule, String[] pieces) {
     MarkdownConverter markdownConverter = new MarkdownConverter();
 

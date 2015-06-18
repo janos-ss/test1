@@ -12,6 +12,11 @@ public class SonarQubeHelper {
   private static final String HTML_H2 = "<h2>";
 
 
+  private SonarQubeHelper(){
+    // this space intentionally left blank
+  }
+
+
   static void handleHtml(Rule rule, String[] pieces) {
 
     rule.setDescription(pieces[0].replaceAll("&lt;", "<").replaceAll("&gt;", ">"));
