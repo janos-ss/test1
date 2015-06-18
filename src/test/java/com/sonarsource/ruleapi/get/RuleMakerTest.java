@@ -47,52 +47,7 @@ public class RuleMakerTest {
     assertThat(RuleMaker.isLanguageMatch("Java", "Java: ...")).isTrue();
   }
 
-  @Test
-  public void testHandleParameterListNullString() throws Exception {
-    List<Parameter> empty = new ArrayList<Parameter>();
-    assertThat(RuleMaker.handleParameterList(null, "Java")).hasSize(0);
-  }
 
-  @Test
-  public void testHandleParameterList() throws Exception {
-    String paramString = "* key: complexity_threshold\r\n* type = text\r\n** Description: The minimum complexity at which this rule will be triggered.\r\n** Default: 250";
-    List<Parameter> paramList = RuleMaker.handleParameterList(paramString, "Java");
-    assertThat(paramList).hasSize(1);
-  }
-
-  @Test
-  public void testHandleParameterListEmptyString() throws Exception {
-    List<Parameter> paramList = RuleMaker.handleParameterList("", "Java");
-    assertThat(paramList).hasSize(0);
-  }
-
-  @Test
-  public void testHandleParameterListMultilanguage() throws Exception {
-    String paramString = "Key: format \r\nDescription: Regular expression used to check the names against. \r\nDefault Value for Java : ^[a-z][a-zA-Z0-9]*$ \r\nDefault Value for Flex : ^[_a-z][a-zA-Z0-9]*$";
-    List<Parameter> paramList = RuleMaker.handleParameterList(paramString, "Java");
-    assertThat(paramList.get(0).getDefaultVal()).isEqualTo("^[a-z][a-zA-Z0-9]*$");
-  }
-
-  @Test
-  public void testHandleParameterListNoKeyLabel() throws Exception {
-    String paramString = "* indentSize \r\n** Description: Number of white-spaces of an indent. If this property is not set, we just check that the code is indented. \r\n** Default value: none \r\n* tabWidth \r\n** Description: Equivalent number of spaces of a tabulation \r\n** Default value: 2\r\n";
-    List<Parameter> paramList = RuleMaker.handleParameterList(paramString, "Java");
-    assertThat(paramList).hasSize(2);
-    assertThat(paramList.get(0).getKey()).isEqualTo("indentSize");
-  }
-
-  @Test
-  public void testHandleParameterListUnknownLabel() throws Exception {
-    String paramString = "Key: format \r\nDescription: Regular expression used to check the names against. \r\nDefault Value for Java : ^[a-z][a-zA-Z0-9]*$ \r\nDefault Value for Flex : ^[_a-z][a-zA-Z0-9]*$\r\ntpye:text";
-    List<Parameter> paramList = RuleMaker.handleParameterList(paramString, "Java");
-    assertThat(paramList.get(0).getType()).isNull();
-  }
-
-  @Test
-  public void testTidyParamLabel() throws Exception {
-
-    assertThat(RuleMaker.tidyParamLabel(null)).isNull();
-  }
 
   @Test
   public void testSetFullDescriptionNull() throws Exception {
@@ -196,47 +151,6 @@ public class RuleMakerTest {
     assertThat(rule.getDescription()).hasSize(0);
   }
 
-  @Test
-  public void testStringToListNull() {
-
-    assertThat(RuleMaker.stringToList(null)).hasSize(0);
-  }
-
-  @Test
-  public void testStringToListEmpty() {
-
-    assertThat(RuleMaker.stringToList("")).hasSize(0);
-  }
-
-  @Test
-  public void testStringToListOne() {
-
-    assertThat(RuleMaker.stringToList("yo")).hasSize(1);
-  }
-
-  @Test
-  public void testStringToListComma() {
-
-    assertThat(RuleMaker.stringToList("hello, you")).hasSize(2);
-  }
-
-  @Test
-  public void testStringToListAmps() {
-
-    assertThat(RuleMaker.stringToList("hello && you")).hasSize(2);
-  }
-
-  @Test
-  public void testStringToListAmp() {
-
-    assertThat(RuleMaker.stringToList("hello & you")).hasSize(2);
-  }
-
-  @Test
-  public void testStringToListAmpAndComma() {
-
-    assertThat(RuleMaker.stringToList("hello, you & you")).hasSize(3);
-  }
 
   @Test
   public void testFleshOutRuleNullIssue() {
@@ -261,71 +175,6 @@ public class RuleMakerTest {
   }
 
   @Test
-  public void testSetReferences() {
-
-    String json = "{\"id\":\"19078\",\"names\":{\"summary\":\"Summary\",\"issuetype\":\"Issue Type\",\"customfield_10243\":\"issueFunction\",\"customfield_10232\":\"Completeness\",\"customfield_10244\":\"FindBugs\",\"customfield_10245\":\"PMD\",\"customfield_10246\":\"Checkstyle\",\"customfield_10242\":\"Template Rule\",\"reporter\":\"Reporter\",\"customfield_10330\":\"Implementation details\",\"updated\":\"Updated\",\"created\":\"Created\",\"description\":\"Description\",\"customfield_10001\":\"Targeted languages\",\"issuelinks\":\"Linked Issues\",\"customfield_10004\":\"Covered Languages\",\"subtasks\":\"Sub-Tasks\",\"status\":\"Status\",\"customfield_10007\":\"Default Severity\",\"labels\":\"Labels\",\"customfield_10005\":\"List of parameters\",\"customfield_10256\":\"SQALE Linear Argument\",\"workratio\":\"Work Ratio\",\"customfield_10257\":\"FindSecBugs\",\"customfield_10255\":\"CERT\",\"customfield_10253\":\"OWASP\",\"customfield_10250\":\"PHP-FIG\",\"customfield_10251\":\"CWE\",\"project\":\"Project\",\"customfield_10249\":\"MISRA C++ 2008\",\"customfield_10248\":\"MISRA C 2004\",\"customfield_10014\":\"SQALE Linear Offset\",\"lastViewed\":\"Last Viewed\",\"customfield_10015\":\"Legacy Key\",\"customfield_10012\":\"SQALE Constant Cost or Linear Threshold\",\"customfield_10013\":\"SQALE Linear Factor\",\"comment\":\"Comment\",\"customfield_10010\":\"SQALE Characteristic\",\"customfield_10011\":\"SQALE Remediation Function\",\"votes\":\"Votes\",\"resolution\":\"Resolution\",\"resolutiondate\":\"Resolved\",\"creator\":\"Creator\",\"customfield_10258\":\"MISRA C 2012\",\"customfield_10021\":\"Activated by default\",\"watches\":\"Watchers\",\"assignee\":\"Assignee\",\"customfield_10131\":\"Applicability\",\"customfield_10130\":\"Outdated Languages\",\"customfield_10030\":\"Message\"},\"key\":\"RSPEC-2210\",\"fields\":{\"summary\":\"Anntest dummy rule asdf\",\"customfield_10244\":\"ASDF-PDQ\",\"customfield_10257\":\"findsecbuts\",\"customfield_10255\":\"cert...\",\"customfield_10253\":\"CWE-123\",\"customfield_10251\":\"CWE-123\",\"customfield_10249\":\"8.9\",\"customfield_10248\":\"0.0\",\"customfield_10258\":\"0-0-0\",\"customfield_10245\":\"pmd\",\"customfield_10246\":\"checkstyle\",\"customfield_10250\":\"mission-fig\"}}";
-
-    Rule rule = new Rule("");
-    try {
-      RuleMaker.setReferences(rule, (JSONObject)parser.parse(json));
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-    assertThat(rule.getCwe().size()).isEqualTo(1);
-    assertThat(rule.getCwe().get(0)).isEqualTo("CWE-123");
-
-    assertThat(rule.getCert().size()).isEqualTo(1);
-    assertThat(rule.getCert().get(0)).isEqualTo("cert...");
-
-    assertThat(rule.getMisraC04().size()).isEqualTo(1);
-    assertThat(rule.getMisraC04().get(0)).isEqualTo("0.0");
-
-    assertThat(rule.getMisraC12().size()).isEqualTo(1);
-    assertThat(rule.getMisraC12().get(0)).isEqualTo("0-0-0");
-
-    assertThat(rule.getMisraCpp().size()).isEqualTo(1);
-    assertThat(rule.getMisraCpp().get(0)).isEqualTo("8.9");
-
-    assertThat(rule.getFindbugs().size()).isEqualTo(1);
-    assertThat(rule.getFindbugs().get(0)).isEqualTo("ASDF-PDQ");
-
-    assertThat(rule.getFindSecBugs().size()).isEqualTo(1);
-    assertThat(rule.getFindSecBugs().get(0)).isEqualTo("findsecbuts");
-
-    assertThat(rule.getOwasp().size()).isEqualTo(1);
-    assertThat(rule.getOwasp().get(0)).isEqualTo("CWE-123");
-
-    assertThat(rule.getPmd().size()).isEqualTo(1);
-    assertThat(rule.getPmd().get(0)).isEqualTo("pmd");
-
-    assertThat(rule.getCheckstyle().size()).isEqualTo(1);
-    assertThat(rule.getCheckstyle().get(0)).isEqualTo("checkstyle");
-
-    assertThat(rule.getPhpFig().size()).isEqualTo(1);
-    assertThat(rule.getPhpFig().get(0)).isEqualTo("mission-fig");
-  }
-
-  @Test
-  public void testSetSquale() {
-    String json = "{\"id\":\"19078\",\"names\":{\"summary\":\"Summary\",\"issuetype\":\"Issue Type\",\"customfield_10243\":\"issueFunction\",\"customfield_10232\":\"Completeness\",\"customfield_10244\":\"FindBugs\",\"customfield_10245\":\"PMD\",\"customfield_10246\":\"Checkstyle\",\"customfield_10242\":\"Template Rule\",\"reporter\":\"Reporter\",\"customfield_10330\":\"Implementation details\",\"updated\":\"Updated\",\"created\":\"Created\",\"description\":\"Description\",\"customfield_10001\":\"Targeted languages\",\"issuelinks\":\"Linked Issues\",\"customfield_10004\":\"Covered Languages\",\"subtasks\":\"Sub-Tasks\",\"status\":\"Status\",\"customfield_10007\":\"Default Severity\",\"labels\":\"Labels\",\"customfield_10005\":\"List of parameters\",\"customfield_10256\":\"SQALE Linear Argument\",\"workratio\":\"Work Ratio\",\"customfield_10257\":\"FindSecBugs\",\"customfield_10255\":\"CERT\",\"customfield_10253\":\"OWASP\",\"customfield_10250\":\"PHP-FIG\",\"customfield_10251\":\"CWE\",\"project\":\"Project\",\"customfield_10249\":\"MISRA C++ 2008\",\"customfield_10248\":\"MISRA C 2004\",\"customfield_10014\":\"SQALE Linear Offset\",\"lastViewed\":\"Last Viewed\",\"customfield_10015\":\"Legacy Key\",\"customfield_10012\":\"SQALE Constant Cost or Linear Threshold\",\"customfield_10013\":\"SQALE Linear Factor\",\"comment\":\"Comment\",\"customfield_10010\":\"SQALE Characteristic\",\"customfield_10011\":\"SQALE Remediation Function\",\"votes\":\"Votes\",\"resolution\":\"Resolution\",\"resolutiondate\":\"Resolved\",\"creator\":\"Creator\",\"customfield_10258\":\"MISRA C 2012\",\"customfield_10021\":\"Activated by default\",\"watches\":\"Watchers\",\"assignee\":\"Assignee\",\"customfield_10131\":\"Applicability\",\"customfield_10130\":\"Outdated Languages\",\"customfield_10030\":\"Message\"},\"key\":\"RSPEC-2210\",\"fields\":{\"summary\":\"Anntest dummy rule asdf\",\"customfield_10010\":{\"child\":{\"id\":\"10050\",\"value\":\"Compiler related portability\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10050\"},\"id\":\"10049\",\"value\":\"Portability\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10049\"},\"customfield_10011\":{\"id\":\"10086\",\"value\":\"Constant\\/Issue\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/customFieldOption\\/10086\"},\"customfield_10012\":\"2d\",\"customfield_10256\":null,\"customfield_10013\":null,\"customfield_10014\":null,\"customfield_10015\":null}}";
-
-    Rule rule = new Rule("");
-    try {
-      RuleMaker.setSqale(rule, (JSONObject)parser.parse(json));
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-
-    assertThat(rule.getSqaleCharac()).isEqualTo("Portability");
-    assertThat(rule.getSqaleSubCharac()).isEqualTo(Rule.Subcharacteristic.COMPILER_RELATED_PORTABILITY);
-    assertThat(rule.getSqaleRemediationFunction()).isEqualTo(Rule.RemediationFunction.CONSTANT_ISSUE);
-    assertThat(rule.getSqaleConstantCostOrLinearThreshold()).isEqualTo("2d");
-    assertThat(rule.getSqaleLinearArgDesc()).isNull();
-    assertThat(rule.getSqaleLinearFactor()).isNull();
-    assertThat(rule.getSqaleLinearOffset()).isNull();
-  }
-
-  @Test
   public void testPopulateFields() {
 
     Rule rule = new Rule("");
@@ -340,61 +189,6 @@ public class RuleMakerTest {
     assertThat(rule.getTags().size()).isEqualTo(1);
     assertThat(rule.getTags().get(0)).isEqualTo("bug");
     assertThat(rule.getTargetedLanguages()).hasSize(1);
-  }
-
-  @Test
-  public void testCustomFieldValueSadPath() {
-
-    try {
-      assertThat(RuleMaker.getCustomFieldValue((JSONObject) parser.parse("{}"), "foo")).isNull();
-      assertThat(RuleMaker.getCustomFieldValue((JSONObject) parser.parse(FULL_JSON), null)).isNull();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Test
-  public void testListFromJsonFieldValueNull() {
-
-    try {
-      assertThat(RuleMaker.getListFromJsonFieldValue((JSONObject) parser.parse("{}"), "foo")).isEmpty();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Test
-  public void testGetJsonField() {
-
-    try {
-      assertThat(RuleMaker.getJsonField((JSONObject)parser.parse(FULL_JSON),"customfield_10007")).isNotNull();
-      assertThat(RuleMaker.getJsonField((JSONObject) parser.parse(FULL_JSON), "SQALE Characteristic")).isNotNull();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Test
-  public void testGetJsonFieldSadPath() {
-
-    try {
-      assertThat(RuleMaker.getJsonField((JSONObject) parser.parse("{}"), "foo")).isNull();
-      assertThat(RuleMaker.getJsonField((JSONObject) parser.parse(FULL_JSON), null)).isNull();
-      assertThat(RuleMaker.getJsonField((JSONObject) parser.parse(FULL_JSON), "foo")).isNull();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Test
-  public void testGetJsonFieldValueNulls() {
-
-    try {
-      assertThat(RuleMaker.getJsonFieldValue((JSONObject) parser.parse("{}"), "foo")).isNull();
-      assertThat(RuleMaker.getJsonFieldValue((JSONObject) parser.parse(FULL_JSON), null)).isNull();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
   }
 
   @Test
@@ -429,29 +223,6 @@ public class RuleMakerTest {
     } catch (ParseException e) {
       e.printStackTrace();
     }
-  }
-
-  @Test
-  public void testSqaleConstantValueFromSqInstance() {
-
-    Rule rule = new Rule("");
-    String cost = "5h";
-
-    rule.setSqaleRemediationFunction(Rule.RemediationFunction.LINEAR);
-    RuleMaker.setSqaleConstantValueFromSqInstance(rule, cost);
-    assertThat(rule.getSqaleConstantCostOrLinearThreshold()).isNull();
-    assertThat(rule.getSqaleLinearOffset()).isNull();
-
-    rule.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
-    RuleMaker.setSqaleConstantValueFromSqInstance(rule, cost);
-    assertThat(rule.getSqaleConstantCostOrLinearThreshold()).isEqualTo(cost);
-    assertThat(rule.getSqaleLinearOffset()).isNull();
-
-    rule.setSqaleRemediationFunction(Rule.RemediationFunction.LINEAR_OFFSET);
-    RuleMaker.setSqaleConstantValueFromSqInstance(rule, cost);
-    assertThat(rule.getSqaleConstantCostOrLinearThreshold()).isNull();
-    assertThat(rule.getSqaleLinearOffset()).isEqualTo(cost);
-
   }
 
   @Test
@@ -497,28 +268,5 @@ public class RuleMakerTest {
 
   }
 
-  @Test
-  public void testSetDefaultProfiles() {
 
-    String json = "{\"expand\":\"renderedFields,names,schema,transitions,operations,editmeta,changelog\",\"id\":\"19078\",\"self\":\"http://jira.sonarsource.com/rest/api/latest/issue/19078\",\"key\":\"RSPEC-2210\",\"fields\":{\"issuetype\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/issuetype/7\",\"id\":\"7\",\"description\":\"Rule Specification\",\"iconUrl\":\"http://jira.sonarsource.com/images/icons/issuetypes/documentation.png\",\"name\":\"Specification\",\"subtask\":false},\"customfield_10030\":\"message\",\"project\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/project/10120\",\"id\":\"10120\",\"key\":\"RSPEC\",\"name\":\"Rules Repository\",\"avatarUrls\":{\"48x48\":\"http://jira.sonarsource.com/secure/projectavatar?pid=10120&avatarId=10011\",\"24x24\":\"http://jira.sonarsource.com/secure/projectavatar?size=small&pid=10120&avatarId=10011\",\"16x16\":\"http://jira.sonarsource.com/secure/projectavatar?size=xsmall&pid=10120&avatarId=10011\",\"32x32\":\"http://jira.sonarsource.com/secure/projectavatar?size=medium&pid=10120&avatarId=10011\"}},\"customfield_10232\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/customFieldOption/10324\",\"value\":\"Full\",\"id\":\"10324\"},\"customfield_10430\":\"reeee-SHARper!\",\"resolution\":null,\"customfield_10431\":null,\"customfield_10630\":\"Porky Pig\",\"customfield_10432\":null,\"customfield_10433\":null,\"customfield_10631\":\"Pylint\",\"resolutiondate\":null,\"workratio\":-1,\"lastViewed\":null,\"watches\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/issue/RSPEC-2210/watchers\",\"watchCount\":2,\"isWatching\":false},\"created\":\"2014-11-04T19:17:19.000+0000\",\"customfield_10021\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/customFieldOption/10114\",\"value\":\"No\",\"id\":\"10114\"},\"labels\":[\"bug\",\"cert\",\"clumsy\",\"cwe\",\"misra\",\"obsolete\",\"owasp-a6\",\"performance\",\"pitfall\",\"security\"],\"customfield_10258\":\"8.9\",\"issuelinks\":[],\"assignee\":null,\"updated\":\"2015-05-21T20:02:08.000+0000\",\"status\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/status/10000\",\"description\":\"Active Quality Rule\",\"iconUrl\":\"http://jira.sonarsource.com/images/icons/statuses/open.png\",\"name\":\"Active\",\"id\":\"10000\",\"statusCategory\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/statuscategory/2\",\"id\":2,\"key\":\"new\",\"colorName\":\"blue-gray\",\"name\":\"New\"}},\"customfield_10250\":\"mission-fig\",\"description\":\"aldjfl asjd lkjva;lskjeljz fnvw;uzoin j valiue nvakej\\r\\n\\r\\nh2. See \\r\\n* [MITRE, CWE-123|http://cwe.toto.com] - Title\\r\\n* [OWASP Top Ten 2013 Category A6|https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure] - Sensitive Data Exposure\",\"customfield_10251\":\"CWE-123\",\"customfield_10010\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/customFieldOption/10049\",\"value\":\"Portability\",\"id\":\"10049\",\"child\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/customFieldOption/10050\",\"value\":\"Compiler related portability\",\"id\":\"10050\"}},\"customfield_10131\":[{\"self\":\"http://jira.sonarsource.com/rest/api/2/customFieldOption/10241\",\"value\":\"Sources\",\"id\":\"10241\"},{\"self\":\"http://jira.sonarsource.com/rest/api/2/customFieldOption/10242\",\"value\":\"Tests\",\"id\":\"10242\"}],\"customfield_10011\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/customFieldOption/10086\",\"value\":\"Constant/Issue\",\"id\":\"10086\"},\"customfield_10330\":null,\"customfield_10253\":\"A12-Blah, A6\",\"customfield_10012\":\"2d\",\"customfield_10013\":null,\"customfield_10255\":\"cert...\",\"customfield_10530\":null,\"customfield_10014\":null,\"customfield_10256\":null,\"customfield_10015\":null,\"customfield_10257\":\"findsecbuts\",\"customfield_10730\":null,\"customfield_10005\":\"* key: key\\r\\n* default: default\\r\\n* description: description\",\"customfield_10248\":\"0.0\",\"customfield_10007\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/customFieldOption/10040\",\"value\":\"Blocker\",\"id\":\"10040\"},\"customfield_10249\":\"0-0-0\",\"summary\":\"Anntest dummy rule asdf\",\"creator\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/user?username=ann.campbell.2\",\"name\":\"ann.campbell.2\",\"emailAddress\":\"ann.campbell@sonarsource.com\",\"avatarUrls\":{\"48x48\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=48\",\"24x24\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=24\",\"16x16\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=16\",\"32x32\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=32\"},\"displayName\":\"Ann Campbell\",\"active\":true},\"subtasks\":[],\"reporter\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/user?username=ann.campbell.2\",\"name\":\"ann.campbell.2\",\"emailAddress\":\"ann.campbell@sonarsource.com\",\"avatarUrls\":{\"48x48\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=48\",\"24x24\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=24\",\"16x16\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=16\",\"32x32\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=32\"},\"displayName\":\"Ann Campbell\",\"active\":true},\"customfield_10242\":null,\"customfield_10001\":null,\"customfield_10243\":null,\"customfield_10244\":\"yowza!\",\"customfield_10245\":\"pmd\",\"customfield_10004\":null,\"customfield_10246\":\"checkstyle\"," +
-            "\"customfield_10830\":[" +
-            "{\"self\":\"http://jira.sonarsource.com/rest/api/2/customFieldOption/10620\",\"value\":\"Bogus Way\",\"id\":\"10622\"}," +
-            "{\"self\":\"http://jira.sonarsource.com/rest/api/2/customFieldOption/10620\",\"value\":\"SonarQube Way\",\"id\":\"10620\"}," +
-            "{\"self\":\"http://jira.sonarsource.com/rest/api/2/customFieldOption/10621\",\"value\":\"Security Way\",\"id\":\"10621\"}],\"customfield_10434\":null,\"customfield_10435\":\"fb-contrib\",\"customfield_10436\":null,\"customfield_10437\":null,\"customfield_10438\":[],\"comment\":{\"startAt\":0,\"maxResults\":3,\"total\":3,\"comments\":[{\"self\":\"http://jira.sonarsource.com/rest/api/2/issue/19078/comment/22389\",\"id\":\"22389\",\"author\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/user?username=freddy.mallet\",\"name\":\"freddy.mallet\",\"emailAddress\":\"freddy.mallet@sonarsource.com\",\"avatarUrls\":{\"48x48\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=48\",\"24x24\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=24\",\"16x16\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=16\",\"32x32\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=32\"},\"displayName\":\"Freddy Mallet\",\"active\":true},\"body\":\"Can we remove this RSPEC @Ann ? :)\",\"updateAuthor\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/user?username=freddy.mallet\",\"name\":\"freddy.mallet\",\"emailAddress\":\"freddy.mallet@sonarsource.com\",\"avatarUrls\":{\"48x48\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=48\",\"24x24\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=24\",\"16x16\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=16\",\"32x32\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=32\"},\"displayName\":\"Freddy Mallet\",\"active\":true},\"created\":\"2015-01-29T13:27:47.000+0000\",\"updated\":\"2015-01-29T13:27:47.000+0000\"},{\"self\":\"http://jira.sonarsource.com/rest/api/2/issue/19078/comment/22390\",\"id\":\"22390\",\"author\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/user?username=ann.campbell.2\",\"name\":\"ann.campbell.2\",\"emailAddress\":\"ann.campbell@sonarsource.com\",\"avatarUrls\":{\"48x48\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=48\",\"24x24\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=24\",\"16x16\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=16\",\"32x32\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=32\"},\"displayName\":\"Ann Campbell\",\"active\":true},\"body\":\"I know it's irritating, but I'd like to keep it for just a little longer [~freddy.mallet]\",\"updateAuthor\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/user?username=ann.campbell.2\",\"name\":\"ann.campbell.2\",\"emailAddress\":\"ann.campbell@sonarsource.com\",\"avatarUrls\":{\"48x48\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=48\",\"24x24\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=24\",\"16x16\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=16\",\"32x32\":\"http://www.gravatar.com/avatar/e6e098cbbcdbd6ba253f335e1407b574?d=mm&s=32\"},\"displayName\":\"Ann Campbell\",\"active\":true},\"created\":\"2015-01-29T13:37:35.000+0000\",\"updated\":\"2015-01-29T13:37:35.000+0000\"},{\"self\":\"http://jira.sonarsource.com/rest/api/2/issue/19078/comment/22591\",\"id\":\"22591\",\"author\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/user?username=freddy.mallet\",\"name\":\"freddy.mallet\",\"emailAddress\":\"freddy.mallet@sonarsource.com\",\"avatarUrls\":{\"48x48\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=48\",\"24x24\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=24\",\"16x16\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=16\",\"32x32\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=32\"},\"displayName\":\"Freddy Mallet\",\"active\":true},\"body\":\"Ok, no problem [~ann.campbell.2]\",\"updateAuthor\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/user?username=freddy.mallet\",\"name\":\"freddy.mallet\",\"emailAddress\":\"freddy.mallet@sonarsource.com\",\"avatarUrls\":{\"48x48\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=48\",\"24x24\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=24\",\"16x16\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=16\",\"32x32\":\"http://www.gravatar.com/avatar/f45a92cf06e1e375faebefc1bb81cf71?d=mm&s=32\"},\"displayName\":\"Freddy Mallet\",\"active\":true},\"created\":\"2015-02-04T09:53:57.000+0000\",\"updated\":\"2015-02-04T09:53:57.000+0000\"}]},\"votes\":{\"self\":\"http://jira.sonarsource.com/rest/api/2/issue/RSPEC-2210/votes\",\"votes\":0,\"hasVoted\":false}},\"names\":{\"issuetype\":\"Issue Type\",\"customfield_10030\":\"Message\",\"project\":\"Project\",\"customfield_10232\":\"Completeness\",\"customfield_10430\":\"ReSharper\",\"resolution\":\"Resolution\",\"customfield_10431\":\"Customer Request Type\",\"customfield_10630\":\"CPPCheck\",\"customfield_10432\":\"Time to resolution\",\"customfield_10433\":\"Golden customer\",\"customfield_10631\":\"Pylint\",\"resolutiondate\":\"Resolved\",\"workratio\":\"Work Ratio\",\"lastViewed\":\"Last Viewed\",\"watches\":\"Watchers\",\"created\":\"Created\",\"customfield_10021\":\"Activated by default\",\"labels\":\"Labels\",\"customfield_10258\":\"MISRA C 2012\",\"issuelinks\":\"Linked Issues\",\"assignee\":\"Assignee\",\"updated\":\"Updated\",\"status\":\"Status\",\"customfield_10250\":\"PHP-FIG\",\"description\":\"Description\",\"customfield_10251\":\"CWE\",\"customfield_10010\":\"SQALE Characteristic\",\"customfield_10131\":\"Applicability\",\"customfield_10011\":\"SQALE Remediation Function\",\"customfield_10330\":\"Implementation details\",\"customfield_10253\":\"OWASP\",\"customfield_10012\":\"SQALE Constant Cost or Linear Threshold\",\"customfield_10013\":\"SQALE Linear Factor\",\"customfield_10255\":\"CERT\",\"customfield_10530\":\"Waiting for customer\",\"customfield_10014\":\"SQALE Linear Offset\",\"customfield_10256\":\"SQALE Linear Argument Description\",\"customfield_10015\":\"Legacy Key\",\"customfield_10257\":\"FindSecBugs\",\"customfield_10730\":\"Issue in trouble\",\"customfield_10005\":\"List of parameters\",\"customfield_10248\":\"MISRA C 2004\",\"customfield_10007\":\"Default Severity\",\"customfield_10249\":\"MISRA C++ 2008\",\"summary\":\"Summary\",\"creator\":\"Creator\",\"subtasks\":\"Sub-Tasks\",\"reporter\":\"Reporter\",\"customfield_10242\":\"Template Rule\",\"customfield_10001\":\"Targeted languages\",\"customfield_10243\":\"issueFunction\",\"customfield_10244\":\"FindBugs\",\"customfield_10245\":\"PMD\",\"customfield_10004\":\"Covered Languages\",\"customfield_10246\":\"Checkstyle\",\"customfield_10830\":\"Default Quality Profiles\",\"customfield_10434\":\"Time to answer\",\"customfield_10435\":\"fb-contrib\",\"customfield_10436\":\"Irrelevant for Languages\",\"customfield_10437\":\"SonarQube version\",\"customfield_10438\":\"Request participants\",\"comment\":\"Comment\",\"votes\":\"Votes\"}}";
-
-    JSONObject issue = null;
-    try {
-      issue = (JSONObject) parser.parse(json);
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-
-    assertThat(RuleMaker.getCustomFieldStoredAsList(issue, "Default Quality Profiles")).hasSize(3);
-
-    Rule rule = new Rule("Java");
-    RuleMaker.populateFields(rule, issue);
-    assertThat(rule.getDefaultProfiles()).hasSize(2);
-    assertThat(rule.getDefaultProfiles()).contains(Rule.Profile.SECURITY);
-    assertThat(rule.getDefaultProfiles()).contains(Rule.Profile.SONARQUBE);
-  }
 }

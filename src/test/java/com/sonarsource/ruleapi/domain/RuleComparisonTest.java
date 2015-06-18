@@ -6,7 +6,7 @@
 
 package com.sonarsource.ruleapi.domain;
 
-import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.get.JiraHelper;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -710,7 +710,7 @@ public class RuleComparisonTest {
 
     String str = "Processor use";
 
-    RuleMaker.setSubcharacteristic(spec, str);
+    JiraHelper.setSubcharacteristic(spec, str);
 
     assertThat(rc.compare()).isEqualTo(-1);
   }
@@ -723,7 +723,7 @@ public class RuleComparisonTest {
 
     String str = "Memory use";
 
-    RuleMaker.setSubcharacteristic(spec, str);
+    JiraHelper.setSubcharacteristic(spec, str);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
             "  SQALE sub-characteristic\n" +
