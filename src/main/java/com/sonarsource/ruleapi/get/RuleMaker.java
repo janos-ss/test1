@@ -14,7 +14,9 @@ import com.sonarsource.ruleapi.utilities.Utilities;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Given a key and a language, retrieves the relevant Issue

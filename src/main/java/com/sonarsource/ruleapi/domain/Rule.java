@@ -5,9 +5,11 @@
  */
 package com.sonarsource.ruleapi.domain;
 
-import java.util.*;
-
 import com.google.common.base.Strings;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class Rule {
 

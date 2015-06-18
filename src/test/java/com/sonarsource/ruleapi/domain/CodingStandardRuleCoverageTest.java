@@ -5,13 +5,13 @@
  */
 package com.sonarsource.ruleapi.domain;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 
 public class CodingStandardRuleCoverageTest {

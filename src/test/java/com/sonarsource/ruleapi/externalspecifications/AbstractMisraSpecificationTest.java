@@ -10,9 +10,7 @@ import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.fest.assertions.Assertions.assertThat;
 

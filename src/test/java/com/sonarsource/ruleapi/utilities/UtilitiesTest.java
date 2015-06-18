@@ -5,7 +5,6 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
-import com.sonarsource.ruleapi.get.RuleMaker;
 import org.junit.Test;
 
 import java.util.ArrayList;

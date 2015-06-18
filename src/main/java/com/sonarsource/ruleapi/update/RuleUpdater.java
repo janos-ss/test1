@@ -12,7 +12,9 @@ import com.sonarsource.ruleapi.get.Fetcher;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class RuleUpdater {

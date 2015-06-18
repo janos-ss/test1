@@ -6,6 +6,20 @@
 
 package com.sonarsource.ruleapi.services;
 
+import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.domain.RuleComparison;
+import com.sonarsource.ruleapi.domain.RuleException;
+import com.sonarsource.ruleapi.externalspecifications.AbstractReportableExternalTool;
+import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
+import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
+import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
+import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMultiLanguageStandard;
+import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.utilities.Language;
+import org.fest.util.Strings;
+import org.json.simple.JSONArray;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -15,16 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.specifications.*;
-import com.sonarsource.ruleapi.get.RuleMaker;
-import com.sonarsource.ruleapi.externalspecifications.*;
-import com.sonarsource.ruleapi.utilities.Language;
-import com.sonarsource.ruleapi.domain.RuleComparison;
-import com.sonarsource.ruleapi.domain.RuleException;
-import org.fest.util.Strings;
-import org.json.simple.JSONArray;
 
 
 public class ReportService extends RuleManager {

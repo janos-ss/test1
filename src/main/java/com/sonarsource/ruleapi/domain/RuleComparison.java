@@ -5,11 +5,11 @@
  */
 package com.sonarsource.ruleapi.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Utilities;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides nuanced comparison between rules, taking into account

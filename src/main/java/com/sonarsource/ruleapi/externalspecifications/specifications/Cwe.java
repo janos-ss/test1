@@ -10,7 +10,8 @@ import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.utilities.Language;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class Cwe extends AbstractMultiLanguageStandard implements TaggableStandard {

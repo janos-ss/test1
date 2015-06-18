@@ -6,7 +6,8 @@
 
 package com.sonarsource.ruleapi.externalspecifications;
 
-import com.sonarsource.ruleapi.domain.*;
+import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
+import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
 import org.fest.util.Strings;
 

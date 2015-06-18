@@ -8,7 +8,10 @@ package com.sonarsource.ruleapi.externalspecifications;
 import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
 import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2012;
 import com.sonarsource.ruleapi.externalspecifications.misra.MisraCPP2008;
-import com.sonarsource.ruleapi.externalspecifications.specifications.*;
+import com.sonarsource.ruleapi.externalspecifications.specifications.Cert;
+import com.sonarsource.ruleapi.externalspecifications.specifications.Cwe;
+import com.sonarsource.ruleapi.externalspecifications.specifications.OwaspTopTen;
+import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
 import com.sonarsource.ruleapi.externalspecifications.tools.*;
 
 public enum SupportedCodingStandard {

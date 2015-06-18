@@ -6,8 +6,6 @@
 package com.sonarsource.ruleapi.externalspecifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
-import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.externalspecifications.tools.FindBugs;
 import org.junit.Test;
 

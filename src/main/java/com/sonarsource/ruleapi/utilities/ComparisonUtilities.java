@@ -6,11 +6,11 @@
 package com.sonarsource.ruleapi.utilities;
 
 
+import org.fest.util.Strings;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.fest.util.Strings;
 
 public class ComparisonUtilities {
 

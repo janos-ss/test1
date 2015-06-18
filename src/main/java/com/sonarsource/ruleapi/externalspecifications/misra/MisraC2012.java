@@ -5,14 +5,14 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.misra;
 
-import java.util.List;
-
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.AbstractMisraSpecification;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRequirableRule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.Language;
+
+import java.util.List;
 
 public class MisraC2012 extends AbstractMisraSpecification {
 

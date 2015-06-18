@@ -6,9 +6,9 @@
 package com.sonarsource.ruleapi.externalspecifications.tools;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.AbstractReportableExternalTool;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
-import com.sonarsource.ruleapi.externalspecifications.AbstractReportableExternalTool;
 import com.sonarsource.ruleapi.utilities.Language;
 
 import java.util.List;

@@ -9,8 +9,6 @@ package com.sonarsource.ruleapi;
 import com.sonarsource.ruleapi.services.ReportService;
 import org.junit.Test;
 
-import com.sonar.orchestrator.Orchestrator;
-
 public class ReportGeneratorTest {
 
   @Test

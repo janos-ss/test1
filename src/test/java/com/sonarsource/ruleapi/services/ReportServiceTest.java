@@ -10,8 +10,6 @@ import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
-
 
 public class ReportServiceTest {
 
