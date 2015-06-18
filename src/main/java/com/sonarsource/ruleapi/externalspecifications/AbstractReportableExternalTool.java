@@ -10,7 +10,13 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 public abstract class AbstractReportableExternalTool extends AbstractReportableStandard implements CustomerReport{

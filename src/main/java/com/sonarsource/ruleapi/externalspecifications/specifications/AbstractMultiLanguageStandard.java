@@ -10,7 +10,11 @@ import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.fest.util.Strings;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 

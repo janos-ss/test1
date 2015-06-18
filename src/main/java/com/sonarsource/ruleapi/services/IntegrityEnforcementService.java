@@ -17,7 +17,11 @@ import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -103,7 +107,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  private void copyUniqueReferences(CodingStandard cs, List<String> oldReferences, Map.Entry<Rule, Map<String, Object>> newRuleEntry) {
+  private static void copyUniqueReferences(CodingStandard cs, List<String> oldReferences, Map.Entry<Rule, Map<String, Object>> newRuleEntry) {
 
     List<String> newReferences = cs.getRspecReferenceFieldValues(newRuleEntry.getKey());
 
