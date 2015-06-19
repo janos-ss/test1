@@ -268,5 +268,17 @@ public class RuleMakerTest {
 
   }
 
+  @Test
+  public void testGetCachedRuleByKey() {
+
+    String key = "RSPEC-1111";
+
+    Rule rule = new Rule("");
+    rule.setKey(key);
+
+    RuleMaker.jiraRuleCache.put(key, rule);
+    assertThat(RuleMaker.getCachedRuleByKey(key, "")).isEqualTo(rule);
+    assertThat(RuleMaker.getCachedRuleByKey("S1111", "")).isEqualTo(rule);
+  }
 
 }

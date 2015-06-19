@@ -14,7 +14,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Given a key and a language, retrieves the relevant Issue
@@ -30,6 +32,9 @@ import java.util.List;
  * variants such as {code} blocks and parameter variations.
  */
 public class RuleMaker {
+
+  protected static Map<String, Rule> jiraRuleCache = new HashMap<>();
+
 
   private RuleMaker() {
   }
@@ -48,6 +53,18 @@ public class RuleMaker {
     JSONObject jsonRule = fetcher.fetchRuleFromSonarQube(sonarQubeInstance, extendedKey);
     return  populateFieldsFromSonarQube(jsonRule);
   }
+
+  public static Rule getCachedRuleByKey(String key, String language) {
+
+    String normalKey = Utilities.normalizeKey(key);
+    Rule rule = jiraRuleCache.get(normalKey);
+    if (rule == null) {
+      rule = getRuleByKey(normalKey, language);
+      jiraRuleCache.put(normalKey, rule);
+    }
+    return rule;
+  }
+
 
   /**
    * Given a rule key and a language (e.g. Java, ABAP, etc), fetches

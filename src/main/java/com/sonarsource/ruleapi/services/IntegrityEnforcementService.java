@@ -92,7 +92,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
       if (newRules.isEmpty()) {
         for (String link : oldRule.getDeprecationLinks()) {
-          newRules.put(RuleMaker.getRuleByKey(link, ""), new HashMap<String, Object>());
+          newRules.put(RuleMaker.getCachedRuleByKey(link, ""), new HashMap<String, Object>());
         }
       }
 
@@ -202,7 +202,7 @@ public class IntegrityEnforcementService extends RuleManager {
         String key = sqRule.getKey();
         Rule rspecRule = rspecRules.remove(key);
         if (rspecRule == null) {
-          rspecRule = RuleMaker.getRuleByKey(key, language.getRspec());
+          rspecRule = RuleMaker.getCachedRuleByKey(key, language.getRspec());
         }
 
         addCoveredForNemoRules(rspecLanguage, needsUpdating, rspecRule);

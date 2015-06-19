@@ -165,7 +165,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
         if (! Rule.Status.DEPRECATED.equals(sqRule.getStatus())) {
           String key = sqRule.getKey();
 
-          Rule rspecRule = RuleMaker.getRuleByKey(key, sq);
+          Rule rspecRule = RuleMaker.getCachedRuleByKey(key, sq);
           List<String> ids = getExpandedStandardKeyList(getRspecReferenceFieldValues(rspecRule));
 
           setCodingStandardRuleCoverageImplemented(ids, sqRule);

@@ -71,7 +71,7 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
     List<Rule> sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(getLanguage(), instance);
     for (Rule sq : sqImplemented) {
 
-      Rule rspec = RuleMaker.getRuleByKey(sq.getKey(), getLanguage().getRspec());
+      Rule rspec = RuleMaker.getCachedRuleByKey(sq.getKey(), getLanguage().getRspec());
       populateStandardMap(standardRules, sq, rspec);
     }
 

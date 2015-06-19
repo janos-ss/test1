@@ -57,7 +57,7 @@ public class RuleManager {
 
     if (! key.matches("RSPEC-\\d+")) {
 
-      Rule freshFetch = RuleMaker.getRuleByKey(legacyKey, language.getRspec());
+      Rule freshFetch = RuleMaker.getCachedRuleByKey(legacyKey, language.getRspec());
       key = freshFetch.getKey();
       if (key == null) {
         LOGGER.warning("Legacy key not found for " + language.getRspec() + "/" + language.getSq() + ": " + legacyKey);
