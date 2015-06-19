@@ -254,6 +254,7 @@ public class ReportService extends RuleManager {
     } else {
       writeFile(fileName, "No differences found");
     }
+    LOGGER.info("Report written to " + fileName);
     return notAlike;
   }
 
