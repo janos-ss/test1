@@ -8,7 +8,9 @@ package com.sonarsource.ruleapi.services;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
+import com.sonarsource.ruleapi.externalspecifications.specifications.Cert;
 import com.sonarsource.ruleapi.externalspecifications.specifications.Cwe;
+import com.sonarsource.ruleapi.externalspecifications.specifications.OwaspTopTen;
 import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
 import org.junit.Test;
 
@@ -180,6 +182,34 @@ public class IntegrityEnforcementServiceTest {
   }
 
   @Test
+  public void testGetUpdates(){
+    Rule rule = new Rule("");
+    rule.getTags().add("cwe");
+    rule.getTags().add("owaspa3");
+
+    Map<String,Object> updates = enforcer.getUpdates(rule, new Cwe());
+
+    assertThat(updates).hasSize(0);
+    assertThat(rule.getTags()).hasSize(2);
+
+    updates = enforcer.getUpdates(rule, OwaspTopTen.StandardRule.A3);
+
+    assertThat(updates).hasSize(0);
+    assertThat(rule.getTags()).hasSize(2);
+
+    updates = enforcer.getUpdates(rule, OwaspTopTen.StandardRule.A6);
+
+    assertThat(updates).hasSize(0);
+    assertThat(rule.getTags()).hasSize(2);
+
+    updates = enforcer.getUpdates(rule, new Cert());
+
+    assertThat(updates).hasSize(0);
+    assertThat(rule.getTags()).hasSize(2);
+
+  }
+
+  @Test
   public void testGetCweUpdates1() {
 
     Rule rule = new Rule("");
@@ -310,6 +340,21 @@ public class IntegrityEnforcementServiceTest {
     assertThat(rule.getTargetedLanguages()).isEmpty();
     assertThat(rule.getCoveredLanguages()).hasSize(1);
   }
+
+  @Test
+  public void testAddCovered3(){
+    String language = "Yellow";
+
+    Rule rule = new Rule("");
+    Map<String, Rule> needsUpdating = new HashMap<String, Rule>();
+
+    enforcer.addCoveredForNemoRules(language,needsUpdating,rule);
+
+    assertThat(rule.getTargetedLanguages()).isEmpty();
+    assertThat(rule.getCoveredLanguages()).hasSize(1);
+
+  }
+
 
   @Test
   public void testSeeAlsoReferencesIgnored() {
