@@ -5,7 +5,6 @@
  */
 package com.sonarsource.ruleapi.get;
 
-import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
@@ -185,36 +184,14 @@ public class JiraHelper {
     JSONObject sqaleCharMap = getJsonField(issue, "SQALE Characteristic");
     if (sqaleCharMap != null) {
       Object o = sqaleCharMap.get("child");
-      setSubcharacteristic(rule, (String) ((Map<String, Object>) o).get(VALUE));
+      RuleMaker.setSubcharacteristic(rule, (String) ((Map<String, Object>) o).get(VALUE));
     }
 
-    setRemediationFunction(rule, getCustomFieldValue(issue, "SQALE Remediation Function"));
+    RuleMaker.setRemediationFunction(rule, getCustomFieldValue(issue, "SQALE Remediation Function"));
     rule.setSqaleConstantCostOrLinearThreshold(getCustomFieldValue(issue, "SQALE Constant Cost or Linear Threshold"));
     rule.setSqaleLinearArgDesc(getCustomFieldValue(issue, "SQALE Linear Argument Description"));
     rule.setSqaleLinearFactor(getCustomFieldValue(issue, "SQALE Linear Factor"));
     rule.setSqaleLinearOffset(getCustomFieldValue(issue, "SQALE Linear Offset"));
-  }
-
-  public static void setRemediationFunction(Rule rule, String candidate) {
-    if (! Strings.isNullOrEmpty(candidate)) {
-      for (Rule.RemediationFunction fcn: Rule.RemediationFunction.values()) {
-        if (fcn.name().equals(candidate) || fcn.getFunctionName().equals(candidate)) {
-          rule.setSqaleRemediationFunction(fcn);
-          return;
-        }
-      }
-    }
-  }
-
-  public static void setSubcharacteristic(Rule rule, String candidate) {
-    if (! Strings.isNullOrEmpty(candidate)) {
-      for (Rule.Subcharacteristic subchar : Rule.Subcharacteristic.values()) {
-        if (subchar.name().equals(candidate) || subchar.getRspecName().equals(candidate)) {
-          rule.setSqaleSubCharac(subchar);
-          return;
-        }
-      }
-    }
   }
 
   protected static JSONObject getJsonField(JSONObject jobj, String key) {

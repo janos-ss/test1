@@ -60,6 +60,7 @@ public class RuleMaker {
    * @return rule fetched from Jira
    */
   public static Rule getRuleByKey(String key, String language) {
+
     Fetcher fetcher = new Fetcher();
 
     Rule rule = new Rule(language);
@@ -138,8 +139,8 @@ public class RuleMaker {
     setDescription(rule, (String) jsonRule.get("htmlDesc"), false);
 
     rule.setSqaleCharac((String) jsonRule.get("defaultDebtChar"));
-    JiraHelper.setSubcharacteristic(rule, (String) jsonRule.get("defaultDebtSubChar"));
-    JiraHelper.setRemediationFunction(rule, (String) jsonRule.get("defaultDebtRemFnType"));
+    setSubcharacteristic(rule, (String) jsonRule.get("defaultDebtSubChar"));
+    setRemediationFunction(rule, (String) jsonRule.get("defaultDebtRemFnType"));
     SonarQubeHelper.setSqaleConstantValueFromSqInstance(rule, (String) jsonRule.get("defaultDebtRemFnOffset"));
     rule.setSqaleLinearFactor((String) jsonRule.get("defaultDebtRemFnCoeff"));
     rule.setSqaleLinearArgDesc((String) jsonRule.get("effortToFixDescription"));
@@ -295,4 +296,25 @@ public class RuleMaker {
     }
   }
 
+  public static void setSubcharacteristic(Rule rule, String candidate) {
+    if (! Strings.isNullOrEmpty(candidate)) {
+      for (Rule.Subcharacteristic subchar : Rule.Subcharacteristic.values()) {
+        if (subchar.name().equals(candidate) || subchar.getRspecName().equals(candidate)) {
+          rule.setSqaleSubCharac(subchar);
+          return;
+        }
+      }
+    }
+  }
+
+  public static void setRemediationFunction(Rule rule, String candidate) {
+    if (! Strings.isNullOrEmpty(candidate)) {
+      for (Rule.RemediationFunction fcn: Rule.RemediationFunction.values()) {
+        if (fcn.name().equals(candidate) || fcn.getFunctionName().equals(candidate)) {
+          rule.setSqaleRemediationFunction(fcn);
+          return;
+        }
+      }
+    }
+  }
 }
