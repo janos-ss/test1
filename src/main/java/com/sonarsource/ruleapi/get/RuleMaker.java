@@ -60,7 +60,6 @@ public class RuleMaker {
     Rule rule = jiraRuleCache.get(normalKey);
     if (rule == null) {
       rule = getRuleByKey(normalKey, language);
-      jiraRuleCache.put(normalKey, rule);
     }
     return rule;
   }
@@ -84,6 +83,7 @@ public class RuleMaker {
     JSONObject jsonRule = fetcher.fetchIssueByKey(key);
     fleshOutRule(fetcher, rule, jsonRule);
 
+    jiraRuleCache.put(rule.getKey(), rule);
     return rule;
   }
 
