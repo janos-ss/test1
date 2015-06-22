@@ -260,4 +260,19 @@ public class RuleTest {
     assertThat(Rule.Status.fromString("Yellow")).isEqualTo(Rule.Status.READY);
   }
 
+  @Test
+  public void testMergeDefaultProfiles() {
+
+    Rule rule = new Rule("");
+    Rule subRule = new Rule("");
+    subRule.setTitle("Java");
+    subRule.getDefaultProfiles().add(Rule.Profile.DRUPAL);
+    subRule.getDefaultProfiles().add(Rule.Profile.SECURITY);
+
+    rule.merge(subRule);
+
+    assertThat(rule.getDefaultProfiles()).hasSize(2);
+    assertThat(rule.getDefaultProfiles()).isNotSameAs(subRule.getDefaultProfiles());
+  }
+
 }

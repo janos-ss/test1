@@ -105,7 +105,8 @@ public class Rule {
     SONARQUBE("SonarQube Way"),
     SECURITY("Security Way"),
     DRUPAL("Drupal"),
-    PSR2("PSR-2");
+    PSR2("PSR-2"),
+    VS("Visual Studio");
 
     protected final String profileName;
 
@@ -211,8 +212,15 @@ public class Rule {
     }
     mergeDescriptionPieces(subRule);
     mergeSqalePieces(subRule);
+    mergeDefaultProfiles(subRule);
 
     tags.addAll(subRule.getTags());
+  }
+
+  protected void mergeDefaultProfiles(Rule subRule) {
+    if (!subRule.getDefaultProfiles().isEmpty()) {
+      this.setDefaultProfiles(new ArrayList<Profile>(subRule.getDefaultProfiles()));
+    }
   }
 
   protected void mergeSqalePieces(Rule subRule) {
