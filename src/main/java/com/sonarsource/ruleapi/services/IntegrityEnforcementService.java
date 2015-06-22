@@ -37,7 +37,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
   public void cleanUpDeprecatedRules(String login, String password) {
 
-    List<Rule> rules = RuleMaker.getRulesByJql(" issueFunction in hasLinks(\"is deprecated by\")", "");
+    List<Rule> rules = RuleMaker.getRulesByJql(" issueFunction in hasLinks(\"is deprecated by\") OR status = DEPRECATED", "");
     for (Rule rule : rules) {
 
       Map<String, Object> updates = getDeprecationUpdates(rule);
