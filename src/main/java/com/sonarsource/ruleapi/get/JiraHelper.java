@@ -139,9 +139,9 @@ public class JiraHelper {
     }
   }
 
-  protected static void setStatusFromLinks(Rule rule, JSONObject issue) {
+  protected static void setStatus(Rule rule, JSONObject issue) {
 
-    rule.setStatus(Rule.Status.READY);
+    rule.setStatus(Rule.Status.fromString(getJsonFieldValue(issue, "status")));
 
     JSONArray links = getJsonArrayField(issue, "issuelinks");
     if (links != null) {
@@ -153,7 +153,7 @@ public class JiraHelper {
 
         if ("Deprecate".equals(linkType.get("name")) && inwardIssue != null) {
           rule.setStatus(Rule.Status.DEPRECATED);
-          rule.getDeprecationLinks().add((String)inwardIssue.get("key"));
+          rule.getDeprecationLinks().add((String) inwardIssue.get("key"));
         }
       }
     }

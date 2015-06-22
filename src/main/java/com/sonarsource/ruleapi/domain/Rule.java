@@ -14,7 +14,15 @@ import java.util.Set;
 public class Rule {
 
   public enum Status {
-    BETA, READY, DEPRECATED
+    BETA, READY, DEPRECATED;
+
+    public static Status fromString(String string) {
+      for (Status s : Status.values()) {
+        if (s.name().equalsIgnoreCase(string))
+          return s;
+      }
+      return Status.READY;
+    }
   }
 
   public enum Severity {

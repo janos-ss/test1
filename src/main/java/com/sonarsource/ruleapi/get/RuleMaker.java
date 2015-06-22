@@ -185,7 +185,7 @@ public class RuleMaker {
 
   protected static void populateFields(Rule rule, JSONObject issue) {
     rule.setKey(issue.get("key").toString());
-    JiraHelper.setStatusFromLinks(rule, issue);
+    JiraHelper.setStatus(rule, issue);
 
     String tmp = JiraHelper.getCustomFieldValue(issue, "Default Severity");
     if (tmp != null) {
@@ -282,7 +282,7 @@ public class RuleMaker {
     String markdownH2Match = "h2\\.";
     String htmlH2 = "<h2>";
 
-    if (Rule.Status.DEPRECATED.equals(rule.getStatus()) && ! rule.getDeprecationLinks().isEmpty()) {
+    if (Rule.Status.DEPRECATED.equals(rule.getStatus())) {
       StringBuilder sb = new StringBuilder();
 
       for (String key : rule.getDeprecationLinks()) {
@@ -292,8 +292,12 @@ public class RuleMaker {
         sb.append(Utilities.denormalizeKey(key));
       }
 
-      sb.insert(0, "\r\n\r\nh2. Deprecated\r\nThis rule is deprecated, use ");
-      sb.append(" instead.");
+      if (! rule.getDeprecationLinks().isEmpty()) {
+        sb.insert(0, "\r\n\r\nh2. Deprecated\r\nThis rule is deprecated, use ");
+        sb.append(" instead.");
+      } else {
+        sb.append("\r\n\r\nh2. Deprecated\r\nThis rule is deprecated, and will eventually be removed.");
+      }
 
       sb.insert(0, fullDesc);
 

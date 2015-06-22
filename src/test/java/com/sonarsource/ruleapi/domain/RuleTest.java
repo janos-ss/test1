@@ -252,4 +252,12 @@ public class RuleTest {
 
   }
 
+  @Test
+  public void testStatusFromString() {
+
+    assertThat(Rule.Status.fromString("beta")).isEqualTo(Rule.Status.BETA);
+    assertThat(Rule.Status.fromString("DEPRECATED")).isEqualTo(Rule.Status.DEPRECATED);
+    assertThat(Rule.Status.fromString("Yellow")).isEqualTo(Rule.Status.READY);
+  }
+
 }
