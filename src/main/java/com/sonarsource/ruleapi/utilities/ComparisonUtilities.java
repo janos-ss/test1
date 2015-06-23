@@ -201,7 +201,7 @@ public class ComparisonUtilities {
     String unneededWhitespace = "[\\r\\n\\t]+";
     String pTags = "</?p>";
     String brTags = "<br ?/>";
-    String htmlTags = "(</?(code|th|td|li|blockquote|h\\d)>)";
+    String htmlTags = "(</?(code|th|td|li|blockquote|pre|h\\d)>)";
 
     return a.replaceAll(unneededWhitespace, " ").replaceAll(pTags, " ").replaceAll(brTags," ")
             .replaceAll(htmlTags, " $1 ").replaceAll("&quot;","\"").replaceAll("\"", " \" ")
