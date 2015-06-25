@@ -97,6 +97,7 @@ public class Fetcher {
       JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
       JSONArray jIssues = (JSONArray) sr.get("issues");
 
+      // must re-fetch individually because jIssues holds mostly-empty shells
       Iterator<JSONObject> itr = jIssues.iterator();
       while (itr.hasNext()) {
         JSONObject jobj = itr.next();
