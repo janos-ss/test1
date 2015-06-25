@@ -34,10 +34,11 @@ public class Fetcher {
   private static final String LEGACY_SEARCH1 = "\"Legacy Key\"~\"";
   private static final String LEGACY_SEARCH2 = "\"";
 
-  private static final String SEARCH = "search?expand=names&maxResults=1000&jql=";
+  private static final String SEARCH = "search?fields=key&maxResults=1000&jql=";
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
   private static final String EXPAND = "?expand=names";
 
+  private static JSONObject names = null;
 
   /**
    * Retrieves Jira Issue by Jira id (RSPEC-###)
@@ -66,7 +67,15 @@ public class Fetcher {
   }
 
   private JSONObject getIssueByKey(String issueKey) {
-    return getJsonFromUrl(BASE_URL + ISSUE + issueKey + EXPAND);
+    if (names == null) {
+      JSONObject tmp = getJsonFromUrl(BASE_URL + ISSUE + issueKey + EXPAND);
+      names = (JSONObject) tmp.get("names");
+      return tmp;
+    } else {
+      JSONObject tmp = getJsonFromUrl(BASE_URL + ISSUE + issueKey);
+      tmp.put("names", names);
+      return tmp;
+    }
   }
 
   private JSONObject getIssueByLegacyKey(String searchString) {
