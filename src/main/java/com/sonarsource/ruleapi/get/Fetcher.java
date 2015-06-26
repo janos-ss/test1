@@ -94,7 +94,7 @@ public class Fetcher {
     }
   }
 
-  public List<JSONObject> fetchIssuesBySearch(String search) {
+  public List<JSONObject> fetchIssueKeysBySearch(String search) {
 
     try {
 
@@ -104,20 +104,8 @@ public class Fetcher {
       searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+", "%20");
 
       JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
-      JSONArray jIssues = (JSONArray) sr.get("issues");
+      return (JSONArray) sr.get("issues");
 
-      // must re-fetch individually because jIssues holds mostly-empty shells
-      Iterator<JSONObject> itr = jIssues.iterator();
-      while (itr.hasNext()) {
-        JSONObject jobj = itr.next();
-
-        JSONObject issue = getIssueByKey(jobj.get("key").toString());
-        if (issue != null) {
-          issues.add(issue);
-        }
-      }
-
-      return issues;
     } catch (UnsupportedEncodingException e) {
       throw new RuleException(e);
     }

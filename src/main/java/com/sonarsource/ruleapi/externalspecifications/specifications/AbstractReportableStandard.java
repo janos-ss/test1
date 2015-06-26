@@ -42,7 +42,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     if (language != null) {
       rspecLanguage = language.getRspec();
     }
-    List<Rule> rules = RuleMaker.getRulesByJql(query, rspecLanguage);
+    List<Rule> rules = RuleMaker.getCachedRulesByJql(query, rspecLanguage);
 
     for (Rule rule: rules) {
       List <String> expandedIdList = getExpandedStandardKeyList(getRspecReferenceFieldValues(rule));

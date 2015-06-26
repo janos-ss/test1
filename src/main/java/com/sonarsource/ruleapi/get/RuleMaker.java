@@ -33,6 +33,8 @@ import java.util.Map;
  */
 public class RuleMaker {
 
+  private static final Fetcher FETCHER = new Fetcher();
+
   protected static Map<String, Rule> jiraRuleCache = new HashMap<>();
 
 
@@ -77,11 +79,9 @@ public class RuleMaker {
    */
   public static Rule getRuleByKey(String key, String language) {
 
-    Fetcher fetcher = new Fetcher();
-
     Rule rule = new Rule(language);
-    JSONObject jsonRule = fetcher.fetchIssueByKey(key);
-    fleshOutRule(fetcher, rule, jsonRule);
+    JSONObject jsonRule = FETCHER.fetchIssueByKey(key);
+    fleshOutRule(FETCHER, rule, jsonRule);
 
     jiraRuleCache.put(rule.getKey(), rule);
     return rule;
@@ -101,6 +101,17 @@ public class RuleMaker {
     return rules;
   }
 
+  public static List<Rule> getCachedRulesByJql(String query, String language) {
+    List<Rule> rules = new ArrayList<Rule>();
+
+    List<JSONObject> issues = FETCHER.fetchIssueKeysBySearch(query);
+
+    for (JSONObject issueKey : issues) {
+      rules.add(getCachedRuleByKey(issueKey.get("key").toString(), language));
+    }
+    return rules;
+  }
+
   /**
    * Retrieve a list of open rules based on a JQL snippet.
    * @param query the jql to use
@@ -110,13 +121,10 @@ public class RuleMaker {
   public static List<Rule> getRulesByJql(String query, String language) {
     List<Rule> rules = new ArrayList<Rule>();
 
-    Fetcher fetcher = new Fetcher();
-    List<JSONObject> issues = fetcher.fetchIssuesBySearch(query);
+    List<JSONObject> issues = FETCHER.fetchIssueKeysBySearch(query);
 
-    for (JSONObject issue : issues) {
-      Rule rule = new Rule(language);
-      fleshOutRule(fetcher, rule, issue);
-      rules.add(rule);
+    for (JSONObject issueKey : issues) {
+      rules.add(getRuleByKey(issueKey.get("key").toString(), language));
     }
 
     return rules;
