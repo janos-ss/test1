@@ -265,9 +265,12 @@ public class IntegrityEnforcementService extends RuleManager {
 
     for (Rule rule : rules) {
 
-      Map<String, Object> updates = getUpdates(rule, taggable);
-      if (! updates.isEmpty()) {
-        RuleUpdater.updateRule(rule.getKey(), updates, login, password);
+      if (!Rule.Status.DEPRECATED.equals(rule.getStatus())) {
+
+        Map<String, Object> updates = getUpdates(rule, taggable);
+        if (!updates.isEmpty()) {
+          RuleUpdater.updateRule(rule.getKey(), updates, login, password);
+        }
       }
     }
   }
