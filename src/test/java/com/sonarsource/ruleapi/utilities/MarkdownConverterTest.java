@@ -168,7 +168,7 @@ public class MarkdownConverterTest {
   @Test
   public void testUnbalancedCodeTags() {
     String markdown = "Because {{CX_ROOT is the _base_ exception type, catching it directly probably casts a wider net than you intended.";
-    String html = "<p>Because <code>CX_ROOT is the <em>base</em> exception type, catching it directly probably casts a wider net than you intended.";
+    String html = "<p>Because <code>CX_ROOT is the <em>base</em> exception type, catching it directly probably casts a wider net than you intended.</p>\n";
 
     assertThat(mc.transform(markdown,"")).isEqualTo(html);
 
