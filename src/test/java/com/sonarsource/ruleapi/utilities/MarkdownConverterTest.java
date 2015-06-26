@@ -166,6 +166,23 @@ public class MarkdownConverterTest {
   }
 
   @Test
+  public void testUnbalancedCodeTags() {
+    String markdown = "Because {{CX_ROOT is the _base_ exception type, catching it directly probably casts a wider net than you intended.";
+    String html = "<p>Because <code>CX_ROOT is the <em>base</em> exception type, catching it directly probably casts a wider net than you intended.";
+
+    assertThat(mc.transform(markdown,"")).isEqualTo(html);
+
+    markdown = "Because the _base_ exception type is CX_ROOT}}, catching it directly probably casts a wider net than you intended. Catching {{CX_ROOT}} could mask far more serious system errors that your {{CATCH}} logic was intended to deal with.\n" +
+            "\n" +
+            "Some smaller, more specific exception type should be caught instead.";
+    html = "<p>Because the <em>base</em> exception type is CX_ROOT</code>, catching it directly probably casts a wider net than you intended. Catching <code>CX_ROOT</code> could mask far more serious system errors that your <code>CATCH</code> logic was intended to deal with.</p>\n" +
+            "<p>Some smaller, more specific exception type should be caught instead.</p>\n";
+
+    assertThat(mc.transform(markdown,"")).isEqualTo(html);
+
+  }
+
+  @Test
   public void testSimpleUl() throws Exception {
     String markdown = "* a\r\n* b\r\n* c\r\n";
     String html = "<ul>\n" +
@@ -654,6 +671,13 @@ public class MarkdownConverterTest {
             "</pre>\n";
 
     assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
-
   }
+
+  @Test
+  public void testNothingToDo() {
+
+    String result = mc.transform("", "");
+    assertThat(result).isEqualToIgnoringCase("");
+  }
+
 }
