@@ -18,8 +18,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -38,7 +36,7 @@ public class Fetcher {
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
   private static final String EXPAND = "?expand=names";
 
-  private static JSONObject names = null;
+  private JSONObject names = null;
 
   /**
    * Retrieves Jira Issue by Jira id (RSPEC-###)
@@ -97,8 +95,6 @@ public class Fetcher {
   public List<JSONObject> fetchIssueKeysBySearch(String search) {
 
     try {
-
-      List<JSONObject> issues = new ArrayList<JSONObject>();
 
       String searchStr = BASE_QUERY + "(" + search + ")";
       searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+", "%20");
