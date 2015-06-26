@@ -239,6 +239,23 @@ public class MarkdownConverterTest {
   }
 
   @Test
+  public void testBadDeeplyNestedList() {
+
+    String markdown = "* a\r\n" +
+            "*** c\r\n" +
+            "blah";
+    String html = "<ul>\n" +
+            "<li> a\n" +
+            "<ul>\n" +
+            "<li> c\n" +
+            "</li></ul>\n" +
+            "</li></ul>\n" +
+            "<p>blah</p>\n";
+
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
+  }
+
+  @Test
   public void testSimpleOl() throws Exception {
     String markdown = "# a\r\n" +
                       "# b\r\n" +
