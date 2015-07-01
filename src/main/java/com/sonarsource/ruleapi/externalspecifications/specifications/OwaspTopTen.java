@@ -12,6 +12,7 @@ import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
               .append("</a></td>\n<td>");
 
       for (Rule rule : entry.getValue()) {
-        sb.append(getLinkedRuleReference(instance, rule));
+        sb.append(Utilities.getLinkedRuleReference(instance, rule));
       }
 
       sb.append("</td></tr>\n");

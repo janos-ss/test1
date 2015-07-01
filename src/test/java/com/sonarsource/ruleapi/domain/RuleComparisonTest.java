@@ -294,7 +294,7 @@ public class RuleComparisonTest {
     spec.setSeverity(Rule.Severity.CRITICAL);
     impl.setSeverity(Rule.Severity.MAJOR);
 
-    assertThat(rc.compare()).isEqualTo(1);
+    assertThat(rc.compare()).isEqualTo(-1);
   }
 
   @Test

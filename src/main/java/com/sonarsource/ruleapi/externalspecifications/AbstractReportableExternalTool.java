@@ -123,7 +123,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     sb.append(TABLE_OPEN);
 
     for (Rule rule : sortedRuleList) {
-      sb.append(TR_OPEN).append(getLinkedRuleReference(instance, rule))
+      sb.append(TR_OPEN).append(Utilities.getLinkedRuleReference(instance, rule))
               .append(TD)
               .append(Utilities.listToString(ruleIdMap.get(rule), true))
               .append(TR_CLOSE);
@@ -182,7 +182,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
         sb.append(TR_OPEN).append(id).append(TD);
 
         for (Rule rule : cov.getImplementedBy()) {
-          sb.append(getLinkedRuleReference(instance, rule));
+          sb.append(Utilities.getLinkedRuleReference(instance, rule));
         }
         sb.append(TR_CLOSE);
 

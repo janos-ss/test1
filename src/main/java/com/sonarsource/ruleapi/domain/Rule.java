@@ -27,7 +27,7 @@ public class Rule {
   }
 
   public enum Severity {
-    INFO, MINOR, MAJOR, CRITICAL, BLOCKER
+    BLOCKER, CRITICAL, MAJOR, MINOR, INFO
   }
 
   public enum RemediationFunction {

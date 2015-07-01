@@ -17,6 +17,7 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMul
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.fest.util.Strings;
 import org.json.simple.JSONArray;
 
@@ -24,6 +25,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -256,6 +259,48 @@ public class ReportService extends RuleManager {
     }
     LOGGER.info("Report written to " + fileName);
     return notAlike;
+  }
+
+  public void writeRulesInLanguagesReports(String instance) {
+    for (Language language : Language.values()) {
+      writeRulesInLanguageReport(language, instance);
+    }
+  }
+
+  public void writeRulesInLanguageReport(Language language, String instance) {
+
+    LOGGER.info("Getting list-of-rules report for " + language.getRspec());
+
+    List<Rule> rules = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
+    Map<Rule.Severity, List<Rule>> severityMap = new EnumMap<Rule.Severity, List<Rule>>(Rule.Severity.class);
+
+    for (Rule rule : rules) {
+      List<Rule> severityList = severityMap.get(rule.getSeverity());
+      if (severityList == null) {
+        severityList = new ArrayList<>();
+        severityMap.put(rule.getSeverity(), severityList);
+      }
+      severityList.add(rule);
+    }
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("<h2>Available").append(language.getRspec()).append(" rules</h2>\n");
+
+    for (Rule.Severity severity : Rule.Severity.values()) {
+      List<Rule> severityList = severityMap.get(severity);
+      if (severityList.isEmpty()) {
+        continue;
+      }
+
+      sb.append("<h3>").append(severity.name()).append("</h3>");
+      for (Rule rule : severityList) {
+        sb.append(Utilities.getLinkedRuleReference(instance, rule));
+      }
+    }
+    String fileName = COVERAGE_DIR.concat("rules_in_").concat(language.getSq()).concat(".html").toLowerCase();
+
+    writeFile(fileName, css + sb.toString());
+
   }
 
   public void writeReportsWithOrchestrator() {

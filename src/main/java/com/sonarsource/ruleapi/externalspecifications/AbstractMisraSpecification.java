@@ -9,6 +9,7 @@ package com.sonarsource.ruleapi.externalspecifications;
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.fest.util.Strings;
 
 import java.util.HashMap;
@@ -216,7 +217,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
       } else if (! coverage.getImplementedBy().isEmpty()) {
         sb.append("<tr><td>").append(ruleId).append("</td><td>");
         for (Rule rule : coverage.getImplementedBy()) {
-          sb.append(getLinkedRuleReference(instance, rule));
+          sb.append(Utilities.getLinkedRuleReference(instance, rule));
         }
         sb.append("</td></tr>");
       }

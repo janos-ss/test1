@@ -5,6 +5,8 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
+import com.sonarsource.ruleapi.domain.Rule;
+
 import java.util.List;
 
 public class Utilities {
@@ -59,6 +61,29 @@ public class Utilities {
       }
       sb.append(str);
     }
+    return sb.toString();
+  }
+
+  public static String denormalizeRuleKey(String ruleKey) {
+    if (Utilities.isKeyNormal(ruleKey)) {
+      return ruleKey.replace("RSPEC-", "S");
+    }
+    return ruleKey;
+  }
+
+  public static String getLinkedRuleReference(String instance, Rule rule) {
+
+    String ruleKey = denormalizeRuleKey(rule.getKey());
+    if (rule.getLegacyKeys() != null && ! rule.getLegacyKeys().isEmpty()) {
+      ruleKey = rule.getLegacyKeys().get(0);
+    }
+
+    StringBuilder sb = new StringBuilder();
+    // http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS2066
+    sb.append("<a href='").append(instance).append("/coding_rules#rule_key=")
+            .append(rule.getRepo()).append("%3A").append(ruleKey).append("'>")
+            .append(ruleKey).append("</a> ")
+            .append(rule.getTitle()).append("<br/>\n");
     return sb.toString();
   }
 }

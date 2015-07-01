@@ -150,36 +150,4 @@ public class AbstractReportableStandardTest {
     }
   }
 
-  @Test
-  public void testDenormalizeKey() {
-    MisraC2004 misraC2004 = new MisraC2004();
-    String nonNormalized = "nonNormalized";
-    assertThat(misraC2004.denormalizeRuleKey(nonNormalized)).isEqualTo(nonNormalized);
-    assertThat(misraC2004.denormalizeRuleKey("RSPEC-1234")).isEqualTo("S1234");
-  }
-
-  @Test
-  public void testGetLinkedRuleReference() {
-    Rule rule = new Rule("C");
-    rule.setRepo("c");
-    rule.setKey("RSPEC-1234");
-    rule.setTitle("This is a rule title");
-
-    String expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3AS1234'>S1234</a> This is a rule title<br/>\n";
-
-    MisraC2004 misraC2004 = new MisraC2004();
-    assertThat(misraC2004.getLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
-
-    List<String> legacyKeys = new ArrayList<>();
-    rule.setLegacyKeys(legacyKeys);
-    expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3AS1234'>S1234</a> This is a rule title<br/>\n";
-    assertThat(misraC2004.getLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
-
-
-    legacyKeys.add("blue");
-    expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3Ablue'>blue</a> This is a rule title<br/>\n";
-    assertThat(misraC2004.getLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
-
-  }
-
 }

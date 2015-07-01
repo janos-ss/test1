@@ -304,7 +304,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
                 .append("' target='_blank'>").append(id).append("</a></td>\n<td>");
 
         for (Rule rule : miniEntry.getValue()) {
-          sb.append(getLinkedRuleReference(instance, rule));
+          sb.append(Utilities.getLinkedRuleReference(instance, rule));
         }
 
         sb.append("</td></tr>\n");

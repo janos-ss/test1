@@ -9,6 +9,7 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.List;
 import java.util.Map;
@@ -117,7 +118,7 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
               .append("' target='_blank'>CWE-").append(key).append("</a></td>\n<td>");
 
       for (Rule rule : entry.getValue()) {
-        sb.append(getLinkedRuleReference(instance, rule));
+        sb.append(Utilities.getLinkedRuleReference(instance, rule));
       }
       sb.append("</td></tr>\n");
     }
