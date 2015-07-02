@@ -63,6 +63,12 @@ public class ReportService extends RuleManager {
     }
   }
 
+  /**
+   * Writes internal reports based on passed-in SonarQube url
+   * See also writeReportsWithOrchestrator
+   *
+   * @param instance SonarQube instance URL
+   */
   public void writeInternalReports(String instance) {
 
     writeDeprecationReports(instance);
@@ -106,6 +112,8 @@ public class ReportService extends RuleManager {
         }
       }
     }
+
+    writeRulesInLanguagesReports(RuleManager.NEMO);
   }
 
   public void writeSummaryCoverageReports(String instance) {
