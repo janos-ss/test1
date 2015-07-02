@@ -38,6 +38,7 @@ public class ReportService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
   private static final String COVERAGE_DIR = "target/reports/coverage/";
+  private static final String HTML = ".html";
 
   private String css = "";
 
@@ -57,7 +58,7 @@ public class ReportService extends RuleManager {
     if (ruleKeys != null) {
       for (String ruleKey : ruleKeys) {
         Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
-        writeFile(ruleKey + ".html", rule.getHtmlDescription());
+        writeFile(ruleKey + HTML, rule.getHtmlDescription());
       }
     }
   }
@@ -85,7 +86,7 @@ public class ReportService extends RuleManager {
         String report = customerReport.getHtmlReport(RuleManager.NEMO);
         if (!Strings.isNullOrEmpty(report)) {
           report = css + report;
-          writeFile(COVERAGE_DIR.concat(customerReport.getStandardName()).concat(".html").toLowerCase(), report);
+          writeFile(COVERAGE_DIR.concat(customerReport.getStandardName()).concat(HTML).toLowerCase(), report);
 
         }
       } else if (standard instanceof AbstractMultiLanguageStandard) {
@@ -272,6 +273,40 @@ public class ReportService extends RuleManager {
     LOGGER.info("Getting list-of-rules report for " + language.getRspec());
 
     List<Rule> rules = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
+    if (rules.isEmpty()) {
+      return;
+    }
+
+    String fileName = COVERAGE_DIR.concat("rules_in_").concat(language.getSq()).concat(HTML).toLowerCase();
+
+    Map<Rule.Severity, List<Rule>> severityMap = sortRulesBySeverity(rules);
+
+    writeFile(fileName, assembleLanguageRuleReport(language, instance, severityMap));
+
+  }
+
+  protected String assembleLanguageRuleReport(Language language, String instance, Map<Rule.Severity, List<Rule>> severityMap) {
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(css);
+    sb.append("<h2>Available ").append(language.getRspec()).append(" rules</h2>\n");
+
+    for (Rule.Severity severity : Rule.Severity.values()) {
+      List<Rule> severityList = severityMap.get(severity);
+      if (severityList == null) {
+        continue;
+      }
+
+      sb.append("<h3>").append(severity.name()).append("</h3>");
+      for (Rule rule : severityList) {
+        sb.append(Utilities.getLinkedRuleReference(instance, rule));
+      }
+    }
+    return sb.toString();
+  }
+
+  protected Map<Rule.Severity, List<Rule>> sortRulesBySeverity(List<Rule> rules) {
+
     Map<Rule.Severity, List<Rule>> severityMap = new EnumMap<Rule.Severity, List<Rule>>(Rule.Severity.class);
 
     for (Rule rule : rules) {
@@ -282,25 +317,7 @@ public class ReportService extends RuleManager {
       }
       severityList.add(rule);
     }
-
-    StringBuilder sb = new StringBuilder();
-    sb.append("<h2>Available").append(language.getRspec()).append(" rules</h2>\n");
-
-    for (Rule.Severity severity : Rule.Severity.values()) {
-      List<Rule> severityList = severityMap.get(severity);
-      if (severityList.isEmpty()) {
-        continue;
-      }
-
-      sb.append("<h3>").append(severity.name()).append("</h3>");
-      for (Rule rule : severityList) {
-        sb.append(Utilities.getLinkedRuleReference(instance, rule));
-      }
-    }
-    String fileName = COVERAGE_DIR.concat("rules_in_").concat(language.getSq()).concat(".html").toLowerCase();
-
-    writeFile(fileName, css + sb.toString());
-
+    return severityMap;
   }
 
   public void writeReportsWithOrchestrator() {
