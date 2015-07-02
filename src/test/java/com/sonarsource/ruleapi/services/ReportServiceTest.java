@@ -52,13 +52,20 @@ public class ReportServiceTest {
 
     List<Rule> rules = new ArrayList<>();
     Rule rule = new Rule("");
+    rule.setTitle("Rule1");
+    rule.setSeverity(Rule.Severity.CRITICAL);
+
+    rules.add(rule);
+
+    rule = new Rule("");
+    rule.setTitle("Rule2");
     rule.setSeverity(Rule.Severity.CRITICAL);
 
     rules.add(rule);
 
     Map<Rule.Severity, List<Rule>> severityMap = rs.sortRulesBySeverity(rules);
 
-    assertThat(severityMap.get(Rule.Severity.CRITICAL)).hasSize(1);
+    assertThat(severityMap.get(Rule.Severity.CRITICAL)).hasSize(2);
     assertThat(severityMap.get(Rule.Severity.BLOCKER)).isNull();
   }
 
