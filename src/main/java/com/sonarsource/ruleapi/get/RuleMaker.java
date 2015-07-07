@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.get;
 import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 import org.dom4j.Document;
@@ -40,6 +41,8 @@ import java.util.Map;
  * variants such as {code} blocks and parameter variations.
  */
 public class RuleMaker {
+
+  private static final String DESCRIPTION = "description";
 
   private static final Fetcher FETCHER = new Fetcher();
 
@@ -102,9 +105,9 @@ public class RuleMaker {
       }
 
     } catch (DocumentException e) {
-      e.printStackTrace();
+      throw new RuleException(e);
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      throw new RuleException(e);
     }
 
     return rules;
@@ -254,7 +257,7 @@ public class RuleMaker {
     rule.setTitle(JiraHelper.getJsonFieldValue(issue, "summary"));
     rule.setMessage(JiraHelper.getCustomFieldValue(issue, "Message"));
 
-    setDescription(rule, JiraHelper.getJsonFieldValue(issue, "description"), true);
+    setDescription(rule, JiraHelper.getJsonFieldValue(issue, DESCRIPTION), true);
 
     JiraHelper.setSqale(rule, issue);
 
@@ -274,7 +277,6 @@ public class RuleMaker {
     rule.setTitle(xRule.element("name").getStringValue());
     rule.setSeverity(Rule.Severity.valueOf(xRule.element("severity").getStringValue()));
 
-    String tmp = getTextFromElement(xRule, "status");
     rule.setStatus(Rule.Status.fromString(getTextFromElement(xRule, "status")));
 
     Node sqaleKey = sqaleRoot.selectSingleNode("//rule-key[contains(., "+rule.getKey()+")]");
@@ -291,7 +293,7 @@ public class RuleMaker {
           setRemediationFunction(rule, e.element("txt").getStringValue());
         } else if ("offset".equals(key.getStringValue())){
           rule.setSqaleConstantCostOrLinearThreshold(e.element("val").getStringValue());
-        } else if ("remediationFactor".equals((key.getStringValue()))) {
+        } else if ("remediationFactor".equals(key.getStringValue())) {
           rule.setSqaleLinearFactor(e.element("val").getStringValue());
         }
       }
@@ -305,14 +307,14 @@ public class RuleMaker {
       Element xParam = (Element) itr.next();
       Parameter parameter = new Parameter();
       parameter.setKey(getTextFromElement(xParam, "key"));
-      parameter.setDescription(getTextFromElement(xParam, "description"));
+      parameter.setDescription(getTextFromElement(xParam, DESCRIPTION));
       parameter.setDefaultVal(getTextFromElement(xParam, "defaultValue"));
       parameter.setType(getTextFromElement(xParam, "type"));
     }
 
     rule.setTemplate("MULTIPLE".equals(xRule.element("cardinality").getStringValue()));
 
-    setDescription(rule, getTextFromElement(xRule, "description"), false);
+    setDescription(rule, getTextFromElement(xRule, DESCRIPTION), false);
 
     return rule;
   }

@@ -44,6 +44,8 @@ public class Fetcher {
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
   private static final String EXPAND = "?expand=names";
 
+  private static final String ENCODING = "UTF-8";
+
   private JSONObject names = null;
 
   /**
@@ -86,7 +88,7 @@ public class Fetcher {
 
   private JSONObject getIssueByLegacyKey(String searchString) {
     try {
-      String searchStr = URLEncoder.encode(BASE_QUERY + searchString, "UTF-8").replaceAll("\\+", "%20");
+      String searchStr = URLEncoder.encode(BASE_QUERY + searchString, ENCODING).replaceAll("\\+", "%20");
 
       JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
       JSONArray issues = (JSONArray) sr.get("issues");
@@ -105,7 +107,7 @@ public class Fetcher {
     try {
 
       String searchStr = BASE_QUERY + "(" + search + ")";
-      searchStr = URLEncoder.encode(searchStr, "UTF-8").replaceAll("\\+", "%20");
+      searchStr = URLEncoder.encode(searchStr, ENCODING).replaceAll("\\+", "%20");
 
       JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
       return (JSONArray) sr.get("issues");
@@ -153,7 +155,7 @@ public class Fetcher {
 
   public void fetchRuleDataFromRedmond(String login, String password) {
     try {
-      String query = URLEncoder.encode("definition=CI - C# Code Analysis", "UTF-8");
+      String query = URLEncoder.encode("definition=CI - C# Code Analysis", ENCODING);
 
       JSONObject buildList = getJsonFromUrl(REDMOND + "?" + query, login, password);
       long buildId = getBuildId(buildList);
@@ -190,22 +192,13 @@ public class Fetcher {
 
   public JSONObject getJsonFromUrl(String url, String login, String password) {
 
-    Client client = ClientBuilder.newClient();
-    if (login != null && password != null) {
-      client.register(HttpAuthenticationFeature.basic(login, password));
-    }
+    Client client = getClient(login, password);
 
     WebTarget webResource = client.target(url);
 
     Response response = webResource.request().accept("application/json").get(Response.class);
 
-    int status = response.getStatus();
-    if (status < 200 || status > 299) {
-      response.close();
-      client.close();
-      throw new RuleException("Failed : HTTP error code: "
-              + response.getStatus() + " for " + url);
-    }
+    checkStatus(url, client, response);
 
     String responseStr = response.readEntity(String.class);
     response.close();
@@ -221,31 +214,22 @@ public class Fetcher {
 
   protected void getFilesFromUrl(String url, String login, String password) {
 
-    Client client = ClientBuilder.newClient();
-    if (login != null && password != null) {
-      client.register(HttpAuthenticationFeature.basic(login, password));
-    }
+    Client client = getClient(login, password);
 
     WebTarget webResource = client.target(url);
 
     Response response = webResource.request().accept("application/zip").get(Response.class);
 
-    int status = response.getStatus();
-    if (status < 200 || status > 299) {
-      response.close();
-      client.close();
-      throw new RuleException("Failed : HTTP error code: "
-              + response.getStatus() + " for " + url);
-    }
+    checkStatus(url, client, response);
 
     InputStream is = response.readEntity(InputStream.class);
     ZipInputStream zin = new ZipInputStream(is);
     FileOutputStream output = null;
 
-    ZipEntry entry;
-    byte[] buffer = new byte[2048];
-
     try {
+
+      byte[] buffer = new byte[2048];
+      ZipEntry entry;
       while((entry = zin.getNextEntry())!=null) {
         if (entry.isDirectory()) {
           continue;
@@ -260,6 +244,7 @@ public class Fetcher {
         while ((len = zin.read(buffer)) > 0) {
           output.write(buffer, 0, len);
         }
+        output.close();
 
       }
     } catch (IOException e) {
@@ -270,21 +255,44 @@ public class Fetcher {
         try {
           output.close();
         } catch (IOException e) {
+          // intentionally blank
         }
       }
 
       try {
         zin.close();
       } catch (IOException e) {
+        // intentionally blank
       }
 
       try {
         is.close();
       } catch (IOException e) {
+        // intentionally blank
       }
 
       response.close();
       client.close();
     }
+  }
+
+  protected void checkStatus(String url, Client client, Response response) {
+
+    int status = response.getStatus();
+    if (status < 200 || status > 299) {
+      response.close();
+      client.close();
+      throw new RuleException("Failed : HTTP error code: "
+              + response.getStatus() + " for " + url);
+    }
+  }
+
+  private Client getClient(String login, String password) {
+
+    Client client = ClientBuilder.newClient();
+    if (login != null && password != null) {
+      client.register(HttpAuthenticationFeature.basic(login, password));
+    }
+    return client;
   }
 }
