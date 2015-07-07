@@ -10,11 +10,19 @@ import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +50,12 @@ public class RuleMaker {
   }
 
   public static List<Rule> getRulesFromSonarQubeForLanguage(Language language, String instance) {
+
+    if (Language.CSH.equals(language)) {
+      FETCHER.fetchRuleDataFromRedmond("tv.sonar@outlook.com", "RmY6wzrFC6mjgBYCdr5nEpbp");
+      return getRulesFromXml(language);
+    }
+
     return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq()+","+language.getSqCommon(),
             language.getSqProfileKey());
   }
@@ -64,6 +78,90 @@ public class RuleMaker {
       rule = getRuleByKey(normalKey, language);
     }
     return rule;
+  }
+
+  public static List<Rule> getRulesFromXml(Language language) {
+
+    List<Rule> rules = new ArrayList<>();
+
+    SAXReader reader = new SAXReader();
+    try {
+      Document sqaleXml = reader.read(new File("sqale.xml").toURI().toURL());
+      Element sqaleRoot = sqaleXml.getRootElement();
+
+      Document rulesXml = reader.read(new File("rules.xml").toURI().toURL());
+      Element rulesRoot = rulesXml.getRootElement();
+
+      for ( Iterator i = rulesRoot.elementIterator( "rule" ); i.hasNext(); ) {
+        Element xRule = (Element)i.next();
+        rules.add(populateFieldsFromXml(xRule, sqaleRoot, language));
+      }
+
+    } catch (DocumentException e) {
+      e.printStackTrace();
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
+
+    return rules;
+  }
+
+  protected static Rule populateFieldsFromXml(Element xRule, Element sqaleRoot, Language language) {
+    Rule rule = new Rule(language.getRspec());
+
+    rule.setKey(xRule.element("key").getStringValue());
+    rule.setTitle(xRule.element("name").getStringValue());
+    rule.setSeverity(Rule.Severity.valueOf(xRule.element("severity").getStringValue()));
+
+    String tmp = getTextFromElement(xRule, "status");
+    rule.setStatus(Rule.Status.fromString(getTextFromElement(xRule, "status")));
+
+    Node sqaleKey = sqaleRoot.selectSingleNode("//rule-key[contains(., "+rule.getKey()+")]");
+    if (sqaleKey != null) {
+      Element sqaleElement = sqaleKey.getParent();
+      String sqaleSubChar = sqaleElement.getParent().element("key").getStringValue();
+      rule.setSqaleSubCharac(Rule.Subcharacteristic.valueOf(sqaleSubChar));
+
+      Iterator itr = sqaleElement.elementIterator("prop");
+      while (itr.hasNext()){
+        Element e = (Element) itr.next();
+        Element key = e.element("key");
+        if ("remediationFunction".equals(key.getStringValue())) {
+          setRemediationFunction(rule, e.element("txt").getStringValue());
+        } else if ("offset".equals(key.getStringValue())){
+          rule.setSqaleConstantCostOrLinearThreshold(e.element("val").getStringValue());
+        } else if ("remediationFactor".equals((key.getStringValue()))) {
+          rule.setSqaleLinearFactor(e.element("val").getStringValue());
+        }
+      }
+    }
+
+    for (Iterator itr = xRule.elementIterator("tag"); itr.hasNext();) {
+      rule.getTags().add(((Element) itr.next()).getStringValue());
+    }
+
+    for (Iterator itr = xRule.elementIterator("param"); itr.hasNext();) {
+      Element xParam = (Element) itr.next();
+      Parameter parameter = new Parameter();
+      parameter.setKey(getTextFromElement(xParam, "key"));
+      parameter.setDescription(getTextFromElement(xParam, "description"));
+      parameter.setDefaultVal(getTextFromElement(xParam, "defaultValue"));
+      parameter.setType(getTextFromElement(xParam, "type"));
+    }
+
+    rule.setTemplate("MULTIPLE".equals(xRule.element("cardinality").getStringValue()));
+
+    setDescription(rule, getTextFromElement(xRule, "description"), false);
+
+    return rule;
+  }
+
+  protected static String getTextFromElement(Element parent, String elementName) {
+    Element tmp = parent.element(elementName);
+    if (tmp != null) {
+      return tmp.getStringValue();
+    }
+    return null;
   }
 
 
