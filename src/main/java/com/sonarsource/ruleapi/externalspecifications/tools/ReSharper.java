@@ -193,7 +193,7 @@ public class ReSharper extends AbstractReportableExternalTool {
     METHODOVERLOADWITHOPTIONALPARAMETER("MethodOverloadWithOptionalParameter", Implementability.IMPLEMENTABLE),
     METHODSUPPORTSCANCELLATION("MethodSupportsCancellation", Implementability.IMPLEMENTABLE),
     MISUSEOFOWNERFUNCTIONTHIS("MisuseOfOwnerFunctionThis", Implementability.IMPLEMENTABLE),
-    MORESPECIFICFOREACHVARIABLETYPEAVAILABLE("MoreSpecificForeachVariableTypeAvailable", Implementability.IMPLEMENTABLE),
+    MORESPECIFICFOREACHVARIABLETYPEAVAILABLE("MoreSpecificForeachVariableTypeAvailable", Implementability.REJECTED),
     MULTIPLEDECLARATIONSINFOREACH("MultipleDeclarationsInForeach", Implementability.IMPLEMENTABLE),
     MULTIPLENULLABLEATTRIBUTESUSAGE("MultipleNullableAttributesUsage", Implementability.IMPLEMENTABLE),
     MULTIPLEORDERBY("MultipleOrderBy", Implementability.IMPLEMENTABLE),
