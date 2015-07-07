@@ -35,13 +35,6 @@ public class RuleManager {
             language.getRspec());
   }
 
-
-  public List<Rule> getImplementedRulesForLanguage(Language language, String instance) {
-    return RuleMaker.getRulesFromSonarQubeByQuery(instance,
-            "repositories=" + language.getSq() + "," + language.getSqCommon(),
-            language.getSqProfileKey());
-  }
-
   protected Map<String,Rule> mapRulesByKey(List<Rule> rules) {
 
     Map<String, Rule> map = new HashMap<String, Rule>();

@@ -231,7 +231,7 @@ public class ReportService extends RuleManager {
     List<Rule> rspec = getCoveredRulesForLangauge(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
 
-    List<Rule> sqCovered = getImplementedRulesForLanguage(language, instance);
+    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
     List<Rule> specNotFoundForLegacyKey = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);
 
     int notAlike = 0;
