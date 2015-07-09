@@ -71,7 +71,7 @@ public class ReportService extends RuleManager {
    */
   public void writeInternalReports(String instance) {
 
-    writeDeprecationReports(instance);
+    writeToolInternalReports(instance);
     writeDetailedCoverageReports(instance);
     writeSummaryCoverageReports(instance);
     writeOutdatedRuleCountReportForWallboard(instance);
@@ -175,21 +175,25 @@ public class ReportService extends RuleManager {
     } catch (UnsupportedEncodingException e) {
       throw new RuleException(e);
     }
-
   }
 
-  public void writeDeprecationReports(String instance) {
+  public void writeToolInternalReports(String instance) {
 
     for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
 
       if (supportedStandard.getCodingStandard() instanceof AbstractReportableExternalTool) {
         AbstractReportableExternalTool externalTool = (AbstractReportableExternalTool) supportedStandard.getCodingStandard();
 
-        LOGGER.info("Getting deprecation report for " + externalTool.getStandardName() + " on " + instance);
+        LOGGER.info("Getting internal reports for " + externalTool.getStandardName() + " on " + instance);
 
         String report = externalTool.getDeprecationReport(instance);
         if (!Strings.isNullOrEmpty(report)) {
           writeFile("target/reports/deprecated_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
+        }
+
+        report = externalTool.getUnspecifiedReport();
+        if (!Strings.isNullOrEmpty(report)) {
+          writeFile("target/reports/unspecified_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
         }
       }
     }

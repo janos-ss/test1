@@ -90,6 +90,8 @@ public class AbstractReportableExternalToolTest {
   }
 
   private static String FB_ID = "BC_IMPOSSIBLE_CAST";
+  private static String FB_ID2 = "AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION";
+  private static String REJECTED_FB_ID = "AM_CREATES_EMPTY_JAR_FILE_ENTRY";
 
 
   @Test
@@ -119,6 +121,32 @@ public class AbstractReportableExternalToolTest {
     assertThat(fb.skipped).isGreaterThan(0);
     assertThat(fb.specified).isEqualTo(1);
     assertThat(fb.implemented).isEqualTo(1);
+  }
+
+  @Test
+  public void testGetUnspecifiedReport(){
+    FindBugs fb = new FindBugs();
+
+    Rule rule = new Rule("Java");
+    List<String> ids = new ArrayList<String>();
+    ids.add(FB_ID);
+
+    fb = new FindBugs();
+    fb.populateRulesCoverageMap();
+
+    fb.setCodingStandardRuleCoverageImplemented(ids,rule);
+    fb.setCodingStandardRuleCoverageSpecifiedBy(rule, ids);
+
+    fb.computeCoverage();
+
+    String report = fb.getUnspecifiedReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report).isNotEmpty();
+    assertThat(report).doesNotContain(FB_ID);
+    assertThat(report).doesNotContain(REJECTED_FB_ID);
+    assertThat(report).contains(FB_ID2);
+
   }
 
 }

@@ -73,6 +73,26 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     return sb.toString();
   }
 
+  public String getUnspecifiedReport() {
+    initCoverageResults(null);
+
+    StringBuilder sb = new StringBuilder();
+
+    for (CodingStandardRule csr : getCodingStandardRules()) {
+      CodingStandardRuleCoverage cov = getRulesCoverage().get(csr.getCodingStandardRuleId());
+
+      if (cov.getSpecifiedBy().isEmpty() && ! Implementability.REJECTED.equals(csr.getImplementability())) {
+        sb.append(cov.getCodingStandardRuleId()).append("\n");
+      }
+    }
+
+    if (sb.length() > 0) {
+      String tmp = getStandardName() + " unspecified rules\n\n";
+      sb.insert(0, tmp);
+    }
+    return sb.toString();
+  }
+
   @Override
   public String getHtmlReport(String instance) {
     return "<h2>" + getStandardName() + " deprecation</h2>" +
