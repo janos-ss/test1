@@ -5,15 +5,23 @@
  */
 package com.sonarsource.ruleapi.get;
 
-import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.utilities.Language;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+import org.dom4j.tree.DefaultElement;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -26,6 +34,31 @@ public class RuleMakerTest {
   private static final String SQ_JSON = "{\"key\":\"Web:ComplexityCheck\",\"repo\":\"Web\",\"name\":\"Files should not be too complex\",\"createdAt\":\"2013-06-19T05:34:52+0000\",\"severity\":\"MINOR\",\"status\":\"READY\",\"internalKey\":\"ComplexityCheck\",\"isTemplate\":false,\"tags\":[],\"sysTags\":[\"brain-overloaded\"],\"lang\":\"web\",\"langName\":\"Web\",\"htmlDesc\":\"<p>\\n  Checks cyclomatic complexity against a specified limit.\\n  The complexity is measured by counting decision tags (such as if and forEach) and boolean operators in expressions (\\\"&&\\\" and \\\"||\\\"), plus one for the body of the document.\\n  It is a measure of the minimum number of possible paths to render the page.\\n</p>\",\"debtOverloaded\":false,\"params\":[{\"key\":\"max\",\"htmlDesc\":\"Maximum allowed complexity\",\"type\":\"INTEGER\",\"defaultValue\":\"10\"}]}";
 
   JSONParser parser = new JSONParser();
+
+  public RuleMakerTest() {
+    java.net.URL url = this.getClass().getResource("/");
+
+    try {
+      File source = new File(url.getPath() + "/get/sqale.xml");
+      File dest = new File("sqale.xml");
+      dest.delete();
+      if (dest.exists()){
+        dest.delete();
+      }
+      Files.copy(source.toPath(), dest.toPath());
+
+      source = new File(url.getPath() + "/get/rules.xml");
+      dest = new File("rules.xml");
+      dest.deleteOnExit();
+      if (dest.exists()) {
+        dest.delete();
+      }
+      Files.copy(source.toPath(), dest.toPath());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+  }
 
   @Test
   public void testIsLangaugeMatchEasyTrue() throws Exception {
@@ -300,6 +333,39 @@ public class RuleMakerTest {
     assertThat(RuleMaker.getCachedRuleByKey("S1111", "")).isEqualTo(rule);
   }
 
+  @Test
+  public void testGetCshRules() throws IOException {
 
+    List<Rule> rules = RuleMaker.getRulesFromSonarQubeForLanguage(Language.CSH, "");
+
+    assertThat(rules).isNotNull();
+    assertThat(rules).hasSize(1);
+  }
+
+  @Test
+  public void testPopulateRuleFromXmlSqaleNotFound() throws MalformedURLException, DocumentException {
+
+    Element xmlRule = DocumentHelper.createElement("");
+    xmlRule.add(createElement("key", "S21234"));
+    xmlRule.add(createElement("name", "Silly bit operations should not be performed"));
+    xmlRule.add(createElement("severity", "MAJOR"));
+    xmlRule.add(createElement("cardinality", "SINGLE"));
+    xmlRule.add(createElement("description", "La de dah!"));
+
+    SAXReader reader = new SAXReader();
+    Document sqaleXml = reader.read(new File("sqale.xml").toURI().toURL());
+    Element sqaleRoot = sqaleXml.getRootElement();
+
+    Rule rule = RuleMaker.populateFieldsFromXml(xmlRule, sqaleRoot, Language.CSH);
+    assertThat(rule.getSqaleSubCharac()).isNull();
+
+  }
+
+  private Element createElement(String name, String value) {
+
+    Element el = new DefaultElement(name);
+    el.add(DocumentHelper.createText(value));
+    return el;
+  }
 
 }

@@ -287,7 +287,7 @@ public class Fetcher {
     }
   }
 
-  private Client getClient(String login, String password) {
+  protected Client getClient(String login, String password) {
 
     Client client = ClientBuilder.newClient();
     if (login != null && password != null) {

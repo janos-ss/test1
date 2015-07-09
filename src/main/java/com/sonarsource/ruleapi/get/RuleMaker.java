@@ -279,7 +279,7 @@ public class RuleMaker {
 
     rule.setStatus(Rule.Status.fromString(getTextFromElement(xRule, "status")));
 
-    Node sqaleKey = sqaleRoot.selectSingleNode("//rule-key[contains(., "+rule.getKey()+")]");
+    Node sqaleKey = sqaleRoot.selectSingleNode("//rule-key[contains(., '" + rule.getKey() + "')]");
     if (sqaleKey != null) {
       Element sqaleElement = sqaleKey.getParent();
       String sqaleSubChar = sqaleElement.getParent().element("key").getStringValue();
@@ -291,10 +291,8 @@ public class RuleMaker {
         Element key = e.element("key");
         if ("remediationFunction".equals(key.getStringValue())) {
           setRemediationFunction(rule, e.element("txt").getStringValue());
-        } else if ("offset".equals(key.getStringValue())){
+        } else {
           rule.setSqaleConstantCostOrLinearThreshold(e.element("val").getStringValue());
-        } else if ("remediationFactor".equals(key.getStringValue())) {
-          rule.setSqaleLinearFactor(e.element("val").getStringValue());
         }
       }
     }
