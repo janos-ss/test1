@@ -184,7 +184,7 @@ public class ReportService extends RuleManager {
       if (supportedStandard.getCodingStandard() instanceof AbstractReportableExternalTool) {
         AbstractReportableExternalTool externalTool = (AbstractReportableExternalTool) supportedStandard.getCodingStandard();
 
-        LOGGER.info("Getting internal reports for " + externalTool.getStandardName() + " on " + instance);
+        LOGGER.info("Getting deprecated, unspecified ids for " + externalTool.getStandardName() + " on " + instance);
 
         String report = externalTool.getDeprecationReport(instance);
         if (!Strings.isNullOrEmpty(report)) {
