@@ -222,11 +222,8 @@ public class Fetcher {
 
     checkStatus(url, client, response);
 
-    InputStream is = response.readEntity(InputStream.class);
-    ZipInputStream zin = new ZipInputStream(is);
     FileOutputStream output = null;
-
-    try {
+    try(InputStream is = response.readEntity(InputStream.class); ZipInputStream zin = new ZipInputStream(is)) {
 
       byte[] buffer = new byte[2048];
       ZipEntry entry;
@@ -257,18 +254,6 @@ public class Fetcher {
         } catch (IOException e) {
           // intentionally blank
         }
-      }
-
-      try {
-        zin.close();
-      } catch (IOException e) {
-        // intentionally blank
-      }
-
-      try {
-        is.close();
-      } catch (IOException e) {
-        // intentionally blank
       }
 
       response.close();
