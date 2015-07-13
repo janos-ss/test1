@@ -476,4 +476,19 @@ public class ComparisonUtilitiesTest {
     assertThat(ComparisonUtilities.isTextFunctionallyEquivalent(spec, impl)).isFalse();
 
   }
+
+  @Test
+  public void testCompareCamelCaseMostlyMatch() {
+
+    String a = "legalTrailingCommentPattern";
+    String b = "legalCommentPattern";
+    String c = "illegalCommentPattern";
+
+    assertThat(ComparisonUtilities.compareCamelCaseMostlyMatch(a, b)).isEqualTo(0);
+    assertThat(ComparisonUtilities.compareCamelCaseMostlyMatch(b, a)).isEqualTo(0);
+    assertThat(ComparisonUtilities.compareCamelCaseMostlyMatch(a, a)).isEqualTo(0);
+    assertThat(ComparisonUtilities.compareCamelCaseMostlyMatch(b, c)).isEqualTo(3);
+
+  }
+
 }

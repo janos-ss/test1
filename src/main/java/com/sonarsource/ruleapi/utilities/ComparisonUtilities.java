@@ -386,4 +386,55 @@ public class ComparisonUtilities {
   public static String stripHtml(String source) {
     return source.replaceAll("<[^>]+>", "");
   }
+
+  /**
+   * The intent for this method is to compare camelCase parameter keys, and pass the ones that
+   * match except for a missing word. E.G.
+   *   legalTrailingCommentPattern
+   *   legalCommentPattern
+   * should be counted as matching/return 0.
+   *
+   *   illegalTrailingCommentPattern
+   *   legalCommentPattern
+   * should not
+   *
+   * @param a
+   * @param b
+   * @return
+   */
+  public static int compareCamelCaseMostlyMatch(String a, String b) {
+    String[] spaced1 = a.replaceAll(
+            String.format("%s|%s|%s",
+                    "(?<=[A-Z])(?=[A-Z][a-z])",
+                    "(?<=[^A-Z])(?=[A-Z])",
+                    "(?<=[A-Za-z])(?=[^A-Za-z])"
+            ),
+            " "
+    ).split(" ");
+
+    String[] spaced2 = b.replaceAll(
+            String.format("%s|%s|%s",
+                    "(?<=[A-Z])(?=[A-Z][a-z])",
+                    "(?<=[^A-Z])(?=[A-Z])",
+                    "(?<=[A-Za-z])(?=[^A-Za-z])"
+            ),
+            " "
+    ).split(" ");
+
+    for (int i = 0, j = 0; i < spaced1.length && j < spaced2.length; i++, j++) {
+      if (spaced1[i].equals(spaced2[j])) {
+        continue;
+      } else if (spaced1[i+1].equals(spaced2[j])) {
+        i++;
+        continue;
+      } else if (spaced2[j+1].equals(spaced1[i])) {
+        j++;
+        continue;
+      }
+      return spaced1[i].compareTo(spaced2[j]);
+    }
+    return 0;
+  }
+
+
 }

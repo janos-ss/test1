@@ -57,15 +57,26 @@ public class Parameter implements Comparable<Parameter> {
   @Override
   public int compareTo(Parameter parameter) {
 
-    int result = key.compareToIgnoreCase(parameter.getKey());
+    int result = ComparisonUtilities.compareTextFunctionalEquivalence(description, parameter.getDescription());
     if (result != 0) {
       return result;
     }
-    result = ComparisonUtilities.compareTextFunctionalEquivalence(description, parameter.getDescription());
+    result = ComparisonUtilities.compareStrings(defaultVal, parameter.getDefaultVal());
     if (result != 0) {
       return result;
     }
-    return ComparisonUtilities.compareStrings(defaultVal, parameter.getDefaultVal());
+
+    result = key.compareToIgnoreCase(parameter.getKey());
+    if (result != 0) {
+      String key1 = key.toLowerCase();
+      String key2 = parameter.key.toLowerCase();
+      if (key1.contains(key2) || key2.contains(key1)) {
+        return 0;
+      } else {
+        return ComparisonUtilities.compareCamelCaseMostlyMatch(key, parameter.key);
+      }
+    }
+    return result;
   }
 
   @Override

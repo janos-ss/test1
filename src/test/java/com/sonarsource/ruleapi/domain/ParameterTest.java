@@ -6,8 +6,11 @@
 
 package com.sonarsource.ruleapi.domain;
 
+import com.sonarsource.ruleapi.get.JiraHelper;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -143,4 +146,32 @@ public class ParameterTest {
     assertThat(param1.compareTo(param2)).isEqualTo(0);
 
   }
+
+  @Test
+  public void testAllEqualButKeySubstring() {
+
+    List<Parameter> params1 = JiraHelper.handleParameterList("* key = Max\r\n" +
+            "* description = Maximum authorized lines in a file.\r\n" +
+            "* default = 1000", "JavaScript");
+    List<Parameter> params2 = JiraHelper.handleParameterList("* key = maximum\r\n" +
+            "* description = Maximum authorized lines in a file.\r\n" +
+            "* default = 1000\r\n" +
+            "* type = INTEGER", "JavaScript");
+
+    assertThat(params1.get(0).compareTo(params2.get(0))).isEqualTo(0);
+  }
+
+  @Test
+  public void testAllEqualButKeysWordMissing() {
+
+    List<Parameter> params1 = JiraHelper.handleParameterList("* key = legalTrailingCommentPattern\r\n" +
+            "* description = Pattern for text of trailing comments that are allowed.\r\n" +
+            "* default = ^\\s*+[^\\s]++$", "JavaScript");
+    List<Parameter> params2 = JiraHelper.handleParameterList("* key = legalCommentPattern\r\n" +
+            "* description = Pattern for text of trailing comments that are allowed.\r\n" +
+            "* default = ^\\s*+[^\\s]++$\r\n" +
+            "* type = STRING", "JavaScript");
+    assertThat(params1.get(0).compareTo(params2.get(0))).isEqualTo(0);
+  }
+
 }
