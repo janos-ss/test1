@@ -186,6 +186,7 @@ public class Rule {
   private List<String> phpFig = new ArrayList<String>();
   private List<String> resharper = new ArrayList<>();
   private List<String> pylint = new ArrayList<String>();
+  private List<String> fxCop = new ArrayList<>();
 
   public Rule(String language) {
     this.language = language;
@@ -720,5 +721,13 @@ public class Rule {
   public void setRepo(String repo) {
 
     this.repo = repo;
+  }
+
+  public void setFxCop(List<String> ids) {
+    fxCop = ids;
+  }
+
+  public List<String> getFxCop() {
+    return fxCop;
   }
 }

@@ -26,6 +26,8 @@ public enum SupportedCodingStandard {
   CPP_CHECK(new Cppcheck()),
   RESHARPER(new ReSharper()),
   RESHARPER_VBNET(new ReSharperVbNet()),
+//  FXCOP(new FxCop()),
+//  FXCOP_VBNET(new FxCopVbNet()),
   CWE(new Cwe()),
   OWASP(new OwaspTopTen()),  // ReportableStandard
   OWASP_A1(OwaspTopTen.StandardRule.A1),  // TaggableStandards
@@ -47,7 +49,7 @@ public enum SupportedCodingStandard {
 
   private CodingStandard codingStandard;
 
-  private SupportedCodingStandard(CodingStandard rulesRepository) {
+  SupportedCodingStandard(CodingStandard rulesRepository) {
     this.codingStandard = rulesRepository;
   }
 
