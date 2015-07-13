@@ -6,8 +6,6 @@ jdk:
 
 install: true
 script: ./travis.sh
-env:
-  - TESTS=CI
 
 matrix:
   fast_finish: true

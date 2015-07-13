@@ -7,24 +7,6 @@ function installTravisTools {
   source /tmp/travis-utils/env.sh
 }
 
-case "$TESTS" in
+installTravisTools
 
-CI)
-  installTravisTools
-
-  mvn verify -B -e -V
-  ;;
-
-IT-DEV)
-  installTravisTools
-
-  echo "Not supported yet"
-  ;;
-
-IT-LATEST)
-  installTravisTools
-
-  echo "Not supported yet"
-  ;;
-
-esac
+mvn verify -B -e -V
