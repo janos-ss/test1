@@ -207,7 +207,7 @@ public class RuleComparison{
       sb.insert(0,separator);
       List<String> legacyKeys = impl.getLegacyKeys();
       if (legacyKeys != null && !legacyKeys.isEmpty()) {
-        sb.insert(0, legacyKeys.get(0)).insert(0," - legacy key: ");
+        sb.insert(0, legacyKeys.get(0)).insert(0," - implementation key: ");
       }
       sb.insert(0, spec.getKey());
 
