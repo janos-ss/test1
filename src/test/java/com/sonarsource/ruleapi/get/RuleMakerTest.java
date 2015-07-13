@@ -16,6 +16,8 @@ import org.dom4j.tree.DefaultElement;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -35,8 +37,9 @@ public class RuleMakerTest {
 
   JSONParser parser = new JSONParser();
 
-  public RuleMakerTest() {
-    java.net.URL url = this.getClass().getResource("/");
+  @Before
+  public void setup() {
+    java.net.URL url = RuleMakerTest.class.getResource("/");
 
     try {
       File source = new File(url.getPath() + "/get/sqale.xml");
@@ -57,7 +60,17 @@ public class RuleMakerTest {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
 
+  @After
+  public void teardown() {
+    java.net.URL url = RuleMakerTest.class.getResource("/");
+
+    File file = new File("sqale.xml");
+    file.delete();
+
+    file = new File("rules.xml");
+    file.delete();
   }
 
   @Test
