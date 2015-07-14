@@ -7,6 +7,7 @@
 package com.sonarsource.ruleapi.update;
 
 import com.sonarsource.ruleapi.domain.Parameter;
+import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.Fetcher;
 import org.json.simple.JSONArray;
@@ -41,7 +42,37 @@ public class RuleUpdater {
     LOGGER.fine("Update " + ruleKey + " : " + request.toJSONString());
 
     Updater updater = new Updater();
-    return updater.updateIssue(login, password, ruleKey, request);
+    return updater.putIssueUpdate(login, password, ruleKey, request);
+  }
+
+  public static boolean updateRuleStatus(String ruleKey, Rule.Status status, String login, String password) {
+
+    Fetcher fetcher = new Fetcher();
+    JSONObject jobj = fetcher.getJsonFromUrl(Fetcher.BASE_URL + Fetcher.ISSUE + ruleKey + "/transitions?expand=transitions.fields", login, password);
+
+    JSONObject request = prepareTransitionRequest(status, jobj);
+    LOGGER.fine("Update " + ruleKey + " : " + request.toJSONString());
+
+    Updater updater = new Updater();
+    return updater.postIssueUpdate(login, password, ruleKey + "/transitions", request);
+  }
+
+  protected static JSONObject prepareTransitionRequest(Rule.Status status, JSONObject jobj) {
+
+    List<JSONObject> transitions = (JSONArray)jobj.get("transitions");
+
+    JSONObject request = new JSONObject();
+    JSONObject transition = new JSONObject();
+    request.put("transition", transition);
+
+    for (JSONObject tmp : transitions) {
+      String name = ((JSONObject) tmp.get("to")).get("name").toString();
+      if (Rule.Status.fromString(name).equals(status)) {
+        transition.put("id", tmp.get("id"));
+        break;
+      }
+    }
+    return request;
   }
 
   protected static JSONObject prepareRequest(Map<String, Object> fieldValuesToUpdate, JSONObject fieldsMeta) {

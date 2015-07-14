@@ -19,7 +19,7 @@ public class Updater {
 
   private static final String BASE_URL = "http://jira.sonarsource.com/rest/api/2/issue/";
 
-  public boolean updateIssue(String login, String password, String ruleKey, JSONObject request){
+  public boolean putIssueUpdate(String login, String password, String ruleKey, JSONObject request){
 
     Client client = ClientBuilder.newClient().register(HttpAuthenticationFeature.basic(login, password));
 
@@ -27,6 +27,23 @@ public class Updater {
 
     Response response = target.request(MediaType.APPLICATION_JSON_TYPE)
             .put(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+
+    return readAndCloseResponse(client, response);
+  }
+
+  public boolean postIssueUpdate(String login, String password, String apiTarget, JSONObject request) {
+    Client client = ClientBuilder.newClient().register(HttpAuthenticationFeature.basic(login, password));
+
+    WebTarget target = client.target(BASE_URL + apiTarget);
+
+    Response response = target.request(MediaType.APPLICATION_JSON_TYPE)
+            .post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+
+    return readAndCloseResponse(client, response);
+
+  }
+
+  protected boolean readAndCloseResponse(Client client, Response response) {
 
     response.close();
     client.close();

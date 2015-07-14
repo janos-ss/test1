@@ -13,6 +13,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -342,4 +343,18 @@ public class RuleUpdaterTest {
     String result = RuleUpdater.handleFreeEntry(new ArrayList<String>());
     Assertions.assertThat(result).isEqualTo("");
   }
+
+  @Test
+  public void testPrepareTransitionRequest(){
+    String raw = "{\"transitions\":[{\"to\":{\"id\":\"10301\",\"description\":\"Deprecated Rules\",\"name\":\"Deprecated\",\"iconUrl\":\"http:\\/\\/jira.sonarsource.com\\/images\\/icons\\/statuses\\/generic.png\",\"statusCategory\":{\"id\":2,\"colorName\":\"blue-gray\",\"name\":\"New\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/statuscategory\\/2\",\"key\":\"new\"},\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/status\\/10301\"},\"id\":\"13\",\"name\":\"Deprecate Rule\",\"fields\":{}},{\"to\":{\"id\":\"6\",\"description\":\"The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.\",\"name\":\"Closed\",\"iconUrl\":\"http:\\/\\/jira.sonarsource.com\\/images\\/icons\\/statuses\\/closed.png\",\"statusCategory\":{\"id\":3,\"colorName\":\"green\",\"name\":\"Complete\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/statuscategory\\/3\",\"key\":\"done\"},\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/2\\/status\\/6\"},\"id\":\"2\",\"name\":\"Close Issue\",\"fields\":{\"assignee\":{\"schema\":{\"system\":\"assignee\",\"type\":\"user\"},\"autoCompleteUrl\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/latest\\/user\\/assignable\\/search?issueKey=RSPEC-2988&username=\",\"name\":\"Assignee\",\"operations\":[\"set\"],\"required\":false},\"resolution\":{\"schema\":{\"system\":\"resolution\",\"type\":\"resolution\"},\"name\":\"Resolution\",\"operations\":[\"set\"],\"allowedValues\":[{\"id\":\"1\",\"name\":\"Fixed\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/latest\\/resolution\\/1\"},{\"id\":\"2\",\"name\":\"Won't Fix\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/latest\\/resolution\\/2\"},{\"id\":\"3\",\"name\":\"Duplicate\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/latest\\/resolution\\/3\"},{\"id\":\"4\",\"name\":\"Incomplete\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/latest\\/resolution\\/4\"},{\"id\":\"5\",\"name\":\"Cannot Reproduce\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/latest\\/resolution\\/5\"},{\"id\":\"10000\",\"name\":\"Done\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/latest\\/resolution\\/10000\"},{\"id\":\"10100\",\"name\":\"Not an issue\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/latest\\/resolution\\/10100\"},{\"id\":\"10200\",\"name\":\"Not A Bug\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/latest\\/resolution\\/10200\"},{\"id\":\"10201\",\"name\":\"UNRESOLVED\",\"self\":\"http:\\/\\/jira.sonarsource.com\\/rest\\/api\\/latest\\/resolution\\/10201\"}],\"required\":true}}}],\"expand\":\"transitions\"}";
+    JSONParser parser = new JSONParser();
+    try {
+      JSONObject jsonObject = (JSONObject) parser.parse(raw);
+      Assertions.assertThat(RuleUpdater.prepareTransitionRequest(Rule.Status.DEPRECATED, jsonObject).toJSONString()).isEqualTo("{\"transition\":{\"id\":\"13\"}}");
+
+    } catch (ParseException e) {
+      Assert.fail();
+    }
+  }
+
 }
