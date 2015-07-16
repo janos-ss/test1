@@ -147,15 +147,21 @@ public class IntegrityEnforcementService extends RuleManager {
     return updates;
   }
 
-  private static boolean isFieldEntryFormatNeedUpdating(TaggableStandard taggable, Map<String, Object> updates, Rule rule) {
+  private static boolean doesFieldEntryNeedUpdating(TaggableStandard taggable, Map<String, Object> updates, Rule rule, List<String> sees) {
 
     List<String> references = taggable.getRspecReferenceFieldValues(rule);
 
     boolean needUpdating = false;
-    List<String> replacements = new ArrayList<String>();
-    for (int i = 0; i < references.size(); i++) {
-      String ref = references.get(i);
 
+    for (String see : sees) {
+      if (! references.contains(see)) {
+        references.add(see);
+        needUpdating = true;
+      }
+    }
+
+    List<String> replacements = new ArrayList<String>();
+    for (String ref : references) {
       if (taggable.doesReferenceNeedUpdating(ref, replacements, rule.getKey())) {
         needUpdating = true;
       }
@@ -290,7 +296,9 @@ public class IntegrityEnforcementService extends RuleManager {
       }
     }else {
 
-      if (isFieldEntryFormatNeedUpdating(taggable, updates, rule)) {
+      List<String> sees = parseReferencesFromStrings(taggable, seeSectionReferences);
+
+      if (doesFieldEntryNeedUpdating(taggable, updates, rule, sees)) {
         referenceFieldValues = taggable.getRspecReferenceFieldValues(rule);
       }
 
@@ -301,7 +309,6 @@ public class IntegrityEnforcementService extends RuleManager {
         derivativeStandard.checkReferencesInSeeSection(rule);
 
       } else {
-        List<String> sees = parseReferencesFromStrings(taggable, seeSectionReferences);
 
         addTagIfMissing(rule, updates, taggable.getTag());
         addSeeToReferenceField(sees, referenceFieldValues, taggable.getRSpecReferenceFieldName(), updates);

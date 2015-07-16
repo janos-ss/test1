@@ -290,6 +290,33 @@ public class IntegrityEnforcementServiceTest {
     assertThat(updates).hasSize(1).isEqualTo(expectedUpdates);
   }
 
+  @Test
+  public void testAddMissingReference() {
+
+    Rule rule = new Rule("");
+
+    rule.setReferences("<h2>See</h2>\n" +
+            "\n" +
+            "<ul>\n" +
+            "<li> <a href=\"https://www.owasp.org/index.php/Top_10_2013-A3-Cross-Site_Scripting_(XSS)\">OWASP Top Ten 2013 Category A3</a> - Cross Site Scripting (XSS)\n" +
+            "</li><li> <a href=\"https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure\">OWASP Top Ten 2013 Category A6</a> - Sensitive Data Exposure\n" +
+            "</li><li> <a href=\"https://www.owasp.org/index.php/Top_10_2013-A8-Cross-Site_Request_Forgery_(CSRF)\">OWASP Top Ten 2013 Category A8</a> - Cross-Site Request Forgery (CSRF)\n" +
+            "</li></ul>\n");
+
+    List<String> expectedReferenceUpdate = new ArrayList<>();
+    expectedReferenceUpdate.add("A3");
+    expectedReferenceUpdate.add("A6");
+    expectedReferenceUpdate.add("A8");
+
+    List<String> expectedLabelUpdate = new ArrayList<>();
+    expectedLabelUpdate.add("owasp-a3");
+
+    Map<String,Object> updates = enforcer.getUpdates(rule, OwaspTopTen.StandardRule.A3);
+    assertThat(updates).isNotEmpty();
+    assertThat(updates.get("Labels")).isEqualTo(expectedLabelUpdate);
+    assertThat(updates.get("OWASP")).isEqualTo(expectedReferenceUpdate);
+
+  }
 
   @Test
   public void testDropCovered() {
