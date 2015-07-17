@@ -424,10 +424,10 @@ public class ComparisonUtilities {
     for (int i = 0, j = 0; i < spaced1.length && j < spaced2.length; i++, j++) {
       if (spaced1[i].equals(spaced2[j])) {
         continue;
-      } else if (spaced1[i+1].equals(spaced2[j])) {
+      } else if (i+1 < spaced1.length && spaced1[i+1].equals(spaced2[j])) {
         i++;
         continue;
-      } else if (spaced2[j+1].equals(spaced1[i])) {
+      } else if (j+1 < spaced2.length && spaced2[j+1].equals(spaced1[i])) {
         j++;
         continue;
       }

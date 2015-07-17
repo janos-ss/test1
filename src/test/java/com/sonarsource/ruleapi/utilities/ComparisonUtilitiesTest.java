@@ -483,11 +483,14 @@ public class ComparisonUtilitiesTest {
     String a = "legalTrailingCommentPattern";
     String b = "legalCommentPattern";
     String c = "illegalCommentPattern";
+    String d = "green";
 
     assertThat(ComparisonUtilities.compareCamelCaseMostlyMatch(a, b)).isEqualTo(0);
     assertThat(ComparisonUtilities.compareCamelCaseMostlyMatch(b, a)).isEqualTo(0);
     assertThat(ComparisonUtilities.compareCamelCaseMostlyMatch(a, a)).isEqualTo(0);
     assertThat(ComparisonUtilities.compareCamelCaseMostlyMatch(b, c)).isEqualTo(3);
+    assertThat(ComparisonUtilities.compareCamelCaseMostlyMatch(c, d)).isEqualTo(2);
+    assertThat(ComparisonUtilities.compareCamelCaseMostlyMatch(d, c)).isEqualTo(-2);
 
   }
 
