@@ -195,22 +195,6 @@ public class JiraHelper {
     return null;
   }
 
-  protected static JSONArray getJsonArrayField(JSONObject jobj, String key) {
-
-    JSONObject fields = (JSONObject) jobj.get(FIELDS);
-
-    if(fields != null && key != null) {
-      Object obj = fields.get(key);
-      if (obj == null) {
-        obj = fields.get(getCustomFieldKey(jobj, key));
-      }
-      if (obj instanceof JSONArray) {
-        return (JSONArray) obj;
-      }
-    }
-    return null;
-  }
-
   protected static List<String> stringToList(String str) {
     List<String> list = new ArrayList<String>();
     if (str != null) {

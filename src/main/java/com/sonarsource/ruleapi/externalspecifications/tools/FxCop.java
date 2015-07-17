@@ -35,7 +35,7 @@ public class FxCop extends AbstractReportableExternalTool {
   @Override
   public String getStandardName() {
 
-    return toolName;
+    return reportName;
   }
 
   @Override
