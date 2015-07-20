@@ -63,8 +63,7 @@ public class RuleMaker {
       return getRulesFromXml(language, rules, sqale);
     }
 
-    return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq()+","+language.getSqCommon(),
-            language.getSqProfileKey());
+    return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq());
   }
 
   public static Rule getRuleFromSonarQubeByKey(String sonarQubeInstance, String ruleKey, Language language) {
@@ -133,7 +132,7 @@ public class RuleMaker {
     return rule;
   }
 
-  public static List<Rule> getRulesFromSonarQubeByQuery(String instance, String query, String sonarQubeDefaultProfileKey) {
+  public static List<Rule> getRulesFromSonarQubeByQuery(String instance, String query) {
 
     List<Rule> rules = new ArrayList<Rule>();
 

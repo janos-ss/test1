@@ -158,7 +158,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
         sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(getLanguage(), instance);
 
       } else {
-        sqImplemented = RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + getSqRepoList(),null);
+        sqImplemented = RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + getSqRepoList());
       }
 
       for (Rule sqRule : sqImplemented) {
