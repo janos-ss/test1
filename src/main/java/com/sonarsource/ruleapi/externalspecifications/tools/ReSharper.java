@@ -184,7 +184,7 @@ public class ReSharper extends AbstractReportableExternalTool {
     MEANINGLESSDEFAULTPARAMETERVALUE("MeaninglessDefaultParameterValue", Implementability.IMPLEMENTABLE),
     MEMBERCANBEINTERNAL("MemberCanBeInternal", Implementability.IMPLEMENTABLE),
     MEMBERCANBEMADESTATIC_GLOBAL("MemberCanBeMadeStatic.Global", Implementability.IMPLEMENTABLE),
-    MEMBERCANBEMADESTATIC_LOCAL("MemberCanBeMadeStatic.Local", Implementability.IMPLEMENTABLE),
+    MEMBERCANBEMADESTATIC_LOCAL("MemberCanBeMadeStatic.Local", Implementability.REJECTED),
     MEMBERCANBEPRIVATE_GLOBAL("MemberCanBePrivate.Global", Implementability.IMPLEMENTABLE),
     MEMBERCANBEPRIVATE_LOCAL("MemberCanBePrivate.Local", Implementability.IMPLEMENTABLE),
     MEMBERCANBEPROTECTED_GLOBAL("MemberCanBeProtected.Global", Implementability.IMPLEMENTABLE),
