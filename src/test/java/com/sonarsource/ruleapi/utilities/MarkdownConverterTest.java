@@ -154,7 +154,7 @@ public class MarkdownConverterTest {
     String html = "<p>Because <code>CX_ROOT</code> is the <em>base</em> exception type, catching it directly probably casts a wider net than you intended. Catching <code>CX_ROOT</code> could mask far more serious system errors that your <code>CATCH</code> logic was intended to deal with.</p>\n" +
             "<p>Some smaller, more specific exception type should be caught instead.</p>\n";
 
-    assertThat(mc.transform(markdown,"")).isEqualTo(html);
+    assertThat(mc.transform(markdown, "")).isEqualTo(html);
 
     markdown = "*C99*\n" +
             "{{inline}}, {{restrict}}, {{_Bool}}, {{_Complex}}, {{_Noreturn}}, {{_Static_assert}}, {{_Thread_local}}";
@@ -695,6 +695,68 @@ public class MarkdownConverterTest {
 
     String result = mc.transform("", "");
     assertThat(result).isEqualToIgnoringCase("");
+  }
+
+  @Test
+  public void testCodeBlockInBlockquote() {
+
+    String markdown = "According to the Flex documentation :\n" +
+            "{quote}\n" +
+            "In an ActionScript file, when you define component events or other aspects of a component that affect more than a single property, you add the metadata tag outside the class definition so that the metadata is bound to the entire class, as the following example shows:\n" +
+            "\n" +
+            "{code}\n" +
+            "// Add the [Event] metadata tag outside of the class file. \n" +
+            "[Event(name=\"enableChange\", type=\"flash.events.Event\")] \n" +
+            "public class ModalText extends TextArea {\n" +
+            "\n" +
+            "    ...\n" +
+            "\n" +
+            "    // Define class properties/methods\n" +
+            "    private var _enableTA:Boolean;\n" +
+            "\n" +
+            "    // Add the [Inspectable] metadata tag before the individual property. \n" +
+            "    [Inspectable(defaultValue=\"false\")] \n" +
+            "    public function set enableTA(val:Boolean):void {\n" +
+            "        _enableTA = val;\n" +
+            "        this.enabled = val;\n" +
+            "    \n" +
+            "        // Define event object, initialize it, then dispatch it. \n" +
+            "        var eventObj:Event = new Event(\"enableChange\");\n" +
+            "        dispatchEvent(eventObj);\n" +
+            "    }\n" +
+            "}\n" +
+            "{code}\n" +
+            "{quote}\n";
+
+    String expectedHtml = "<p>According to the Flex documentation :</p>\n" +
+            "<blockquote>\n" +
+            "<p>In an ActionScript file, when you define component events or other aspects of a component that affect more than a single property, you add the metadata tag outside the class definition so that the metadata is bound to the entire class, as the following example shows:</p>\n" +
+            "<pre>\n" +
+            "// Add the [Event] metadata tag outside of the class file. \n" +
+            "[Event(name=\"enableChange\", type=\"flash.events.Event\")] \n" +
+            "public class ModalText extends TextArea {\n" +
+            "\n" +
+            "    ...\n" +
+            "\n" +
+            "    // Define class properties/methods\n" +
+            "    private var _enableTA:Boolean;\n" +
+            "\n" +
+            "    // Add the [Inspectable] metadata tag before the individual property. \n" +
+            "    [Inspectable(defaultValue=\"false\")] \n" +
+            "    public function set enableTA(val:Boolean):void {\n" +
+            "        _enableTA = val;\n" +
+            "        this.enabled = val;\n" +
+            "    \n" +
+            "        // Define event object, initialize it, then dispatch it. \n" +
+            "        var eventObj:Event = new Event(\"enableChange\");\n" +
+            "        dispatchEvent(eventObj);\n" +
+            "    }\n" +
+            "}\n" +
+            "</pre>\n" +
+            "</blockquote>\n";
+
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+
   }
 
 }

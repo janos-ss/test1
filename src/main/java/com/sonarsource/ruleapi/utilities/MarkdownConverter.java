@@ -310,7 +310,7 @@ public class MarkdownConverter {
         codeOpen = false;
         paragraph = false;
       }else if (isCodeLanguageMatch(hasLanguageCodeSample, language, line)) {
-        closeWhatsOpen(sb);
+        closeDanglingLisLists(sb, 0);
 
         wrongLanguage = false;
         codeOpen = true;
@@ -362,11 +362,12 @@ public class MarkdownConverter {
 
   private void closeDanglingLisLists(StringBuilder sb, int firstSpace) {
 
-    while (listCloses.size() > firstSpace && liCloses.size() > firstSpace) {
+    while (listCloses.size() > 0 && listCloses.size() > firstSpace
+            && liCloses.size() > 0 && liCloses.size() > firstSpace) {
       sb.append(liCloses.pop()).append(listCloses.pop());
     }
 
-    if (liCloses.size() == firstSpace) {
+    if (liCloses.size() > 0 && liCloses.size() == firstSpace) {
       sb.append(liCloses.pop());
     }
   }
