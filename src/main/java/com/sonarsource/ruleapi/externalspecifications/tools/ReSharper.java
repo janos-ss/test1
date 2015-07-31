@@ -60,7 +60,7 @@ public class ReSharper extends AbstractReportableExternalTool {
     ACCESSTODISPOSEDCLOSURE("AccessToDisposedClosure", Implementability.IMPLEMENTABLE),
     ACCESSTOFOREACHVARIABLEINCLOSURE("AccessToForEachVariableInClosure", Implementability.IMPLEMENTABLE),
     ACCESSTOMODIFIEDCLOSURE("AccessToModifiedClosure", Implementability.IMPLEMENTABLE),
-    ACCESSTOSTATICMEMBERVIADERIVEDTYPE("AccessToStaticMemberViaDerivedType", Implementability.IMPLEMENTABLE),
+    ACCESSTOSTATICMEMBERVIADERIVEDTYPE("AccessToStaticMemberViaDerivedType", Implementability.REJECTED),
     ANNOTATIONCONFLICTINHIERARCHY("AnnotationConflictInHierarchy", Implementability.IMPLEMENTABLE),
     ANNOTATIONREDUNDANCEATVALUETYPE("AnnotationRedundanceAtValueType", Implementability.IMPLEMENTABLE),
     ANNOTATIONREDUNDANCEINHIERARCHY("AnnotationRedundanceInHierarchy", Implementability.IMPLEMENTABLE),
