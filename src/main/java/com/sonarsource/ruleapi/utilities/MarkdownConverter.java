@@ -362,12 +362,12 @@ public class MarkdownConverter {
 
   private void closeDanglingLisLists(StringBuilder sb, int firstSpace) {
 
-    while (listCloses.size() > 0 && listCloses.size() > firstSpace
-            && liCloses.size() > 0 && liCloses.size() > firstSpace) {
+    while ( !listCloses.isEmpty() && listCloses.size() > firstSpace
+            && !liCloses.isEmpty() && liCloses.size() > firstSpace) {
       sb.append(liCloses.pop()).append(listCloses.pop());
     }
 
-    if (liCloses.size() > 0 && liCloses.size() == firstSpace) {
+    if ( !liCloses.isEmpty() && liCloses.size() == firstSpace) {
       sb.append(liCloses.pop());
     }
   }
