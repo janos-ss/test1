@@ -81,6 +81,11 @@ public class RuleComparison{
       return result;
     }
 
+    result = compareProfileList();
+    if (result != 0) {
+      return result;
+    }
+
     result = compareTags();
     return result;
   }
@@ -198,6 +203,11 @@ public class RuleComparison{
               parameterListToString(spec.getParameterList()), parameterListToString(impl.getParameterList()));
     }
 
+    if (compareProfileList() != 0) {
+      logDifference(sb, "profile list",
+              profileListToString(spec.getDefaultProfiles()), profileListToString(impl.getDefaultProfiles()));
+    }
+
     if (compareTags() != 0) {
       logDifference(sb,"tags:" + getTagDifferences(),
               Utilities.listToString(spec.getTags(), true), Utilities.listToString(impl.getTags(), true));
@@ -215,6 +225,15 @@ public class RuleComparison{
     }
 
     return "";
+  }
+
+  protected String profileListToString(List<Profile> list) {
+
+    StringBuilder sb = new StringBuilder();
+    for (Profile profile : list) {
+      sb.append(profile.getName()).append(", ");
+    }
+    return sb.toString();
   }
 
   protected String parameterListToString(List<Parameter> list) {
@@ -414,6 +433,27 @@ public class RuleComparison{
       return Integer.valueOf(aVal).compareTo(bVal);
     }
     return aUnit.compareTo(bUnit);
+  }
+
+  protected int compareProfileList() {
+
+    List<Profile> aList = spec.getDefaultProfiles();
+    List<Profile> bList = impl.getDefaultProfiles();
+
+    if (aList.size() != bList.size()) {
+      return Integer.valueOf(aList.size()).compareTo(bList.size());
+    }
+
+    java.util.Collections.sort(aList);
+    java.util.Collections.sort(bList);
+
+    for (int i = 0; i < aList.size(); i++) {
+      int result = aList.get(i).compareTo(bList.get(i));
+      if (result != 0) {
+        return result;
+      }
+    }
+    return 0;
   }
 
   protected int compareParameterList() {

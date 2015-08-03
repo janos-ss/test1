@@ -7,6 +7,7 @@ package com.sonarsource.ruleapi.get;
 
 import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.Parameter;
+import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.utilities.Language;
@@ -63,7 +64,41 @@ public class RuleMaker {
       return getRulesFromXml(language, rules, sqale);
     }
 
-    return RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq());
+    List<Rule> allRules = RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq());
+
+    populateSonarQubeProfiles(language, instance, allRules);
+
+    return allRules;
+  }
+
+  protected static void populateSonarQubeProfiles(Language language, String instance, List<Rule> allRules) {
+
+    List<Profile> profiles = getProfiles(language, FETCHER.fetchProfilesFromSonarQube(instance));
+
+    for (Profile profile : profiles) {
+      List<JSONObject> profileRules = FETCHER.fetchRulesFromSonarQube(instance,
+              "activation=true&f=internalKey&qprofile=" + profile.getKey());
+      addProfilesToSonarQubeRules(allRules, profile, profileRules);
+    }
+  }
+
+  protected static void addProfilesToSonarQubeRules(List<Rule> allRules, Profile profile, List<JSONObject> profileRules) {
+
+    Map<String, Rule> rulesByKey = new HashMap<>();
+    for (Rule rule : allRules) {
+      rulesByKey.put(rule.getKey(), rule);
+    }
+
+    for (JSONObject jsonObject : profileRules) {
+      String internalKey = (String) jsonObject.get("internalKey");
+      if (internalKey != null) {
+        String key = Utilities.normalizeKey(internalKey);
+        Rule rule = rulesByKey.get(key);
+        if (rule != null) {
+          rule.getDefaultProfiles().add(profile);
+        }
+      }
+    }
   }
 
   public static Rule getRuleFromSonarQubeByKey(String sonarQubeInstance, String ruleKey, Language language) {
@@ -73,7 +108,7 @@ public class RuleMaker {
     String extendedKey = language.getSq() + ":" + ruleKey;
 
     JSONObject jsonRule = fetcher.fetchRuleFromSonarQube(sonarQubeInstance, extendedKey);
-    return  populateFieldsFromSonarQube(jsonRule);
+    return  SonarQubeHelper.populateFields(jsonRule);
   }
 
   public static Rule getCachedRuleByKey(String key, String language) {
@@ -136,11 +171,10 @@ public class RuleMaker {
 
     List<Rule> rules = new ArrayList<Rule>();
 
-    Fetcher fetcher = new Fetcher();
-    List<JSONObject> jsonRules = fetcher.fetchRulesFromSonarQube(instance, query);
+    List<JSONObject> jsonRules = FETCHER.fetchRulesFromSonarQube(instance, query);
 
     for (JSONObject jsonRule : jsonRules) {
-      rules.add(populateFieldsFromSonarQube(jsonRule));
+      rules.add(SonarQubeHelper.populateFields(jsonRule));
     }
 
     return rules;
@@ -155,6 +189,19 @@ public class RuleMaker {
       rules.add(getCachedRuleByKey(issueKey.get("key").toString(), language));
     }
     return rules;
+  }
+
+  protected static List<Profile> getProfiles(Language language, List<JSONObject> jsonProfiles){
+    List<Profile> profiles = new ArrayList<>();
+
+    for (JSONObject jobj : jsonProfiles) {
+
+      Language lang = Language.fromString((String) jobj.get("lang"));
+      if (language != null && language.equals(lang)) {
+        profiles.add(new Profile((String) jobj.get("name"), (String) jobj.get("key")));
+      }
+    }
+    return profiles;
   }
 
   /**
@@ -177,7 +224,7 @@ public class RuleMaker {
 
   protected static void fleshOutRule(Fetcher fetcher, Rule rule, JSONObject jsonRule) {
     if (jsonRule != null) {
-      populateFields(rule, jsonRule);
+      JiraHelper.populateFields(rule, jsonRule);
 
       JSONObject fields = (JSONObject)jsonRule.get("fields");
       JSONArray subtasks = (JSONArray) fields.get("subtasks");
@@ -186,87 +233,10 @@ public class RuleMaker {
       if (subIssue != null) {
 
         Rule subRule = new Rule(rule.getLanguage());
-        populateFields(subRule, subIssue);
+        JiraHelper.populateFields(subRule, subIssue);
         rule.merge(subRule);
       }
     }
-  }
-
-  protected static Rule populateFieldsFromSonarQube(JSONObject jsonRule) {
-    Rule rule = new Rule((String) jsonRule.get("langName"));
-
-    String rawKey = ((String) jsonRule.get("key")).split(":")[1];
-    rule.setKey(Utilities.normalizeKey(rawKey));
-    rule.setRepo((String) jsonRule.get("repo"));
-
-    rule.setLegacyKeys(new ArrayList<String>());
-    rule.getLegacyKeys().add(rawKey);
-
-    rule.setStatus(Rule.Status.valueOf((String) jsonRule.get("status")));
-    rule.setSeverity(Rule.Severity.valueOf((String) jsonRule.get("severity")));
-
-    rule.setTitle((String) jsonRule.get("name"));
-    setDescription(rule, (String) jsonRule.get("htmlDesc"), false);
-
-    rule.setSqaleCharac((String) jsonRule.get("defaultDebtChar"));
-    setSubcharacteristic(rule, (String) jsonRule.get("defaultDebtSubChar"));
-    setRemediationFunction(rule, (String) jsonRule.get("defaultDebtRemFnType"));
-    SonarQubeHelper.setSqaleConstantValueFromSqInstance(rule, (String) jsonRule.get("defaultDebtRemFnOffset"));
-    rule.setSqaleLinearFactor((String) jsonRule.get("defaultDebtRemFnCoeff"));
-    rule.setSqaleLinearArgDesc((String) jsonRule.get("effortToFixDescription"));
-
-    rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
-
-    rule.setTemplate((Boolean) jsonRule.get("isTemplate"));
-
-    JSONArray jsonParams = (JSONArray) jsonRule.get("params");
-    for (JSONObject obj : (List<JSONObject>)jsonParams) {
-      Parameter param = new Parameter();
-      param.setKey((String) obj.get("key"));
-      param.setDescription((String) obj.get("htmlDesc"));
-
-      String tmp = (String) obj.get("defaultValue");
-      if (tmp != null) {
-        param.setDefaultVal(tmp);
-      }
-      param.setType((String) obj.get("type"));
-      rule.getParameterList().add(param);
-    }
-
-    return rule;
-  }
-
-  protected static void populateFields(Rule rule, JSONObject issue) {
-    rule.setKey(issue.get("key").toString());
-    JiraHelper.setStatus(rule, issue);
-
-    String tmp = JiraHelper.getCustomFieldValue(issue, "Default Severity");
-    if (tmp != null) {
-      rule.setSeverity(Rule.Severity.valueOf(tmp.toUpperCase()));
-    }
-
-    JiraHelper.setDefaultProfiles(rule, issue);
-
-    rule.setLegacyKeys(JiraHelper.getCustomFieldValueAsList(issue, "Legacy Key"));
-
-    rule.setTargetedLanguages(JiraHelper.getCustomFieldStoredAsList(issue, "Targeted languages"));
-    rule.setCoveredLanguages(JiraHelper.getCustomFieldStoredAsList(issue, "Covered Languages"));
-    rule.setIrrelevantLanguages(JiraHelper.getCustomFieldStoredAsList(issue, "Irrelevant for Languages"));
-
-    rule.setTitle(JiraHelper.getJsonFieldValue(issue, "summary"));
-    rule.setMessage(JiraHelper.getCustomFieldValue(issue, "Message"));
-
-    setDescription(rule, JiraHelper.getJsonFieldValue(issue, DESCRIPTION), true);
-
-    JiraHelper.setSqale(rule, issue);
-
-    rule.setTemplate("Yes".equals(JiraHelper.getCustomFieldValue(issue, "Template Rule")));
-
-    rule.setParameterList(JiraHelper.handleParameterList(JiraHelper.getCustomFieldValue(issue, "List of parameters"), rule.getLanguage()));
-
-    rule.setTags(JiraHelper.getListFromJsonFieldValue(issue, "labels"));
-
-    JiraHelper.setReferences(rule, issue);
   }
 
   protected static Rule populateFieldsFromXml(Element xRule, Element sqaleRoot, Language language) {

@@ -901,4 +901,38 @@ public class RuleComparisonTest {
     assertThat(rc.compare()).isEqualTo(-1);
     assertThat(rc.toString()).isEqualTo(expectedReport);
   }
+
+  @Test
+  public void testDefaultProfileDiffs() {
+
+    Rule rule1 = new Rule("");
+    rule1.getDefaultProfiles().add(new Profile("Sonar way"));
+
+    Rule rule2 = new Rule("");
+
+    RuleComparison rc = new RuleComparison(rule1, rule2);
+    assertThat(rc.compare()).isEqualTo(1);
+
+    String expectedText = "null\n" +
+            "  profile list\n" +
+            "    spec: Sonar way, \n" +
+            "    impl: \n";
+    assertThat(rc.toString()).isEqualTo(expectedText);
+
+
+    rule2.getDefaultProfiles().add(new Profile("SonarQube Way"));
+
+    assertThat(rc.compare()).isEqualTo(0);
+    assertThat(rc.toString()).isEqualTo("");
+
+
+    Rule rule3 = new Rule("");
+    rule3.getDefaultProfiles().add(new Profile("Sonar C# way"));
+
+    rc = new RuleComparison(rule1, rule3);
+    assertThat(rc.compare()).isEqualTo(0);
+    assertThat(rc.toString()).isEqualTo("");
+
+  }
+
 }

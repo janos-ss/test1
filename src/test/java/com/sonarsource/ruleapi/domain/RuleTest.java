@@ -245,14 +245,6 @@ public class RuleTest {
   }
 
   @Test
-  public void testProfileName() {
-
-    assertThat(Rule.Profile.SECURITY.toString()).isEqualTo("Security Way");
-    assertThat(Rule.Profile.SECURITY.toString()).isEqualTo(Rule.Profile.SECURITY.getProfileName());
-
-  }
-
-  @Test
   public void testStatusFromString() {
 
     assertThat(Rule.Status.fromString("beta")).isEqualTo(Rule.Status.BETA);
@@ -266,8 +258,8 @@ public class RuleTest {
     Rule rule = new Rule("");
     Rule subRule = new Rule("");
     subRule.setTitle("Java");
-    subRule.getDefaultProfiles().add(Rule.Profile.DRUPAL);
-    subRule.getDefaultProfiles().add(Rule.Profile.SECURITY);
+    subRule.getDefaultProfiles().add(new Profile("Drupal"));
+    subRule.getDefaultProfiles().add(new Profile("Security Way"));
 
     rule.merge(subRule);
 

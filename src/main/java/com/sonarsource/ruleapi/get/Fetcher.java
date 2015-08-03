@@ -144,6 +144,13 @@ public class Fetcher {
     return rules;
   }
 
+  public List<JSONObject> fetchProfilesFromSonarQube(String instance) {
+    String url = instance + "/api/rules/app";
+
+    JSONObject rawResult = getJsonFromUrl(url);
+    return (JSONArray) rawResult.get("qualityprofiles");
+  }
+
 
   public JSONObject fetchRuleFromSonarQube(String instance, String ruleKey) {
 

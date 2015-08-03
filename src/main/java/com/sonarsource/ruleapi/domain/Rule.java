@@ -101,37 +101,6 @@ public class Rule {
     }
   }
 
-  public enum Profile {
-    SONARQUBE("SonarQube Way"),
-    SECURITY("Security Way"),
-    DRUPAL("Drupal"),
-    PSR2("PSR-2"),
-    VS("Visual Studio");
-
-    protected final String profileName;
-
-    Profile(String profileName) {
-      this.profileName = profileName;
-    }
-
-    public String getProfileName(){
-      return profileName;
-    }
-
-    public static Profile fromString(String str){
-      for (Profile p : Profile.values()){
-        if (p.profileName.equalsIgnoreCase(str)) {
-          return p;
-        }
-      }
-      return null;
-    }
-
-    @Override
-    public String toString(){
-      return getProfileName();
-    }
-  }
 
   private String language = null;
   private String key = null;

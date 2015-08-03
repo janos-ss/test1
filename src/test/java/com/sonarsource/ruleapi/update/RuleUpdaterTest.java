@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.update;
 
 import com.sonarsource.ruleapi.domain.Parameter;
+import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import org.fest.assertions.api.Assertions;
@@ -116,16 +117,16 @@ public class RuleUpdaterTest {
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
 
-      List<Rule.Profile> profiles = new ArrayList<Rule.Profile>();
-      profiles.add(Rule.Profile.SECURITY);
-      profiles.add(Rule.Profile.SONARQUBE);
+      List<Profile> profiles = new ArrayList<Profile>();
+      profiles.add(new Profile("Security Way"));
+      profiles.add(new Profile("SonarQube Way"));
 
       Map<String, Object> map = new HashMap<String, Object>();
       map.put("Default Quality Profiles", profiles);
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
     } catch (Exception e) {
-      fail("Unexpected exception thwon");
+      fail("Unexpected exception thrown");
     }
 
     Assertions.assertThat(obj.toJSONString()).isEqualTo("{\"fields\":{\"customfield_10830\":[{\"id\":\"10621\"},{\"id\":\"10620\"}]}}");

@@ -5,7 +5,14 @@
  */
 package com.sonarsource.ruleapi.get;
 
+import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.utilities.Utilities;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SonarQubeHelper {
 
@@ -16,6 +23,50 @@ public class SonarQubeHelper {
     // this space intentionally left blank
   }
 
+
+  protected static Rule populateFields(JSONObject jsonRule) {
+    Rule rule = new Rule((String) jsonRule.get("langName"));
+
+    String rawKey = ((String) jsonRule.get("key")).split(":")[1];
+    rule.setKey(Utilities.normalizeKey(rawKey));
+    rule.setRepo((String) jsonRule.get("repo"));
+
+    rule.setLegacyKeys(new ArrayList<String>());
+    rule.getLegacyKeys().add(rawKey);
+
+    rule.setStatus(Rule.Status.valueOf((String) jsonRule.get("status")));
+    rule.setSeverity(Rule.Severity.valueOf((String) jsonRule.get("severity")));
+
+    rule.setTitle((String) jsonRule.get("name"));
+    RuleMaker.setDescription(rule, (String) jsonRule.get("htmlDesc"), false);
+
+    rule.setSqaleCharac((String) jsonRule.get("defaultDebtChar"));
+    RuleMaker.setSubcharacteristic(rule, (String) jsonRule.get("defaultDebtSubChar"));
+    RuleMaker.setRemediationFunction(rule, (String) jsonRule.get("defaultDebtRemFnType"));
+    setSqaleConstantValueFromSqInstance(rule, (String) jsonRule.get("defaultDebtRemFnOffset"));
+    rule.setSqaleLinearFactor((String) jsonRule.get("defaultDebtRemFnCoeff"));
+    rule.setSqaleLinearArgDesc((String) jsonRule.get("effortToFixDescription"));
+
+    rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
+
+    rule.setTemplate((Boolean) jsonRule.get("isTemplate"));
+
+    JSONArray jsonParams = (JSONArray) jsonRule.get("params");
+    for (JSONObject obj : (List<JSONObject>)jsonParams) {
+      Parameter param = new Parameter();
+      param.setKey((String) obj.get("key"));
+      param.setDescription((String) obj.get("htmlDesc"));
+
+      String tmp = (String) obj.get("defaultValue");
+      if (tmp != null) {
+        param.setDefaultVal(tmp);
+      }
+      param.setType((String) obj.get("type"));
+      rule.getParameterList().add(param);
+    }
+
+    return rule;
+  }
 
   static void handleHtml(Rule rule, String[] pieces) {
 

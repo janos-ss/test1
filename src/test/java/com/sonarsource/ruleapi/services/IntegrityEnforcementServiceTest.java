@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
@@ -12,6 +13,7 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.Cert;
 import com.sonarsource.ruleapi.externalspecifications.specifications.Cwe;
 import com.sonarsource.ruleapi.externalspecifications.specifications.OwaspTopTen;
 import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
+import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
 import java.util.*;
@@ -23,6 +25,12 @@ public class IntegrityEnforcementServiceTest {
 
   IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
 
+
+  @Test
+  public void testtest(){
+    ReportService rs = new ReportService();
+    rs.writeOutdatedRulesReport(Language.PLI, RuleManager.NEMO);
+  }
 
   @Test
   public void testDropEmptyMapEntries(){
@@ -415,7 +423,7 @@ public class IntegrityEnforcementServiceTest {
     assertThat(updates).isEmpty();
 
     rule.getTargetedLanguages().add("Java");
-    rule.getDefaultProfiles().add(Rule.Profile.SONARQUBE);
+    rule.getDefaultProfiles().add(new Profile("Sonar way"));
     rule.getTags().add("misra");
 
     updates = enforcer.getDeprecationUpdates(rule);

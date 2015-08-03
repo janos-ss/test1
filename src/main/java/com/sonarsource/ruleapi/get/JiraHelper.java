@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.get;
 
 import com.sonarsource.ruleapi.domain.Parameter;
+import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import org.json.simple.JSONArray;
@@ -24,6 +25,40 @@ public class JiraHelper {
 
   private JiraHelper(){
     // this space intentionally left blank
+  }
+
+
+  protected static void populateFields(Rule rule, JSONObject issue) {
+    rule.setKey(issue.get("key").toString());
+    setStatus(rule, issue);
+
+    String tmp = getCustomFieldValue(issue, "Default Severity");
+    if (tmp != null) {
+      rule.setSeverity(Rule.Severity.valueOf(tmp.toUpperCase()));
+    }
+
+    setDefaultProfiles(rule, issue);
+
+    rule.setLegacyKeys(getCustomFieldValueAsList(issue, "Legacy Key"));
+
+    rule.setTargetedLanguages(getCustomFieldStoredAsList(issue, "Targeted languages"));
+    rule.setCoveredLanguages(getCustomFieldStoredAsList(issue, "Covered Languages"));
+    rule.setIrrelevantLanguages(getCustomFieldStoredAsList(issue, "Irrelevant for Languages"));
+
+    rule.setTitle(getJsonFieldValue(issue, "summary"));
+    rule.setMessage(getCustomFieldValue(issue, "Message"));
+
+    RuleMaker.setDescription(rule, getJsonFieldValue(issue, "description"), true);
+
+    setSqale(rule, issue);
+
+    rule.setTemplate("Yes".equals(getCustomFieldValue(issue, "Template Rule")));
+
+    rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters"), rule.getLanguage()));
+
+    rule.setTags(getListFromJsonFieldValue(issue, "labels"));
+
+    setReferences(rule, issue);
   }
 
   static void handleMarkdown(Rule rule, String[] pieces) {
@@ -131,11 +166,8 @@ public class JiraHelper {
 
   protected static void setDefaultProfiles(Rule rule, JSONObject issue) {
     List<String> profileNames = getCustomFieldStoredAsList(issue, "Default Quality Profiles");
-    for (String name : profileNames){
-      Rule.Profile p = Rule.Profile.fromString(name);
-      if (p != null) {
-        rule.getDefaultProfiles().add(p);
-      }
+    for (String name : profileNames) {
+      rule.getDefaultProfiles().add(new Profile(name));
     }
   }
 
