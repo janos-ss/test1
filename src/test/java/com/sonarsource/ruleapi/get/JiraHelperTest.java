@@ -12,6 +12,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,14 @@ public class JiraHelperTest {
 
   JSONParser parser = new JSONParser();
 
+
+  @Test()
+  public void testPrivateConstructors() {
+    final Constructor<?>[] constructors = JiraHelper.class.getDeclaredConstructors();
+    for (Constructor<?> constructor : constructors) {
+      assertThat(Modifier.isPrivate(constructor.getModifiers())).isTrue();
+    }
+  }
 
 
   @Test

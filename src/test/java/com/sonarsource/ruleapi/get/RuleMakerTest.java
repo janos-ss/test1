@@ -24,6 +24,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -70,6 +72,15 @@ public class RuleMakerTest {
 
     file = new File("rules.xml");
     file.delete();
+  }
+
+
+  @Test()
+  public void testPrivateConstructors() {
+    final Constructor<?>[] constructors = RuleMaker.class.getDeclaredConstructors();
+    for (Constructor<?> constructor : constructors) {
+      assertThat(Modifier.isPrivate(constructor.getModifiers())).isTrue();
+    }
   }
 
   @Test
@@ -307,7 +318,7 @@ public class RuleMakerTest {
 
     Profile profile = new Profile("Sonar way");
 
-    String json = "[{\"key\":\"squid:S1194\",\"internalKey\":\"S1194\"},{\"key\":\"squid:S2078\",\"internalKey\":\"S2078\"},{\"key\":\"squid:S2077\",\"internalKey\":\"S2077\"},{\"key\":\"squid:S1193\",\"internalKey\":\"S1193\"}]";
+    String json = "[{\"key\":\"squid:S1194\",\"internalKey\":\"S1194\"},{\"key\":\"squid:S2078\",\"internalKey\":\"S2078\"},{\"key\":\"squid:S2077\"},{\"key\":\"squid:S1193\",\"internalKey\":\"S1193\"}]";
 
     try {
       List<JSONObject> profileRules = (List<JSONObject>) parser.parse(json);

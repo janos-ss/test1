@@ -11,6 +11,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 public class SonarQubeHelperTest {
@@ -19,6 +22,14 @@ public class SonarQubeHelperTest {
 
   private JSONParser parser = new JSONParser();
 
+
+  @Test()
+  public void testPrivateConstructors() {
+    final Constructor<?>[] constructors = SonarQubeHelper.class.getDeclaredConstructors();
+    for (Constructor<?> constructor : constructors) {
+      assertThat(Modifier.isPrivate(constructor.getModifiers())).isTrue();
+    }
+  }
 
   @Test
   public void testSqaleConstantValueFromSqInstance() {
