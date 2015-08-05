@@ -674,35 +674,6 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void differentSqaleChar() {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    String str = "this is a test";
-
-    spec.setSqaleCharac(str);
-
-    assertThat(rc.compare()).isEqualTo(1);
-  }
-
-  @Test
-  public void differentSqaleCharToString() {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    String str = "this is a test";
-
-    spec.setSqaleCharac(str);
-
-    assertThat(rc.toString()).isEqualTo("null\n" +
-            "  SQALE characteristic\n" +
-            "    spec: this is a test\n" +
-            "    impl: null\n");
-  }
-
-  @Test
   public void differentSqaleSubChar() {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);

@@ -135,12 +135,7 @@ public class RuleComparison{
   }
 
   private int compareSqaleValues() {
-    int result = compareSqaleCharacteristic();
-    if (result != 0) {
-      return result;
-    }
-
-    result = compareSqaleSubcharacertistic();
+    int result = compareSqaleSubcharacertistic();
     if (result != 0) {
       return result;
     }
@@ -249,10 +244,6 @@ public class RuleComparison{
   private String toStringForSqale() {
 
     StringBuilder sb = new StringBuilder();
-    if (compareSqaleCharacteristic() != 0) {
-      logDifference(sb, "SQALE characteristic", spec.getSqaleCharac(), impl.getSqaleCharac());
-    }
-
     if (compareSqaleSubcharacertistic() != 0) {
       logDifference(sb, "SQALE sub-characteristic", spec.getSqaleSubCharac(), impl.getSqaleSubCharac());
     }
