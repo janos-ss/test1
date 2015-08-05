@@ -9,35 +9,37 @@ package com.sonarsource.ruleapi.utilities;
 import org.fest.util.Strings;
 
 public enum Language {
-  //     SonarQube      RSpec          doUpdate
-  ABAP  ("abap",        "ABAP",        true),
-  C     ("c",           "C",           true),
-  COBOL ("cobol",       "Cobol",       true),
-  CPP   ("cpp",         "C++",         true),
-  CSH   ("csharpsquid", "C#",          true),
-  FLEX  ("flex",        "Flex",        true),
-  JAVA  ("squid",       "Java",        true),
-  JS    ("javascript",  "JavaScript",  true),
-  OBJC  ("objc",        "Objective-C", true),
-  PHP   ("php",         "PHP",         true),
-  PLI   ("pli",         "PL/I",        true),
-  PLSQL ("plsql",       "PL/SQL",      true),
-  PY    ("python",      "Python",      true),
-  RPG   ("rpg",         "RPG",         true),
-  SWIFT ("swift",       "Swift",       true),
-  VB    ("vb",          "VB6",         true),
-  VBNET ("vbnet",       "VB.Net",      true),
-  WEB   ("Web",         "Web",         true),
-  XML   ("xml",         "XML",         true);
+  //     SonarQube      RSpec          doUpdate   securityProfile
+  ABAP  ("abap",        "ABAP",        true,      false),
+  C     ("c",           "C",           true,      false),
+  COBOL ("cobol",       "Cobol",       true,      false),
+  CPP   ("cpp",         "C++",         true,      false),
+  CSH   ("csharpsquid", "C#",          true,      false),
+  FLEX  ("flex",        "Flex",        true,      false),
+  JAVA  ("squid",       "Java",        true,      false),
+  JS    ("javascript",  "JavaScript",  true,      false),
+  OBJC  ("objc",        "Objective-C", true,      false),
+  PHP   ("php",         "PHP",         true,      false),
+  PLI   ("pli",         "PL/I",        true,      false),
+  PLSQL ("plsql",       "PL/SQL",      true,      false),
+  PY    ("python",      "Python",      true,      false),
+  RPG   ("rpg",         "RPG",         true,      false),
+  SWIFT ("swift",       "Swift",       true,      false),
+  VB    ("vb",          "VB6",         true,      false),
+  VBNET ("vbnet",       "VB.Net",      true,      false),
+  WEB   ("Web",         "Web",         true,      false),
+  XML   ("xml",         "XML",         true,      false),;
 
   protected final String sq;
   protected final String rspec;
   protected final boolean update;
+  protected final boolean securityProfile;
 
-  Language(String sq, String rspec, boolean update) {
+  Language(String sq, String rspec, boolean update, boolean securityProfile) {
     this.sq = sq;
     this.rspec = rspec;
     this.update = update;
+    this.securityProfile = securityProfile;
   }
 
   public String getSq() {
@@ -46,6 +48,11 @@ public enum Language {
 
   public String getRspec() {
     return rspec;
+  }
+
+  public boolean hasSecurityProfile() {
+
+    return securityProfile;
   }
 
   public boolean doUpdate() {

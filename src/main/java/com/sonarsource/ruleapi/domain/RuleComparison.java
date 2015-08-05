@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.domain;
 
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
+import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.ArrayList;
@@ -413,8 +414,8 @@ public class RuleComparison{
       return result;
     }
 
-    int aVal = Integer.parseInt(a.replaceAll("\\D",""));
-    int bVal = Integer.parseInt(b.replaceAll("\\D",""));
+    int aVal = Integer.parseInt(a.replaceAll("\\D", ""));
+    int bVal = Integer.parseInt(b.replaceAll("\\D", ""));
 
     TimeUnit aUnit = null;
     String tmp = a.replaceAll("\\d","").replaceAll("\\s", "").toUpperCase().replace("MN", "MIN");
@@ -437,8 +438,19 @@ public class RuleComparison{
 
   protected int compareProfileList() {
 
-    List<Profile> aList = spec.getDefaultProfiles();
-    List<Profile> bList = impl.getDefaultProfiles();
+String tmp = spec.getKey();
+
+    List<Profile> aList = new ArrayList<>(spec.getDefaultProfiles());
+    List<Profile> bList = new ArrayList<>(impl.getDefaultProfiles());
+
+    Language specLang = Language.fromString(spec.getLanguage());
+    Language implLang = Language.fromString(impl.getLanguage());
+
+    if ((specLang != null && !specLang.hasSecurityProfile())
+            || (implLang != null && !implLang.hasSecurityProfile())) {
+      dropSecurityWay(aList);
+      dropSecurityWay(bList);
+    }
 
     if (aList.size() != bList.size()) {
       return Integer.valueOf(aList.size()).compareTo(bList.size());
@@ -454,6 +466,18 @@ public class RuleComparison{
       }
     }
     return 0;
+  }
+
+  private void dropSecurityWay(List<Profile> list) {
+    Profile remove = null;
+    for (Profile profile : list) {
+      if (profile.getName().equals("Security Way")) {
+        remove = profile;
+      }
+    }
+    if (remove != null) {
+      list.remove(remove);
+    }
   }
 
   protected int compareParameterList() {
