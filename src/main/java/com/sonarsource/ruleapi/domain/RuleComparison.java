@@ -438,8 +438,6 @@ public class RuleComparison{
 
   protected int compareProfileList() {
 
-String tmp = spec.getKey();
-
     List<Profile> aList = new ArrayList<>(spec.getDefaultProfiles());
     List<Profile> bList = new ArrayList<>(impl.getDefaultProfiles());
 
@@ -468,10 +466,10 @@ String tmp = spec.getKey();
     return 0;
   }
 
-  private void dropSecurityWay(List<Profile> list) {
+  private static void dropSecurityWay(List<Profile> list) {
     Profile remove = null;
     for (Profile profile : list) {
-      if (profile.getName().equals("Security Way")) {
+      if ("Security Way".equals(profile.getName())) {
         remove = profile;
       }
     }
