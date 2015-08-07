@@ -148,6 +148,9 @@ public class MarkdownConverter {
 
   public static String handleEntities(String line) {
 
+    if (line == null) {
+      return line;
+    }
     String l2 = line.replaceAll("&(?!(gt;|amp;|lt;))", "&amp;");
     l2 = l2.replaceAll("<","&lt;");
     l2 = l2.replaceAll(">", "&gt;");
