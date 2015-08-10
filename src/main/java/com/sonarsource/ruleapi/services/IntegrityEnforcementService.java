@@ -48,23 +48,23 @@ public class IntegrityEnforcementService extends RuleManager {
       if (!Strings.isNullOrEmpty(rule.getReferences())) {
         String[] lines = rule.getReferences().split("\n");
         for (String line : lines) {
-          checkUrlInReferenceLine(fetcher, rule, line);
+          checkUrlInReferenceLine(fetcher, rule.getKey(), line);
         }
       }
     }
   }
 
-  protected void checkUrlInReferenceLine(Fetcher fetcher, Rule rule, String line) {
+  protected void checkUrlInReferenceLine(Fetcher fetcher, String ruleKey, String line) {
 
     if (line.contains("http")) {
 
       String link = line.replaceAll(".*\"(https?://[^'\"]+)\".*", "$1");
       try {
         if (!Strings.isNullOrEmpty(link) && !fetcher.isUrlGood(link)) {
-          LOGGER.warning("Bad url in " + rule.getKey() + ": " + link);
+          LOGGER.warning("Bad url in " + ruleKey + ": " + link);
         }
       } catch (RuleException e) {
-        LOGGER.warning("Bad url in " + rule.getKey() + ": " + link + "\n" + e.getMessage());
+        LOGGER.warning("Bad url in " + ruleKey + ": " + link + "\n" + e.getMessage());
       }
     }
   }
