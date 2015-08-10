@@ -56,8 +56,6 @@ public class Fetcher {
 
 
   public Fetcher(){
-    System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
-    Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
     System.setProperty("jsse.enableSNIExtension", "false");
   }
 
