@@ -21,7 +21,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -47,6 +53,13 @@ public class Fetcher {
   private static final String ENCODING = "UTF-8";
 
   private JSONObject names = null;
+
+
+  public Fetcher(){
+    System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
+    Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+    System.setProperty("jsse.enableSNIExtension", "false");
+  }
 
   /**
    * Retrieves Jira Issue by Jira id (RSPEC-###)
@@ -215,6 +228,27 @@ public class Fetcher {
     try {
       return (JSONObject)parser.parse(responseStr);
     } catch (ParseException e) {
+      throw new RuleException(e);
+    }
+  }
+
+  public boolean isUrlGood(String urlString) {
+    try {
+      URL u = new URL(urlString);
+      HttpURLConnection huc = (HttpURLConnection) u.openConnection();
+      huc.setRequestMethod("GET");
+      huc.setInstanceFollowRedirects(true);
+      huc.connect();
+      int code = huc.getResponseCode();
+
+      return code >= 200 && code <=299;
+    } catch (MalformedURLException e) {
+      throw new RuleException(e);
+    } catch (UnknownHostException e) {
+      throw new RuleException(e);
+    } catch (ProtocolException e) {
+      throw new RuleException(e);
+    } catch (IOException e) {
       throw new RuleException(e);
     }
   }

@@ -6,12 +6,15 @@
 
 package com.sonarsource.ruleapi.services;
 
+import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.get.Fetcher;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
@@ -33,6 +36,37 @@ public class IntegrityEnforcementService extends RuleManager {
   public void enforceIntegrity(String login, String password) {
     enforceTagReferenceIntegrity(login, password);
     cleanUpDeprecatedRules(login, password);
+    checkUrls();
+  }
+
+  public void checkUrls() {
+
+    Fetcher fetcher = new Fetcher();
+
+    List<Rule> rules = RuleMaker.getCachedRulesByJql("description ~ \"See http://\" or description ~ \"https://\"", "");
+    for (Rule rule : rules) {
+      if (!Strings.isNullOrEmpty(rule.getReferences())) {
+        String[] lines = rule.getReferences().split("\n");
+        for (String line : lines) {
+          checkUrlInReferenceLine(fetcher, rule, line);
+        }
+      }
+    }
+  }
+
+  protected void checkUrlInReferenceLine(Fetcher fetcher, Rule rule, String line) {
+
+    if (line.contains("http")) {
+
+      String link = line.replaceAll(".*\"(https?://[^'\"]+)\".*", "$1");
+      try {
+        if (!Strings.isNullOrEmpty(link) && !fetcher.isUrlGood(link)) {
+          LOGGER.warning("Bad url in " + rule.getKey() + ": " + link);
+        }
+      } catch (RuleException e) {
+        LOGGER.warning("Bad url in " + rule.getKey() + ": " + link + "\n" + e.getMessage());
+      }
+    }
   }
 
   public void cleanUpDeprecatedRules(String login, String password) {
