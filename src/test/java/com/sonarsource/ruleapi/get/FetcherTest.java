@@ -32,6 +32,12 @@ public class FetcherTest {
   private Fetcher fetcher = new Fetcher();
 
 
+  @Test(expected = RuleException.class)
+  public void testIsUrlGood() {
+    fetcher.isUrlGood("http://localhost:1");
+  }
+
+
   @Test
   public void testGetClient() {
 
