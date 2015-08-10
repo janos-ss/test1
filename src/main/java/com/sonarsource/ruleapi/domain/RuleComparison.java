@@ -362,10 +362,6 @@ public class RuleComparison{
     return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getReferences(), impl.getReferences());
   }
 
-  protected int compareSqaleCharacteristic() {
-    return ComparisonUtilities.compareStrings(spec.getSqaleCharac(), impl.getSqaleCharac());
-  }
-
   protected int compareSqaleSubcharacertistic() {
     int result = checkForNulls(spec.getSqaleSubCharac(), impl.getSqaleSubCharac());
     if (result != 0 || spec.getSqaleSubCharac() == null) {
