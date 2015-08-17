@@ -38,7 +38,7 @@ import java.util.zip.ZipInputStream;
  */
 public class Fetcher {
 
-  public static final String BASE_URL = "http://jira.sonarsource.com/rest/api/latest/";
+  public static final String BASE_URL = "https://jira.sonarsource.com/rest/api/latest/";
   public static final String REDMOND = "https://sonarqubefordotnet.visualstudio.com/DefaultCollection/SonarQubeTfsIntegration/_apis/build/builds";
   public static final String ISSUE = "issue/";
 

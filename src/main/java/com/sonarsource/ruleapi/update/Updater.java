@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 
 public class Updater {
 
-  private static final String BASE_URL = "http://jira.sonarsource.com/rest/api/2/issue/";
+  private static final String BASE_URL = "https://jira.sonarsource.com/rest/api/2/issue/";
 
   public boolean putIssueUpdate(String login, String password, String ruleKey, JSONObject request){
 
