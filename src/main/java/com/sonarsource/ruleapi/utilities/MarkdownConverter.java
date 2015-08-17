@@ -24,8 +24,6 @@ public class MarkdownConverter {
   private static final String CODE_OPEN = "<code>";
   private static final String CODE_CLOSE = "</code>";
 
-  public MarkdownConverter() {
-  }
 
   /**
    * Converts text in Jira markdown format to HTML, additionally
