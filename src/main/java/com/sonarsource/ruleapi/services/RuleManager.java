@@ -74,44 +74,4 @@ public class RuleManager {
     }
     return specNotFound;
   }
-
-  public String startOrchestrator() {
-    if (orchestrator == null) {
-      orchestrator = Orchestrator
-              .builderEnv()
-              .setOrchestratorProperty("sonar.runtimeVersion", "LTS")
-              .setOrchestratorProperty("orchestrator.updateCenterUrl",
-                      "http://update.sonarsource.org/update-center-dev.properties")
-              .setOrchestratorProperty("sonar.jdbc.dialect", "h2")
-
-              .setOrchestratorProperty("abapVersion", "DEV").addPlugin("abap")
-              .setOrchestratorProperty("cobolVersion", "DEV").addPlugin("cobol")
-              .setOrchestratorProperty("cppVersion", "DEV").addPlugin("cpp")
-              .setOrchestratorProperty("csharpVersion", "DEV").addPlugin("csharp")
-              .setOrchestratorProperty("flexVersion", "DEV").addPlugin("flex")
-              .setOrchestratorProperty("javaVersion", "DEV").addPlugin("java")
-              .setOrchestratorProperty("javascriptVersion", "DEV").addPlugin("javascript")
-              .setOrchestratorProperty("phpVersion", "DEV").addPlugin("php")
-              .setOrchestratorProperty("pliVersion", "DEV").addPlugin("pli")
-              .setOrchestratorProperty("plsqlVersion", "DEV").addPlugin("plsql")
-              .setOrchestratorProperty("pythonVersion", "DEV").addPlugin("python")
-              .setOrchestratorProperty("rpgVersion", "DEV").addPlugin("rpg")
-              .setOrchestratorProperty("swiftVersion", "DEV").addPlugin("swift")
-              .setOrchestratorProperty("vbVersion", "DEV").addPlugin("vb")
-              .setOrchestratorProperty("vbnetVersion", "DEV").addPlugin("vbnet")
-              .setOrchestratorProperty("webVersion", "DEV").addPlugin("web")
-              .setOrchestratorProperty("xmlVersion", "DEV").addPlugin("xml")
-              .build();
-
-      orchestrator.start();
-    }
-    return orchestrator.getServer().getUrl();
-  }
-
-  public void stopOrchestrator() {
-    if (orchestrator != null) {
-      orchestrator.stop();
-      orchestrator = null;
-    }
-  }
 }

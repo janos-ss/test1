@@ -7,6 +7,7 @@
 package com.sonarsource.ruleapi;
 
 import com.sonarsource.ruleapi.services.ReportService;
+import com.sonarsource.ruleapi.services.RuleManager;
 import org.junit.Test;
 
 public class ReportGeneratorTest {
@@ -15,7 +16,7 @@ public class ReportGeneratorTest {
   public void generateReports() {
   	if("true".equals(System.getProperty("reports.generation", "false"))) {
       ReportService rs = new ReportService();
-      rs.writeReportsWithOrchestrator();
+      rs.writeInternalReports(RuleManager.NEMO);
       rs.writeUserFacingReports();
   	}
   }

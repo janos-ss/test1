@@ -212,7 +212,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
   public void setCoveredLanguages(String login, String password) {
 
-    String url = startOrchestrator();
+    String url = RuleManager.NEMO;
 
     for (Language lang : Language.values()) {
       LOGGER.info("Setting covered for " + lang.getRspec());
@@ -221,7 +221,6 @@ public class IntegrityEnforcementService extends RuleManager {
       }
       setCoveredForLanguage(login, password, lang, url);
     }
-    stopOrchestrator();
   }
 
   public void setCoveredForLanguage(String login, String password, Language language, String url) {

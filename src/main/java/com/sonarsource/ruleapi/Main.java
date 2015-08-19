@@ -110,11 +110,7 @@ public class Main {
 
   private static void generateReports(Settings settings, ReportService rs) {
 
-    if (settings.orchestrator) {
-      rs.writeReportsWithOrchestrator();
-    } else {
-      rs.writeInternalReports(settings.instance);
-    }
+    rs.writeInternalReports(settings.instance);
     rs.writeUserFacingReports();
 
   }
@@ -135,9 +131,6 @@ public class Main {
 
     @Parameter(names = "-instance")
     private String instance = RuleManager.NEMO;
-
-    @Parameter(names = "-latestSnapshot")
-    private boolean orchestrator;
 
     @Parameter(names = "-login")
     private String login;

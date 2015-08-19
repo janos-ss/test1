@@ -65,7 +65,6 @@ public class ReportService extends RuleManager {
 
   /**
    * Writes internal reports based on passed-in SonarQube url
-   * See also writeReportsWithOrchestrator
    *
    * @param instance SonarQube instance URL
    */
@@ -330,15 +329,6 @@ public class ReportService extends RuleManager {
       severityList.add(rule);
     }
     return severityMap;
-  }
-
-  public void writeReportsWithOrchestrator() {
-
-    String url = startOrchestrator();
-
-    writeInternalReports(url);
-
-    stopOrchestrator();
   }
 
 }
