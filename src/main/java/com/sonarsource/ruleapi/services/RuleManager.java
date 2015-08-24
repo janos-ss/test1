@@ -23,8 +23,6 @@ public class RuleManager {
 
   public static final String NEMO = "http://nemo.sonarqube.org";
 
-  private Orchestrator orchestrator = null;
-
   public List<Rule> getCoveredRulesForLangauge(Language language) {
     return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec() + "\"", language.getRspec());
   }
