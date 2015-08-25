@@ -6,25 +6,15 @@
 package com.sonarsource.ruleapi.get;
 
 import com.google.common.base.Strings;
-import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +32,6 @@ import java.util.Map;
  * variants such as {code} blocks and parameter variations.
  */
 public class RuleMaker {
-
-  private static final String DESCRIPTION = "description";
 
   private static final Fetcher FETCHER = new Fetcher();
 
