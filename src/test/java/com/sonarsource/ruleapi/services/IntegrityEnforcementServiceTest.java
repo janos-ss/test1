@@ -13,6 +13,7 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.Cert;
 import com.sonarsource.ruleapi.externalspecifications.specifications.Cwe;
 import com.sonarsource.ruleapi.externalspecifications.specifications.OwaspTopTen;
 import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
+import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
 import java.util.*;
@@ -23,6 +24,13 @@ import static org.fest.assertions.Assertions.assertThat;
 public class IntegrityEnforcementServiceTest {
 
   IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
+
+  @Test
+  public void testtest(){
+    ReportService rs = new ReportService();
+    rs.writeOutdatedRulesReport(Language.CSH, RuleManager.NEMO);
+  }
+
 
   @Test
   public void testDropEmptyMapEntries(){

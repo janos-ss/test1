@@ -38,43 +38,6 @@ public class RuleMakerTest {
 
   private JSONParser parser = new JSONParser();
 
-  @Before
-  public void setup() {
-    java.net.URL url = RuleMakerTest.class.getResource("/");
-
-    try {
-      File source = new File(url.getPath() + "/get/sqale.xml");
-      File dest = new File("sqale.xml");
-      dest.delete();
-      if (dest.exists()){
-        dest.delete();
-      }
-      Files.copy(source.toPath(), dest.toPath());
-
-      source = new File(url.getPath() + "/get/rules.xml");
-      dest = new File("rules.xml");
-      dest.deleteOnExit();
-      if (dest.exists()) {
-        dest.delete();
-      }
-      Files.copy(source.toPath(), dest.toPath());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @After
-  public void teardown() {
-    java.net.URL url = RuleMakerTest.class.getResource("/");
-
-    File file = new File("sqale.xml");
-    file.delete();
-
-    file = new File("rules.xml");
-    file.delete();
-  }
-
-
   @Test()
   public void testPrivateConstructors() {
     final Constructor<?>[] constructors = RuleMaker.class.getDeclaredConstructors();
@@ -252,34 +215,6 @@ public class RuleMakerTest {
     RuleMaker.jiraRuleCache.put(key, rule);
     assertThat(RuleMaker.getCachedRuleByKey(key, "")).isEqualTo(rule);
     assertThat(RuleMaker.getCachedRuleByKey("S1111", "")).isEqualTo(rule);
-  }
-
-  @Test
-  public void testGetCshRules() throws IOException {
-
-    List<Rule> rules = RuleMaker.getRulesFromSonarQubeForLanguage(Language.CSH, "");
-
-    assertThat(rules).isNotNull();
-    assertThat(rules).hasSize(1);
-  }
-
-  @Test
-  public void testPopulateRuleFromXmlSqaleNotFound() throws MalformedURLException, DocumentException {
-
-    Element xmlRule = DocumentHelper.createElement("");
-    xmlRule.add(createElement("key", "S21234"));
-    xmlRule.add(createElement("name", "Silly bit operations should not be performed"));
-    xmlRule.add(createElement("severity", "MAJOR"));
-    xmlRule.add(createElement("cardinality", "SINGLE"));
-    xmlRule.add(createElement("description", "La de dah!"));
-
-    SAXReader reader = new SAXReader();
-    Document sqaleXml = reader.read(new File("sqale.xml").toURI().toURL());
-    Element sqaleRoot = sqaleXml.getRootElement();
-
-    Rule rule = RuleMaker.populateFieldsFromXml(xmlRule, sqaleRoot, Language.CSH);
-    assertThat(rule.getSqaleSubCharac()).isNull();
-
   }
 
   private Element createElement(String name, String value) {
