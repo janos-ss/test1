@@ -26,13 +26,6 @@ public class IntegrityEnforcementServiceTest {
   IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
 
   @Test
-  public void testtest(){
-    ReportService rs = new ReportService();
-    rs.writeOutdatedRulesReport(Language.CSH, RuleManager.NEMO);
-  }
-
-
-  @Test
   public void testDropEmptyMapEntries(){
     Map <Rule, Map<String,Object>> map = new HashMap<>();
     map.put(new Rule(""), new HashMap<String, Object>());
