@@ -6,7 +6,6 @@
 
 package com.sonarsource.ruleapi.services;
 
-import com.sonar.orchestrator.Orchestrator;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
