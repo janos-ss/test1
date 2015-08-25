@@ -16,10 +16,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -27,10 +24,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 
 /**
@@ -39,7 +33,6 @@ import java.util.zip.ZipInputStream;
 public class Fetcher {
 
   public static final String BASE_URL = "https://jira.sonarsource.com/rest/api/latest/";
-  public static final String REDMOND = "https://sonarqubefordotnet.visualstudio.com/DefaultCollection/SonarQubeTfsIntegration/_apis/build/builds";
   public static final String ISSUE = "issue/";
 
   private static final String RSPEC = "RSPEC-";
@@ -171,38 +164,6 @@ public class Fetcher {
     return (JSONObject) rawResult.get("rule");
   }
 
-  public void fetchRuleDataFromRedmond(String login, String password) {
-    try {
-      String query = URLEncoder.encode("definition=CI - C# Code Analysis", ENCODING);
-
-      JSONObject buildList = getJsonFromUrl(REDMOND + "?" + query, login, password);
-      long buildId = getBuildId(buildList);
-
-      String buildUrl = REDMOND + "/" + buildId + "/artifacts/rule-descriptors?$format=zip";
-
-      getFilesFromUrl(buildUrl, login, password);
-
-    } catch (UnsupportedEncodingException e) {
-      throw new RuleException(e);
-    }
-  }
-
-  protected long getBuildId(JSONObject buildList) {
-
-    ArrayList<JSONObject> builds = (JSONArray) buildList.get("value");
-
-    long buildId = -1;
-    for (JSONObject build : builds) {
-
-      long buildDefId = (long) ((JSONObject) build.get("definition")).get("id");
-      if (buildDefId == 31 && "completed".equals(build.get("status")) && "succeeded".equals(build.get("result"))) {
-        buildId = (long) build.get("id");
-        break;
-      }
-    }
-    return buildId;
-  }
-
   public JSONObject getJsonFromUrl(String url) {
 
     return getJsonFromUrl(url, null, null);
@@ -248,55 +209,6 @@ public class Fetcher {
       throw new RuleException(e);
     } catch (IOException e) {
       throw new RuleException(e);
-    }
-  }
-
-  protected void getFilesFromUrl(String url, String login, String password) {
-
-    Client client = getClient(login, password);
-
-    WebTarget webResource = client.target(url);
-
-    Response response = webResource.request().accept("application/zip").get(Response.class);
-
-    checkStatus(url, client, response);
-
-    FileOutputStream output = null;
-    try(InputStream is = response.readEntity(InputStream.class); ZipInputStream zin = new ZipInputStream(is)) {
-
-      byte[] buffer = new byte[2048];
-      ZipEntry entry;
-      while((entry = zin.getNextEntry())!=null) {
-        if (entry.isDirectory()) {
-          continue;
-        }
-
-        String outpath = entry.getName();
-
-        File file = new File(outpath);
-        output = new FileOutputStream(file.getName());
-
-        int len = 0;
-        while ((len = zin.read(buffer)) > 0) {
-          output.write(buffer, 0, len);
-        }
-        output.close();
-
-      }
-    } catch (IOException e) {
-      throw new RuleException(e);
-
-    } finally {
-      if (output != null) {
-        try {
-          output.close();
-        } catch (IOException e) {
-          // intentionally blank
-        }
-      }
-
-      response.close();
-      client.close();
     }
   }
 
