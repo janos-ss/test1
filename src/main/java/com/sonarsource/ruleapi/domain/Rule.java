@@ -111,7 +111,7 @@ public class Rule {
 
   private Severity severity = null;
   private boolean template = false;
-  private List<String> legacyKeys = null;
+  private List<String> legacyKeys = new ArrayList<>();
 
   private List<Profile> defaultProfiles = new ArrayList<>();
 

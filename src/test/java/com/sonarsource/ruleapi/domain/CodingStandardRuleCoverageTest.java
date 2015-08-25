@@ -22,15 +22,17 @@ public class CodingStandardRuleCoverageTest {
     List<Rule> rules = new ArrayList<Rule>();
     Rule rule = new Rule("");
     rule.setKey("RSPEC-1234");
+    rule.getLegacyKeys().add("S1234");
     rules.add(rule);
 
     rule = new Rule("");
     rule.setKey("RSPEC-2345");
+    rule.getLegacyKeys().add("S2345");
     rules.add(rule);
 
     CodingStandardRuleCoverage cov = new CodingStandardRuleCoverage();
 
-    String expected = "RSPEC-1234, RSPEC-2345";
+    String expected = "S1234, S2345";
     assertThat(cov.getRuleKeysAsString(rules)).isEqualTo(expected);
 
   }

@@ -30,7 +30,8 @@ public class AbstractReportableExternalToolTest {
     findBugsTestInstance.computeCoverage();
 
     rule.setRepo("squid");
-    rule.setKey("S1234");
+    rule.getLegacyKeys().add("S1234");
+    rule.setKey("RSPEC-1234");
     rule.setTitle("X should (not) Y");
 
     list.add(FB_KEY1);
