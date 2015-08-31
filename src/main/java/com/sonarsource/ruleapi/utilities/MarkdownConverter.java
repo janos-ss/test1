@@ -72,6 +72,7 @@ public class MarkdownConverter {
             lines[i] = handleBq(lines[i]);
             lines[i] = handleList(sb, lines[i]);
             lines[i] = handleBold(lines[i]);
+            lines[i] = handleStriketrhough(lines[i]);
             lines[i] = handleItal(lines[i]);
             lines[i] = handleQuoteTag(lines[i]);
           }
@@ -380,6 +381,11 @@ public class MarkdownConverter {
     return "<li>" + line.substring(pos);
   }
 
+  protected String handleStriketrhough(String arg) {
+
+    return applyFormatting(arg, '-', "<del>", "</del>");
+  }
+
   protected String handleBold(String arg) {
 
     return applyFormatting(arg, '*', "<strong>", "</strong>");
@@ -406,7 +412,7 @@ public class MarkdownConverter {
         if (tagIsOpen) {
           line = left + close + right;
           tagIsOpen = false;
-        } else if ("".equals(left) || left.matches(".* ")) {
+        } else if ("".equals(left) || left.matches(".* ") && isCloseIndicator(line, pos, indicator)) {
           line = left + open + right;
           tagIsOpen = true;
         }
@@ -416,6 +422,13 @@ public class MarkdownConverter {
     }
 
     return line;
+  }
+
+  protected boolean isCloseIndicator(String line, int pos, char indicator) {
+    if (line.length() > pos +1) {
+      return line.indexOf(indicator, pos+1) > -1;
+    }
+    return false;
   }
 
   protected boolean isIndicatorInsideCodeTags(String line, int pos) {

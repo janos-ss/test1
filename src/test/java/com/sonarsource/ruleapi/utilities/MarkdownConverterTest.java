@@ -759,4 +759,24 @@ public class MarkdownConverterTest {
 
   }
 
+  @Test
+  public void testStrikethrough() {
+
+    String markdown = "{{file_uploads}} is an on-by-default PHP configuration that allows files to be uploaded to your " +
+            "site. Since accepting -candy- files from strangers is inherently dangerous, this feature should be disabled " +
+            "unless it is absolutely necessary for your site.";
+
+    String expectedHtml = "<p><code>file_uploads</code> is an on-by-default PHP configuration that allows files to be " +
+            "uploaded to your site. Since accepting <del>candy</del> files from strangers is inherently dangerous, this " +
+            "feature should be disabled unless it is absolutely necessary for your site.</p>\n";
+
+    assertThat(mc.transform(markdown, "PHP")).isEqualTo(expectedHtml);
+
+
+    markdown = "blah -";
+    expectedHtml = "<p>blah -</p>\n";
+
+    assertThat(mc.transform(markdown, "PHP")).isEqualTo(expectedHtml);
+  }
+
 }
