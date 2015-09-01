@@ -412,7 +412,7 @@ public class MarkdownConverter {
         if (tagIsOpen) {
           line = left + close + right;
           tagIsOpen = false;
-        } else if ("".equals(left) || left.matches(".* ") && isCloseIndicator(line, pos, indicator)) {
+        } else if (("".equals(left) || left.matches(".* ")) && hasCloseIndicator(line, pos, indicator)) {
           line = left + open + right;
           tagIsOpen = true;
         }
@@ -424,7 +424,7 @@ public class MarkdownConverter {
     return line;
   }
 
-  protected boolean isCloseIndicator(String line, int pos, char indicator) {
+  protected boolean hasCloseIndicator(String line, int pos, char indicator) {
     if (line.length() > pos +1) {
       return line.indexOf(indicator, pos+1) > -1;
     }
