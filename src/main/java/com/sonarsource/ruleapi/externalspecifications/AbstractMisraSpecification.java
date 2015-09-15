@@ -22,7 +22,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
 
   public static final int DEFAULT_ROUNDING = 2;
 
-  public static final double PERCENT_FACTOR = 100.0d;
+  public static final double PERCENT_FACTOR = 100.0D;
 
 
   private static final Logger LOGGER = Logger.getLogger(AbstractMisraSpecification.class.getName());
