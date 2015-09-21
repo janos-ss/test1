@@ -26,10 +26,6 @@ public class CodingStandardRuleCoverage {
     return getRuleKeysAsString(specifiedBy);
   }
 
-  public void setSpecifiedBy(List<Rule> specifiedBy) {
-    this.specifiedBy = specifiedBy;
-  }
-
   public void addSpecifiedBy(Rule rule) {
 
     this.specifiedBy.add(rule);
@@ -50,10 +46,6 @@ public class CodingStandardRuleCoverage {
   public String getImplementedByKeysAsCommaList() {
 
     return getRuleKeysAsString(implementedBy);
-  }
-
-  public void setImplementedBy(List<Rule> implementedBy) {
-    this.implementedBy = implementedBy;
   }
 
   public void addImplementedBy(Rule rule) {
