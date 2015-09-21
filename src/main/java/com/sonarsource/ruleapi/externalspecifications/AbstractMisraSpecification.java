@@ -20,8 +20,6 @@ import java.util.logging.Logger;
 public abstract class AbstractMisraSpecification extends AbstractReportableStandard
         implements TaggableStandard, CustomerReport {
 
-  public static final int DEFAULT_ROUNDING = 2;
-
   public static final double PERCENT_FACTOR = 100.0D;
 
 
