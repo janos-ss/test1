@@ -22,6 +22,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
 
   public static final double PERCENT_FACTOR = 100.0D;
 
+  private static final ReportType[] reportTypes = {ReportType.INTERNAL_COVERAGE, ReportType.INTERNAL_COVERAGE_SUMMARY, ReportType.HTML};
 
   private static final Logger LOGGER = Logger.getLogger(AbstractMisraSpecification.class.getName());
 
@@ -37,6 +38,11 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   private int optionalRulesToCover = 0;
 
 
+  @Override
+  public ReportType[] getReportTypes() {
+    return reportTypes;
+  }
+
   public AbstractMisraSpecification(CodingStandardRequirableRule [] codingStandardRequirableRules1equirableRules){
     this.codingStandardRequirableRules = codingStandardRequirableRules1equirableRules;
 
@@ -51,7 +57,6 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
         }
       }
     }
-
   }
 
   public CodingStandardRule getCodingStandardRuleFromId(String id) {

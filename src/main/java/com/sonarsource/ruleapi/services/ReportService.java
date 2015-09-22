@@ -12,6 +12,7 @@ import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableExternalTool;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
+import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMultiLanguageStandard;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
@@ -150,9 +151,9 @@ public class ReportService extends RuleManager {
     }
   }
 
-  private static void writeFile(String fileName, String content) {
+  private static String writeFile(String fileName, String content) {
     if (content == null) {
-      return;
+      return "";
     }
 
     PrintWriter writer = null;
@@ -168,6 +169,8 @@ public class ReportService extends RuleManager {
       writer = new PrintWriter(file, "UTF-8");
       writer.println(content);
       writer.close();
+
+      return path;
 
     } catch (FileNotFoundException e) {
       throw new RuleException(e);
@@ -294,6 +297,42 @@ public class ReportService extends RuleManager {
 
     writeFile(fileName, assembleLanguageRuleReport(language, instance, severityMap));
 
+  }
+
+  public void writeSingleReport(Language language, String instance, AbstractReportableStandard standard, ReportType reportType) {
+
+    String reportName = standard.getStandardName() + "_"
+            + (language == null?"":language.name() + "_")
+            + reportType.name()
+            + (reportType.isInternal() ? ".txt" : ".html");
+
+    if (language == null) {
+      LOGGER.info("null language found. Language may be required for the requested report");
+    }
+
+    switch (reportType) {
+      case INTERNAL_COVERAGE:
+        reportName = writeFile(reportName, standard.getReport(instance));
+        break;
+      case INTERNAL_COVERAGE_SUMMARY:
+        reportName = writeFile(reportName, standard.getSummaryReport(instance));
+        break;
+      case HTML:
+        if (standard instanceof CustomerReport) {
+          reportName = writeFile(reportName,((CustomerReport)standard).getHtmlReport(instance));
+        } else {
+          reportName = writeFile(reportName,((AbstractMultiLanguageStandard)standard).getHtmlLanguageReport(instance, language));
+        }
+        break;
+      case DEPRECATION:
+        reportName = writeFile(reportName, ((AbstractReportableExternalTool)standard).getDeprecationReport(instance));
+        break;
+      case UNSPECIFIED:
+        reportName = writeFile(reportName, ((AbstractReportableExternalTool)standard).getUnspecifiedReport());
+        break;
+    }
+
+    LOGGER.info(reportName);
   }
 
   protected String assembleLanguageRuleReport(Language language, String instance, Map<Rule.Severity, List<Rule>> severityMap) {

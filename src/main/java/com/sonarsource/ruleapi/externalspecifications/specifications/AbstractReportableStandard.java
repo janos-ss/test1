@@ -9,6 +9,7 @@ import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
+import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
@@ -28,6 +29,8 @@ public abstract class AbstractReportableStandard implements CodingStandard {
   public abstract Language getLanguage();
 
   public abstract CodingStandardRule[] getCodingStandardRules();
+
+  public abstract ReportType[] getReportTypes();
 
 
   private Map<String, CodingStandardRuleCoverage> rulesCoverage = null;

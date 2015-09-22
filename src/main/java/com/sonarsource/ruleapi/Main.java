@@ -8,20 +8,22 @@ package com.sonarsource.ruleapi;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
+import com.sonarsource.ruleapi.externalspecifications.ReportType;
+import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
+import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
+import java.util.Arrays;
 import org.fest.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 
 public class Main {
-
-  private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
   private Main() {
     // utility class private constructor
@@ -46,6 +48,10 @@ public class Main {
     for (String str : settings.option) {
 
       Option option = Option.fromString(str);
+      if (option == null) {
+        continue;
+      }
+
       if (option.requiresCredentials && !credentialsProvided(settings)) {
         printHelpMessage();
         return;
@@ -70,7 +76,7 @@ public class Main {
     for (Option option : Option.values()) {
       sb.append("  ").append(option.name().toLowerCase()).append(": ").append(option.description).append("\n");
     }
-    LOGGER.info(sb.toString());
+    System.out.println(sb.toString());
   }
 
   protected static void doRequestedOption(Option option, Settings settings) {
@@ -101,11 +107,50 @@ public class Main {
         rs.writeOutdatedRulesReport(language, settings.instance);
         break;
 
+      case SINGLE_REPORT:
+        handleSingleReport(settings, rs);
+        break;
+
       default:
         printHelpMessage();
         break;
 
     }
+  }
+
+  private static void handleSingleReport(Settings settings, ReportService rs) {
+
+    ReportType rt = ReportType.fromString(settings.report);
+    SupportedCodingStandard std = SupportedCodingStandard.fromString(settings.tool);
+    if (std == null || ! (std.getCodingStandard() instanceof AbstractReportableStandard)) {
+
+      StringBuilder sb = new StringBuilder();
+      sb.append("A recognized -tool must be provided: ");
+      for (SupportedCodingStandard scs : SupportedCodingStandard.values()) {
+
+        CodingStandard cs = scs.getCodingStandard();
+        if (cs instanceof AbstractReportableStandard) {
+          sb.append(scs.name()).append(", ");
+        }
+      }
+      System.out.println(sb.toString());
+      System.exit(-1);
+    }
+
+    AbstractReportableStandard ars = (AbstractReportableStandard) std.getCodingStandard();
+    List<ReportType> reportTypes = Arrays.asList(ars.getReportTypes());
+    if (! reportTypes.contains(rt)) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("Recognized report types for ").append(settings.tool).append(": ");
+      for (ReportType type : reportTypes) {
+        sb.append(type.name()).append(", ");
+      }
+      System.out.println(sb.toString());
+      System.exit(-1);
+    }
+
+    rs.writeSingleReport(Language.fromString(settings.language), settings.instance, ars, rt);
+
   }
 
   private static void generateReports(Settings settings, ReportService rs) {
@@ -144,10 +189,17 @@ public class Main {
     @Parameter(names="-language")
     private String language;
 
+    @Parameter(names="-report")
+    private String report;
+
+    @Parameter(names="-tool")
+    private String tool;
+
   }
 
   public enum Option {
-    REPORTS(false,  "Generates all reports based on Nemo (default) or a particular -instance http:..., or -latestSnapshot."),
+    REPORTS(false,  "Generates all reports based on Nemo (default) or a particular -instance http:..."),
+    SINGLE_REPORT(false, "Generate a single -report against -instance (defaults to Nemo), -language, and -tool."),
     OUTDATED(true,  "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
     INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
     GENERATE(false, "Generates html description file specified by -rule and -langauge parameters."),

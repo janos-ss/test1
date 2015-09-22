@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.fest.util.Strings;
@@ -20,6 +21,9 @@ import java.util.logging.Logger;
 
 public abstract class AbstractMultiLanguageStandard extends AbstractReportableStandard {
 
+  private static final ReportType[] reportTypes = {ReportType.INTERNAL_COVERAGE, ReportType.INTERNAL_COVERAGE_SUMMARY, ReportType.HTML};
+
+
   protected abstract String generateReport(String instance, Map<String, List<Rule>> standardRules);
 
   protected abstract void setLanguage(Language language);
@@ -27,6 +31,11 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
 
   private static final Logger LOGGER = Logger.getLogger(AbstractMultiLanguageStandard.class.getName());
 
+
+  @Override
+  public ReportType[] getReportTypes() {
+    return reportTypes;
+  }
 
   public Map<Language, String> getHtmlLanguageReports(String instance) {
 

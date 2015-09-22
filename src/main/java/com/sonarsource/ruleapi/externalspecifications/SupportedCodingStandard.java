@@ -56,4 +56,13 @@ public enum SupportedCodingStandard {
     return codingStandard;
   }
 
+  public static SupportedCodingStandard fromString(String name) {
+    for (SupportedCodingStandard std : SupportedCodingStandard.values()) {
+      if (std.name().equalsIgnoreCase(name)) {
+        return std;
+      }
+    }
+    return null;
+  }
+
 }

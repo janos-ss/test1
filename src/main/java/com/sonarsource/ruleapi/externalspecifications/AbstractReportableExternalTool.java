@@ -34,6 +34,8 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   private static final String TR_OPEN = "<tr><td>";
   private static final String TR_CLOSE = "</td></tr>";
 
+  private static final ReportType[] reportTypes = {ReportType.INTERNAL_COVERAGE, ReportType.INTERNAL_COVERAGE_SUMMARY, ReportType.HTML, ReportType.DEPRECATION, ReportType.UNSPECIFIED};
+
   protected Comparator<Rule> ruleKeyComparator = new RuleKeyComparator();
   private static class RuleKeyComparator implements Comparator<Rule> {
     @Override
@@ -42,6 +44,10 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     }
   }
 
+  @Override
+  public ReportType[] getReportTypes() {
+    return reportTypes;
+  }
 
   @Override
   public String getReport(String instance) {
