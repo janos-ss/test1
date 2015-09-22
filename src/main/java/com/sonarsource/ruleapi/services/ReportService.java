@@ -241,7 +241,7 @@ public class ReportService extends RuleManager {
     StringBuilder sb = new StringBuilder();
     for (Rule sqRule : sqCovered) {
 
-      if (specNotFoundForLegacyKey.contains(sqRule)) {
+      if (specNotFoundForLegacyKey.contains(sqRule) || language.getSqCommon().equals(sqRule.getRepo())) {
         continue;
       }
 

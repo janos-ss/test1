@@ -43,7 +43,7 @@ public class RuleMaker {
 
   public static List<Rule> getRulesFromSonarQubeForLanguage(Language language, String instance) {
 
-    List<Rule> allRules = RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq());
+    List<Rule> allRules = RuleMaker.getRulesFromSonarQubeByQuery(instance, "repositories=" + language.getSq()+","+language.getSqCommon());
 
     populateSonarQubeProfiles(language, instance, allRules);
 
