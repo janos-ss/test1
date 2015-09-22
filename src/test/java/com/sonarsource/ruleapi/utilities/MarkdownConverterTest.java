@@ -40,9 +40,57 @@ public class MarkdownConverterTest {
 
   @Test
   public void testMultipleCodeSampleLanguages() throws Exception {
-    java.net.URL url = this.getClass().getResource("/utilities");
-    String markdown = new java.util.Scanner(new File(url.getPath() + "/MultipleCodeSampleLanguagesSource.txt"),"UTF8").useDelimiter("\\Z").next();
-    String html =     new java.util.Scanner(new File(url.getPath() + "/MultipleCodeSampleLanguagesResult.txt"),"UTF8").useDelimiter("\\Z").next();
+    String markdown = "h2. Noncompliant Code Example\n" +
+            "\n" +
+            "{code}\n" +
+            "if (file != null) {\n" +
+            "  if (file.isFile() || file.isDirectory()) {\n" +
+            "    ...\n" +
+            "  }\n" +
+            "}\n" +
+            "{code}\n" +
+            "\n" +
+            "{code:title=PHP}\n" +
+            "if (condition1) {\n" +
+            "  if (condition2) {\n" +
+            "    ...\n" +
+            "  }\n" +
+            "}\n" +
+            "\n" +
+            "{code}\n" +
+            "{code:title=ABAP}\n" +
+            "IF something.\n" +
+            "  IF somethingElse.\n" +
+            "    WRITE / 'hello'.\n" +
+            "  ENDIF.\n" +
+            "ENDIF.\n" +
+            "{code}\n" +
+            "\n" +
+            "{code:title=PL/SQL}\n" +
+            "IF something THEN\n" +
+            "  IF something_else THEN\n" +
+            "    -- ...\n" +
+            "  END IF;\n" +
+            "END IF;\n" +
+            "{code}\n" +
+            "\n" +
+            "{code:title=VB6}\n" +
+            "If a And b Then\n" +
+            "  If c And d Then\n" +
+            "    doSomething()\n" +
+            "  End If\n" +
+            "End If\n" +
+            "{code}";
+
+    String html = "<h2>Noncompliant Code Example</h2>\n" +
+            "\n" +
+            "<pre>\n" +
+            "IF something.\n" +
+            "  IF somethingElse.\n" +
+            "    WRITE / 'hello'.\n" +
+            "  ENDIF.\n" +
+            "ENDIF.\n" +
+            "</pre>\n";
 
     assertThat(mc.transform(markdown, "ABAP")).isEqualTo(html);
   }
