@@ -302,7 +302,7 @@ public class ReportService extends RuleManager {
   public void writeSingleReport(Language language, String instance, AbstractReportableStandard standard, ReportType reportType) {
 
     String reportName = standard.getStandardName() + "_"
-            + (language == null?"":language.name() + "_")
+            + (language == null ? "" : (language.name() + "_"))
             + reportType.name()
             + (reportType.isInternal() ? ".txt" : ".html");
 
@@ -311,9 +311,6 @@ public class ReportService extends RuleManager {
     }
 
     switch (reportType) {
-      case INTERNAL_COVERAGE:
-        reportName = writeFile(reportName, standard.getReport(instance));
-        break;
       case INTERNAL_COVERAGE_SUMMARY:
         reportName = writeFile(reportName, standard.getSummaryReport(instance));
         break;
@@ -329,6 +326,11 @@ public class ReportService extends RuleManager {
         break;
       case UNSPECIFIED:
         reportName = writeFile(reportName, ((AbstractReportableExternalTool)standard).getUnspecifiedReport());
+        break;
+      case INTERNAL_COVERAGE:
+        // fallthrough...
+      default:
+        reportName = writeFile(reportName, standard.getReport(instance));
         break;
     }
 
