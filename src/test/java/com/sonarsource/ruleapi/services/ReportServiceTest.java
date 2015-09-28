@@ -93,4 +93,12 @@ public class ReportServiceTest {
     assertThat(report).contains("http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS123");
 
   }
+
+  @Test
+  public void testWriteEmptyReport(){
+    ReportService rs = new ReportService();
+
+    String filename = rs.writeFile("file", null);
+    assertThat(filename).isEqualTo("");
+  }
 }

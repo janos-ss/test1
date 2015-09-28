@@ -151,7 +151,7 @@ public class ReportService extends RuleManager {
     }
   }
 
-  private static String writeFile(String fileName, String content) {
+  protected static String writeFile(String fileName, String content) {
     if (content == null) {
       return "";
     }

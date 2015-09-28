@@ -17,4 +17,10 @@ public class ReportTypeTest {
     assertThat(ReportType.fromString("boo!")).isNull();
     assertThat(ReportType.fromString("html")).isEqualTo(ReportType.HTML);
   }
+
+  @Test
+  public void testTheRest(){
+    assertThat(ReportType.INTERNAL_COVERAGE.isInternal()).isTrue();
+    assertThat(ReportType.HTML.isInternal()).isFalse();
+  }
 }
