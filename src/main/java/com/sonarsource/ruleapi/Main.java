@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
@@ -120,6 +121,17 @@ public class Main {
 
   private static void handleSingleReport(Settings settings, ReportService rs) {
 
+    SupportedCodingStandard std = SupportedCodingStandard.fromString(settings.tool);
+    AbstractReportableStandard ars = (AbstractReportableStandard) std.getCodingStandard();
+
+    checkSingleReportInputs(settings);
+
+    rs.writeSingleReport(Language.fromString(settings.language), settings.instance, ars, ReportType.fromString(settings.report));
+
+  }
+
+  protected static void checkSingleReportInputs(Settings settings) {
+
     ReportType rt = ReportType.fromString(settings.report);
     SupportedCodingStandard std = SupportedCodingStandard.fromString(settings.tool);
     if (std == null || ! (std.getCodingStandard() instanceof AbstractReportableStandard)) {
@@ -133,8 +145,7 @@ public class Main {
           sb.append(scs.name()).append(", ");
         }
       }
-      System.out.println(sb.toString());
-      System.exit(-1);
+      throw new RuleException(sb.toString());
     }
 
     AbstractReportableStandard ars = (AbstractReportableStandard) std.getCodingStandard();
@@ -145,13 +156,11 @@ public class Main {
       for (ReportType type : reportTypes) {
         sb.append(type.name()).append(", ");
       }
-      System.out.println(sb.toString());
-      System.exit(-1);
+      throw new RuleException(sb.toString());
     }
 
-    rs.writeSingleReport(Language.fromString(settings.language), settings.instance, ars, rt);
-
   }
+
 
   private static void generateReports(Settings settings, ReportService rs) {
 
@@ -160,7 +169,7 @@ public class Main {
 
   }
 
-  private static boolean credentialsProvided(Settings settings) {
+  protected static boolean credentialsProvided(Settings settings) {
 
     return !(Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password));
   }
