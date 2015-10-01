@@ -65,7 +65,7 @@ public class Fetcher {
    */
   public JSONObject fetchIssueByKey(String key) {
 
-    JSONObject issue = null;
+    JSONObject issue;
 
     if (key.matches("S?[0-9]+")) {
       issue = getIssueByKey(RSPEC + key.replaceFirst("S", ""));

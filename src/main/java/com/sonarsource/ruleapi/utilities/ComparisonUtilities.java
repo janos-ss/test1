@@ -317,7 +317,7 @@ public class ComparisonUtilities {
     }
 
     String [] phrases = rTok.split("\\|");
-    String tok = implTok;
+    String tok;
 
     for(String phrase : phrases) {
       phrase = phrase.trim();
@@ -326,7 +326,7 @@ public class ComparisonUtilities {
         return true;
       } else {
         disassembleExtendedImplToken(implTokens, tok);
-        tok = implTokens.remove(0);
+        implTokens.remove(0);
       }
     }
     return false;

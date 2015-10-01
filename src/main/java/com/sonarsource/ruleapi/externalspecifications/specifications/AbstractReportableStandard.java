@@ -154,7 +154,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
       Language language = getLanguage();
       String sq = "";
 
-      List<Rule> sqImplemented = null;
+      List<Rule> sqImplemented;
       if (language != null) {
         sq = language.getSq();
 

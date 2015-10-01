@@ -168,11 +168,13 @@ public class ReportService extends RuleManager {
 
       writer = new PrintWriter(file, "UTF-8");
       writer.println(content);
-      writer.close();
 
       return path;
 
     } catch (FileNotFoundException e) {
+      if (writer != null) {
+        writer.close();
+      }
       throw new RuleException(e);
     } catch (UnsupportedEncodingException e) {
       throw new RuleException(e);
