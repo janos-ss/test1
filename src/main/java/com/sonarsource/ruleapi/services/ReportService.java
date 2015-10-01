@@ -172,12 +172,13 @@ public class ReportService extends RuleManager {
       return path;
 
     } catch (FileNotFoundException e) {
-      if (writer != null) {
-        writer.close();
-      }
       throw new RuleException(e);
     } catch (UnsupportedEncodingException e) {
       throw new RuleException(e);
+    } finally {
+      if (writer != null) {
+        writer.close();
+      }
     }
   }
 
