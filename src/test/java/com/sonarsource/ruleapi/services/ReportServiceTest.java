@@ -94,11 +94,4 @@ public class ReportServiceTest {
 
   }
 
-  @Test
-  public void testWriteEmptyReport(){
-    ReportService rs = new ReportService();
-
-    String filename = rs.writeFile("file", null);
-    assertThat(filename).isEqualTo("");
-  }
 }

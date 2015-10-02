@@ -151,9 +151,9 @@ public class ReportService extends RuleManager {
     }
   }
 
-  protected static String writeFile(String fileName, String content) {
+  protected static void writeFile(String fileName, String content) {
     if (content == null) {
-      return "";
+      return;
     }
 
     PrintWriter writer = null;
@@ -169,7 +169,7 @@ public class ReportService extends RuleManager {
       writer = new PrintWriter(file, "UTF-8");
       writer.println(content);
 
-      return path;
+      LOGGER.info("Output: " + path);
 
     } catch (FileNotFoundException e) {
       throw new RuleException(e);
@@ -315,29 +315,28 @@ public class ReportService extends RuleManager {
 
     switch (reportType) {
       case INTERNAL_COVERAGE_SUMMARY:
-        reportName = writeFile(reportName, standard.getSummaryReport(instance));
+        writeFile(reportName, standard.getSummaryReport(instance));
         break;
       case HTML:
         if (standard instanceof CustomerReport) {
-          reportName = writeFile(reportName,((CustomerReport)standard).getHtmlReport(instance));
+          writeFile(reportName,((CustomerReport)standard).getHtmlReport(instance));
         } else {
-          reportName = writeFile(reportName,((AbstractMultiLanguageStandard)standard).getHtmlLanguageReport(instance, language));
+          writeFile(reportName,((AbstractMultiLanguageStandard)standard).getHtmlLanguageReport(instance, language));
         }
         break;
       case DEPRECATION:
-        reportName = writeFile(reportName, ((AbstractReportableExternalTool)standard).getDeprecationReport(instance));
+        writeFile(reportName, ((AbstractReportableExternalTool)standard).getDeprecationReport(instance));
         break;
       case UNSPECIFIED:
-        reportName = writeFile(reportName, ((AbstractReportableExternalTool)standard).getUnspecifiedReport());
+        writeFile(reportName, ((AbstractReportableExternalTool)standard).getUnspecifiedReport());
         break;
       case INTERNAL_COVERAGE:
         // fallthrough...
       default:
-        reportName = writeFile(reportName, standard.getReport(instance));
+        writeFile(reportName, standard.getReport(instance));
         break;
     }
 
-    LOGGER.info(reportName);
   }
 
   protected String assembleLanguageRuleReport(Language language, String instance, Map<Rule.Severity, List<Rule>> severityMap) {
