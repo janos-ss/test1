@@ -10,6 +10,7 @@ import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
+import java.util.Arrays;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -87,7 +88,10 @@ public class RuleMaker {
     String extendedKey = language.getSq() + ":" + ruleKey;
 
     JSONObject jsonRule = fetcher.fetchRuleFromSonarQube(sonarQubeInstance, extendedKey);
-    return  SonarQubeHelper.populateFields(jsonRule);
+    Rule rule = SonarQubeHelper.populateFields(jsonRule);
+    populateSonarQubeProfiles(language, sonarQubeInstance, Arrays.asList(rule));
+
+    return rule;
   }
 
   public static Rule getCachedRuleByKey(String key, String language) {
