@@ -36,6 +36,7 @@ public class IntegrityEnforcementService extends RuleManager {
   public void enforceIntegrity(String login, String password) {
     enforceTagReferenceIntegrity(login, password);
     cleanUpDeprecatedRules(login, password);
+    dropTargetedForIrrelevant(login, password);
     checkUrls();
   }
 
@@ -210,6 +211,34 @@ public class IntegrityEnforcementService extends RuleManager {
   }
 
 
+  /**
+   * No language should show up in both the Targeted and Irrelevant lists
+   *
+   * @param login
+   * @param password
+   */
+  protected void dropTargetedForIrrelevant(String login, String password) {
+
+    List<Rule> rules = RuleMaker.getRulesByJql("\"Irrelevant for Languages\" is not empty", "");
+    for (Rule rule : rules) {
+      RuleUpdater.updateRule(rule.getKey(), doDropTargetedForIrrelevant(rule), login, password);
+    }
+  }
+
+  protected Map<String,Object> doDropTargetedForIrrelevant(Rule rule) {
+
+    Map<String, Object> updates = new HashMap<>();
+    List<String> targeted = rule.getTargetedLanguages();
+    for (String lang : rule.getIrrelevantLanguages()) {
+      if (targeted.contains(lang)) {
+        targeted.remove(lang);
+        updates.put("Targeted languages", targeted);
+      }
+    }
+    return updates;
+  }
+
+
   public void setCoveredLanguages(String login, String password) {
 
     String url = RuleManager.NEMO;
@@ -309,9 +338,7 @@ public class IntegrityEnforcementService extends RuleManager {
       if (!Rule.Status.DEPRECATED.equals(rule.getStatus())) {
 
         Map<String, Object> updates = getUpdates(rule, taggable);
-        if (!updates.isEmpty()) {
-          RuleUpdater.updateRule(rule.getKey(), updates, login, password);
-        }
+        RuleUpdater.updateRule(rule.getKey(), updates, login, password);
       }
     }
   }

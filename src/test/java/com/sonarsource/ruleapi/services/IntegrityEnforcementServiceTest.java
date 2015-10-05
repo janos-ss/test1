@@ -24,6 +24,26 @@ public class IntegrityEnforcementServiceTest {
 
   IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
 
+
+  @Test
+  public void testDoDropTargetedForIrrlevant() {
+
+    Rule rule = new Rule("Java");
+    rule.getIrrelevantLanguages().add("C#");
+    rule.getIrrelevantLanguages().add("PHP");
+    rule.getTargetedLanguages().add("C#");
+    rule.getTargetedLanguages().add("Java");
+
+    assertThat(enforcer.doDropTargetedForIrrelevant(rule)).isNotEmpty();
+
+    List<String> targeted = rule.getTargetedLanguages();
+    assertThat("C#").isNotIn(targeted);
+    assertThat(targeted).hasSize(1).contains("Java");
+
+    assertThat(rule.getIrrelevantLanguages()).hasSize(2);
+
+  }
+
   @Test
   public void testDropEmptyMapEntries(){
     Map <Rule, Map<String,Object>> map = new HashMap<>();

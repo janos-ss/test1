@@ -30,7 +30,7 @@ public class RuleUpdater {
 
   public static boolean updateRule(String ruleKey, Map<String,Object> fieldValuesToUpdate, String login, String password) {
 
-    if (!ruleKey.matches("RSPEC-[0-9]+")) {
+    if (!ruleKey.matches("RSPEC-[0-9]+") || fieldValuesToUpdate.isEmpty()) {
       return false;
     }
 

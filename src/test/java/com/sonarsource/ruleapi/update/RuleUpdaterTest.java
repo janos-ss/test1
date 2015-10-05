@@ -358,4 +358,18 @@ public class RuleUpdaterTest {
     }
   }
 
+  @Test
+  public void testNoRuleUpdate() {
+
+    Map<String, Object> updates = new HashMap<>();
+
+    assertThat(RuleUpdater.updateRule("RSPEC-123", updates, "boo", "hoo")).isFalse();
+
+    List<String> tags = new ArrayList<>();
+    tags.add("foo");
+    updates.put("Labels", tags);
+
+    Assertions.assertThat(RuleUpdater.updateRule("S123", updates, "boo", "hoo")).isFalse();
+  }
+
 }
