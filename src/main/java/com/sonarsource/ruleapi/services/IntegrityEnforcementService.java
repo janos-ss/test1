@@ -32,6 +32,8 @@ public class IntegrityEnforcementService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(IntegrityEnforcementService.class.getName());
 
+  private static final String TARGETED_LANGUAGES = "Targeted languages";
+
 
   public void enforceIntegrity(String login, String password) {
     enforceTagReferenceIntegrity(login, password);
@@ -165,7 +167,7 @@ public class IntegrityEnforcementService extends RuleManager {
     if (!rule.getTargetedLanguages().isEmpty()) {
       LOGGER.info("Removing targeted langauges for deprecated rule: " + rule.getKey());
       rule.getTargetedLanguages().clear();
-      updates.put("Targeted languages", rule.getTargetedLanguages());
+      updates.put(TARGETED_LANGUAGES, rule.getTargetedLanguages());
     }
 
     if (!rule.getDefaultProfiles().isEmpty()) {
@@ -232,7 +234,7 @@ public class IntegrityEnforcementService extends RuleManager {
     for (String lang : rule.getIrrelevantLanguages()) {
       if (targeted.contains(lang)) {
         targeted.remove(lang);
-        updates.put("Targeted languages", targeted);
+        updates.put(TARGETED_LANGUAGES, targeted);
       }
     }
     return updates;
@@ -284,7 +286,7 @@ public class IntegrityEnforcementService extends RuleManager {
       for (Rule rule : needsUpdating.values()) {
         Map<String, Object> updates = new HashMap<String, Object>();
         updates.put("Covered Languages", rule.getCoveredLanguages());
-        updates.put("Targeted languages", rule.getTargetedLanguages());
+        updates.put(TARGETED_LANGUAGES, rule.getTargetedLanguages());
         RuleUpdater.updateRule(rule.getKey(), updates, login, password);
       }
     }
