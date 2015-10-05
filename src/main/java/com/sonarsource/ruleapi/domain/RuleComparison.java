@@ -456,7 +456,7 @@ public class RuleComparison{
   private static void dropSecurityWay(List<Profile> list) {
     Profile remove = null;
     for (Profile profile : list) {
-      if ("Security Way".equals(profile.getName()) || "SonarQube Security way".equals(profile.getName())) {
+      if ("Security Way".equalsIgnoreCase(profile.getName()) || "SonarQube Security way".equalsIgnoreCase(profile.getName())) {
         remove = profile;
         break;
       }
