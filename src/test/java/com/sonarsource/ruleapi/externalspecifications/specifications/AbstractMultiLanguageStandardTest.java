@@ -22,6 +22,10 @@ public class AbstractMultiLanguageStandardTest extends TestCase {
 
   private static Cwe cwe = new Cwe();
 
+  public void testGetReportTypes(){
+    assertThat(cwe.getReportTypes()).isNotEmpty();
+  }
+
   public void testGetHtmlLangaugeReports() {
 
     Map<Language,String> reports = cwe.getHtmlLanguageReports(null);

@@ -161,4 +161,10 @@ public class AbstractMisraSpecificationTest {
     assertThat(rule.getMisraC04()).isEqualTo(ids);
   }
 
+  @Test
+  public void testGetReportTypes(){
+    MisraC2004 mc = new MisraC2004();
+    assertThat(mc.getReportTypes()).isNotEmpty();
+  }
+
 }
