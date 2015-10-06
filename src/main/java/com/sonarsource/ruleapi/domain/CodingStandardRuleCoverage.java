@@ -57,8 +57,10 @@ public class CodingStandardRuleCoverage {
 
     List<String> ids = new ArrayList<String>(rules.size());
     for (Rule rule : rules) {
-      if (rule.getLegacyKeys() != null) {
+      if (! rule.getLegacyKeys().isEmpty()) {
         ids.addAll(rule.getLegacyKeys());
+      } else {
+        ids.add(rule.getKey());
       }
     }
     return Utilities.listToString(ids, true);

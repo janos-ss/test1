@@ -94,12 +94,19 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
   protected String getReportHeader() {
 
     StringBuilder sb = new StringBuilder();
-    sb.append(getStandardName()).append(" for ").append(getLanguage().getRspec()).append(String.format("%n"));
+    sb.append(getStandardName());
+    if (language != null) {
+      sb.append(" for ").append(getLanguage().getRspec());
+    }
+    sb.append(String.format("%n"));
+
     return sb.toString();
   }
 
   @Override
   public String getReport(String instance) {
+
+    language = null;
 
     String newline = String.format("%n");
 
@@ -113,8 +120,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
       CodingStandardRuleCoverage csrc = getRulesCoverage().get(sr.getCodingStandardRuleId());
 
       sb.append(sr.getCodingStandardRuleId()).append(" - ").append(sr.getTitle()).append(newline);
-      sb.append("\t").append("Specifying:   ").append(csrc.getSpecifiedByKeysAsCommaList()).append(newline);
-      sb.append("\t").append("Implementing: ").append(csrc.getImplementedByKeysAsCommaList()).append(newline)
+      sb.append("\t").append("Specifying:   ").append(csrc.getSpecifiedByKeysAsCommaList()).append(newline)
               .append(newline);
     }
 
@@ -122,7 +128,19 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
   }
 
   @Override
+  protected void initCoverageResults(String instance) {
+    if (getRulesCoverage() == null && language == null) {
+      populateRulesCoverageMap();
+      findSpecifiedInRspec(getRSpecRulesReferencingStandard());
+    } else {
+      super.initCoverageResults(instance);
+    }
+  }
+
+  @Override
   public String getSummaryReport(String instance) {
+
+    language = null;
 
     String newline = String.format("%n");
 
@@ -138,7 +156,6 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
 
       sb.append(cov.getCodingStandardRuleId())
               .append("\tSpecified: ").append(cov.getSpecifiedBy().size())
-              .append("\tImplemented: ").append(cov.getImplementedBy().size())
               .append(newline);
     }
 

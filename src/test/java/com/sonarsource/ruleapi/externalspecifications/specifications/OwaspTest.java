@@ -72,60 +72,50 @@ public class OwaspTest {
     owasp.populateRulesCoverageMap();
     String linebreak = String.format("%n");
 
-    String expectedSummaryReport = "OWASP Top Ten for Java" + linebreak +
-            "A1\tSpecified: 0\tImplemented: 0" + linebreak +
-            "A2\tSpecified: 0\tImplemented: 0" + linebreak +
-            "A3\tSpecified: 0\tImplemented: 0" + linebreak +
-            "A4\tSpecified: 0\tImplemented: 0" + linebreak +
-            "A5\tSpecified: 0\tImplemented: 0" + linebreak +
-            "A6\tSpecified: 0\tImplemented: 0" + linebreak +
-            "A7\tSpecified: 0\tImplemented: 0" + linebreak +
-            "A8\tSpecified: 0\tImplemented: 0" + linebreak +
-            "A9\tSpecified: 0\tImplemented: 0" + linebreak +
-            "A10\tSpecified: 0\tImplemented: 0" + linebreak;
+    String expectedSummaryReport = "OWASP Top Ten" + linebreak +
+            "A1\tSpecified: 0" + linebreak +
+            "A2\tSpecified: 0" + linebreak +
+            "A3\tSpecified: 0" + linebreak +
+            "A4\tSpecified: 0" + linebreak +
+            "A5\tSpecified: 0" + linebreak +
+            "A6\tSpecified: 0" + linebreak +
+            "A7\tSpecified: 0" + linebreak +
+            "A8\tSpecified: 0" + linebreak +
+            "A9\tSpecified: 0" + linebreak +
+            "A10\tSpecified: 0" + linebreak;
 
     assertThat(owasp.getSummaryReport("")).isEqualTo(expectedSummaryReport);
 
-    String expectedReport = "OWASP Top Ten for Java" + linebreak +
+    String expectedReport = "OWASP Top Ten" + linebreak +
             "A1 - Injection" + linebreak +
             "\tSpecifying:   " + linebreak +
-            "\tImplementing: " + linebreak +
             linebreak +
             "A2 - Broken Authentication and Session Management" + linebreak +
             "\tSpecifying:   " + linebreak +
-            "\tImplementing: " + linebreak +
             linebreak +
             "A3 - Cross-Site Scripting (XSS)" + linebreak +
             "\tSpecifying:   " + linebreak +
-            "\tImplementing: " + linebreak +
             linebreak +
             "A4 - Insecure Direct Object References" + linebreak +
             "\tSpecifying:   " + linebreak +
-            "\tImplementing: " + linebreak +
             linebreak +
             "A5 - Security Misconfiguration" + linebreak +
             "\tSpecifying:   " + linebreak +
-            "\tImplementing: " + linebreak +
             linebreak +
             "A6 - Sensitive Data Exposure" + linebreak +
             "\tSpecifying:   " + linebreak +
-            "\tImplementing: " + linebreak +
             linebreak +
             "A7 - Missing Function Level Access Control" + linebreak +
             "\tSpecifying:   " + linebreak +
-            "\tImplementing: " + linebreak +
             linebreak +
             "A8 - Cross-Site Request Forgery (CSRF)" + linebreak +
             "\tSpecifying:   " + linebreak +
-            "\tImplementing: " + linebreak +
             linebreak +
             "A9 - Using Components with Known Vulnerabilities" + linebreak +
             "\tSpecifying:   " + linebreak +
-            "\tImplementing: " + linebreak +
             linebreak +
             "A10 - Unvalidated Redirects and Forwards" + linebreak +
             "\tSpecifying:   " + linebreak +
-            "\tImplementing: " + linebreak +
             linebreak;
 
     assertThat(owasp.getReport("")).isEqualTo(expectedReport);

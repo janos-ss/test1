@@ -17,7 +17,7 @@ public class CodingStandardRuleCoverageTest {
 
 
   @Test
-  public void testGetRuleKeysAsString() {
+  public void testGetLegacyRuleKeysAsString() {
 
     List<Rule> rules = new ArrayList<Rule>();
     Rule rule = new Rule("");
@@ -33,6 +33,26 @@ public class CodingStandardRuleCoverageTest {
     CodingStandardRuleCoverage cov = new CodingStandardRuleCoverage();
 
     String expected = "S1234, S2345";
+    assertThat(cov.getRuleKeysAsString(rules)).isEqualTo(expected);
+
+  }
+
+
+  @Test
+  public void testGetRuleKeysAsString() {
+
+    List<Rule> rules = new ArrayList<Rule>();
+    Rule rule = new Rule("");
+    rule.setKey("RSPEC-1234");
+    rules.add(rule);
+
+    rule = new Rule("");
+    rule.setKey("RSPEC-2345");
+    rules.add(rule);
+
+    CodingStandardRuleCoverage cov = new CodingStandardRuleCoverage();
+
+    String expected = "RSPEC-1234, RSPEC-2345";
     assertThat(cov.getRuleKeysAsString(rules)).isEqualTo(expected);
 
   }
