@@ -42,7 +42,7 @@ public class MarkdownConverter {
       quoteOpen = false;
       wrongLanguage = false;
       paragraph = true;
-      listCloses = new LinkedList<String>();
+      listCloses = new LinkedList<>();
       liCloses = new LinkedList<>();
       StringBuilder sb = new StringBuilder();
 
@@ -425,7 +425,7 @@ public class MarkdownConverter {
     return line;
   }
 
-  private boolean isSpacedLikeFormatter(String left, String right) {
+  private static boolean isSpacedLikeFormatter(String left, String right) {
 
     boolean answer = "".equals(left) || left.matches(".* ");
     return answer && !Strings.isNullOrEmpty(right) && right.charAt(0) != ' ';
