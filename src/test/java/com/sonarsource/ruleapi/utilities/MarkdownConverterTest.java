@@ -830,8 +830,8 @@ public class MarkdownConverterTest {
   @Test
   public void testNotStrikethrough() {
 
-    String markdown = "Programmers *should not* comment out code as it bloats programs and reduces readability.\n" +
-            "Unused code should be deleted and can be retrieved from source control history if required.\n" +
+    String markdown = "Programmers *should not* comment- out code as it bloats programs and reduces readability.\n" +
+            "Unused code should be deleted and -can be retrieved from source control history if required.\n" +
             "Random * asterisks *\n" +
             "\n" +
             "h2. See\n" +
@@ -840,8 +840,8 @@ public class MarkdownConverterTest {
             "* MISRA C++:2008, 2-7-3 - Sections of code should not be \"commented out\" using C++ comments.\n" +
             "* MISRA C:2012, Dir. 4.4 - Sections of code should not be \"commented out\"";
 
-    String expectedHtml = "<p>Programmers <strong>should not</strong> comment out code as it bloats programs and reduces readability.</p>\n" +
-            "<p>Unused code should be deleted and can be retrieved from source control history if required.</p>\n" +
+    String expectedHtml = "<p>Programmers <strong>should not</strong> comment- out code as it bloats programs and reduces readability.</p>\n" +
+            "<p>Unused code should be deleted and -can be retrieved from source control history if required.</p>\n" +
             "<p>Random * asterisks *</p>\n" +
             "<h2>See</h2>\n" +
             "\n" +
@@ -854,5 +854,4 @@ public class MarkdownConverterTest {
 
     assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
   }
-
 }

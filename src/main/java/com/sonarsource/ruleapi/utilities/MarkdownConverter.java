@@ -425,7 +425,7 @@ public class MarkdownConverter {
     return line;
   }
 
-  private static boolean isSpacedLikeFormatter(String left, String right) {
+  protected static boolean isSpacedLikeFormatter(String left, String right) {
 
     boolean answer = "".equals(left) || left.matches(".* ");
     return answer && !Strings.isNullOrEmpty(right) && right.charAt(0) != ' ';

@@ -7,6 +7,8 @@ package com.sonarsource.ruleapi;
 
 import com.beust.jcommander.JCommander;
 import com.sonarsource.ruleapi.domain.RuleException;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -72,7 +74,6 @@ public class MainTest {
     new JCommander(settings, args);
 
     Main.checkSingleReportInputs(settings);
-
   }
 
   @Test
@@ -119,6 +120,21 @@ public class MainTest {
   public void testOption() {
 
     assertThat(Main.Option.fromString("single_report")).isEqualTo(Main.Option.SINGLE_REPORT);
+  }
+
+  @Test
+  public void testPrintHelpMessage() {
+
+    PrintStream original = System.out;
+
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+
+    System.setOut(new PrintStream(outContent));
+
+    Main.printHelpMessage();
+    assertThat(outContent.toString()).contains("USAGE");
+
+    System.setOut(original);
   }
 
 }
