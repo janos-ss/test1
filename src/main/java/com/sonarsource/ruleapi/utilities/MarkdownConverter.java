@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.utilities;
 
 import java.util.LinkedList;
+import org.fest.util.Strings;
 
 /**
  * Converts Jira markdown to HTML
@@ -412,7 +413,7 @@ public class MarkdownConverter {
         if (tagIsOpen) {
           line = left + close + right;
           tagIsOpen = false;
-        } else if (("".equals(left) || left.matches(".* ")) && hasCloseIndicator(line, pos, indicator)) {
+        } else if (isSpacedLikeFormatter(left, right) && hasCloseIndicator(line, pos, indicator)) {
           line = left + open + right;
           tagIsOpen = true;
         }
@@ -422,6 +423,12 @@ public class MarkdownConverter {
     }
 
     return line;
+  }
+
+  private boolean isSpacedLikeFormatter(String left, String right) {
+
+    boolean answer = "".equals(left) || left.matches(".* ");
+    return answer && !Strings.isNullOrEmpty(right) && right.charAt(0) != ' ';
   }
 
   protected boolean hasCloseIndicator(String line, int pos, char indicator) {
