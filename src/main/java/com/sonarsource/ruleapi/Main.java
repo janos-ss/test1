@@ -45,7 +45,7 @@ public class Main {
       return;
     }
 
-    List<Option> options = new ArrayList<Option>();
+    List<Option> options = new ArrayList<>();
     for (String str : settings.option) {
 
       Option option = Option.fromString(str);
@@ -181,7 +181,7 @@ public class Main {
     private boolean help;
 
     @Parameter(required = true)
-    private List<String> option = new ArrayList<String>();
+    private List<String> option = new ArrayList<>();
 
     @Parameter(names = "-instance")
     private String instance = RuleManager.NEMO;
@@ -193,7 +193,7 @@ public class Main {
     private String password;
 
     @Parameter(names="-rule", variableArity = true)
-    public List<String> ruleKeys = new ArrayList<String>();
+    public List<String> ruleKeys = new ArrayList<>();
 
     @Parameter(names="-language")
     private String language;

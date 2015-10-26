@@ -38,13 +38,13 @@ public class RuleComparisonTest {
   @Test
   public void testCompareTagsEq() throws Exception {
     Rule spec = new Rule(LANG);
-    Set<String> specTags = new HashSet<String>();
+    Set<String> specTags = new HashSet<>();
     specTags.add("clumsy");
     specTags.add("java8");
     spec.setTags(specTags);
 
     Rule impl = new Rule(LANG);
-    Set<String> implTags = new HashSet<String>();
+    Set<String> implTags = new HashSet<>();
     implTags.add("java8");
     implTags.add("clumsy");
     impl.setTags(implTags);
@@ -57,13 +57,13 @@ public class RuleComparisonTest {
   @Test
   public void testCompareTagsDifferentTags() throws Exception {
     Rule spec = new Rule(LANG);
-    Set<String> specTags = new HashSet<String>();
+    Set<String> specTags = new HashSet<>();
     specTags.add("clumsy");
     specTags.add("java8");
     spec.setTags(specTags);
 
     Rule impl = new Rule(LANG);
-    Set<String> implTags = new HashSet<String>();
+    Set<String> implTags = new HashSet<>();
     implTags.add("performance");
     implTags.add("bug");
     impl.setTags(implTags);
@@ -76,13 +76,13 @@ public class RuleComparisonTest {
   @Test
   public void testTagsDifferentTagsToString() throws Exception {
     Rule spec = new Rule(LANG);
-    Set<String> specTags = new HashSet<String>();
+    Set<String> specTags = new HashSet<>();
     specTags.add("clumsy");
     specTags.add("java8");
     spec.setTags(specTags);
 
     Rule impl = new Rule(LANG);
-    Set<String> implTags = new HashSet<String>();
+    Set<String> implTags = new HashSet<>();
     implTags.add("performance");
     implTags.add("bug");
     impl.setTags(implTags);
@@ -98,13 +98,13 @@ public class RuleComparisonTest {
   @Test
   public void testCompareTagsTagMissing() throws Exception {
     Rule spec = new Rule(LANG);
-    Set<String> specTags = new HashSet<String>();
+    Set<String> specTags = new HashSet<>();
     specTags.add("clumsy");
     specTags.add("java8");
     spec.setTags(specTags);
 
     Rule impl = new Rule(LANG);
-    Set<String> implTags = new HashSet<String>();
+    Set<String> implTags = new HashSet<>();
     implTags.add("clumsy");
     impl.setTags(implTags);
 

@@ -211,7 +211,7 @@ public class ReportService extends RuleManager {
     for (Language language : Language.values()) {
       int count = writeOutdatedRulesReport(language, instance);
       if (count > 0) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("outdated", count);
         map.put("name",language.getRspec());
         results.add(map);
@@ -360,7 +360,7 @@ public class ReportService extends RuleManager {
 
   protected Map<Rule.Severity, List<Rule>> sortRulesBySeverity(List<Rule> rules) {
 
-    Map<Rule.Severity, List<Rule>> severityMap = new EnumMap<Rule.Severity, List<Rule>>(Rule.Severity.class);
+    Map<Rule.Severity, List<Rule>> severityMap = new EnumMap<>(Rule.Severity.class);
 
     for (Rule rule : rules) {
       List<Rule> severityList = severityMap.get(rule.getSeverity());

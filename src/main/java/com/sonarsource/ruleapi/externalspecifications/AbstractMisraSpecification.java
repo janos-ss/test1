@@ -33,7 +33,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   protected int totalRulesImplemented = 0;
 
   private CodingStandardRequirableRule [] codingStandardRequirableRules = {};
-  private Map<String, CodingStandardRule> ruleMap = new HashMap<String, CodingStandardRule>();
+  private Map<String, CodingStandardRule> ruleMap = new HashMap<>();
   private int mandatoryRulesToCover = 0;
   private int optionalRulesToCover = 0;
 

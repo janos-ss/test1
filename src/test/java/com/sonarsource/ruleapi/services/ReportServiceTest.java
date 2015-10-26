@@ -74,7 +74,7 @@ public class ReportServiceTest {
 
     ReportService rs = new ReportService();
 
-    Map<Rule.Severity, List<Rule>> severityMap = new EnumMap<Rule.Severity, List<Rule>>(Rule.Severity.class);
+    Map<Rule.Severity, List<Rule>> severityMap = new EnumMap<>(Rule.Severity.class);
 
     List<Rule> list = new ArrayList<>();
     Rule rule = new Rule("Java");

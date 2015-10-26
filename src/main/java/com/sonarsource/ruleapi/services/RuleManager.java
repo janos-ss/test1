@@ -34,7 +34,7 @@ public class RuleManager {
 
   protected Map<String,Rule> mapRulesByKey(List<Rule> rules) {
 
-    Map<String, Rule> map = new HashMap<String, Rule>();
+    Map<String, Rule> map = new HashMap<>();
     for (Rule rule : rules) {
       map.put(rule.getKey(), rule);
     }
@@ -58,7 +58,7 @@ public class RuleManager {
 
   protected List<Rule> standardizeKeysAndIdentifyMissingSpecs(Language language, List<Rule> sqCovered) {
 
-    List<Rule> specNotFound = new ArrayList<Rule>(sqCovered.size()/2);
+    List<Rule> specNotFound = new ArrayList<>(sqCovered.size() / 2);
     for (Rule sqRule : sqCovered) {
       String key = sqRule.getKey();
 

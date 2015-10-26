@@ -23,7 +23,7 @@ public class RuleManagerTest {
   @Test
   public void testMapRulesByKey() {
 
-    List<Rule> rules = new ArrayList<Rule>();
+    List<Rule> rules = new ArrayList<>();
 
     Rule r1 = new Rule(Language.JAVA.getRspec());
     r1.setKey("key1");
@@ -52,7 +52,7 @@ public class RuleManagerTest {
     Rule rule = new Rule("Java");
     rule.setKey("RSPEC-123");
 
-    List<Rule> sqCovered = new ArrayList<Rule>();
+    List<Rule> sqCovered = new ArrayList<>();
     sqCovered.add(rule);
 
     List notFound = manager.standardizeKeysAndIdentifyMissingSpecs(Language.JAVA, sqCovered);

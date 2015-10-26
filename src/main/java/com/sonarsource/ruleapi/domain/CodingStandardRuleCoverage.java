@@ -14,8 +14,8 @@ import java.util.List;
 public class CodingStandardRuleCoverage {
 
   private String codingStandardRuleId = null;
-  private List<Rule> specifiedBy = new ArrayList<Rule>();
-  private List<Rule> implementedBy = new ArrayList<Rule>();
+  private List<Rule> specifiedBy = new ArrayList<>();
+  private List<Rule> implementedBy = new ArrayList<>();
 
   public List<Rule> getSpecifiedBy() {
     return specifiedBy;
@@ -55,7 +55,7 @@ public class CodingStandardRuleCoverage {
 
   protected String getRuleKeysAsString(List<Rule> rules) {
 
-    List<String> ids = new ArrayList<String>(rules.size());
+    List<String> ids = new ArrayList<>(rules.size());
     for (Rule rule : rules) {
       if (! rule.getLegacyKeys().isEmpty()) {
         ids.addAll(rule.getLegacyKeys());

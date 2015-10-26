@@ -55,7 +55,7 @@ public class AbstractMultiLanguageStandardTest extends TestCase {
     list.add(id);
     list.add("CWE-234");
 
-    Map<String, List<Rule>> standardRules = new TreeMap<String, List<Rule>>();
+    Map<String, List<Rule>> standardRules = new TreeMap<>();
     cwe.populateStandardMap(standardRules, rule, rule);
 
     assertThat(standardRules).hasSize(2);

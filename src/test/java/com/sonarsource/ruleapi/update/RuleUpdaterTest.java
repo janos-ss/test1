@@ -37,7 +37,7 @@ public class RuleUpdaterTest {
     JSONParser parser = new JSONParser();
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
-      Map<String, Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new HashMap<>();
       map.put("Default Severity", "Blocker");
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
@@ -57,11 +57,11 @@ public class RuleUpdaterTest {
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
 
-      List<String> languages = new ArrayList<String>();
+      List<String> languages = new ArrayList<>();
       languages.add("C#");
       languages.add("ABAP");
 
-      Map<String, Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new HashMap<>();
       map.put("Targeted languages", languages);
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
@@ -80,7 +80,7 @@ public class RuleUpdaterTest {
     JSONParser parser = new JSONParser();
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
-      Map<String, Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new HashMap<>();
       map.put("Default Severity", null);
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
@@ -99,7 +99,7 @@ public class RuleUpdaterTest {
     JSONParser parser = new JSONParser();
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
-      Map<String, Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new HashMap<>();
       map.put("Default Severity", "Green");
 
       RuleUpdater.prepareRequest(map, fieldsMeta);
@@ -117,11 +117,11 @@ public class RuleUpdaterTest {
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
 
-      List<Profile> profiles = new ArrayList<Profile>();
+      List<Profile> profiles = new ArrayList<>();
       profiles.add(new Profile("Security Way"));
       profiles.add(new Profile("SonarQube Way"));
 
-      Map<String, Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new HashMap<>();
       map.put("Default Quality Profiles", profiles);
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
@@ -138,7 +138,7 @@ public class RuleUpdaterTest {
     JSONParser parser = new JSONParser();
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
-      Map<String, Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new HashMap<>();
       map.put("Unknown Field", "Green");
 
       JSONObject obj = RuleUpdater.prepareRequest(map, fieldsMeta);
@@ -158,12 +158,12 @@ public class RuleUpdaterTest {
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
 
-      List<String> languages = new ArrayList<String>();
+      List<String> languages = new ArrayList<>();
       languages.add("ABAP");
       languages.add("Zulu");
 
 
-      Map<String, Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new HashMap<>();
       map.put("Targeted languages", languages);
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
@@ -180,8 +180,8 @@ public class RuleUpdaterTest {
     JSONParser parser = new JSONParser();
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
-      Map<String, Object> map = new HashMap<String, Object>();
-      List<String> labels = new ArrayList<String>();
+      Map<String, Object> map = new HashMap<>();
+      List<String> labels = new ArrayList<>();
       labels.add("bug");
       labels.add("clumsy");
       labels.add("pitfall");
@@ -205,8 +205,8 @@ public class RuleUpdaterTest {
     JSONParser parser = new JSONParser();
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
-      Map<String, Object> map = new HashMap<String, Object>();
-      List<String> cwe = new ArrayList<String>();
+      Map<String, Object> map = new HashMap<>();
+      List<String> cwe = new ArrayList<>();
       cwe.add("bug");
       cwe.add("clumsy");
       cwe.add("pitfall");
@@ -230,8 +230,8 @@ public class RuleUpdaterTest {
     JSONParser parser = new JSONParser();
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
-      Map<String, Object> map = new HashMap<String, Object>();
-      List<String> cwe = new ArrayList<String>();
+      Map<String, Object> map = new HashMap<>();
+      List<String> cwe = new ArrayList<>();
       cwe.add("bug");
       map.put("CWE", cwe);
 
@@ -250,7 +250,7 @@ public class RuleUpdaterTest {
     JSONParser parser = new JSONParser();
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
-      Map<String, Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new HashMap<>();
       map.put("Message", "this is the message...");
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
@@ -268,8 +268,8 @@ public class RuleUpdaterTest {
     JSONParser parser = new JSONParser();
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
-      Map<String, Object> map = new HashMap<String, Object>();
-      List<Parameter> params = new ArrayList<Parameter>();
+      Map<String, Object> map = new HashMap<>();
+      List<Parameter> params = new ArrayList<>();
 
       Parameter param = new Parameter();
       param.setKey("theKey");
@@ -294,8 +294,8 @@ public class RuleUpdaterTest {
     JSONParser parser = new JSONParser();
     try {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
-      Map<String, Object> map = new HashMap<String, Object>();
-      List<Parameter> params = new ArrayList<Parameter>();
+      Map<String, Object> map = new HashMap<>();
+      List<Parameter> params = new ArrayList<>();
 
       Parameter param = new Parameter();
       param.setKey("theKey");

@@ -107,7 +107,7 @@ public class Rule {
   private String repo = null;
   private Status status = null;
 
-  private List<String> deprecationLinks = new ArrayList<String>();
+  private List<String> deprecationLinks = new ArrayList<>();
 
   private Severity severity = null;
   private boolean template = false;
@@ -133,28 +133,28 @@ public class Rule {
   private String sqaleLinearFactor = null;
   private String sqaleLinearOffset = null;
 
-  private List<Parameter> parameterList = new ArrayList<Parameter>();
-  private List<String> tags = new ArrayList<String>();
+  private List<Parameter> parameterList = new ArrayList<>();
+  private List<String> tags = new ArrayList<>();
 
-  private List<String> targetedLanguages = new ArrayList<String>();
-  private List<String> coveredLanguages = new ArrayList<String>();
-  private List<String> irrelevantLanguages = new ArrayList<String>();
+  private List<String> targetedLanguages = new ArrayList<>();
+  private List<String> coveredLanguages = new ArrayList<>();
+  private List<String> irrelevantLanguages = new ArrayList<>();
 
-  private List<String> cwe = new ArrayList<String>();
-  private List<String> cert = new ArrayList<String>();
+  private List<String> cwe = new ArrayList<>();
+  private List<String> cert = new ArrayList<>();
   private List<String> cppCheck = new ArrayList<>();
-  private List<String> misraC12 = new ArrayList<String>();
-  private List<String> misraC04 = new ArrayList<String>();
-  private List<String> misraCpp = new ArrayList<String>();
-  private List<String> findbugs = new ArrayList<String>();
+  private List<String> misraC12 = new ArrayList<>();
+  private List<String> misraC04 = new ArrayList<>();
+  private List<String> misraCpp = new ArrayList<>();
+  private List<String> findbugs = new ArrayList<>();
   private List<String> fbContrib = new ArrayList<>();
-  private List<String> findSecBugs = new ArrayList<String>();
-  private List<String> owasp = new ArrayList<String>();
-  private List<String> pmd = new ArrayList<String>();
-  private List<String> checkstyle = new ArrayList<String>();
-  private List<String> phpFig = new ArrayList<String>();
+  private List<String> findSecBugs = new ArrayList<>();
+  private List<String> owasp = new ArrayList<>();
+  private List<String> pmd = new ArrayList<>();
+  private List<String> checkstyle = new ArrayList<>();
+  private List<String> phpFig = new ArrayList<>();
   private List<String> resharper = new ArrayList<>();
-  private List<String> pylint = new ArrayList<String>();
+  private List<String> pylint = new ArrayList<>();
   private List<String> fxCop = new ArrayList<>();
 
   public Rule(String language) {
@@ -189,7 +189,7 @@ public class Rule {
 
   protected void mergeDefaultProfiles(Rule subRule) {
     if (!subRule.getDefaultProfiles().isEmpty()) {
-      this.setDefaultProfiles(new ArrayList<Profile>(subRule.getDefaultProfiles()));
+      this.setDefaultProfiles(new ArrayList<>(subRule.getDefaultProfiles()));
     }
   }
 
@@ -340,7 +340,7 @@ public class Rule {
   }
 
   public void setTags(Set<String> tags) {
-    this.tags = new ArrayList<String>(tags);
+    this.tags = new ArrayList<>(tags);
   }
 
   public Severity getSeverity() {

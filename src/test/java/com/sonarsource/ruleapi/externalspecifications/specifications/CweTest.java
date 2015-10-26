@@ -23,7 +23,7 @@ public class CweTest {
   @Test
   public void testParseCweFromSeeSection() {
 
-    List<String> references = new ArrayList<String>();
+    List<String> references = new ArrayList<>();
     references.add("MITRE, CWE-123 - title");
     references.add("MITRE, 404 - RAH!");
 
@@ -39,7 +39,7 @@ public class CweTest {
     Rule rule = new Rule("");
     rule.setKey("test");
 
-    List<String> references = new ArrayList<String>();
+    List<String> references = new ArrayList<>();
     cwe.setRspecReferenceFieldValues(rule, references);
 
     List<String> updates = new ArrayList<>();
@@ -59,7 +59,7 @@ public class CweTest {
   public void testPopulateCweMap() {
     Cwe cwe1 = new Cwe();
 
-    Map<String,List<Rule>> cweRules = new TreeMap<String, List<Rule>>();
+    Map<String,List<Rule>> cweRules = new TreeMap<>();
 
     Rule sq = new Rule("Java");
     Rule rspec = sq;
@@ -86,7 +86,7 @@ public class CweTest {
   public void testGetReport(){
     Cwe cwe1 = new Cwe();
     String instance = "http://localhost:9000";
-    Map<String,List<Rule>> cweRules = new TreeMap<String, List<Rule>>();
+    Map<String,List<Rule>> cweRules = new TreeMap<>();
 
     Rule sq2 = new Rule("Java");
     sq2.setRepo("abap");

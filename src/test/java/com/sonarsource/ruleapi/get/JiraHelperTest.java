@@ -95,7 +95,7 @@ public class JiraHelperTest {
 
   @Test
   public void testHandleParameterListNullString() throws Exception {
-    List<Parameter> empty = new ArrayList<Parameter>();
+    List<Parameter> empty = new ArrayList<>();
     assertThat(JiraHelper.handleParameterList(null, "Java")).hasSize(0);
   }
 

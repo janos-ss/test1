@@ -163,7 +163,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
   protected Map<String, Object> getDeprecationUpdates(Rule rule) {
 
-    Map<String,Object> updates = new HashMap<String,Object>();
+    Map<String,Object> updates = new HashMap<>();
     if (!rule.getTargetedLanguages().isEmpty()) {
       LOGGER.info("Removing targeted langauges for deprecated rule: " + rule.getKey());
       rule.getTargetedLanguages().clear();
@@ -197,7 +197,7 @@ public class IntegrityEnforcementService extends RuleManager {
       }
     }
 
-    List<String> replacements = new ArrayList<String>();
+    List<String> replacements = new ArrayList<>();
     for (String ref : references) {
       if (taggable.doesReferenceNeedUpdating(ref, replacements, rule.getKey())) {
         needUpdating = true;
@@ -257,7 +257,7 @@ public class IntegrityEnforcementService extends RuleManager {
   public void setCoveredForLanguage(String login, String password, Language language, String url) {
     String rspecLanguage = language.getRspec();
 
-    Map<String,Rule> needsUpdating = new HashMap<String, Rule>();
+    Map<String,Rule> needsUpdating = new HashMap<>();
 
     Map<String, Rule> rspecRules = mapRulesByKey(getCoveredRulesForLangauge(language));
 
@@ -284,7 +284,7 @@ public class IntegrityEnforcementService extends RuleManager {
     if (language.doUpdate()) {
       dropCoveredForNonNemoRules(rspecLanguage, rspecRules, needsUpdating);
       for (Rule rule : needsUpdating.values()) {
-        Map<String, Object> updates = new HashMap<String, Object>();
+        Map<String, Object> updates = new HashMap<>();
         updates.put("Covered Languages", rule.getCoveredLanguages());
         updates.put(TARGETED_LANGUAGES, rule.getTargetedLanguages());
         RuleUpdater.updateRule(rule.getKey(), updates, login, password);
@@ -347,7 +347,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
   protected Map<String, Object> getUpdates(Rule rule, TaggableStandard taggable) {
 
-    Map<String, Object> updates = new HashMap<String, Object>();
+    Map<String, Object> updates = new HashMap<>();
 
     List<String> seeSectionReferences = getSpecificReferences(rule, taggable.getSeeSectionSearchString());
     List<String> referenceFieldValues = taggable.getRspecReferenceFieldValues(rule);
@@ -419,7 +419,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
   protected List<String> getSpecificReferences(Rule rule, String authority) {
 
-    List<String> referencesFound = new ArrayList<String>();
+    List<String> referencesFound = new ArrayList<>();
 
     String[] referenceLines = rule.getReferences().split("\n");
     for (String line : referenceLines) {
@@ -441,7 +441,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
 
   public List<String> parseReferencesFromStrings(TaggableStandard taggable, List<String> references) {
-    List<String> refs = new ArrayList<String>();
+    List<String> refs = new ArrayList<>();
 
     String pattern = taggable.getReferencePattern();
 

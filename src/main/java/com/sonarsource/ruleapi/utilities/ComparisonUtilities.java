@@ -68,8 +68,8 @@ public class ComparisonUtilities {
     String rspec = spaceOutHtmlAndCollapseWhitespace(a);
     String impl = spaceOutHtmlAndCollapseWhitespace(b);
 
-    List<String> rspecTokens = new ArrayList<String>(Arrays.asList(rspec.split(" ")));
-    List<String> implTokens  = new ArrayList<String>(Arrays.asList(impl.split(" ")));
+    List<String> rspecTokens = new ArrayList<>(Arrays.asList(rspec.split(" ")));
+    List<String> implTokens  = new ArrayList<>(Arrays.asList(impl.split(" ")));
 
     String rspecTok = null;
     String implTok = null;

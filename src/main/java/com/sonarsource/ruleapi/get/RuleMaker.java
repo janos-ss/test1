@@ -126,7 +126,7 @@ public class RuleMaker {
 
   public static List<Rule> getRulesFromSonarQubeByQuery(String instance, String query) {
 
-    List<Rule> rules = new ArrayList<Rule>();
+    List<Rule> rules = new ArrayList<>();
 
     List<JSONObject> jsonRules = FETCHER.fetchRulesFromSonarQube(instance, query);
 
@@ -138,7 +138,7 @@ public class RuleMaker {
   }
 
   public static List<Rule> getCachedRulesByJql(String query, String language) {
-    List<Rule> rules = new ArrayList<Rule>();
+    List<Rule> rules = new ArrayList<>();
 
     List<JSONObject> issues = FETCHER.fetchIssueKeysBySearch(query);
 
@@ -168,7 +168,7 @@ public class RuleMaker {
    * @return a list of retrieved rules
    */
   public static List<Rule> getRulesByJql(String query, String language) {
-    List<Rule> rules = new ArrayList<Rule>();
+    List<Rule> rules = new ArrayList<>();
 
     List<JSONObject> issues = FETCHER.fetchIssueKeysBySearch(query);
 

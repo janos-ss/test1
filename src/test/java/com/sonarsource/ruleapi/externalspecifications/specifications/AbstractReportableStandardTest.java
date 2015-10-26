@@ -43,7 +43,7 @@ public class AbstractReportableStandardTest {
     List<String> list = null;
     assertThat(fb.getExpandedStandardKeyList(list)).isNull();
 
-    list = new ArrayList<String>();
+    list = new ArrayList<>();
     list.add("DMI.*");
     list.add(FB_ID);
 
@@ -53,7 +53,7 @@ public class AbstractReportableStandardTest {
   @Test
   public void testSetCodingStandardRuleCoverageSpecifiedBy() {
 
-    List<Rule> rspecRules = new ArrayList<Rule>();
+    List<Rule> rspecRules = new ArrayList<>();
     Rule rule = new Rule("Java");
 
     FindBugs fb = new FindBugs();
@@ -62,7 +62,7 @@ public class AbstractReportableStandardTest {
     fb.setCodingStandardRuleCoverageSpecifiedBy(rule, null);
     assertThat(fb.getRulesCoverage().get(FB_ID).getSpecifiedBy()).hasSize(0);
 
-    List<String> findBugsIds = new ArrayList<String>();
+    List<String> findBugsIds = new ArrayList<>();
     fb.setCodingStandardRuleCoverageSpecifiedBy(rule, findBugsIds);
     assertThat(fb.getRulesCoverage().get(FB_ID).getSpecifiedBy()).hasSize(0);
 
@@ -97,7 +97,7 @@ public class AbstractReportableStandardTest {
     fb.setCodingStandardRuleCoverageImplemented(null, rule);
     assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).hasSize(0);
 
-    List<String> findBugsIds = new ArrayList<String>();
+    List<String> findBugsIds = new ArrayList<>();
     fb.setCodingStandardRuleCoverageImplemented(findBugsIds, rule);
     assertThat(fb.getRulesCoverage().get(FB_ID).getImplementedBy()).hasSize(0);
 
@@ -114,7 +114,7 @@ public class AbstractReportableStandardTest {
   @Test
   public void testFindSpecifiedInRspec() {
 
-    List<Rule> rules = new ArrayList<Rule>();
+    List<Rule> rules = new ArrayList<>();
     Rule rule = new Rule("C");
     rule.setMisraC04(new ArrayList<String>());
     rule.getMisraC04().add("1.1");

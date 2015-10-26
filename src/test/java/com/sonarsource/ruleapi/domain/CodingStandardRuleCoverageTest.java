@@ -19,7 +19,7 @@ public class CodingStandardRuleCoverageTest {
   @Test
   public void testGetLegacyRuleKeysAsString() {
 
-    List<Rule> rules = new ArrayList<Rule>();
+    List<Rule> rules = new ArrayList<>();
     Rule rule = new Rule("");
     rule.setKey("RSPEC-1234");
     rule.getLegacyKeys().add("S1234");
@@ -41,7 +41,7 @@ public class CodingStandardRuleCoverageTest {
   @Test
   public void testGetRuleKeysAsString() {
 
-    List<Rule> rules = new ArrayList<Rule>();
+    List<Rule> rules = new ArrayList<>();
     Rule rule = new Rule("");
     rule.setKey("RSPEC-1234");
     rules.add(rule);

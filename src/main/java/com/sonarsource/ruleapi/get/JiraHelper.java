@@ -122,7 +122,7 @@ public class JiraHelper {
   protected static List<String> getCustomFieldStoredAsList(JSONObject issue, String name) {
     String key = getCustomFieldKey(issue, name);
 
-    List<String> list = new ArrayList<String>();
+    List<String> list = new ArrayList<>();
 
     JSONObject fields = (JSONObject) issue.get(FIELDS);
     if (fields != null) {
@@ -228,7 +228,7 @@ public class JiraHelper {
   }
 
   protected static List<String> stringToList(String str) {
-    List<String> list = new ArrayList<String>();
+    List<String> list = new ArrayList<>();
     if (str != null) {
       String tmp = str.replace('&', ',');
       String[] pieces = tmp.split(",");
@@ -245,7 +245,7 @@ public class JiraHelper {
 
   protected static List<String> getListFromJsonFieldValue(JSONObject jobj, String key) {
 
-    List<String> list = new ArrayList<String>();
+    List<String> list = new ArrayList<>();
 
     JSONObject fields = (JSONObject) jobj.get(FIELDS);
     if (fields != null) {
@@ -263,7 +263,7 @@ public class JiraHelper {
   }
 
   public static List<Parameter> handleParameterList(String paramString, String language) {
-    List<Parameter> list = new ArrayList<Parameter>();
+    List<Parameter> list = new ArrayList<>();
     if (paramString == null) {
       return list;
     }

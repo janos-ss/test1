@@ -43,7 +43,7 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
       return null;
     }
 
-    Map<Language, String> reports = new EnumMap<Language, String>(Language.class);
+    Map<Language, String> reports = new EnumMap<>(Language.class);
 
     for (Language language : Language.values()) {
       LOGGER.info("Getting " + getStandardName() + " coverage report for " + language.getRspec());
@@ -75,7 +75,7 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
       return null;
     }
 
-    Map<String, List<Rule>> standardRules = new TreeMap<String, List<Rule>>();
+    Map<String, List<Rule>> standardRules = new TreeMap<>();
 
     List<Rule> sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(getLanguage(), instance);
     for (Rule sq : sqImplemented) {

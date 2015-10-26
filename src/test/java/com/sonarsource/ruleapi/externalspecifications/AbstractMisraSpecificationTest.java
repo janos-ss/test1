@@ -47,7 +47,7 @@ public class AbstractMisraSpecificationTest {
     c4.populateRulesCoverageMap();
 
     Rule rule = new Rule("C");
-    List<String> ids = new ArrayList<String>();
+    List<String> ids = new ArrayList<>();
     ids.add("1.4");
     ids.add("1.5");
 
@@ -151,7 +151,7 @@ public class AbstractMisraSpecificationTest {
   public void testSetRspecReferenceFieldValues() {
     MisraC2004 m4 = new MisraC2004();
     Rule rule = new Rule("C");
-    List<String> ids = new ArrayList<String>(3);
+    List<String> ids = new ArrayList<>(3);
     ids.add("red");
     ids.add("green");
     ids.add("blue");

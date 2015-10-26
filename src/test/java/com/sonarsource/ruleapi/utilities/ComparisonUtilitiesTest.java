@@ -344,7 +344,7 @@ public class ComparisonUtilitiesTest {
     String rspecTok = "Now is the time";
     String implTok = "Now is the time";
 
-    List<String> implTokens = new ArrayList<String>();
+    List<String> implTokens = new ArrayList<>();
 
     assertThat(ComparisonUtilities.isPhraseInOptions(rspecTok, implTok, implTokens)).isTrue();
   }

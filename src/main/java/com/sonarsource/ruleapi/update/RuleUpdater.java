@@ -139,7 +139,7 @@ public class RuleUpdater {
   }
 
   protected static Map<String,String> extractFieldIds(JSONObject fieldMeta) {
-    Map<String, String> fields = new HashMap<String, String>(fieldMeta.size());
+    Map<String, String> fields = new HashMap<>(fieldMeta.size());
 
     for (Map.Entry<String, JSONObject> entry : (Iterable<Map.Entry<String, JSONObject>>) fieldMeta.entrySet()) {
       fields.put(entry.getValue().get("name").toString(), entry.getKey());
@@ -152,7 +152,7 @@ public class RuleUpdater {
 
     JSONObject jsonObject = (JSONObject) fields.get(fieldId);
     if (jsonObject != null && jsonObject.containsKey("allowedValues")) {
-      Map<String,String> allowedValues = new HashMap<String, String>();
+      Map<String,String> allowedValues = new HashMap<>();
 
       JSONArray allowedJsonValues = (JSONArray) jsonObject.get("allowedValues");
       for (Object value : allowedJsonValues) {

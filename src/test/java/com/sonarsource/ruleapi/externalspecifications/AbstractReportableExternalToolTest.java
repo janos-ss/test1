@@ -108,7 +108,7 @@ public class AbstractReportableExternalToolTest {
     assertThat(fb.implemented).isEqualTo(0);
 
     Rule rule = new Rule("Java");
-    List<String> ids = new ArrayList<String>();
+    List<String> ids = new ArrayList<>();
     ids.add(FB_ID);
 
     fb = new FindBugs();
@@ -129,7 +129,7 @@ public class AbstractReportableExternalToolTest {
     FindBugs fb = new FindBugs();
 
     Rule rule = new Rule("Java");
-    List<String> ids = new ArrayList<String>();
+    List<String> ids = new ArrayList<>();
     ids.add(FB_ID);
 
     fb = new FindBugs();

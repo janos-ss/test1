@@ -131,7 +131,7 @@ public class IntegrityEnforcementServiceTest {
   public void testIsTagPresent() {
 
     Rule rule = new Rule("");
-    List<String> tags = new ArrayList<String>();
+    List<String> tags = new ArrayList<>();
     tags.add("cwe");
     tags.add("yellow");
     rule.setTags(tags);
@@ -156,7 +156,7 @@ public class IntegrityEnforcementServiceTest {
     Rule rule = new Rule("");
     rule.setTags(new ArrayList<String>());
 
-    Map<String, Object> updates = new HashMap<String, Object>();
+    Map<String, Object> updates = new HashMap<>();
 
     enforcer.addTagIfMissing(rule, updates, "cwe");
     assertThat(rule.getTags()).hasSize(1).contains("cwe");
@@ -183,14 +183,14 @@ public class IntegrityEnforcementServiceTest {
 
     String fieldName = "CWE";
 
-    Map<String, Object> updates = new HashMap<String, Object>();
+    Map<String, Object> updates = new HashMap<>();
 
-    List<String> sees = new ArrayList<String>();
+    List<String> sees = new ArrayList<>();
     sees.add("CWE-1");
     sees.add("CWE-2");
     sees.add("CWE-3");
 
-    List<String> referenceField = new ArrayList<String>();
+    List<String> referenceField = new ArrayList<>();
     referenceField.add("CWE-1");
 
     enforcer.addSeeToReferenceField(sees, referenceField, fieldName, updates);
@@ -237,20 +237,20 @@ public class IntegrityEnforcementServiceTest {
             "<li><a href='bleh.com'>MITRE, CWE-456</a> - bleh</li>";
     rule.setReferences(refs);
 
-    List<String> cweField = new ArrayList<String>();
+    List<String> cweField = new ArrayList<>();
     cweField.add("789");
     rule.setCwe(cweField);
 
     Map<String,Object> updates = enforcer.getUpdates(rule, new Cwe());
 
-    Map<String, Object> expectedUpdates = new HashMap<String, Object>();
-    List<String> tmp = new ArrayList<String>();
+    Map<String, Object> expectedUpdates = new HashMap<>();
+    List<String> tmp = new ArrayList<>();
     tmp.add("CWE-123");
     tmp.add("CWE-456");
     tmp.add("CWE-789");
     expectedUpdates.put("CWE", tmp);
 
-    tmp = new ArrayList<String>();
+    tmp = new ArrayList<>();
     tmp.add("cwe");
 
     expectedUpdates.put("Labels", tmp);
@@ -265,9 +265,9 @@ public class IntegrityEnforcementServiceTest {
 
     Rule rule = new Rule("");
     boolean tagPresent = true;
-    List<String> references = new ArrayList<String>();
+    List<String> references = new ArrayList<>();
 
-    List<String> cweField = new ArrayList<String>();
+    List<String> cweField = new ArrayList<>();
     rule.setCwe(cweField);
 
     Map<String,Object> updates = enforcer.getUpdates(rule, new Cwe());
@@ -282,9 +282,9 @@ public class IntegrityEnforcementServiceTest {
 
     Map<String,Object> updates = enforcer.getUpdates(rule, new Cwe());
 
-    Map<String, Object> expectedUpdates = new HashMap<String, Object>();
+    Map<String, Object> expectedUpdates = new HashMap<>();
 
-    List<String> tmp = new ArrayList<String>();
+    List<String> tmp = new ArrayList<>();
     tmp.add("cwe");
 
     expectedUpdates.put("Labels", tmp);
@@ -300,9 +300,9 @@ public class IntegrityEnforcementServiceTest {
 
     Map<String,Object> updates = enforcer.getUpdates(rule, SansTop25.Category.INSECURE_INTERACTION);
 
-    Map<String, Object> expectedUpdates = new HashMap<String, Object>();
+    Map<String, Object> expectedUpdates = new HashMap<>();
 
-    List<String> tmp = new ArrayList<String>();
+    List<String> tmp = new ArrayList<>();
     tmp.add("sans-top25-insecure");
 
     expectedUpdates.put("Labels", tmp);
@@ -345,10 +345,10 @@ public class IntegrityEnforcementServiceTest {
 
     Rule rule = new Rule("");
     rule.getCoveredLanguages().add(language);
-    Map<String, Rule> rspecRules = new HashMap<String, Rule>();
+    Map<String, Rule> rspecRules = new HashMap<>();
     rspecRules.put("key", rule);
 
-    Map<String, Rule> needsUpdating = new HashMap<String, Rule>();
+    Map<String, Rule> needsUpdating = new HashMap<>();
 
     enforcer.dropCoveredForNonNemoRules(language, rspecRules, needsUpdating);
 
@@ -364,7 +364,7 @@ public class IntegrityEnforcementServiceTest {
     Rule rule = new Rule("");
     rule.getTargetedLanguages().add(language);
 
-    Map<String, Rule> needsUpdating = new HashMap<String, Rule>();
+    Map<String, Rule> needsUpdating = new HashMap<>();
 
     enforcer.addCoveredForNemoRules(language,needsUpdating,rule);
 
@@ -380,7 +380,7 @@ public class IntegrityEnforcementServiceTest {
     rule.getCoveredLanguages().add(language);
     rule.getTargetedLanguages().add(language);
 
-    Map<String, Rule> needsUpdating = new HashMap<String, Rule>();
+    Map<String, Rule> needsUpdating = new HashMap<>();
 
     enforcer.addCoveredForNemoRules(language,needsUpdating,rule);
 
@@ -393,7 +393,7 @@ public class IntegrityEnforcementServiceTest {
     String language = "Yellow";
 
     Rule rule = new Rule("");
-    Map<String, Rule> needsUpdating = new HashMap<String, Rule>();
+    Map<String, Rule> needsUpdating = new HashMap<>();
 
     enforcer.addCoveredForNemoRules(language,needsUpdating,rule);
 

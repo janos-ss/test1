@@ -81,7 +81,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
 
   public void populateRulesCoverageMap() {
 
-    rulesCoverage = new HashMap<String, CodingStandardRuleCoverage>();
+    rulesCoverage = new HashMap<>();
 
     for (CodingStandardRule csr : getCodingStandardRules()) {
       CodingStandardRuleCoverage cov = new CodingStandardRuleCoverage();
@@ -107,7 +107,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
       return listFromRspec;
     }
 
-    List<String> expandedKeyList = new ArrayList<String>();
+    List<String> expandedKeyList = new ArrayList<>();
 
     for (String key : listFromRspec) {
       if (!key.matches(".*[*+?]+.*")) {
@@ -179,7 +179,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
 
   protected String getSqRepoList() {
 
-    List<String> repos = new ArrayList<String>();
+    List<String> repos = new ArrayList<>();
     for (Language language : Language.values()) {
       repos.add(language.getSq());
     }

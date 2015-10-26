@@ -27,7 +27,7 @@ public class SansTop25Test {
 
     rule.getCwe().add("CWE-89");
 
-    Map<String, Object> updates = new HashMap<String, Object>();
+    Map<String, Object> updates = new HashMap<>();
 
     SansTop25.Category.INSECURE_INTERACTION.addTagIfMissing(rule, updates);
     assertThat(updates).hasSize(1);
@@ -45,7 +45,7 @@ public class SansTop25Test {
 
     rule.getCwe().add("CWE-89");
 
-    Map<String, Object> updates = new HashMap<String, Object>();
+    Map<String, Object> updates = new HashMap<>();
 
     SansTop25.Category.INSECURE_INTERACTION.addTagIfMissing(rule, updates);
     assertThat(updates).hasSize(0);
@@ -62,7 +62,7 @@ public class SansTop25Test {
 
     rule.getCwe().add("CWE-89");
 
-    Map<String, Object> updates = new HashMap<String, Object>();
+    Map<String, Object> updates = new HashMap<>();
 
     SansTop25.Category.INSECURE_INTERACTION.addTagIfMissing(rule, updates);
     assertThat(updates).isEmpty();
@@ -76,7 +76,7 @@ public class SansTop25Test {
     rule.setTags(new ArrayList<String>());
     rule.getTags().add("sans-top25-porous");
 
-    Map<String, Object> updates = new HashMap<String, Object>();
+    Map<String, Object> updates = new HashMap<>();
 
     SansTop25.Category.POROUS_DEFENSES.addTagIfMissing(rule, updates);
     assertThat(updates).hasSize(1);
@@ -252,7 +252,7 @@ public class SansTop25Test {
     list.add("CWE-234");
     list.add(id);
 
-    Map<String, List<Rule>> standardRules = new TreeMap<String, List<Rule>>();
+    Map<String, List<Rule>> standardRules = new TreeMap<>();
     sans.populateStandardMap(standardRules, rule, rule);
 
     assertThat(standardRules).hasSize(1);
@@ -268,7 +268,7 @@ public class SansTop25Test {
     String instance = "http://localhost:9000";
 
     SansTop25 sans = new SansTop25();
-    Map<String, List<Rule>> standardRules = new TreeMap<String, List<Rule>>();
+    Map<String, List<Rule>> standardRules = new TreeMap<>();
 
     String id = "CWE-120";
 

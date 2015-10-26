@@ -22,7 +22,7 @@ public class OwaspTest {
 
   @Test
   public void testParseOwaspFromSeeSection() {
-    List<String> references = new ArrayList<String>();
+    List<String> references = new ArrayList<>();
     references.add("MITRE, CWE-123 - title");
     references.add("OWASP Top Ten 2013 Category A9");
 
@@ -126,7 +126,7 @@ public class OwaspTest {
   public void testAddTagIfMissing() {
 
     Rule rule = new Rule("Java");
-    Map<String, Object> updates = new HashMap<String, Object>();
+    Map<String, Object> updates = new HashMap<>();
 
     // !hasTag && !needsTag
     OwaspTopTen.StandardRule.A1.addTagIfMissing(rule, updates);
@@ -171,7 +171,7 @@ public class OwaspTest {
     String instance = "http://localhost:9000";
 
     OwaspTopTen owasp = new OwaspTopTen();
-    Map<String, List<Rule>> standardRules = new TreeMap<String, List<Rule>>();
+    Map<String, List<Rule>> standardRules = new TreeMap<>();
 
     Rule rule = new Rule("");
     List<String> list = owasp.getRspecReferenceFieldValues(rule);

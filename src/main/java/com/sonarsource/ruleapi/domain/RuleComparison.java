@@ -493,10 +493,10 @@ public class RuleComparison{
     List<String> aList = spec.getTags();
     List<String> bList = impl.getTags();
 
-    List<String> missingFromSpec = new ArrayList<String>(aList);
+    List<String> missingFromSpec = new ArrayList<>(aList);
     missingFromSpec.removeAll(bList);
 
-    List<String> extraInSpec = new ArrayList<String>(bList);
+    List<String> extraInSpec = new ArrayList<>(bList);
     extraInSpec.removeAll(aList);
 
     if (!missingFromSpec.isEmpty()) {
