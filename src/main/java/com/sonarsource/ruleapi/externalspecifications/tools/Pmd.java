@@ -317,7 +317,14 @@ public class Pmd extends AbstractReportableExternalTool {
     USEVARARGS("UseVarargs", Implementability.REJECTED),
     VARIABLENAMINGCONVENTIONS("VariableNamingConventions", Implementability.IMPLEMENTABLE),
     WHILELOOPSMUSTUSEBRACES("WhileLoopsMustUseBraces", Implementability.IMPLEMENTABLE),
-    XPATHRULE("XPathRule", Implementability.REJECTED);
+    XPATHRULE("XPathRule", Implementability.REJECTED),
+    SIMPLIFIEDTERNARY("SimplifiedTernary", Implementability.IMPLEMENTABLE),
+    CLONEMETHODMUSTBEPUBLIC("CloneMethodMustBePublic", Implementability.IMPLEMENTABLE),
+    CLONEMETHODRETURNTYPEMUSTMATCHCLASSNAME("CloneMethodReturnTypeMustMatchClassName", Implementability.IMPLEMENTABLE),
+    COMMENTDEFAULTACCESSMODIFIER("CommentDefaultAccessModifier", Implementability.REJECTED),
+    SINGLETONCLASSRETURNINGNEWINSTANCE("SingletonClassReturningNewInstance", Implementability.IMPLEMENTABLE),
+    SINGLEMETHODRULE("SingleMethodRule", Implementability.IMPLEMENTABLE),
+    USELESSQUALIFIEDTHIS("UselessQualifiedThis", Implementability.IMPLEMENTABLE);
 
     private Implementability implementability;
     private String title;
