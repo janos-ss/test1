@@ -220,7 +220,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
       } else if (! coverage.getImplementedBy().isEmpty()) {
         sb.append("<tr><td>").append(ruleId).append("</td><td>");
         for (Rule rule : coverage.getImplementedBy()) {
-          sb.append(Utilities.getLinkedRuleReference(instance, rule));
+          sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
         }
         sb.append("</td></tr>");
       }

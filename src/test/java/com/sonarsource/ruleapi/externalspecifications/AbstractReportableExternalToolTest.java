@@ -73,15 +73,6 @@ public class AbstractReportableExternalToolTest {
   }
 
   @Test
-  public void testHtmlReportPieces(){
-    String byRuleKey = "<h3>Implemented replacements by SonarQube Java key</h3><table><tr><td><a href='/coding_rules#rule_key=squid%3AS1234'>S1234</a> X should (not) Y<br/>\n" +
-            "</td><td>BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS, AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION</td></tr></table><br/><br/>\n";
-
-    assertThat(findBugsTestInstance.getHtmlDeprecationByRuleKey("")).isEqualTo(byRuleKey);
-
-  }
-
-  @Test
   public void testDeprecationReport(){
     String expectedReport = "BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS\tS1234\n" +
             "AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION\tS1234\n";

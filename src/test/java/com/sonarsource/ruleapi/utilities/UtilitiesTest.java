@@ -6,7 +6,6 @@
 package com.sonarsource.ruleapi.utilities;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -84,7 +83,7 @@ public class UtilitiesTest {
 
 
   @Test
-  public void testGetLinkedRuleReference() {
+  public void testGetNemoLinkedRuleReference() {
     Rule rule = new Rule("C");
     rule.setRepo("c");
     rule.setKey("RSPEC-1234");
@@ -92,16 +91,30 @@ public class UtilitiesTest {
 
     String expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3AS1234'>S1234</a> This is a rule title<br/>\n";
 
-    assertThat(Utilities.getLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
+    assertThat(Utilities.getNemoLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
 
     List<String> legacyKeys = new ArrayList<>();
     rule.setLegacyKeys(legacyKeys);
     expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3AS1234'>S1234</a> This is a rule title<br/>\n";
-    assertThat(Utilities.getLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
+    assertThat(Utilities.getNemoLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
 
 
     legacyKeys.add("blue");
     expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3Ablue'>blue</a> This is a rule title<br/>\n";
-    assertThat(Utilities.getLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
+    assertThat(Utilities.getNemoLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
+  }
+
+  @Test
+  public void testGetJiraLinkedRuleReference(){
+
+    Rule rule = new Rule("Java");
+    rule.setKey("RSPEC-1234");
+    rule.setTitle("Test rule");
+
+    String expectedLink = "<a href='https://jira.sonarsource.com/browse/RSPEC-1234'>RSPEC-1234</a> Test rule<br/>\n";
+
+    assertThat(Utilities.getJiraLinkedRuleReference(rule)).isEqualTo(expectedLink);
+
+
   }
 }

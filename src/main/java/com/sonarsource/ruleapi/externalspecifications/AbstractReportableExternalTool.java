@@ -11,7 +11,6 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractRep
 import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -105,7 +104,6 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   public String getHtmlReport(String instance) {
     return "<h2>" + getStandardName() + " deprecation</h2>" +
             getHtmlSummaryReport(instance) +
-            getHtmlDeprecationByRuleKey(instance) +
             getHtmlDeprecationByToolKey(instance);
   }
 
@@ -134,30 +132,6 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
     isHtml = false;
 
-    return sb.toString();
-  }
-
-  protected String getHtmlDeprecationByRuleKey(String instance) {
-
-    initCoverageResults(instance);
-    StringBuilder sb = new StringBuilder();
-
-    Map<Rule,List<String>> ruleIdMap = getCoveringRules();
-
-    List<Rule> sortedRuleList = new ArrayList<>(ruleIdMap.keySet());
-    Collections.sort(sortedRuleList, ruleKeyComparator);
-
-    sb.append("<h3>Implemented replacements by SonarQube " + getLanguage().getRspec() + " key</h3>");
-    sb.append(TABLE_OPEN);
-
-    for (Rule rule : sortedRuleList) {
-      sb.append(TR_OPEN).append(Utilities.getLinkedRuleReference(instance, rule))
-              .append(TD)
-              .append(Utilities.listToString(ruleIdMap.get(rule), true))
-              .append(TR_CLOSE);
-    }
-
-    sb.append(TABLE_CLOSE);
     return sb.toString();
   }
 
@@ -210,7 +184,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
         sb.append(TR_OPEN).append(id).append(TD);
 
         for (Rule rule : cov.getImplementedBy()) {
-          sb.append(Utilities.getLinkedRuleReference(instance, rule));
+          sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
         }
         sb.append(TR_CLOSE);
 
@@ -219,7 +193,12 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
         rejected.append(TR_CLOSE);
 
       } else {
-        pending.append(TR_OPEN).append(id);
+        pending.append(TR_OPEN).append(id).append(TD);
+
+        for (Rule rule : cov.getSpecifiedBy()) {
+          pending.append(Utilities.getJiraLinkedRuleReference(rule));
+        }
+
         pending.append(TR_CLOSE);
 
       }
@@ -229,8 +208,8 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     rejected.append(TABLE_CLOSE);
     pending.append(TABLE_CLOSE);
 
-    sb.append(rejected);
     sb.append(pending);
+    sb.append(rejected);
 
     return sb.toString();
   }

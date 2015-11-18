@@ -118,7 +118,7 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
               .append("' target='_blank'>CWE-").append(key).append("</a></td>\n<td>");
 
       for (Rule rule : entry.getValue()) {
-        sb.append(Utilities.getLinkedRuleReference(instance, rule));
+        sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
       }
       sb.append("</td></tr>\n");
     }

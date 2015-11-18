@@ -71,7 +71,20 @@ public class Utilities {
     return ruleKey;
   }
 
-  public static String getLinkedRuleReference(String instance, Rule rule) {
+  public static String getJiraLinkedRuleReference(Rule rule) {
+
+    String ruleKey = normalizeKey(rule.getKey());
+
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("<a href='https://jira.sonarsource.com/browse/").append(ruleKey).append("'>")
+            .append(ruleKey).append("</a> ")
+            .append(MarkdownConverter.handleEntities(rule.getTitle())).append("<br/>\n");
+    return sb.toString();
+
+  }
+
+  public static String getNemoLinkedRuleReference(String instance, Rule rule) {
 
     String ruleKey = denormalizeRuleKey(rule.getKey());
     if (rule.getLegacyKeys() != null && ! rule.getLegacyKeys().isEmpty()) {
