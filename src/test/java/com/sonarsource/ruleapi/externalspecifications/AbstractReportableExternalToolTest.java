@@ -6,7 +6,9 @@
 package com.sonarsource.ruleapi.externalspecifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.tools.Checkstyle;
 import com.sonarsource.ruleapi.externalspecifications.tools.FindBugs;
+import com.sonarsource.ruleapi.services.RuleManager;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -85,6 +87,22 @@ public class AbstractReportableExternalToolTest {
   private static String FB_ID2 = "AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION";
   private static String REJECTED_FB_ID = "AM_CREATES_EMPTY_JAR_FILE_ENTRY";
 
+
+  @Test
+  public void testGetHtmlDeprecationByToolKey(){
+
+    Checkstyle cs = new Checkstyle();
+    ((AbstractReportableExternalTool)cs).populateRulesCoverageMap();
+    cs.computeCoverage();
+
+    String report = cs.getHtmlDeprecationByToolKey(RuleManager.NEMO);
+
+    assertThat(report).isNotEmpty();
+    assertThat(report).contains("<h3>Rejected " + cs.getStandardName() + " rules</h3>");
+    assertThat(report).contains("Pending");
+    assertThat(report).contains("Implemented");
+
+  }
 
   @Test
   public void testComputeCoverage(){

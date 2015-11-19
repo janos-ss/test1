@@ -102,13 +102,14 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
   @Override
   public String getHtmlReport(String instance) {
+    initCoverageResults(instance);
+
     return "<h2>" + getStandardName() + " deprecation</h2>" +
             getHtmlSummaryReport(instance) +
             getHtmlDeprecationByToolKey(instance);
   }
 
   protected String getHtmlSummaryReport(String instance) {
-    initCoverageResults(instance);
     computeCoverage();
 
     int count = getCodingStandardRules().length;
@@ -156,8 +157,6 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   }
 
   protected String getHtmlDeprecationByToolKey(String instance) {
-
-    initCoverageResults(instance);
 
     StringBuilder sb = new StringBuilder();
     sb.append("<a name='standard_implemented'></a>");
