@@ -88,7 +88,7 @@ public class AbstractMisraSpecificationTest {
     misraC2004.getRulesCoverage().get("2.1").addImplementedBy(rule);
 
     String report = misraC2004.getHtmlReport("");
-    String expectedReport = "<h2>C coverage of MISRA C 2004</h2>" +
+    String expectedReport = "<h2>SonarQube C Plugin coverage of MISRA C 2004</h2>" +
             "These are the MISRA C 2004 rules covered for C by the " +
             "<a href='http://sonarsource.com'>SonarSource</a> " +
             "<a href='http://www.sonarsource.com/products/plugins/languages/cpp/'>C/C++ plugin</a>." +

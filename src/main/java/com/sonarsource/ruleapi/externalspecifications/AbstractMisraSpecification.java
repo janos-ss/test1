@@ -202,7 +202,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   private final String generateHtmlReport(String instance) {
     StringBuilder sb = new StringBuilder();
 
-    sb.append("<h2>").append(getLanguage().getRspec()).append(" coverage of ").append(getStandardName()).append("</h2>");
+    sb.append("<h2>SonarQube ").append(getLanguage().getRspec()).append(" Plugin coverage of ").append(getStandardName()).append("</h2>");
     sb.append("These are the ").append(getStandardName())
             .append(" rules covered for ").append(getLanguage().getRspec())
             .append(" by the <a href='http://sonarsource.com'>SonarSource</a> ")
