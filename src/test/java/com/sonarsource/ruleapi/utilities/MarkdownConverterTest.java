@@ -82,8 +82,7 @@ public class MarkdownConverterTest {
             "End If\n" +
             "{code}";
 
-    String html = "<h2>Noncompliant Code Example</h2>\n" +
-            "\n" +
+    String html = "\n<h2>Noncompliant Code Example</h2>\n" +
             "<pre>\n" +
             "IF something.\n" +
             "  IF somethingElse.\n" +
@@ -98,7 +97,7 @@ public class MarkdownConverterTest {
   @Test
   public void testHeading() throws Exception {
     String markdown = "h2. Noncompliant Code Example";
-    String html = "<h2>Noncompliant Code Example</h2>\n";
+    String html = "\n<h2>Noncompliant Code Example</h2>";
 
     assertThat(mc.handleHeading(markdown)).isEqualTo(html);
   }
@@ -463,8 +462,7 @@ public class MarkdownConverterTest {
             "  }\n" +
             "}\n" +
             "{code}";
-    String html = "<h2>Exceptions</h2>\n" +
-            "\n" +
+    String html = "\n<h2>Exceptions</h2>\n" +
             "<p>The following cases are ignored</p>\n" +
             "<ul>\n" +
             "<li> overriding methods.\n" +
@@ -543,8 +541,8 @@ public class MarkdownConverterTest {
             "<tr><td> <code>@Transactional</code> </td><td> <code>@Transactional(propagation = Propagation.NEVER)</code> </td></tr>\n" +
             "<tr><td> <code>@Transactional(propagation = Propagation.MANDATORY)</code>, <br/><code>@Transactional(propagation = Propagation.NESTED)</code>, <br/><code>@Transactional(propagation = Propagation.REQUIRED)</code> (the default), <br/><code>@Transactional(propagation = Propagation.SUPPORTS)</code> </td><td>  <code>@Transactional(propagation = Propagation.REQUIRES_NEW)</code></td></tr>\n" +
             "</table>\n" +
-            "<h2>Noncompliant Code Example</h2>\n" +
             "\n" +
+            "<h2>Noncompliant Code Example</h2>\n" +
             "<pre>\n" +
             "\n" +
             "@Override\n" +
@@ -843,8 +841,8 @@ public class MarkdownConverterTest {
     String expectedHtml = "<p>Programmers <strong>should not</strong> comment- out code as it bloats programs and reduces readability.</p>\n" +
             "<p>Unused code should be deleted and -can be retrieved from source control history if required.</p>\n" +
             "<p>Random * asterisks *</p>\n" +
-            "<h2>See</h2>\n" +
             "\n" +
+            "<h2>See</h2>\n" +
             "<ul>\n" +
             "<li> MISRA C:2004, 2.4 - Sections of code should not be \"commented out\".\n" +
             "</li><li> MISRA C++:2008, 2-7-2 - Sections of code shall not be \"commented out\" using C-style comments.\n" +

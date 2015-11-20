@@ -181,7 +181,7 @@ public class MarkdownConverter {
     String line = arg;
     if (line.matches("^h[0-9]\\..*")) {
       char level = line.charAt(1);
-      line = "<h" + level + '>' + line.substring(3).trim() + "</h" + level + ">\n";
+      line = "\n<h" + level + '>' + line.substring(3).trim() + "</h" + level + ">";
       paragraph = false;
     }
     return line;
