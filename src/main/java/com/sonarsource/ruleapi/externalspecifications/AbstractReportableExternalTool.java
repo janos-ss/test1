@@ -104,7 +104,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   public String getHtmlReport(String instance) {
     initCoverageResults(instance);
 
-    return "<h2>SonarQube " + getLanguage() + "Plugin coverage/deprecation of " + getStandardName() + "</h2>" +
+    return "<h2>SonarQube " + getLanguage().getRspec() + " Plugin coverage/deprecation of " + getStandardName() + "</h2>" +
             getHtmlSummaryReport(instance) +
             getHtmlDeprecationByToolKey(instance);
   }
