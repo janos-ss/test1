@@ -399,7 +399,7 @@ public class ReSharper extends AbstractReportableExternalTool {
     STRINGLASTINDEXOFISCULTURESPECIFIC_2("StringLastIndexOfIsCultureSpecific.2", Implementability.IMPLEMENTABLE),
     STRINGLASTINDEXOFISCULTURESPECIFIC_3("StringLastIndexOfIsCultureSpecific.3", Implementability.IMPLEMENTABLE),
     STRINGSTARTSWITHISCULTURESPECIFIC("StringStartsWithIsCultureSpecific", Implementability.IMPLEMENTABLE),
-    SUGGESTBASETYPEFORPARAMETER("SuggestBaseTypeForParameter", Implementability.IMPLEMENTABLE),
+    SUGGESTBASETYPEFORPARAMETER("SuggestBaseTypeForParameter", Implementability.REJECTED),
     SUGGESTUSEVARKEYWORDEVERYWHERE("SuggestUseVarKeywordEverywhere", Implementability.IMPLEMENTABLE),
     SUGGESTUSEVARKEYWORDEVIDENT("SuggestUseVarKeywordEvident", Implementability.IMPLEMENTABLE),
     SUSPICIOUSTYPECONVERSION_GLOBAL("SuspiciousTypeConversion.Global", Implementability.IMPLEMENTABLE),
