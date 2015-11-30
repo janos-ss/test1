@@ -237,7 +237,7 @@ public class ReportService extends RuleManager {
 
     String fileName = "target/reports/outdated/".concat(language.getSq()).concat("_outdated_rules.txt").toLowerCase();
 
-    List<Rule> rspec = getCoveredRulesForLangauge(language);
+    List<Rule> rspec = getCoveredRulesForLanguage(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
 
     List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);

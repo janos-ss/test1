@@ -22,11 +22,11 @@ public class RuleManager {
 
   public static final String NEMO = "http://nemo.sonarqube.org";
 
-  public List<Rule> getCoveredRulesForLangauge(Language language) {
+  public List<Rule> getCoveredRulesForLanguage(Language language) {
     return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec() + "\"", language.getRspec());
   }
 
-  public List<Rule> getCoveredAndTargetedRulesForLangauge(Language language) {
+  public List<Rule> getCoveredAndTargetedRulesForLanguage(Language language) {
     return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec()
                             + "\" or \"Targeted Languages\" = \"" + language.getRspec() + "\"",
             language.getRspec());

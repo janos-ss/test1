@@ -165,7 +165,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
     Map<String,Object> updates = new HashMap<>();
     if (!rule.getTargetedLanguages().isEmpty()) {
-      LOGGER.info("Removing targeted langauges for deprecated rule: " + rule.getKey());
+      LOGGER.info("Removing targeted languages for deprecated rule: " + rule.getKey());
       rule.getTargetedLanguages().clear();
       updates.put(TARGETED_LANGUAGES, rule.getTargetedLanguages());
     }
@@ -259,7 +259,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
     Map<String,Rule> needsUpdating = new HashMap<>();
 
-    Map<String, Rule> rspecRules = mapRulesByKey(getCoveredRulesForLangauge(language));
+    Map<String, Rule> rspecRules = mapRulesByKey(getCoveredRulesForLanguage(language));
 
     List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeForLanguage(language, url);
     List<Rule> specNotFound = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);

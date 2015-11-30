@@ -17,12 +17,12 @@ import java.util.List;
 public class Pmd extends AbstractReportableExternalTool {
 
   private String toolName = "PMD";
-  private Language langauge = Language.JAVA;
+  private Language language = Language.JAVA;
 
   @Override
   public Language getLanguage() {
 
-    return langauge;
+    return language;
   }
 
   @Override

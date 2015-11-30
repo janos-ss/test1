@@ -47,7 +47,7 @@ public class RuleMakerTest {
   }
 
   @Test
-  public void testIsLangaugeMatchEasyTrue() throws Exception {
+  public void testIsLanguageMatchEasyTrue() throws Exception {
     assertThat(RuleMaker.isLanguageMatch("Java", "Java")).isTrue();
   }
 

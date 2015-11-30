@@ -24,7 +24,7 @@ import java.util.Map;
  * from Jira (if possible), and populates a new Rule with
  * the details.
  *
- * Given a key, langauge and SQ instance URL, retrieves the
+ * Given a key, language and SQ instance URL, retrieves the
  * relevant Issue from the SonarQube instance.
  *
  * Rule population from Jira includes the retrieval

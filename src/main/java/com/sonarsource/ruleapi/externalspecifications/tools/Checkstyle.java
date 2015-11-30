@@ -17,7 +17,7 @@ import java.util.List;
 public class Checkstyle extends AbstractReportableExternalTool {
 
   private String standardName = "Checkstyle";
-  private Language langauge = Language.JAVA;
+  private Language language = Language.JAVA;
 
   public enum CheckstyleRule implements CodingStandardRule {
 
@@ -196,7 +196,7 @@ public class Checkstyle extends AbstractReportableExternalTool {
 
   @Override
   public Language getLanguage() {
-    return langauge;
+    return language;
   }
 
   @Override
