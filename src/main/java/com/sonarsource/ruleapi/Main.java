@@ -121,10 +121,10 @@ public class Main {
 
   private static void handleSingleReport(Settings settings, ReportService rs) {
 
+    checkSingleReportInputs(settings);
+
     SupportedCodingStandard std = SupportedCodingStandard.fromString(settings.tool);
     AbstractReportableStandard ars = (AbstractReportableStandard) std.getCodingStandard();
-
-    checkSingleReportInputs(settings);
 
     rs.writeSingleReport(Language.fromString(settings.language), settings.instance, ars, ReportType.fromString(settings.report));
 
