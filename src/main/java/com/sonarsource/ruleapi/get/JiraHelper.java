@@ -194,6 +194,7 @@ public class JiraHelper {
     rule.setCppCheck(getCustomFieldValueAsList(issue, "CPPCheck"));
     rule.setPylint(getCustomFieldValueAsList(issue, "Pylint"));
     rule.setFxCop(getCustomFieldValueAsList(issue, "FxCop"));
+    rule.setPcLint(getCustomFieldValueAsList(issue, "PC-Lint"));
   }
 
   protected static void setSqale(Rule rule, JSONObject issue) {

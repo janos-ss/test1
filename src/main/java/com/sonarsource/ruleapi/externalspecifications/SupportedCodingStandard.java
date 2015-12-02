@@ -27,6 +27,8 @@ public enum SupportedCodingStandard {
   RESHARPER(new ReSharper()),
   RESHARPER_VBNET(new ReSharperVbNet()),
   FXCOP(new FxCop()),
+  PC_LINT_C(new PcLintC()),
+  PC_LINT_CPP(new PcLintCpp()),
   CWE(new Cwe()),
   OWASP(new OwaspTopTen()),  // ReportableStandard
   OWASP_A1(OwaspTopTen.StandardRule.A1),  // TaggableStandards

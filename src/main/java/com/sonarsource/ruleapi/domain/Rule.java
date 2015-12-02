@@ -156,6 +156,7 @@ public class Rule {
   private List<String> resharper = new ArrayList<>();
   private List<String> pylint = new ArrayList<>();
   private List<String> fxCop = new ArrayList<>();
+  private List<String> pcLint = new ArrayList<>();
 
   public Rule(String language) {
     this.language = language;
@@ -698,5 +699,15 @@ public class Rule {
 
   public List<String> getFxCop() {
     return fxCop;
+  }
+
+  public List<String> getPcLint() {
+
+    return pcLint;
+  }
+
+  public void setPcLint(List<String> pcLint) {
+
+    this.pcLint = pcLint;
   }
 }
