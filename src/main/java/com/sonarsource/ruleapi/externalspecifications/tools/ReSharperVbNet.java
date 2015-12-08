@@ -57,6 +57,7 @@ public class ReSharperVbNet extends AbstractReportableExternalTool{
   }
 
   public enum ReSharperRule implements CodingStandardRule {
+    INCONSISTENTNAMING("InconsistentNaming", Implementability.IMPLEMENTABLE),
     POSSIBLEWRITETOME("PossibleWriteToMe", Implementability.IMPLEMENTABLE),
     REDUNDANTARRAYLOWERBOUNDSPECIFICATION("RedundantArrayLowerBoundSpecification", Implementability.IMPLEMENTABLE),
     REDUNDANTCOMMAINARRAYINITIALIZER("RedundantCommaInArrayInitializer", Implementability.REJECTED),

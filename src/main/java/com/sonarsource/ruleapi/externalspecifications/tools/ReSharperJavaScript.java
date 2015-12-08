@@ -65,6 +65,7 @@ public class ReSharperJavaScript extends AbstractReportableExternalTool{
     EMPTYOBJECTPROPERTYDECLARATION("EmptyObjectPropertyDeclaration", Implementability.IMPLEMENTABLE),
     ERRORINXMLDOCREFERENCE("ErrorInXmlDocReference", Implementability.IMPLEMENTABLE),
     EXPRESSIONISALWAYSCONST("ExpressionIsAlwaysConst", Implementability.IMPLEMENTABLE),
+    INCONSISTENTNAMING("InconsistentNaming", Implementability.IMPLEMENTABLE),
     INVOCATIONOFNONFUNCTION("InvocationOfNonFunction", Implementability.IMPLEMENTABLE),
     INVOKEDEXPRESSIONMAYBENONFUNCTION("InvokedExpressionMaybeNonFunction", Implementability.IMPLEMENTABLE),
     JSFUNCTIONCANBECONVERTEDTOLAMBDA("JsFunctionCanBeConvertedToLambda", Implementability.IMPLEMENTABLE),
