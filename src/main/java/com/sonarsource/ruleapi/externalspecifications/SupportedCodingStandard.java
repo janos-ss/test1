@@ -16,9 +16,12 @@ import com.sonarsource.ruleapi.externalspecifications.tools.*;
 
 public enum SupportedCodingStandard {
 
+  // ReportableStandard
   MISRA_C_2004(new MisraC2004()),
   MISRA_C_2012(new MisraC2012()),
   MISRA_CPP_2008(new MisraCPP2008()),
+
+  // Tools
   FINDBUGS(new FindBugs()),
   PMD(new Pmd()),
   CHECKSTYLE(new Checkstyle()),
@@ -26,10 +29,15 @@ public enum SupportedCodingStandard {
   CPP_CHECK(new Cppcheck()),
   RESHARPER(new ReSharper()),
   RESHARPER_VBNET(new ReSharperVbNet()),
+  RESHARPER_JS(new ReSharperJavaScript()),
   FXCOP(new FxCop()),
   PC_LINT_C(new PcLintC()),
   PC_LINT_CPP(new PcLintCpp()),
+
+  // TaggableStandards
   CWE(new Cwe()),
+  CERT(new Cert()),
+
   OWASP(new OwaspTopTen()),  // ReportableStandard
   OWASP_A1(OwaspTopTen.StandardRule.A1),  // TaggableStandards
   OWASP_A2(OwaspTopTen.StandardRule.A2),
@@ -41,7 +49,7 @@ public enum SupportedCodingStandard {
   OWASP_A8(OwaspTopTen.StandardRule.A8),
   OWASP_A9(OwaspTopTen.StandardRule.A9),
   OWASP_A10(OwaspTopTen.StandardRule.A10),
-  CERT(new Cert()),
+
   SANS_TOP_25(new SansTop25()),  // ReportableStandard
   SANS_TOP_25_INSECURE(SansTop25.Category.INSECURE_INTERACTION),  // TaggableStandards
   SANS_TOP_25_RISKY(SansTop25.Category.RISKY_RESOURCE),
