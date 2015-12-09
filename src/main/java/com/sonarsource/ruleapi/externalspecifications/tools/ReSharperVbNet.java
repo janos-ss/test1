@@ -57,13 +57,20 @@ public class ReSharperVbNet extends AbstractReportableExternalTool{
   }
 
   public enum ReSharperRule implements CodingStandardRule {
+    INACTIVEPREPROCESSORBRANCH("InactivePreprocessorBranch", Implementability.IMPLEMENTABLE),
     INCONSISTENTNAMING("InconsistentNaming", Implementability.IMPLEMENTABLE),
+    NOTASSIGNEDOUTPARAMETER("NotAssignedOutParameter", Implementability.IMPLEMENTABLE),
     POSSIBLEWRITETOME("PossibleWriteToMe", Implementability.IMPLEMENTABLE),
     REDUNDANTARRAYLOWERBOUNDSPECIFICATION("RedundantArrayLowerBoundSpecification", Implementability.IMPLEMENTABLE),
     REDUNDANTCOMMAINARRAYINITIALIZER("RedundantCommaInArrayInitializer", Implementability.REJECTED),
+    REDUNDANTEMPTYCASEELSE("RedundantEmptyCaseElse", Implementability.IMPLEMENTABLE),
+    REDUNDANTITERATORKEYWORD("RedundantIteratorKeyword", Implementability.IMPLEMENTABLE),
     REDUNDANTMEQUALIFIER("RedundantMeQualifier", Implementability.IMPLEMENTABLE),
     REDUNDANTMYBASEQUALIFIER("RedundantMyBaseQualifier", Implementability.IMPLEMENTABLE),
     REDUNDANTMYCLASSQUALIFIER("RedundantMyClassQualifier", Implementability.IMPLEMENTABLE),
+    REDUNDANTQUALIFIER("RedundantQualifier", Implementability.IMPLEMENTABLE),
+    REDUNDANTSTRINGTYPE("RedundantStringType", Implementability.IMPLEMENTABLE),
+    REDUNDANTTYPEARGUMENTSOFMETHOD("RedundantTypeArgumentsOfMethod", Implementability.IMPLEMENTABLE),
     VBCHECKFORREFERENCEEQUALITYINSTEAD_1("VBCheckForReferenceEqualityInstead.1", Implementability.IMPLEMENTABLE),
     VBCHECKFORREFERENCEEQUALITYINSTEAD_2("VBCheckForReferenceEqualityInstead.2", Implementability.IMPLEMENTABLE),
     VBPOSSIBLEMISTAKENARGUMENT("VBPossibleMistakenArgument", Implementability.IMPLEMENTABLE),
