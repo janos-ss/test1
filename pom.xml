@@ -96,9 +96,9 @@
 			<version>4.11</version>
 		</dependency>
 		<dependency>
-			<groupId>com.sonarsource.orchestrator</groupId>
-			<artifactId>sonar-orchestrator</artifactId>
-			<version>3.3</version>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>12.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.easytesting</groupId>
