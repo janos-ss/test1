@@ -92,7 +92,20 @@ public class AbstractReportableExternalToolTest {
   public void testGetHtmlDeprecationByToolKey(){
 
     Checkstyle cs = new Checkstyle();
-    ((AbstractReportableExternalTool)cs).populateRulesCoverageMap();
+    cs.populateRulesCoverageMap();
+
+    List<String> ids = new ArrayList<>();
+
+    ids.add(Checkstyle.CheckstyleRule.BOOLEANEXPRESSIONCOMPLEXITY.getCodingStandardRuleId());
+    Rule r = new Rule("Java");
+    cs.setCodingStandardRuleCoverageImplemented(ids, rule);
+    cs.setCodingStandardRuleCoverageSpecifiedBy(rule, ids);
+
+    ids.clear();
+    ids.add(Checkstyle.CheckstyleRule.AVOIDSTARIMPORT.getCodingStandardRuleId());
+    Rule r2 = new Rule("Java");
+    cs.setCodingStandardRuleCoverageSpecifiedBy(rule, ids);
+
     cs.computeCoverage();
 
     String report = cs.getHtmlDeprecationByToolKey(RuleManager.NEMO);
