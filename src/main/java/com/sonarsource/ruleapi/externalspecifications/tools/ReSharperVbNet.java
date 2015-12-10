@@ -71,6 +71,7 @@ public class ReSharperVbNet extends AbstractReportableExternalTool{
     REDUNDANTQUALIFIER("RedundantQualifier", Implementability.IMPLEMENTABLE),
     REDUNDANTSTRINGTYPE("RedundantStringType", Implementability.IMPLEMENTABLE),
     REDUNDANTTYPEARGUMENTSOFMETHOD("RedundantTypeArgumentsOfMethod", Implementability.IMPLEMENTABLE),
+    SIMPLIFYIIF("SimplifyIIf", Implementability.IMPLEMENTABLE),
     VBCHECKFORREFERENCEEQUALITYINSTEAD_1("VBCheckForReferenceEqualityInstead.1", Implementability.IMPLEMENTABLE),
     VBCHECKFORREFERENCEEQUALITYINSTEAD_2("VBCheckForReferenceEqualityInstead.2", Implementability.IMPLEMENTABLE),
     VBPOSSIBLEMISTAKENARGUMENT("VBPossibleMistakenArgument", Implementability.IMPLEMENTABLE),

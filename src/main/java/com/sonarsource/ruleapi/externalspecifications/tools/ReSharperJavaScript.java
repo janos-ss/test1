@@ -29,7 +29,7 @@ public class ReSharperJavaScript extends AbstractReportableExternalTool{
   @Override
   public CodingStandardRule[] getCodingStandardRules() {
 
-    return new CodingStandardRule[0];
+    return ReSharperRule.values();
   }
 
   @Override
@@ -90,6 +90,7 @@ public class ReSharperJavaScript extends AbstractReportableExternalTool{
     STATEMENTISNOTTERMINATED("StatementIsNotTerminated", Implementability.IMPLEMENTABLE),
     THISINGLOBALCONTEXT("ThisInGlobalContext", Implementability.IMPLEMENTABLE),
     THROWMUSTBEFOLLOWEDBYEXPRESSION("ThrowMustBeFollowedByExpression", Implementability.IMPLEMENTABLE),
+    UNUSEDLOCALS("UnusedLocals", Implementability.IMPLEMENTABLE),
     USEOFIMPLICITGLOBALINFUNCTIONSCOPE("UseOfImplicitGlobalInFunctionScope", Implementability.IMPLEMENTABLE),
     USINGOFRESERVEDWORD("UsingOfReservedWord", Implementability.IMPLEMENTABLE);
 
