@@ -92,7 +92,8 @@ public class ReSharperJavaScript extends AbstractReportableExternalTool{
     THROWMUSTBEFOLLOWEDBYEXPRESSION("ThrowMustBeFollowedByExpression", Implementability.IMPLEMENTABLE),
     UNUSEDLOCALS("UnusedLocals", Implementability.IMPLEMENTABLE),
     USEOFIMPLICITGLOBALINFUNCTIONSCOPE("UseOfImplicitGlobalInFunctionScope", Implementability.IMPLEMENTABLE),
-    USINGOFRESERVEDWORD("UsingOfReservedWord", Implementability.IMPLEMENTABLE);
+    USINGOFRESERVEDWORD("UsingOfReservedWord", Implementability.IMPLEMENTABLE),
+    WRONGEXPRESSIONSTATEMENT("WrongExpressionStatement", Implementability.IMPLEMENTABLE);
 
 
     private Implementability implementability;
