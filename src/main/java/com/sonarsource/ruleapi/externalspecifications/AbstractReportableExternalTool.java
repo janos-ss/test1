@@ -89,7 +89,11 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
       CodingStandardRuleCoverage cov = getRulesCoverage().get(csr.getCodingStandardRuleId());
 
       if (cov.getSpecifiedBy().isEmpty() && ! Implementability.REJECTED.equals(csr.getImplementability())) {
-        sb.append(cov.getCodingStandardRuleId()).append("\n");
+        sb.append(csr.getCodingStandardRuleId());
+        if (csr instanceof HasLevel) {
+          sb.append(" - ").append(((HasLevel) csr).getLevel());
+        }
+        sb.append("\n");
       }
     }
 
@@ -180,7 +184,11 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
       CodingStandardRuleCoverage cov = getRulesCoverage().get(id);
       if (!cov.getImplementedBy().isEmpty()) {
-        sb.append(TR_OPEN).append(id).append(TD);
+        sb.append(TR_OPEN);
+        if (csr instanceof HasLevel) {
+          sb.append(((HasLevel) csr).getLevel()).append(": ");
+        }
+        sb.append(id).append(TD);
 
         for (Rule rule : cov.getImplementedBy()) {
           sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
@@ -188,11 +196,19 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
         sb.append(TR_CLOSE);
 
       } else if (Implementability.REJECTED.equals(csr.getImplementability())) {
-        rejected.append(TR_OPEN).append(id);
-        rejected.append(TR_CLOSE);
+        rejected.append(TR_OPEN);
+        if (csr instanceof HasLevel) {
+          rejected.append(((HasLevel) csr).getLevel()).append(": ");
+        }
+
+        rejected.append(id).append(TR_CLOSE);
 
       } else {
-        pending.append(TR_OPEN).append(id).append(TD);
+        pending.append(TR_OPEN);
+        if (csr instanceof HasLevel) {
+          pending.append(((HasLevel) csr).getLevel()).append(": ");
+        }
+        pending.append(id).append(TD);
 
         for (Rule rule : cov.getSpecifiedBy()) {
           pending.append(Utilities.getJiraLinkedRuleReference(rule));
