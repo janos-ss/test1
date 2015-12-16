@@ -5,13 +5,13 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.tools;
 
-import com.beust.jcommander.internal.Lists;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableExternalTool;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.externalspecifications.tools.ReSharper.ReSharperRule;
 import com.sonarsource.ruleapi.utilities.Language;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReSharperWarnings extends AbstractReportableExternalTool {
@@ -221,7 +221,7 @@ public class ReSharperWarnings extends AbstractReportableExternalTool {
 
   @Override
   public CodingStandardRule[] getCodingStandardRules() {
-    List<CodingStandardRule> builder = Lists.newArrayList();
+    List<CodingStandardRule> builder = new ArrayList<>();
 
     for (String id: IDs) {
       builder.add(new ReSharperCodingRule(id));
