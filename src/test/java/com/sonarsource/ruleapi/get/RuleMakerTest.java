@@ -8,28 +8,16 @@ package com.sonarsource.ruleapi.get;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-import org.dom4j.tree.DefaultElement;
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 import org.fest.assertions.api.Assertions;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
@@ -169,7 +157,6 @@ public class RuleMakerTest {
     assertThat(rule.getDescription()).hasSize(0);
   }
 
-
   @Test
   public void testFleshOutRuleNullIssue() {
     Rule rule = new Rule("");
@@ -201,26 +188,6 @@ public class RuleMakerTest {
     assertThat(RuleMaker.isLanguageMatch("C", "C#")).isFalse();
 
     assertThat(RuleMaker.isLanguageMatch("Java", "CPP")).isFalse();
-  }
-
-  @Test
-  public void testGetCachedRuleByKey() {
-
-    String key = "RSPEC-1111";
-
-    Rule rule = new Rule("");
-    rule.setKey(key);
-
-    RuleMaker.jiraRuleCache.put(key, rule);
-    assertThat(RuleMaker.getCachedRuleByKey(key, "")).isEqualTo(rule);
-    assertThat(RuleMaker.getCachedRuleByKey("S1111", "")).isEqualTo(rule);
-  }
-
-  private Element createElement(String name, String value) {
-
-    Element el = new DefaultElement(name);
-    el.add(DocumentHelper.createText(value));
-    return el;
   }
 
   @Test

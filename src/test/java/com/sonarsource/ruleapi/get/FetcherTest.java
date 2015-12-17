@@ -6,9 +6,12 @@
 package com.sonarsource.ruleapi.get;
 
 import com.sonarsource.ruleapi.domain.RuleException;
-import org.junit.Assert;
-import org.junit.Test;
-
+import java.lang.annotation.Annotation;
+import java.net.URI;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericType;
@@ -17,13 +20,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-
-import java.lang.annotation.Annotation;
-import java.net.URI;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import org.junit.Assert;
+import org.junit.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -37,6 +35,14 @@ public class FetcherTest {
     fetcher.isUrlGood("http://localhost:1");
   }
 
+  // This is an integration test that relies on real data from RSPEC JIRA's project
+  @Test
+  public void testLegacyKeys() {
+    assertThat(fetcher.fetchIssueByKey("Union").get("key")).isEqualTo("RSPEC-953"); // PC-Lint
+    assertThat(fetcher.fetchIssueByKey("ObsoletePosixFunction").get("key")).isEqualTo("RSPEC-1911"); // CppCheck
+    assertThat(fetcher.fetchIssueByKey("SelectWithoutOtherwise").get("key")).isEqualTo("RSPEC-131"); // Should ignore subtask RSPEC-2315
+    assertThat(fetcher.fetchIssueByKey("ReturnInLoop")).isNull(); // PL/SQL Won't Fix legacy key
+  }
 
   @Test
   public void testGetClient() {

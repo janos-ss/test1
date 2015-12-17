@@ -18,7 +18,6 @@ import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,7 +44,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
     Fetcher fetcher = new Fetcher();
 
-    List<Rule> rules = RuleMaker.getCachedRulesByJql("description ~ \"See http://\" or description ~ \"https://\"", "");
+    List<Rule> rules = RuleMaker.getRulesByJql("description ~ \"See http://\" or description ~ \"https://\"", "");
     for (Rule rule : rules) {
       if (!Strings.isNullOrEmpty(rule.getReferences())) {
         String[] lines = rule.getReferences().split("\n");
@@ -73,7 +72,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
   public void cleanUpDeprecatedRules(String login, String password) {
 
-    List<Rule> rules = RuleMaker.getCachedRulesByJql(" issueFunction in hasLinks(\"is deprecated by\") OR status = DEPRECATED", "");
+    List<Rule> rules = RuleMaker.getRulesByJql(" issueFunction in hasLinks(\"is deprecated by\") OR status = DEPRECATED", "");
     for (Rule rule : rules) {
 
       Map<String, Object> updates = getDeprecationUpdates(rule);
@@ -130,7 +129,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
       if (newRules.isEmpty()) {
         for (String link : oldRule.getDeprecationLinks()) {
-          newRules.put(RuleMaker.getCachedRuleByKey(link, ""), new HashMap<String, Object>());
+          newRules.put(RuleMaker.getRuleByKey(link, ""), new HashMap<String, Object>());
         }
       }
 
@@ -273,7 +272,7 @@ public class IntegrityEnforcementService extends RuleManager {
         String key = sqRule.getKey();
         Rule rspecRule = rspecRules.remove(key);
         if (rspecRule == null) {
-          rspecRule = RuleMaker.getCachedRuleByKey(key, language.getRspec());
+          rspecRule = RuleMaker.getRuleByKey(key, language.getRspec());
         }
 
         addCoveredForNemoRules(rspecLanguage, needsUpdating, rspecRule);

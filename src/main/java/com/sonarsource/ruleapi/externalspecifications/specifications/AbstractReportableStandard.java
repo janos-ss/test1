@@ -13,12 +13,11 @@ import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
-import org.fest.util.Strings;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.fest.util.Strings;
 
 public abstract class AbstractReportableStandard implements CodingStandard {
 
@@ -45,7 +44,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     if (language != null) {
       rspecLanguage = language.getRspec();
     }
-    List<Rule> rules = RuleMaker.getCachedRulesByJql(query, rspecLanguage);
+    List<Rule> rules = RuleMaker.getRulesByJql(query, rspecLanguage);
 
     for (Rule rule: rules) {
       List <String> expandedIdList = getExpandedStandardKeyList(getRspecReferenceFieldValues(rule));
@@ -168,7 +167,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
         if (! Rule.Status.DEPRECATED.equals(sqRule.getStatus())) {
           String key = sqRule.getKey();
 
-          Rule rspecRule = RuleMaker.getCachedRuleByKey(key, sq);
+          Rule rspecRule = RuleMaker.getRuleByKey(key, sq);
           List<String> ids = getExpandedStandardKeyList(getRspecReferenceFieldValues(rspecRule));
 
           setCodingStandardRuleCoverageImplemented(ids, sqRule);

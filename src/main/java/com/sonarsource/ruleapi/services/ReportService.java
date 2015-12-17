@@ -18,9 +18,6 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractRep
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
-import org.fest.util.Strings;
-import org.json.simple.JSONArray;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -32,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.fest.util.Strings;
+import org.json.simple.JSONArray;
 
 
 public class ReportService extends RuleManager {
@@ -57,7 +56,7 @@ public class ReportService extends RuleManager {
   public void generateRuleDescriptions(List<String> ruleKeys, String language) {
     if (ruleKeys != null) {
       for (String ruleKey : ruleKeys) {
-        Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
+        Rule rule = RuleMaker.getSingleRuleByKey(ruleKey, language);
         writeFile(ruleKey + HTML, rule.getHtmlDescription());
       }
     }

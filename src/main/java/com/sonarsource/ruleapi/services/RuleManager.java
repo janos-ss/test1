@@ -9,7 +9,6 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +45,7 @@ public class RuleManager {
 
     if (! key.matches("RSPEC-\\d+")) {
 
-      Rule freshFetch = RuleMaker.getCachedRuleByKey(legacyKey, language.getRspec());
+      Rule freshFetch = RuleMaker.getRuleByKey(legacyKey, language.getRspec());
       key = freshFetch.getKey();
       if (key == null) {
         LOGGER.warning("Legacy key not found for " + language.getRspec() + "/" + language.getSq() + ": " + legacyKey);

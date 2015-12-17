@@ -5,19 +5,19 @@
  */
 package com.sonarsource.ruleapi.get;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
-import java.util.Arrays;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  * Given a key and a language, retrieves the relevant Issue
@@ -36,8 +36,15 @@ public class RuleMaker {
 
   private static final Fetcher FETCHER = new Fetcher();
 
-  protected static Map<String, Rule> jiraRuleCache = new HashMap<>();
+  private static final Fetcher SINGLE_RSPEC_FETCHER = new Fetcher() {
 
+    @Override
+    public JSONObject fetchIssueByKey(String key) {
+      Preconditions.checkArgument(key.matches("S?[0-9]+"), "Legacy keys are not supported.");
+      return getJsonFromUrl(BASE_URL + ISSUE + Fetcher.RSPEC + key.replaceFirst("S", "") + "?expand=names");
+    }
+
+  };
 
   private RuleMaker() {
   }
@@ -94,21 +101,15 @@ public class RuleMaker {
     return rule;
   }
 
-  public static Rule getCachedRuleByKey(String key, String language) {
-
-    String normalKey = Utilities.normalizeKey(key);
-    Rule rule = jiraRuleCache.get(normalKey);
-    if (rule == null) {
-      rule = getRuleByKey(normalKey, language);
-    }
-    return rule;
-  }
-
   /**
    * Given a rule key and a language (e.g. Java, ABAP, etc), fetches
    * Issue from Jira and creates from it a Rule. Rule population includes
    * translation of markdown to HTML so that return value can be compared
    * directly with Implementation.
+   *
+   * This method will prefetch all RSPEC issues upon its first call, which will slow.
+   * However, all subsequent calls will only rely on the prefetched data and therefore be fast.
+   * See {@link #getSingleRuleByKey(String, String)} for a version which does not prefetch.
    *
    * @param key rule key - legacy key, S### or RSPEC-###
    * @param language language of rule. Used to distinguish among language-specific options
@@ -120,7 +121,18 @@ public class RuleMaker {
     JSONObject jsonRule = FETCHER.fetchIssueByKey(key);
     fleshOutRule(FETCHER, rule, jsonRule);
 
-    jiraRuleCache.put(rule.getKey(), rule);
+    return rule;
+  }
+
+  /**
+   * Similar to {@link #getRuleByKey(String, String)} but without any prefetching
+   */
+  public static Rule getSingleRuleByKey(String key, String language) {
+
+    Rule rule = new Rule(language);
+    JSONObject jsonRule = SINGLE_RSPEC_FETCHER.fetchIssueByKey(key);
+    fleshOutRule(SINGLE_RSPEC_FETCHER, rule, jsonRule);
+
     return rule;
   }
 
@@ -134,17 +146,6 @@ public class RuleMaker {
       rules.add(SonarQubeHelper.populateFields(jsonRule));
     }
 
-    return rules;
-  }
-
-  public static List<Rule> getCachedRulesByJql(String query, String language) {
-    List<Rule> rules = new ArrayList<>();
-
-    List<JSONObject> issues = FETCHER.fetchIssueKeysBySearch(query);
-
-    for (JSONObject issueKey : issues) {
-      rules.add(getCachedRuleByKey(issueKey.get("key").toString(), language));
-    }
     return rules;
   }
 

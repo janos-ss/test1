@@ -5,17 +5,10 @@
  */
 package com.sonarsource.ruleapi.get;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.sonarsource.ruleapi.domain.RuleException;
-import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -25,6 +18,19 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import javax.annotation.CheckForNull;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import jersey.repackaged.com.google.common.base.Splitter;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 
 /**
@@ -35,18 +41,14 @@ public class Fetcher {
   public static final String BASE_URL = "https://jira.sonarsource.com/rest/api/latest/";
   public static final String ISSUE = "issue/";
 
-  private static final String RSPEC = "RSPEC-";
-  private static final String LEGACY_SEARCH1 = "\"Legacy Key\"~\"";
-  private static final String LEGACY_SEARCH2 = "\"";
+  public static final String RSPEC = "RSPEC-";
 
   private static final String SEARCH = "search?fields=key&maxResults=1000&jql=";
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
-  private static final String EXPAND = "?expand=names";
 
   private static final String ENCODING = "UTF-8";
 
-  private JSONObject names = null;
-
+  private Map<String, JSONObject> rspecsByKey = null;
 
   public Fetcher(){
     System.setProperty("jsse.enableSNIExtension", "false");
@@ -56,15 +58,16 @@ public class Fetcher {
    * Retrieves Jira Issue by Jira id (RSPEC-###)
    * or implementation id (S###) or legacy key.
    *
-   * If no match is found, or if multiple results
-   * are found for a legacy key search,
-   * null is returned.
+   * If no match is found, <code>null</code> is returned.
+   * Will throw a <code>RuleException</code> when several matches are found for a legacy key search.
+   *
+   * The first invocation of this method will prefetch all RSPECs from Jira, and therefore be slow.
+   * However, all subsequent accesses will return prefetched data.
    *
    * @param key the key to search by.
    * @return Populated Issue retrieved from Jira or null
    */
   public JSONObject fetchIssueByKey(String key) {
-
     JSONObject issue;
 
     if (key.matches("S?[0-9]+")) {
@@ -72,38 +75,139 @@ public class Fetcher {
     } else if (key.matches(RSPEC+"[0-9]+")) {
       issue = getIssueByKey(key);
     } else {
-      String searchStr = LEGACY_SEARCH1 + key + LEGACY_SEARCH2;
-      issue = getIssueByLegacyKey(searchStr);
+      issue = getIssueByLegacyKey(key);
     }
     return issue;
   }
 
   private JSONObject getIssueByKey(String issueKey) {
-    if (names == null) {
-      JSONObject tmp = getJsonFromUrl(BASE_URL + ISSUE + issueKey + EXPAND);
-      names = (JSONObject) tmp.get("names");
-      return tmp;
-    } else {
-      JSONObject tmp = getJsonFromUrl(BASE_URL + ISSUE + issueKey);
-      tmp.put("names", names);
-      return tmp;
+    ensureRspecsByKeyPopulated();
+
+    JSONObject json = rspecsByKey.get(issueKey);
+    if (json == null) {
+      throw new RuleException("RSPEC not found: " + issueKey);
     }
+    return json;
   }
 
-  private JSONObject getIssueByLegacyKey(String searchString) {
-    try {
-      String searchStr = URLEncoder.encode(BASE_QUERY + searchString, ENCODING).replaceAll("\\+", "%20");
+  private JSONObject getIssueByLegacyKey(String key) {
+    ensureRspecsByKeyPopulated();
 
-      JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
-      JSONArray issues = (JSONArray) sr.get("issues");
-
-      if (issues.size() == 1) {
-        return getIssueByKey(((JSONObject) issues.get(0)).get("key").toString());
+    List<String> rspecKeys = Lists.newArrayList();
+    for (JSONObject rspec: rspecsByKey.values()) {
+      // See https://github.com/SonarSource/sonar-rule-api/blob/1.8/src/main/java/com/sonarsource/ruleapi/get/Fetcher.java#L43
+      if (isUnresolved(rspec) && isSpecification(rspec) && legacyKeyFieldMatches(rspec, key)) {
+        rspecKeys.add(rspec.get("key").toString());
       }
-      return null;
-    } catch (UnsupportedEncodingException e) {
-      throw new RuleException(e);
     }
+
+    if (rspecKeys.size() > 1) {
+      throw new IllegalArgumentException("Legacy Key \"\" can matches several RSPECs: " + Joiner.on(", ").join(rspecKeys));
+    }
+
+    return rspecKeys.isEmpty() ? null : getIssueByKey(rspecKeys.get(0));
+  }
+
+  private static boolean isUnresolved(JSONObject issue) {
+    JSONObject fields = (JSONObject)issue.get("fields");
+    return fields.get("resolution") == null;
+  }
+
+  // TODO: Perhaps legacy keys should be dropped from subtasks?
+  private static boolean isSpecification(JSONObject issue) {
+    JSONObject fields = (JSONObject)issue.get("fields");
+    JSONObject issuetype = (JSONObject)fields.get("issuetype");
+    return "Specification".equals(issuetype.get("name"));
+  }
+
+  /**
+   * Reimplementation of Jira's <code>~</code> operator
+   */
+  private static boolean legacyKeyFieldMatches(JSONObject issue, String key) {
+    String legacyKeyCustomFieldName = getInternalCustomFieldName(issue, "Legacy Key");
+
+    JSONObject fields = (JSONObject)issue.get("fields");
+    String legacyKeyFieldValue = (String)fields.get(legacyKeyCustomFieldName);
+
+    return legacyKeyFieldMatches(legacyKeyFieldValue, key);
+  }
+
+  private static boolean legacyKeyFieldMatches(String legacyKeyFieldValue, String key) {
+    if (legacyKeyFieldValue == null || legacyKeyFieldValue.isEmpty()) {
+      return false;
+    }
+
+    String pattern = "(?i).*\\b" + Pattern.quote(key) + "\\b.*";
+    for (String candidate: Splitter.on(',').split(legacyKeyFieldValue)) {
+      if (candidate.matches(pattern)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private static String getInternalCustomFieldName(JSONObject issue, String customFieldName) {
+    JSONObject names = (JSONObject)issue.get("names");
+    for (Object nameObject: names.entrySet()) {
+      Map.Entry<String, Object> name = (Map.Entry<String, Object>)nameObject;
+      if (customFieldName.equals(name.getValue())) {
+        return name.getKey();
+      }
+    }
+    throw new IllegalArgumentException("No custom field named \"" + customFieldName + "\" found in: " + issue);
+  }
+
+  /**
+   * Fetches every single RSPEC from Jira in only a few REST calls
+   */
+  public void ensureRspecsByKeyPopulated() {
+    if (rspecsByKey != null) {
+      return;
+    }
+
+    ImmutableMap.Builder<String, JSONObject> builder = ImmutableMap.builder();
+
+    int startAt = 0;
+    JSONObject page;
+    while ((page = fetchRspecPage(startAt)) != null) {
+      if (!page.containsKey("names")) {
+        throw new IllegalStateException("expected names to be expanded");
+      }
+      JSONObject names = (JSONObject)page.get("names");
+
+      JSONArray issues = (JSONArray)page.get("issues");
+      for (Object issueObject: issues) {
+        JSONObject issue = (JSONObject)issueObject;
+        String key = (String)issue.get("key");
+
+        // Propagate "names" down into each issue
+        issue.put("names", names);
+
+        builder.put(key, issue);
+      }
+
+      startAt += issues.size();
+    }
+
+    rspecsByKey = builder.build();
+  }
+
+  /**
+   * Fetches a RSPEC issues page. Returns <code>null</code> if no issue is found.
+   */
+  @CheckForNull
+  private JSONObject fetchRspecPage(int startAt) {
+    JSONObject page = getJsonFromUrl(BASE_URL + "search?jql=project%3DRSPEC&expand=names&startAt=" + startAt + "&maxResults=500");
+    Object issuesObject = page.get("issues");
+    if (issuesObject == null) {
+      return null;
+    }
+    JSONArray issues = (JSONArray)issuesObject;
+    if (issues.isEmpty()) {
+      return null;
+    }
+    return page;
   }
 
   public List<JSONObject> fetchIssueKeysBySearch(String search) {

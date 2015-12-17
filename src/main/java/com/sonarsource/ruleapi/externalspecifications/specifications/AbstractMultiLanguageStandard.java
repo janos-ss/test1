@@ -9,14 +9,13 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
-import org.fest.util.Strings;
-
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
+import org.fest.util.Strings;
 
 
 public abstract class AbstractMultiLanguageStandard extends AbstractReportableStandard {
@@ -80,7 +79,7 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
     List<Rule> sqImplemented = RuleMaker.getRulesFromSonarQubeForLanguage(getLanguage(), instance);
     for (Rule sq : sqImplemented) {
 
-      Rule rspec = RuleMaker.getCachedRuleByKey(sq.getKey(), getLanguage().getRspec());
+      Rule rspec = RuleMaker.getRuleByKey(sq.getKey(), getLanguage().getRspec());
       populateStandardMap(standardRules, sq, rspec);
     }
 
