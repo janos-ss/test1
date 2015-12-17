@@ -184,11 +184,11 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
       CodingStandardRuleCoverage cov = getRulesCoverage().get(id);
       if (!cov.getImplementedBy().isEmpty()) {
-        sb.append(TR_OPEN);
+        sb.append(TR_OPEN).append(id).append(TD);
+
         if (csr instanceof HasLevel) {
-          sb.append(((HasLevel) csr).getLevel()).append(": ");
+          sb.append(((HasLevel) csr).getLevel()).append(TD);
         }
-        sb.append(id).append(TD);
 
         for (Rule rule : cov.getImplementedBy()) {
           sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
@@ -196,19 +196,18 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
         sb.append(TR_CLOSE);
 
       } else if (Implementability.REJECTED.equals(csr.getImplementability())) {
-        rejected.append(TR_OPEN);
+        rejected.append(TR_OPEN).append(id);
         if (csr instanceof HasLevel) {
-          rejected.append(((HasLevel) csr).getLevel()).append(": ");
+          rejected.append(((HasLevel) csr).getLevel()).append(TD);
         }
 
-        rejected.append(id).append(TR_CLOSE);
+        rejected.append(TR_CLOSE);
 
       } else {
-        pending.append(TR_OPEN);
+        pending.append(TR_OPEN).append(id).append(TD);
         if (csr instanceof HasLevel) {
-          pending.append(((HasLevel) csr).getLevel()).append(": ");
+          pending.append(((HasLevel) csr).getLevel()).append(TD);
         }
-        pending.append(id).append(TD);
 
         for (Rule rule : cov.getSpecifiedBy()) {
           pending.append(Utilities.getJiraLinkedRuleReference(rule));
