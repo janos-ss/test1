@@ -198,7 +198,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
       } else if (Implementability.REJECTED.equals(csr.getImplementability())) {
         rejected.append(TR_OPEN).append(id);
         if (csr instanceof HasLevel) {
-          rejected.append(((HasLevel) csr).getLevel()).append(TD);
+          rejected.append(TD).append(((HasLevel) csr).getLevel()).append(TD);
         }
 
         rejected.append(TR_CLOSE);
