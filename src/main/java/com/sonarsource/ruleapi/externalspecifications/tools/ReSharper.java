@@ -59,7 +59,7 @@ public class ReSharper extends AbstractReportableExternalTool {
 
   public enum Activation {
     UNKNOWN, DO_NOT_SHOW, SUGGESTION, HINT, WARNING, ERROR;
-  };
+  }
 
   public enum ReSharperRule implements CodingStandardRule, HasLevel {
     ACCESSTODISPOSEDCLOSURE("AccessToDisposedClosure", Implementability.IMPLEMENTABLE, Activation.WARNING),
