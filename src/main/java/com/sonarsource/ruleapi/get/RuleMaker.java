@@ -5,7 +5,6 @@
  */
 package com.sonarsource.ruleapi.get;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
@@ -35,16 +34,6 @@ import org.json.simple.JSONObject;
 public class RuleMaker {
 
   private static final Fetcher FETCHER = new Fetcher();
-
-  private static final Fetcher SINGLE_RSPEC_FETCHER = new Fetcher() {
-
-    @Override
-    public JSONObject fetchIssueByKey(String key) {
-      Preconditions.checkArgument(key.matches("S?[0-9]+"), "Legacy keys are not supported.");
-      return getJsonFromUrl(BASE_URL + ISSUE + Fetcher.RSPEC + key.replaceFirst("S", "") + "?expand=names");
-    }
-
-  };
 
   private RuleMaker() {
   }
@@ -107,10 +96,6 @@ public class RuleMaker {
    * translation of markdown to HTML so that return value can be compared
    * directly with Implementation.
    *
-   * This method will prefetch all RSPEC issues upon its first call, which will slow.
-   * However, all subsequent calls will only rely on the prefetched data and therefore be fast.
-   * See {@link #getSingleRuleByKey(String, String)} for a version which does not prefetch.
-   *
    * @param key rule key - legacy key, S### or RSPEC-###
    * @param language language of rule. Used to distinguish among language-specific options
    * @return rule fetched from Jira
@@ -120,18 +105,6 @@ public class RuleMaker {
     Rule rule = new Rule(language);
     JSONObject jsonRule = FETCHER.fetchIssueByKey(key);
     fleshOutRule(FETCHER, rule, jsonRule);
-
-    return rule;
-  }
-
-  /**
-   * Similar to {@link #getRuleByKey(String, String)} but without any prefetching
-   */
-  public static Rule getSingleRuleByKey(String key, String language) {
-
-    Rule rule = new Rule(language);
-    JSONObject jsonRule = SINGLE_RSPEC_FETCHER.fetchIssueByKey(key);
-    fleshOutRule(SINGLE_RSPEC_FETCHER, rule, jsonRule);
 
     return rule;
   }
@@ -171,10 +144,12 @@ public class RuleMaker {
   public static List<Rule> getRulesByJql(String query, String language) {
     List<Rule> rules = new ArrayList<>();
 
-    List<JSONObject> issues = FETCHER.fetchIssueKeysBySearch(query);
+    List<JSONObject> issues = FETCHER.fetchIssuesBySearch(query);
 
-    for (JSONObject issueKey : issues) {
-      rules.add(getRuleByKey(issueKey.get("key").toString(), language));
+    for (JSONObject jsonRule : issues) {
+      Rule rule = new Rule(language);
+      fleshOutRule(FETCHER, rule, jsonRule);
+      rules.add(rule);
     }
 
     return rules;

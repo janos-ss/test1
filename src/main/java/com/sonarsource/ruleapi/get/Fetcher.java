@@ -19,13 +19,11 @@ import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import javax.annotation.CheckForNull;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import jersey.repackaged.com.google.common.base.Splitter;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -43,12 +41,12 @@ public class Fetcher {
 
   public static final String RSPEC = "RSPEC-";
 
-  private static final String SEARCH = "search?fields=key&maxResults=1000&jql=";
+  private static final String SEARCH = "search?expand-names&maxResults=1000&jql=";
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
 
   private static final String ENCODING = "UTF-8";
 
-  private Map<String, JSONObject> rspecsByKey = null;
+  private Map<String, JSONObject> rspecJsonCacheByKey = null;
 
   public Fetcher(){
     System.setProperty("jsse.enableSNIExtension", "false");
@@ -60,9 +58,6 @@ public class Fetcher {
    *
    * If no match is found, <code>null</code> is returned.
    * Will throw a <code>RuleException</code> when several matches are found for a legacy key search.
-   *
-   * The first invocation of this method will prefetch all RSPECs from Jira, and therefore be slow.
-   * However, all subsequent accesses will return prefetched data.
    *
    * @param key the key to search by.
    * @return Populated Issue retrieved from Jira or null
@@ -81,22 +76,38 @@ public class Fetcher {
   }
 
   private JSONObject getIssueByKey(String issueKey) {
-    ensureRspecsByKeyPopulated();
-
-    JSONObject json = rspecsByKey.get(issueKey);
-    if (json == null) {
-      throw new RuleException("RSPEC not found: " + issueKey);
+    if (rspecJsonCacheByKey != null) {
+      return rspecJsonCacheByKey.get(issueKey);
+    } else {
+      return getJsonFromUrl(BASE_URL + ISSUE + issueKey + "?expand-names");
     }
-    return json;
   }
 
   private JSONObject getIssueByLegacyKey(String key) {
-    ensureRspecsByKeyPopulated();
+    if (rspecJsonCacheByKey != null) {
+      return getRuleByLegacyKeyFromCache(key);
+    }
 
+    String query = "\"Legacy Key\"~\"" + key + "\"";
+    try {
+      String searchStr = URLEncoder.encode(BASE_QUERY + query, ENCODING).replaceAll("\\+", "%20");
+
+      JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
+      JSONArray issues = (JSONArray) sr.get("issues");
+
+      if (issues.size() == 1) {
+        return getIssueByKey(((JSONObject) issues.get(0)).get("key").toString());
+      }
+      return null;
+    } catch (UnsupportedEncodingException e) {
+      throw new RuleException(e);
+    }
+  }
+
+  private JSONObject getRuleByLegacyKeyFromCache(String key) {
     List<String> rspecKeys = Lists.newArrayList();
-    for (JSONObject rspec: rspecsByKey.values()) {
-      // See https://github.com/SonarSource/sonar-rule-api/blob/1.8/src/main/java/com/sonarsource/ruleapi/get/Fetcher.java#L43
-      if (isUnresolved(rspec) && isSpecification(rspec) && legacyKeyFieldMatches(rspec, key)) {
+    for (JSONObject rspec : rspecJsonCacheByKey.values()) {
+      if (isSpecification(rspec) && legacyKeyFieldMatches(rspec, key)) {
         rspecKeys.add(rspec.get("key").toString());
       }
     }
@@ -108,61 +119,37 @@ public class Fetcher {
     return rspecKeys.isEmpty() ? null : getIssueByKey(rspecKeys.get(0));
   }
 
-  private static boolean isUnresolved(JSONObject issue) {
-    JSONObject fields = (JSONObject)issue.get("fields");
-    return fields.get("resolution") == null;
-  }
-
-  // TODO: Perhaps legacy keys should be dropped from subtasks?
   private static boolean isSpecification(JSONObject issue) {
-    JSONObject fields = (JSONObject)issue.get("fields");
-    JSONObject issuetype = (JSONObject)fields.get("issuetype");
-    return "Specification".equals(issuetype.get("name"));
+    return "Specification".equals(JiraHelper.getJsonFieldValue(issue, "issuetype"));
   }
 
-  /**
-   * Reimplementation of Jira's <code>~</code> operator
-   */
   private static boolean legacyKeyFieldMatches(JSONObject issue, String key) {
-    String legacyKeyCustomFieldName = getInternalCustomFieldName(issue, "Legacy Key");
-
-    JSONObject fields = (JSONObject)issue.get("fields");
-    String legacyKeyFieldValue = (String)fields.get(legacyKeyCustomFieldName);
-
-    return legacyKeyFieldMatches(legacyKeyFieldValue, key);
+    List<String> legacyKeys = JiraHelper.getCustomFieldValueAsList(issue, "Legacy Key");
+    return legacyKeys.contains(key);
   }
 
-  private static boolean legacyKeyFieldMatches(String legacyKeyFieldValue, String key) {
-    if (legacyKeyFieldValue == null || legacyKeyFieldValue.isEmpty()) {
-      return false;
-    }
+  public List<JSONObject> fetchIssuesBySearch(String search) {
+    ensureRspecsByKeyCachePopulated();
 
-    String pattern = "(?i).*\\b" + Pattern.quote(key) + "\\b.*";
-    for (String candidate: Splitter.on(',').split(legacyKeyFieldValue)) {
-      if (candidate.matches(pattern)) {
-        return true;
-      }
-    }
+    try {
 
-    return false;
+      String searchStr = BASE_QUERY + "(" + search + ")";
+      searchStr = URLEncoder.encode(searchStr, ENCODING).replaceAll("\\+", "%20");
+
+      JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
+      return (List<JSONObject>) sr.get("issues");
+
+    } catch (UnsupportedEncodingException e) {
+      throw new RuleException(e);
+    }
   }
 
-  private static String getInternalCustomFieldName(JSONObject issue, String customFieldName) {
-    JSONObject names = (JSONObject)issue.get("names");
-    for (Object nameObject: names.entrySet()) {
-      Map.Entry<String, Object> name = (Map.Entry<String, Object>)nameObject;
-      if (customFieldName.equals(name.getValue())) {
-        return name.getKey();
-      }
-    }
-    throw new IllegalArgumentException("No custom field named \"" + customFieldName + "\" found in: " + issue);
-  }
 
   /**
    * Fetches every single RSPEC from Jira in only a few REST calls
    */
-  public void ensureRspecsByKeyPopulated() {
-    if (rspecsByKey != null) {
+  protected void ensureRspecsByKeyCachePopulated() {
+    if (rspecJsonCacheByKey != null) {
       return;
     }
 
@@ -190,7 +177,7 @@ public class Fetcher {
       startAt += issues.size();
     }
 
-    rspecsByKey = builder.build();
+    rspecJsonCacheByKey = builder.build();
   }
 
   /**
@@ -198,7 +185,9 @@ public class Fetcher {
    */
   @CheckForNull
   private JSONObject fetchRspecPage(int startAt) {
-    JSONObject page = getJsonFromUrl(BASE_URL + "search?jql=project%3DRSPEC&expand=names&startAt=" + startAt + "&maxResults=500");
+    JSONObject page = getJsonFromUrl(BASE_URL
+            + "search?jql=project%3DRSPEC%20AND%20resolution%20%3D%20Unresolved&expand=names&maxResults=1000&startAt="
+            + startAt);
     Object issuesObject = page.get("issues");
     if (issuesObject == null) {
       return null;
@@ -210,20 +199,6 @@ public class Fetcher {
     return page;
   }
 
-  public List<JSONObject> fetchIssueKeysBySearch(String search) {
-
-    try {
-
-      String searchStr = BASE_QUERY + "(" + search + ")";
-      searchStr = URLEncoder.encode(searchStr, ENCODING).replaceAll("\\+", "%20");
-
-      JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
-      return (JSONArray) sr.get("issues");
-
-    } catch (UnsupportedEncodingException e) {
-      throw new RuleException(e);
-    }
-  }
 
   /**
    * Retrieves raw JSON rules from a running SonarQube instance by query.
