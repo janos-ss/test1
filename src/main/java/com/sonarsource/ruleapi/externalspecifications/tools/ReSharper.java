@@ -580,7 +580,6 @@ public class ReSharper extends AbstractReportableExternalTool {
     UNUSEDAUTOPROPERTYACCESSOR_GLOBAL("UnusedAutoPropertyAccessor.Global", Implementability.IMPLEMENTABLE, Activation.WARNING),
     UNUSEDAUTOPROPERTYACCESSOR_LOCAL("UnusedAutoPropertyAccessor.Local", Implementability.IMPLEMENTABLE, Activation.WARNING),
     UNUSEDFIELD_COMPILER("UnusedField.Compiler", Implementability.REJECTED, Activation.WARNING),
-    UNUSEDIMPORTCLAUSE("UnusedImportClause", Implementability.REJECTED, Activation.WARNING),
     UNUSEDINHERITEDPARAMETER("UnusedInheritedParameter", Implementability.IMPLEMENTABLE, Activation.HINT),
     UNUSEDLABEL("UnusedLabel", Implementability.REJECTED, Activation.WARNING),
     UNUSEDLOCALIMPORT("UnusedLocalImport", Implementability.IMPLEMENTABLE, Activation.WARNING),
@@ -654,6 +653,9 @@ public class ReSharper extends AbstractReportableExternalTool {
 
     @Override
     public Implementability getImplementability() {
+      if (this.activation == Activation.ERROR) {
+        return Implementability.REJECTED;
+      }
       return this.implementability;
     }
     @Override
