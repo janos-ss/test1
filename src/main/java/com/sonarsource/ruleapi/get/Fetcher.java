@@ -173,7 +173,7 @@ public class Fetcher {
     rspecJsonCacheByKey = builder.build();
   }
 
-  private void propagateNames(JSONObject page) {
+  private static void propagateNames(JSONObject page) {
     JSONArray issues = (JSONArray)page.get("issues");
     if (issues.isEmpty()) {
       return;
