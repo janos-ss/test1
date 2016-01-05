@@ -8,6 +8,8 @@
     }
   h3 {
     margin-left: 8px;
+    margin-top: 16px;
+    margin-bottom: 4px;
   }
   table {
     width: 100%;
@@ -35,6 +37,10 @@
     text-decoration: none;
   }
   a:hover, a:focus { color: #4b9fd5; }
+  p {
+    margin: 0px;
+    margin-left: 12px;
+  }
 </style>
 
 <div style="background-color: rgb(25, 25, 25);height:66px;padding-left:6px">

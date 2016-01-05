@@ -348,10 +348,11 @@ public class ReportService extends RuleManager {
         continue;
       }
 
-      sb.append("<h3>").append(severity.name()).append("</h3>");
+      sb.append("<h3>").append(severity.name()).append("</h3><p>");
       for (Rule rule : severityList) {
         sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
       }
+      sb.append("</p>");
     }
     return sb.toString();
   }
