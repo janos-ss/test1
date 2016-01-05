@@ -45,6 +45,7 @@ public class Fetcher {
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
 
   private static final String ENCODING = "UTF-8";
+  private static final String ISSUES = "issues";
 
   private Map<String, JSONObject> rspecJsonCacheByKey = null;
 
@@ -93,7 +94,7 @@ public class Fetcher {
       String searchStr = URLEncoder.encode(BASE_QUERY + query, ENCODING).replaceAll("\\+", "%20");
 
       JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
-      JSONArray issues = (JSONArray) sr.get("issues");
+      JSONArray issues = (JSONArray) sr.get(ISSUES);
 
       if (issues.size() == 1) {
         return getIssueByKey(((JSONObject) issues.get(0)).get("key").toString());
@@ -138,7 +139,7 @@ public class Fetcher {
 
       JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
       propagateNames(sr);
-      return (List<JSONObject>) sr.get("issues");
+      return (List<JSONObject>) sr.get(ISSUES);
 
     } catch (UnsupportedEncodingException e) {
       throw new RuleException(e);
@@ -161,7 +162,7 @@ public class Fetcher {
     while ((page = fetchRspecPage(startAt)) != null) {
       propagateNames(page);
 
-      JSONArray issues = (JSONArray)page.get("issues");
+      JSONArray issues = (JSONArray)page.get(ISSUES);
       for (Object issueObject: issues) {
         JSONObject issue = (JSONObject)issueObject;
         builder.put((String)issue.get("key"), issue);
@@ -174,14 +175,12 @@ public class Fetcher {
   }
 
   private static void propagateNames(JSONObject page) {
-    JSONArray issues = (JSONArray)page.get("issues");
+
+    JSONArray issues = (JSONArray)page.get(ISSUES);
     if (issues.isEmpty()) {
       return;
     }
 
-    if (!page.containsKey("names")) {
-      throw new IllegalStateException("expected names to be expanded");
-    }
     JSONObject names = (JSONObject)page.get("names");
 
     for (Object issueObject: issues) {
@@ -199,7 +198,7 @@ public class Fetcher {
     JSONObject page = getJsonFromUrl(BASE_URL
             + "search?jql=project%3DRSPEC%20AND%20resolution%20%3D%20Unresolved&expand=names&maxResults=1000&startAt="
             + startAt);
-    Object issuesObject = page.get("issues");
+    Object issuesObject = page.get(ISSUES);
     if (issuesObject == null) {
       return null;
     }
