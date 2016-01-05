@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Profile implements Comparable<Profile> {
 
-  private static List<String> synonyms = Arrays.asList(new String[]{"Sonar way", "SonarQube Way", "Sonar C# way"});
+  private static List<String> synonyms = Arrays.asList(new String[]{"sonar way", "sonarqube way", "sonar c# way"});
 
   private String key;
   private String name;
@@ -36,6 +36,10 @@ public class Profile implements Comparable<Profile> {
     return name;
   }
 
+  public String getLowerCaseName() {
+    return name.toLowerCase();
+  }
+
   @Override
   public int compareTo(Profile p) {
 
@@ -43,11 +47,11 @@ public class Profile implements Comparable<Profile> {
       return -1;
     }
 
-    if (synonyms.contains(name) && synonyms.contains(p.getName())) {
+    if (synonyms.contains(getLowerCaseName()) && synonyms.contains(p.getLowerCaseName())) {
       return 0;
     }
 
-    return name.compareTo(p.getName());
+    return getLowerCaseName().compareTo(p.getLowerCaseName());
   }
 
   @Override
@@ -65,10 +69,10 @@ public class Profile implements Comparable<Profile> {
 
   @Override
   public int hashCode(){
-    if (synonyms.contains(name)) {
+    if (synonyms.contains(getLowerCaseName())) {
       return synonyms.get(0).hashCode();
     }
-    return name.hashCode();
+    return getLowerCaseName().hashCode();
   }
 
   @Override
