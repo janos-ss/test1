@@ -41,7 +41,7 @@ public class Fetcher {
 
   public static final String RSPEC = "RSPEC-";
 
-  private static final String SEARCH = "search?expand-names&maxResults=1000&jql=";
+  private static final String SEARCH = "search?expand=names&maxResults=1000&jql=";
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
 
   private static final String ENCODING = "UTF-8";
@@ -79,7 +79,7 @@ public class Fetcher {
     if (rspecJsonCacheByKey != null) {
       return rspecJsonCacheByKey.get(issueKey);
     } else {
-      return getJsonFromUrl(BASE_URL + ISSUE + issueKey + "?expand-names");
+      return getJsonFromUrl(BASE_URL + ISSUE + issueKey + "?expand=names");
     }
   }
 
@@ -137,6 +137,7 @@ public class Fetcher {
       searchStr = URLEncoder.encode(searchStr, ENCODING).replaceAll("\\+", "%20");
 
       JSONObject sr = getJsonFromUrl(BASE_URL + SEARCH + searchStr);
+      propagateNames(sr);
       return (List<JSONObject>) sr.get("issues");
 
     } catch (UnsupportedEncodingException e) {
@@ -158,26 +159,36 @@ public class Fetcher {
     int startAt = 0;
     JSONObject page;
     while ((page = fetchRspecPage(startAt)) != null) {
-      if (!page.containsKey("names")) {
-        throw new IllegalStateException("expected names to be expanded");
-      }
-      JSONObject names = (JSONObject)page.get("names");
+      propagateNames(page);
 
       JSONArray issues = (JSONArray)page.get("issues");
       for (Object issueObject: issues) {
         JSONObject issue = (JSONObject)issueObject;
-        String key = (String)issue.get("key");
-
-        // Propagate "names" down into each issue
-        issue.put("names", names);
-
-        builder.put(key, issue);
+        builder.put((String)issue.get("key"), issue);
       }
 
       startAt += issues.size();
     }
 
     rspecJsonCacheByKey = builder.build();
+  }
+
+  private void propagateNames(JSONObject page) {
+    JSONArray issues = (JSONArray)page.get("issues");
+    if (issues.isEmpty()) {
+      return;
+    }
+
+    if (!page.containsKey("names")) {
+      throw new IllegalStateException("expected names to be expanded");
+    }
+    JSONObject names = (JSONObject)page.get("names");
+
+    for (Object issueObject: issues) {
+      JSONObject issue = (JSONObject)issueObject;
+      issue.put("names", names);
+    }
+
   }
 
   /**
