@@ -191,10 +191,27 @@ public class AbstractReportableExternalToolTest {
     assertThat(report).contains("warning");
     assertThat(report).contains("hint");
     assertThat(report).contains("do_not_show");
+  }
 
+  @Test
+  public void testGetHtmlReport(){
+    Rule rule = new Rule("C#");
+    List<String> ids = new ArrayList<>();
+    ids.add(ReSharper.ReSharperRule.ACCESSTODISPOSEDCLOSURE.getCodingStandardRuleId());
 
+    ReSharper rs = new ReSharper();
+    rs.populateRulesCoverageMap();
 
+    rs.setCodingStandardRuleCoverageImplemented(ids,rule);
+    rs.setCodingStandardRuleCoverageSpecifiedBy(rule, ids);
 
+    rs.computeCoverage();
+
+    String report = rs.getHtmlReport(null);
+
+    assertThat(report).isNotNull();
+    assertThat(report).isNotEmpty();
+    assertThat(report).contains("Plugin coverage/deprecation of");
   }
 
 }
