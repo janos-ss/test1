@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.tools.Checkstyle;
 import com.sonarsource.ruleapi.externalspecifications.tools.FindBugs;
+import com.sonarsource.ruleapi.externalspecifications.tools.ReSharper;
 import com.sonarsource.ruleapi.services.RuleManager;
 import org.junit.Test;
 
@@ -148,13 +149,12 @@ public class AbstractReportableExternalToolTest {
 
   @Test
   public void testGetUnspecifiedReport(){
-    FindBugs fb = new FindBugs();
 
     Rule rule = new Rule("Java");
     List<String> ids = new ArrayList<>();
     ids.add(FB_ID);
 
-    fb = new FindBugs();
+    FindBugs fb = new FindBugs();
     fb.populateRulesCoverageMap();
 
     fb.setCodingStandardRuleCoverageImplemented(ids,rule);
@@ -169,6 +169,31 @@ public class AbstractReportableExternalToolTest {
     assertThat(report).doesNotContain(FB_ID);
     assertThat(report).doesNotContain(REJECTED_FB_ID);
     assertThat(report).contains(FB_ID2);
+  }
+
+  @Test
+  public void testHasLevelReports(){
+
+    Rule rule = new Rule("C#");
+    List<String> ids = new ArrayList<>();
+    ids.add(ReSharper.ReSharperRule.ACCESSTODISPOSEDCLOSURE.getCodingStandardRuleId());
+
+    ReSharper rs = new ReSharper();
+    rs.populateRulesCoverageMap();
+
+    rs.setCodingStandardRuleCoverageImplemented(ids,rule);
+    rs.setCodingStandardRuleCoverageSpecifiedBy(rule, ids);
+
+    rs.computeCoverage();
+
+    String report = rs.getUnspecifiedReport();
+
+    assertThat(report).contains("warning");
+    assertThat(report).contains("hint");
+    assertThat(report).contains("do_not_show");
+
+
+
 
   }
 
