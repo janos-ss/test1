@@ -39,9 +39,30 @@ public class FetcherTest {
 
   // This is an integration test that relies on real data from RSPEC JIRA's project
   @Test
-  public void testLegacyKeys() {
+  public void testActualFetches() {
+
+    // pre-cache fetch
+    JSONObject byKeyFromJira = fetcher.fetchIssueByKey("S1234");
+    JSONObject byLegacyKeyFromJira = fetcher.fetchIssueByKey("Union");
+
+    assertThat(byKeyFromJira.get("key")).isEqualTo("RSPEC-1234");
+    assertThat(byLegacyKeyFromJira.get("key")).isEqualTo("RSPEC-953"); // PC-Lint
+
+    // populate cache
     fetcher.ensureRspecsByKeyCachePopulated();
-    assertThat(fetcher.fetchIssueByKey("Union").get("key")).isEqualTo("RSPEC-953"); // PC-Lint
+
+    JSONObject byKeyFromCache = fetcher.fetchIssueByKey("S1234");
+    JSONObject byLegacyKeyFromCache = fetcher.fetchIssueByKey("Union");
+
+    // field value differs by retrieval method (/issue vs /search)
+    byKeyFromJira.remove("expand");
+    byLegacyKeyFromJira.remove("expand");
+    byKeyFromCache.remove("expand");
+    byLegacyKeyFromCache.remove("expand");
+
+    assertThat(byKeyFromCache).isEqualTo(byKeyFromJira);
+    assertThat(byLegacyKeyFromCache).isEqualTo(byLegacyKeyFromJira); // PC-Lint
+
     assertThat(fetcher.fetchIssueByKey("SelectWithoutOtherwise").get("key")).isEqualTo("RSPEC-131"); // Should ignore subtask RSPEC-2315
     assertThat(fetcher.fetchIssueByKey("ReturnInLoop")).isNull(); // PL/SQL Won't Fix legacy key
   }

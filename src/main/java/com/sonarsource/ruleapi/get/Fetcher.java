@@ -41,6 +41,7 @@ public class Fetcher {
 
   public static final String RSPEC = "RSPEC-";
 
+  private static final String FIELDS = "&fields=*all%2c-comment%2c-assignee%2c-project%2c-status%2c-reporter%2c-creator%2c-votes%2c-watches%2c-parent";
   private static final String SEARCH = "search?expand=names&maxResults=1000&jql=";
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
 
@@ -80,7 +81,7 @@ public class Fetcher {
     if (rspecJsonCacheByKey != null) {
       return rspecJsonCacheByKey.get(issueKey);
     } else {
-      return getJsonFromUrl(BASE_URL + ISSUE + issueKey + "?expand=names");
+      return getJsonFromUrl(BASE_URL + ISSUE + issueKey + "?expand=names" + FIELDS);
     }
   }
 
@@ -196,7 +197,10 @@ public class Fetcher {
   @CheckForNull
   private JSONObject fetchRspecPage(int startAt) {
     JSONObject page = getJsonFromUrl(BASE_URL
-            + "search?jql=project%3DRSPEC%20AND%20resolution%20%3D%20Unresolved&expand=names&maxResults=1000&startAt="
+            + SEARCH
+            + "project%3DRSPEC%20AND%20resolution%20%3D%20Unresolved"
+            + FIELDS
+            + "&startAt="
             + startAt);
     Object issuesObject = page.get(ISSUES);
     if (issuesObject == null) {
