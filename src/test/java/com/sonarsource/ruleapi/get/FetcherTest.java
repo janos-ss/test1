@@ -65,6 +65,9 @@ public class FetcherTest {
 
     assertThat(fetcher.fetchIssueByKey("SelectWithoutOtherwise").get("key")).isEqualTo("RSPEC-131"); // Should ignore subtask RSPEC-2315
     assertThat(fetcher.fetchIssueByKey("ReturnInLoop")).isNull(); // PL/SQL Won't Fix legacy key
+
+    assertThat(fetcher.fetchIssuesBySearch("summary is empty")).isEmpty();
+    assertThat(fetcher.fetchIssuesBySearch("labels = clumsy")).isNotEmpty();
   }
 
   @Test
