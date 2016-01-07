@@ -26,7 +26,24 @@ public class RuleMakerTest {
 
   private JSONParser parser = new JSONParser();
 
-  @Test()
+  @Test
+  public void testGetRuleByKey(){
+
+    Rule rule = RuleMaker.getRuleByKey("S1234", "Java");
+    assertThat(rule).isNotNull();
+    assertThat(rule.getKey()).isEqualTo("RSPEC-1234");
+  }
+
+  @Test
+  public void testGetRulesByJql(){
+
+    List<Rule> rules = RuleMaker.getRulesByJql("labels = clumsy", "Java");
+    assertThat(rules).isNotEmpty();
+
+    assertThat(rules.get(0).getTags()).contains("clumsy");
+  }
+
+  @Test
   public void testPrivateConstructors() {
     final Constructor<?>[] constructors = RuleMaker.class.getDeclaredConstructors();
     for (Constructor<?> constructor : constructors) {
@@ -232,7 +249,6 @@ public class RuleMakerTest {
     } catch (ParseException e) {
       fail("Unexpected exception thrown");
     }
-
   }
 
 }
