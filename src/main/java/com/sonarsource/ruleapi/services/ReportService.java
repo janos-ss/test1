@@ -169,9 +169,7 @@ public class ReportService extends RuleManager {
 
       LOGGER.info("Output: " + path);
 
-    } catch (FileNotFoundException e) {
-      throw new RuleException(e);
-    } catch (UnsupportedEncodingException e) {
+    } catch (FileNotFoundException|UnsupportedEncodingException e) {
       throw new RuleException(e);
     } finally {
       if (writer != null) {
