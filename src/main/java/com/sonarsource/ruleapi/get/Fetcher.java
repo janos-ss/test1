@@ -294,12 +294,6 @@ public class Fetcher {
       int code = huc.getResponseCode();
 
       return code >= 200 && code <=299;
-    } catch (MalformedURLException e) {
-      throw new RuleException(e);
-    } catch (UnknownHostException e) {
-      throw new RuleException(e);
-    } catch (ProtocolException e) {
-      throw new RuleException(e);
     } catch (IOException e) {
       throw new RuleException(e);
     }
