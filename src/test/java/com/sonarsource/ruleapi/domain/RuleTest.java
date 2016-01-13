@@ -267,4 +267,25 @@ public class RuleTest {
     assertThat(rule.getDefaultProfiles()).isNotSameAs(subRule.getDefaultProfiles());
   }
 
+  @Test
+  public void testMergeTags(){
+
+    Rule rule = new Rule("");
+    Rule subRule = new Rule("");
+    subRule.setTitle("Java");
+
+    rule.getTags().add("red");
+    subRule.getTags().add("red");
+
+    rule.getTags().add("green");
+
+    subRule.getTags().add("blue");
+
+    rule.merge(subRule);
+
+    assertThat(rule.getTags().size()).isEqualTo(3);
+    assertThat(rule.getTags()).contains("blue");
+
+  }
+
 }

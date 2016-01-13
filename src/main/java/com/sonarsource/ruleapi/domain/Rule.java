@@ -185,7 +185,15 @@ public class Rule {
     mergeSqalePieces(subRule);
     mergeDefaultProfiles(subRule);
 
-    tags.addAll(subRule.getTags());
+    mergeTags(subRule);
+  }
+
+  protected void mergeTags(Rule subRule){
+    for (String tag : subRule.getTags()) {
+      if (!tags.contains(tag)) {
+        tags.add(tag);
+      }
+    }
   }
 
   protected void mergeDefaultProfiles(Rule subRule) {

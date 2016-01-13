@@ -9,7 +9,6 @@ import com.sonarsource.ruleapi.domain.RuleException;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
