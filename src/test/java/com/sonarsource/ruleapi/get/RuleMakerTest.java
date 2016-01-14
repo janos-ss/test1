@@ -41,6 +41,7 @@ public class RuleMakerTest {
     assertThat(rules).isNotEmpty();
 
     assertThat(rules.get(0).getTags()).contains("clumsy");
+    assertThat(rules.get(0).getStatus()).isNotNull();
   }
 
   @Test
