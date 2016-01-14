@@ -154,27 +154,21 @@ public class ReportService extends RuleManager {
       return;
     }
 
-    PrintWriter writer = null;
-    try {
-      String path = fileName.replaceAll(" ", "_");
+    String path = fileName.replaceAll(" ", "_");
+    File file = new File(path);
+    File parent = file.getParentFile();
+    if (parent != null) {
+      parent.mkdirs();
+    }
 
-      File file = new File(path);
-      File parent = file.getParentFile();
-      if (parent != null) {
-        parent.mkdirs();
-      }
+    try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
 
-      writer = new PrintWriter(file, "UTF-8");
       writer.println(content);
 
       LOGGER.info("Output: " + path);
 
     } catch (FileNotFoundException|UnsupportedEncodingException e) {
       throw new RuleException(e);
-    } finally {
-      if (writer != null) {
-        writer.close();
-      }
     }
   }
 
