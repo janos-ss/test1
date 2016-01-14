@@ -9,6 +9,7 @@ import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
+import java.util.HashSet;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -42,9 +43,9 @@ public class JiraHelper {
 
     rule.setLegacyKeys(getCustomFieldValueAsList(issue, "Legacy Key"));
 
-    rule.setTargetedLanguages(getCustomFieldStoredAsList(issue, "Targeted languages"));
-    rule.setCoveredLanguages(getCustomFieldStoredAsList(issue, "Covered Languages"));
-    rule.setIrrelevantLanguages(getCustomFieldStoredAsList(issue, "Irrelevant for Languages"));
+    rule.setTargetedLanguages(new HashSet<String>(getCustomFieldStoredAsList(issue, "Targeted languages")));
+    rule.setCoveredLanguages(new HashSet<String>(getCustomFieldStoredAsList(issue, "Covered Languages")));
+    rule.setIrrelevantLanguages(new HashSet<String>(getCustomFieldStoredAsList(issue, "Irrelevant for Languages")));
 
     rule.setTitle(getJsonFieldValue(issue, "summary"));
     rule.setMessage(getCustomFieldValue(issue, "Message"));

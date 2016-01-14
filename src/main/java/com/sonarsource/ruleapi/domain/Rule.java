@@ -114,7 +114,7 @@ public class Rule {
   private boolean template = false;
   private List<String> legacyKeys = new ArrayList<>();
 
-  private List<Profile> defaultProfiles = new ArrayList<>();
+  private Set<Profile> defaultProfiles = new HashSet<>();
 
   private String title = null;
   private String message = null;
@@ -137,9 +137,9 @@ public class Rule {
   private List<Parameter> parameterList = new ArrayList<>();
   private Set<String> tags = new HashSet<>();
 
-  private List<String> targetedLanguages = new ArrayList<>();
-  private List<String> coveredLanguages = new ArrayList<>();
-  private List<String> irrelevantLanguages = new ArrayList<>();
+  private Set<String> targetedLanguages = new HashSet<>();
+  private Set<String> coveredLanguages = new HashSet<>();
+  private Set<String> irrelevantLanguages = new HashSet<>();
 
   private List<String> cwe = new ArrayList<>();
   private List<String> cert = new ArrayList<>();
@@ -191,7 +191,7 @@ public class Rule {
 
   protected void mergeDefaultProfiles(Rule subRule) {
     if (!subRule.getDefaultProfiles().isEmpty()) {
-      this.setDefaultProfiles(new ArrayList<>(subRule.getDefaultProfiles()));
+      this.setDefaultProfiles(new HashSet<Profile>(subRule.getDefaultProfiles()));
     }
   }
 
@@ -584,32 +584,32 @@ public class Rule {
     this.cwe = cwe;
   }
 
-  public List<String> getTargetedLanguages() {
+  public Set<String> getTargetedLanguages() {
 
     return targetedLanguages;
   }
 
-  public void setTargetedLanguages(List<String> targetedLanguages) {
+  public void setTargetedLanguages(Set<String> targetedLanguages) {
 
     this.targetedLanguages = targetedLanguages;
   }
 
-  public List<String> getCoveredLanguages() {
+  public Set<String> getCoveredLanguages() {
 
     return coveredLanguages;
   }
 
-  public void setCoveredLanguages(List<String> coveredLanguages) {
+  public void setCoveredLanguages(Set<String> coveredLanguages) {
 
     this.coveredLanguages = coveredLanguages;
   }
 
-  public List<String> getIrrelevantLanguages() {
+  public Set<String> getIrrelevantLanguages() {
 
     return irrelevantLanguages;
   }
 
-  public void setIrrelevantLanguages(List<String> irrelevantLanguages) {
+  public void setIrrelevantLanguages(Set<String> irrelevantLanguages) {
 
     this.irrelevantLanguages = irrelevantLanguages;
   }
@@ -674,12 +674,12 @@ public class Rule {
     this.cppCheck = cppCheck;
   }
 
-  public List<Profile> getDefaultProfiles() {
+  public Set<Profile> getDefaultProfiles() {
 
     return defaultProfiles;
   }
 
-  public void setDefaultProfiles(List<Profile> defaultProfiles) {
+  public void setDefaultProfiles(Set<Profile> defaultProfiles) {
 
     this.defaultProfiles = defaultProfiles;
   }

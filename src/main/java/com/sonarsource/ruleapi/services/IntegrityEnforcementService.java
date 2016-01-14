@@ -75,9 +75,9 @@ public class IntegrityEnforcementService extends RuleManager {
     List<Rule> rules = RuleMaker.getRulesByJql(" issueFunction in hasLinks(\"is deprecated by\") OR status = DEPRECATED", "");
     for (Rule rule : rules) {
 
-      Map<String, Object> updates = getDeprecationUpdates(rule);
+      Map<String, Object> updates = new HashMap<>();
 
-      Map<Rule, Map<String, Object>> deprecatingRulesNeedingUpdate = getDeprecatingRulesNeedingUpdate(rule, updates);
+      Map<Rule, Map<String, Object>> deprecatingRulesNeedingUpdate = getDeprecationUpdates(rule, updates);
 
       for (Map.Entry<Rule, Map<String,Object>> entry : deprecatingRulesNeedingUpdate.entrySet()) {
         LOGGER.info("Adding references to replacement rule: " + rule.getKey());
@@ -94,16 +94,18 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  protected Map<Rule, Map<String, Object>> getDeprecatingRulesNeedingUpdate(Rule oldRule, Map<String, Object> oldRuleUpdates) {
+  protected Map<Rule, Map<String, Object>> getDeprecationUpdates(Rule oldRule, Map<String, Object> oldRuleUpdates) {
 
     Map<Rule,Map<String,Object>> newRules = new HashMap<>();
     for (SupportedCodingStandard scs : SupportedCodingStandard.values()) {
 
       CodingStandard cs = scs.getCodingStandard();
-      if (!cs.getRspecReferenceFieldValues(oldRule).isEmpty()) {
-        moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, cs);
-      }
+      moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, cs);
     }
+
+    moveLanguagesToNewRules(oldRule, oldRuleUpdates, newRules);
+    moveTagsToNewRules(oldRule, oldRuleUpdates, newRules);
+    moveProfilesToNewRules(oldRule, oldRuleUpdates, newRules);
 
     dropEmptyMapEntries(newRules);
     return newRules;
@@ -120,25 +122,97 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
+  protected void moveProfilesToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
+                                         Map<Rule, Map<String, Object>> newRules) {
+
+    if (oldRule.getDefaultProfiles().isEmpty()) {
+      return;
+    }
+    for (Map.Entry<Rule, Map<String, Object>> entry : newRules.entrySet()) {
+
+      Rule newRule = entry.getKey();
+      int startLen = newRule.getDefaultProfiles().size();
+      newRule.getDefaultProfiles().addAll(oldRule.getDefaultProfiles());
+      if (startLen != newRule.getDefaultProfiles().size()) {
+        entry.getValue().put("Default Quality Profiles", newRule.getDefaultProfiles());
+      }
+    }
+
+    LOGGER.info("Moving default profiles from deprecated rule: " + oldRule.getKey());
+    oldRule.getDefaultProfiles().clear();
+    oldRuleUpdates.put("Default Quality Profiles", oldRule.getDefaultProfiles());
+  }
+
+  protected void moveLanguagesToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
+                                         Map<Rule, Map<String, Object>> newRules) {
+
+    if (oldRule.getTargetedLanguages().isEmpty()) {
+      return;
+    }
+
+    for (Map.Entry<Rule, Map<String, Object>> entry : newRules.entrySet()) {
+
+      Rule newRule = entry.getKey();
+      int startLen = newRule.getTargetedLanguages().size();
+      newRule.getTargetedLanguages().addAll(oldRule.getTargetedLanguages());
+      newRule.getTargetedLanguages().addAll(oldRule.getCoveredLanguages());
+
+      for (String lang : newRule.getTargetedLanguages()) {
+        if (newRule.getCoveredLanguages().contains(lang) || newRule.getIrrelevantLanguages().contains(lang)) {
+          newRule.getTargetedLanguages().remove(lang);
+        }
+      }
+
+      if (startLen != newRule.getTargetedLanguages().size()){
+        entry.getValue().put(TARGETED_LANGUAGES, newRule.getTargetedLanguages());
+      }
+    }
+    LOGGER.info("Moving targeted languages from deprecated rule: " + oldRule.getKey());
+    oldRule.getTargetedLanguages().clear();
+    oldRuleUpdates.put(TARGETED_LANGUAGES, oldRule.getTargetedLanguages());
+  }
+
+  protected void moveTagsToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
+                                          Map<Rule, Map<String, Object>> newRules) {
+
+    if (oldRule.getTags().isEmpty()) {
+      return;
+    }
+
+    for (Map.Entry<Rule, Map<String, Object>> entry : newRules.entrySet()) {
+      Rule newRule = entry.getKey();
+      int startLen = newRule.getTags().size();
+      newRule.getTags().addAll(oldRule.getTags());
+      if (startLen != newRule.getTags().size()){
+        entry.getValue().put("Labels", newRule.getTags());
+      }
+    }
+    LOGGER.info("Moving tags from deprecated rule " + oldRule.getKey());
+    oldRule.getTags().clear();
+    oldRuleUpdates.put("Labels", oldRule.getTags());
+  }
+
   protected void moveReferencesToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
                                         Map<Rule, Map<String, Object>> newRules,CodingStandard cs) {
 
     List<String> oldReferences = cs.getRspecReferenceFieldValues(oldRule);
 
-    if (newRules.isEmpty()) {
-      for (String link : oldRule.getDeprecationLinks()) {
-        newRules.put(RuleMaker.getRuleByKey(link, ""), new HashMap<String, Object>());
+    if (!oldReferences.isEmpty()) {
+      if (newRules.isEmpty()) {
+        for (String link : oldRule.getDeprecationLinks()) {
+          newRules.put(RuleMaker.getRuleByKey(link, ""), new HashMap<String, Object>());
+        }
       }
+
+      for (Map.Entry<Rule, Map<String, Object>> entry : newRules.entrySet()) {
+        copyUniqueReferences(cs, oldReferences, entry);
+      }
+
+      LOGGER.info("Moving " + cs.getStandardName() + " references from deprecated rule: " + oldRule.getKey());
+
+      oldReferences.clear();
+      oldRuleUpdates.put(cs.getRSpecReferenceFieldName(), oldReferences);
     }
-
-    for (Map.Entry<Rule, Map<String, Object>> entry : newRules.entrySet()) {
-      copyUniqueReferences(cs, oldReferences, entry);
-    }
-
-    LOGGER.info("Removing " + cs.getStandardName() + " references from deprecated rule: " + oldRule.getKey());
-
-    oldReferences.clear();
-    oldRuleUpdates.put(cs.getRSpecReferenceFieldName(), oldReferences);
   }
 
   private static void copyUniqueReferences(CodingStandard cs, List<String> oldReferences, Map.Entry<Rule, Map<String, Object>> newRuleEntry) {
@@ -153,30 +227,6 @@ public class IntegrityEnforcementService extends RuleManager {
         }
       }
     }
-  }
-
-
-  protected Map<String, Object> getDeprecationUpdates(Rule rule) {
-
-    Map<String,Object> updates = new HashMap<>();
-    if (!rule.getTargetedLanguages().isEmpty()) {
-      LOGGER.info("Removing targeted languages for deprecated rule: " + rule.getKey());
-      rule.getTargetedLanguages().clear();
-      updates.put(TARGETED_LANGUAGES, rule.getTargetedLanguages());
-    }
-
-    if (!rule.getDefaultProfiles().isEmpty()) {
-      LOGGER.info("Removing default profiles for deprecated rule: " + rule.getKey());
-      rule.getDefaultProfiles().clear();
-      updates.put("Default Quality Profiles", rule.getDefaultProfiles());
-    }
-
-    if (!rule.getTags().isEmpty()) {
-      LOGGER.info("Removing tags for deprecated rule " + rule.getKey());
-      rule.getTags().clear();
-      updates.put("Labels", rule.getTags());
-    }
-    return updates;
   }
 
   private static boolean doesFieldEntryNeedUpdating(TaggableStandard taggable, Map<String, Object> updates, Rule rule, List<String> sees) {
@@ -225,7 +275,7 @@ public class IntegrityEnforcementService extends RuleManager {
   protected Map<String,Object> doDropTargetedForIrrelevant(Rule rule) {
 
     Map<String, Object> updates = new HashMap<>();
-    List<String> targeted = rule.getTargetedLanguages();
+    Set<String> targeted = rule.getTargetedLanguages();
     for (String lang : rule.getIrrelevantLanguages()) {
       if (targeted.contains(lang)) {
         targeted.remove(lang);

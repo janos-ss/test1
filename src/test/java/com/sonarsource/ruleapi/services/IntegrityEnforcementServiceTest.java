@@ -38,7 +38,7 @@ public class IntegrityEnforcementServiceTest {
 
     assertThat(enforcer.doDropTargetedForIrrelevant(rule)).isNotEmpty();
 
-    List<String> targeted = rule.getTargetedLanguages();
+    Set<String> targeted = rule.getTargetedLanguages();
     assertThat("C#").isNotIn(targeted);
     assertThat(targeted).hasSize(1).contains("Java");
 
@@ -428,23 +428,52 @@ public class IntegrityEnforcementServiceTest {
     assertThat(specificReferences).contains(" MISRA C:2004, 20.3");
   }
 
+  private Rule setUpDeprecatedRule(){
+    Rule oldRule = new Rule("");
+
+    oldRule.getTargetedLanguages().add("Java");
+    oldRule.getDefaultProfiles().add(new Profile("Sonar way"));
+    oldRule.getTags().add("misra");
+    oldRule.getCwe().add("CWE-4");
+
+    return oldRule;
+  }
+
   @Test
   public void testGetDeprecationUpdates() {
 
-    Rule rule = new Rule("");
-    Map<String, Object> updates = enforcer.getDeprecationUpdates(rule);
+    Rule oldRule = setUpDeprecatedRule();
+    Map<String, Object> oldRuleUpdates = new HashMap<>();
 
-    assertThat(updates).isEmpty();
+    enforcer.getDeprecationUpdates(oldRule, oldRuleUpdates);
 
-    rule.getTargetedLanguages().add("Java");
-    rule.getDefaultProfiles().add(new Profile("Sonar way"));
-    rule.getTags().add("misra");
+    assertThat(oldRuleUpdates).hasSize(4);
+    assertThat(oldRule.getTargetedLanguages()).isEmpty();
+    assertThat(oldRule.getDefaultProfiles()).isEmpty();
+    assertThat(oldRule.getTags()).isEmpty();
+    assertThat(oldRule.getCwe()).isEmpty();
+  }
 
-    updates = enforcer.getDeprecationUpdates(rule);
-    assertThat(updates).hasSize(3);
-    assertThat(rule.getTargetedLanguages()).isEmpty();
-    assertThat(rule.getDefaultProfiles()).isEmpty();
-    assertThat(rule.getTags()).isEmpty();
+  @Test
+  public void testMoveProfilesToNewRules(){
+    Rule oldRule = setUpDeprecatedRule();
+    Map<String, Object> oldRuleUpdates = new HashMap<>();
+    Rule newRule = new Rule("");
+    Map<Rule,Map<String,Object>> newRules = new HashMap<>();
+    newRules.put(newRule, new HashMap<String, Object>());
+
+    enforcer.moveLanguagesToNewRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(1);
+
+    enforcer.moveProfilesToNewRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(2);
+
+    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, SupportedCodingStandard.CWE.getCodingStandard());
+    assertThat(newRules.get(newRule)).hasSize(3);
+
+    enforcer.moveTagsToNewRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(4);
+
   }
 
 }

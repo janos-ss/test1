@@ -188,11 +188,11 @@ public class SansTop25Test {
 
     Rule rule = new Rule("Java");
     rule.setKey("RSPEC-1234");
-    List<String> covered = rule.getCoveredLanguages();
+    Set<String> covered = rule.getCoveredLanguages();
     covered.add("Java");
     covered.add("Swift");
     covered.add("HTML");
-    List<String> targeted = rule.getTargetedLanguages();
+    Set<String> targeted = rule.getTargetedLanguages();
     targeted.add("C");
     targeted.add("C++");
     targeted.add("PL/SQL");
@@ -205,7 +205,7 @@ public class SansTop25Test {
     cov.addSpecifiedBy(rule);
     cov.addSpecifiedBy(rule2);
 
-    String expected = "RSPEC-1234 (C, C++, PL/SQL, Java, Swift, HTML); RSPEC-2345 (ABAP)";
+    String expected = "RSPEC-1234 (C, C++, HTML, Java, PL/SQL, Swift); RSPEC-2345 (ABAP)";
     assertThat(sans.getSpecifiedByString(cov)).isEqualTo(expected);
 
   }
@@ -218,11 +218,11 @@ public class SansTop25Test {
 
     Rule rule = new Rule("Java");
     rule.setKey("RSPEC-1234");
-    List<String> covered = rule.getCoveredLanguages();
+    Set<String> covered = rule.getCoveredLanguages();
     covered.add("Java");
     covered.add("Swift");
     covered.add("HTML");
-    List<String> targeted = rule.getTargetedLanguages();
+    Set<String> targeted = rule.getTargetedLanguages();
     targeted.add("C");
     targeted.add("C++");
     targeted.add("PL/SQL");

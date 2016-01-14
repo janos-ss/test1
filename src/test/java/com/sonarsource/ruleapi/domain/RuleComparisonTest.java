@@ -886,7 +886,7 @@ public class RuleComparisonTest {
 
     String expectedText = "null\n" +
             "  profile list\n" +
-            "    spec: Sonar way, Security Way, \n" +
+            "    spec: Security Way, Sonar way, \n" +
             "    impl: \n";
     assertThat(rc.toString()).isEqualTo(expectedText);
 
@@ -910,7 +910,7 @@ public class RuleComparisonTest {
     rc = new RuleComparison(rule1, rule4);
     expectedText = "null\n" +
             "  profile list\n" +
-            "    spec: Sonar way, Security Way, \n" +
+            "    spec: Security Way, Sonar way, \n" +
             "    impl: Warrior's Way, \n";
     assertThat(rc.compare()).isEqualTo(-4);
     assertThat(rc.toString()).isEqualTo(expectedText);

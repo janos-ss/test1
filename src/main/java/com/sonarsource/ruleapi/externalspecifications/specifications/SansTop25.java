@@ -15,6 +15,7 @@ import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -112,8 +113,9 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     StringBuilder sb = new StringBuilder();
 
     for (Rule rule : cov.getSpecifiedBy()) {
-      List<String> languages = rule.getTargetedLanguages();
+      List<String> languages = new ArrayList<>(rule.getTargetedLanguages());
       languages.addAll(rule.getCoveredLanguages());
+      Collections.sort(languages);
       if (sb.length() > 0) {
         sb.append("; ");
       }

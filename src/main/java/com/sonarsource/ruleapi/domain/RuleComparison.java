@@ -10,7 +10,9 @@ import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Provides nuanced comparison between rules, taking into account
@@ -223,9 +225,12 @@ public class RuleComparison{
     return "";
   }
 
-  protected String profileListToString(List<Profile> list) {
+  protected String profileListToString(Set<Profile> set) {
 
     StringBuilder sb = new StringBuilder();
+    List<Profile> list = new ArrayList<>(set);
+    Collections.sort(list);
+
     for (Profile profile : list) {
       sb.append(profile.getName()).append(", ");
     }
