@@ -31,6 +31,7 @@ public class JiraHelper {
   protected static void populateFields(Rule rule, JSONObject issue) {
     rule.setKey(issue.get("key").toString());
     setStatus(rule, issue);
+    setDeprecationLinks(rule, issue);
 
     String tmp = getCustomFieldValue(issue, "Default Severity");
     if (tmp != null) {
@@ -164,6 +165,22 @@ public class JiraHelper {
     return null;
   }
 
+  protected static JSONArray getJsonArrayField(JSONObject jobj, String key) {
+
+    JSONObject fields = (JSONObject) jobj.get(FIELDS);
+
+    if(fields != null && key != null) {
+      Object obj = fields.get(key);
+      if (obj == null) {
+        obj = fields.get(getCustomFieldKey(jobj, key));
+      }
+      if (obj instanceof JSONArray) {
+        return (JSONArray) obj;
+      }
+    }
+    return null;
+  }
+
   protected static void setDefaultProfiles(Rule rule, JSONObject issue) {
     List<String> profileNames = getCustomFieldStoredAsList(issue, "Default Quality Profiles");
     for (String name : profileNames) {
@@ -175,6 +192,24 @@ public class JiraHelper {
 
     rule.setStatus(Rule.Status.fromString(getJsonFieldValue(issue, "status")));
   }
+
+  protected static void setDeprecationLinks(Rule rule, JSONObject issue) {
+
+    JSONArray links = getJsonArrayField(issue, "issuelinks");
+    if (links != null) {
+      for (Object obj : links) {
+        JSONObject linkObj = (JSONObject) obj;
+
+        JSONObject linkType = (JSONObject) linkObj.get("type");
+        JSONObject inwardIssue = (JSONObject) linkObj.get("inwardIssue");
+
+        if ("Deprecate".equals(linkType.get("name")) && inwardIssue != null) {
+          rule.getDeprecationLinks().add((String)inwardIssue.get("key"));
+        }
+      }
+    }
+  }
+
 
   protected static void setReferences(Rule rule, JSONObject issue) {
 

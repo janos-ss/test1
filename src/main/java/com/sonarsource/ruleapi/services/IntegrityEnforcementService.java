@@ -101,8 +101,7 @@ public class IntegrityEnforcementService extends RuleManager {
     for (SupportedCodingStandard scs : SupportedCodingStandard.values()) {
 
       CodingStandard cs = scs.getCodingStandard();
-      if (cs instanceof AbstractReportableStandard) {
-
+      if (!cs.getRspecReferenceFieldValues(oldRule).isEmpty()) {
         moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, cs);
       }
     }
@@ -126,23 +125,21 @@ public class IntegrityEnforcementService extends RuleManager {
                                         Map<Rule, Map<String, Object>> newRules,CodingStandard cs) {
 
     List<String> oldReferences = cs.getRspecReferenceFieldValues(oldRule);
-    if (!oldReferences.isEmpty()) {
 
-      if (newRules.isEmpty()) {
-        for (String link : oldRule.getDeprecationLinks()) {
-          newRules.put(RuleMaker.getRuleByKey(link, ""), new HashMap<String, Object>());
-        }
+    if (newRules.isEmpty()) {
+      for (String link : oldRule.getDeprecationLinks()) {
+        newRules.put(RuleMaker.getRuleByKey(link, ""), new HashMap<String, Object>());
       }
-
-      for (Map.Entry<Rule, Map<String, Object>> entry : newRules.entrySet()) {
-        copyUniqueReferences(cs, oldReferences, entry);
-      }
-
-      LOGGER.info("Removing " + cs.getStandardName() + " references from deprecated rule: " + oldRule.getKey());
-
-      oldReferences.clear();
-      oldRuleUpdates.put(cs.getRSpecReferenceFieldName(), oldReferences);
     }
+
+    for (Map.Entry<Rule, Map<String, Object>> entry : newRules.entrySet()) {
+      copyUniqueReferences(cs, oldReferences, entry);
+    }
+
+    LOGGER.info("Removing " + cs.getStandardName() + " references from deprecated rule: " + oldRule.getKey());
+
+    oldReferences.clear();
+    oldRuleUpdates.put(cs.getRSpecReferenceFieldName(), oldReferences);
   }
 
   private static void copyUniqueReferences(CodingStandard cs, List<String> oldReferences, Map.Entry<Rule, Map<String, Object>> newRuleEntry) {

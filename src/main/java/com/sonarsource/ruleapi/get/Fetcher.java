@@ -38,7 +38,7 @@ public class Fetcher {
 
   public static final String RSPEC = "RSPEC-";
 
-  private static final String FIELDS = "&fields=*all%2c-comment%2c-assignee%2c-project%2c-status%2c-reporter%2c-creator%2c-votes%2c-watches%2c-parent";
+  private static final String FIELDS = "&fields=*all%2c-comment%2c-assignee%2c-project%2c-reporter%2c-creator%2c-votes%2c-watches%2c-parent";
   private static final String SEARCH = "search?expand=names&maxResults=1000&jql=";
   private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
 
