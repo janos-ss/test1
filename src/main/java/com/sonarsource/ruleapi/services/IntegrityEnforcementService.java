@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 
@@ -408,7 +409,7 @@ public class IntegrityEnforcementService extends RuleManager {
       return;
     }
 
-    List tags = rule.getTags();
+    Set<String> tags = rule.getTags();
     if (!tags.contains(tag)) {
       tags.add(tag);
       updates.put("Labels", tags);

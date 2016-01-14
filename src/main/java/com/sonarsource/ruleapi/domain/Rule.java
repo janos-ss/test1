@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.domain;
 import com.google.common.base.Strings;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -134,7 +135,7 @@ public class Rule {
   private String sqaleLinearOffset = null;
 
   private List<Parameter> parameterList = new ArrayList<>();
-  private List<String> tags = new ArrayList<>();
+  private Set<String> tags = new HashSet<>();
 
   private List<String> targetedLanguages = new ArrayList<>();
   private List<String> coveredLanguages = new ArrayList<>();
@@ -185,15 +186,7 @@ public class Rule {
     mergeSqalePieces(subRule);
     mergeDefaultProfiles(subRule);
 
-    mergeTags(subRule);
-  }
-
-  protected void mergeTags(Rule subRule){
-    for (String tag : subRule.getTags()) {
-      if (!tags.contains(tag)) {
-        tags.add(tag);
-      }
-    }
+    tags.addAll(subRule.getTags());
   }
 
   protected void mergeDefaultProfiles(Rule subRule) {
@@ -344,12 +337,12 @@ public class Rule {
     this.parameterList = parameterList;
   }
 
-  public List<String> getTags() {
+  public Set<String> getTags() {
     return tags;
   }
 
   public void setTags(Set<String> tags) {
-    this.tags = new ArrayList<>(tags);
+    this.tags = new HashSet<>(tags);
   }
 
   public Severity getSeverity() {
@@ -478,7 +471,7 @@ public class Rule {
 
   public void setTags(List<String> tags) {
 
-    this.tags = tags;
+    this.tags = new HashSet<>(tags);
   }
 
   public List<String> getFindbugs() {

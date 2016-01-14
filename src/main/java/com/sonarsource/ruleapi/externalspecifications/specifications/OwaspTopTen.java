@@ -15,6 +15,7 @@ import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import static com.sonarsource.ruleapi.externalspecifications.Implementability.IMPLEMENTABLE;
@@ -239,7 +240,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
       }
 
       String tag = getTag();
-      List tags = rule.getTags();
+      Set<String> tags = rule.getTags();
 
       boolean needsTag = getRspecReferenceFieldValues(rule).contains(name());
       boolean hasTag = tags.contains(tag);

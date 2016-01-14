@@ -31,7 +31,7 @@ public class SansTop25Test {
 
     SansTop25.Category.INSECURE_INTERACTION.addTagIfMissing(rule, updates);
     assertThat(updates).hasSize(1);
-    assertThat((List<String>)updates.get("Labels")).hasSize(1);
+    assertThat((Set<String>)updates.get("Labels")).hasSize(1);
     assertThat(rule.getTags()).hasSize(1);
 
   }
@@ -80,7 +80,7 @@ public class SansTop25Test {
 
     SansTop25.Category.POROUS_DEFENSES.addTagIfMissing(rule, updates);
     assertThat(updates).hasSize(1);
-    assertThat((List<String>) updates.get("Labels")).isEmpty();
+    assertThat((Set<String>) updates.get("Labels")).isEmpty();
     assertThat(rule.getTags()).isEmpty();
   }
 

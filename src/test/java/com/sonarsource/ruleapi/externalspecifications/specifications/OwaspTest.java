@@ -153,7 +153,7 @@ public class OwaspTest {
     OwaspTopTen.StandardRule.A1.addTagIfMissing(rule, updates);
     assertThat(updates).hasSize(1);
     assertThat(updates.containsKey("Labels")).isTrue();
-    assertThat((List)updates.get("Labels")).isEmpty();
+    assertThat((Set)updates.get("Labels")).isEmpty();
 
     rule.setStatus(Rule.Status.DEPRECATED);
     rule.getOwasp().add("A1");

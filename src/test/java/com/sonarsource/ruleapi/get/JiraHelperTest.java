@@ -286,7 +286,7 @@ public class JiraHelperTest {
     assertThat(rule.getSeverity()).isEqualTo(Rule.Severity.CRITICAL);
     assertThat(rule.getStatus()).isEqualTo(Rule.Status.READY);
     assertThat(rule.getTags().size()).isEqualTo(1);
-    assertThat(rule.getTags().get(0)).isEqualTo("bug");
+    assertThat(rule.getTags().iterator().next()).isEqualTo("bug");
     assertThat(rule.getTargetedLanguages()).hasSize(1);
   }
 

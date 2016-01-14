@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 
@@ -449,7 +450,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
       }
 
       String tag = getTag();
-      List tags = rule.getTags();
+      Set<String> tags = rule.getTags();
       boolean needsTag = isSansCategoryRule(rule, this);
       boolean hasTag = tags.contains(tag);
 

@@ -251,10 +251,10 @@ public class IntegrityEnforcementServiceTest {
     tmp.add("CWE-789");
     expectedUpdates.put("CWE", tmp);
 
-    tmp = new ArrayList<>();
-    tmp.add("cwe");
+    Set<String> set = new HashSet<>();
+    set.add("cwe");
 
-    expectedUpdates.put("Labels", tmp);
+    expectedUpdates.put("Labels", set);
 
     Collections.sort((List<String>) updates.get("CWE"));
 
@@ -285,7 +285,7 @@ public class IntegrityEnforcementServiceTest {
 
     Map<String, Object> expectedUpdates = new HashMap<>();
 
-    List<String> tmp = new ArrayList<>();
+    Set<String> tmp = new HashSet<>();
     tmp.add("cwe");
 
     expectedUpdates.put("Labels", tmp);
@@ -303,7 +303,7 @@ public class IntegrityEnforcementServiceTest {
 
     Map<String, Object> expectedUpdates = new HashMap<>();
 
-    List<String> tmp = new ArrayList<>();
+    Set<String> tmp = new HashSet<>();
     tmp.add("sans-top25-insecure");
 
     expectedUpdates.put("Labels", tmp);
@@ -329,7 +329,7 @@ public class IntegrityEnforcementServiceTest {
     expectedReferenceUpdate.add("A6");
     expectedReferenceUpdate.add("A8");
 
-    List<String> expectedLabelUpdate = new ArrayList<>();
+    Set<String> expectedLabelUpdate = new HashSet<>();
     expectedLabelUpdate.add("owasp-a3");
 
     Map<String,Object> updates = enforcer.getUpdates(rule, OwaspTopTen.StandardRule.A3);

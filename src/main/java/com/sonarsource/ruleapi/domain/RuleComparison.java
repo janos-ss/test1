@@ -206,7 +206,7 @@ public class RuleComparison{
 
     if (compareTags() != 0) {
       logDifference(sb,"tags:" + getTagDifferences(),
-              Utilities.listToString(spec.getTags(), true), Utilities.listToString(impl.getTags(), true));
+              Utilities.setToString(spec.getTags(), true), Utilities.setToString(impl.getTags(), true));
     }
 
     if (sb.length() > 0) {
@@ -490,8 +490,11 @@ public class RuleComparison{
 
     StringBuilder sb = new StringBuilder();
 
-    List<String> aList = spec.getTags();
-    List<String> bList = impl.getTags();
+    List<String> aList = new ArrayList<>(spec.getTags());
+    List<String> bList = new ArrayList<>(impl.getTags());
+
+    java.util.Collections.sort(aList);
+    java.util.Collections.sort(bList);
 
     List<String> missingFromSpec = new ArrayList<>(aList);
     missingFromSpec.removeAll(bList);
@@ -515,8 +518,8 @@ public class RuleComparison{
   }
 
   protected int compareTags() {
-    List<String> aList = spec.getTags();
-    List<String> bList = impl.getTags();
+    List<String> aList = new ArrayList<>(spec.getTags());
+    List<String> bList = new ArrayList<>(impl.getTags());
 
     if (aList.size() != bList.size()) {
       return Integer.valueOf(aList.size()).compareTo(bList.size());

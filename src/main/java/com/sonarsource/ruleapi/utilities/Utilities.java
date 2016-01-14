@@ -7,7 +7,9 @@ package com.sonarsource.ruleapi.utilities;
 
 import com.sonarsource.ruleapi.domain.Rule;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Utilities {
 
@@ -46,6 +48,14 @@ public class Utilities {
 
   public static boolean isKeyNormal(String key) {
     return key != null && key.matches("RSPEC-\\d+");
+  }
+
+  public static String setToString(Set<String> set, boolean doCommas) {
+
+    List<String> list = new ArrayList<>(set);
+    java.util.Collections.sort(list);
+
+    return listToString(list, doCommas);
   }
 
   public static String listToString(List<String> list, boolean doCommas) {
