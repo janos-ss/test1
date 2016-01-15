@@ -455,7 +455,7 @@ public class IntegrityEnforcementServiceTest {
   }
 
   @Test
-  public void testMoveProfilesToNewRules(){
+  public void testMoveDataToNewRules(){
     Rule oldRule = setUpDeprecatedRule();
     Map<String, Object> oldRuleUpdates = new HashMap<>();
     Rule newRule = new Rule("");
@@ -473,6 +473,29 @@ public class IntegrityEnforcementServiceTest {
 
     enforcer.moveTagsToNewRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(4);
+
+  }
+
+  @Test
+  public void testMoveNoDataToNewRules(){
+    Rule oldRule = new Rule("");
+    Map<String, Object> oldRuleUpdates = new HashMap<>();
+    Rule newRule = new Rule("");
+    Map<Rule,Map<String,Object>> newRules = new HashMap<>();
+    newRules.put(newRule, new HashMap<String, Object>());
+
+    enforcer.moveLanguagesToNewRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(0);
+
+    enforcer.moveProfilesToNewRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(0);
+
+    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, SupportedCodingStandard.CWE.getCodingStandard());
+    assertThat(newRules.get(newRule)).hasSize(0);
+
+    enforcer.moveTagsToNewRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(0);
+
 
   }
 
