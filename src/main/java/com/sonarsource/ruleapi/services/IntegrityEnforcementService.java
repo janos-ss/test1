@@ -81,8 +81,9 @@ public class IntegrityEnforcementService extends RuleManager {
       Map<Rule, Map<String, Object>> deprecatingRulesNeedingUpdate = getDeprecationUpdates(rule, updates);
 
       for (Map.Entry<Rule, Map<String,Object>> entry : deprecatingRulesNeedingUpdate.entrySet()) {
-        LOGGER.info("Adding references to replacement rule: " + rule.getKey());
-        RuleUpdater.updateRule(entry.getKey().getKey(), entry.getValue(), login, password);
+        String newRuleKey = entry.getKey().getKey();
+        LOGGER.info("Submitting updates to replacement rule: " + newRuleKey);
+        RuleUpdater.updateRule(newRuleKey, entry.getValue(), login, password);
       }
 
       if (!Rule.Status.DEPRECATED.equals(rule.getStatus())) {
@@ -90,6 +91,7 @@ public class IntegrityEnforcementService extends RuleManager {
         RuleUpdater.updateRuleStatus(rule.getKey(), Rule.Status.DEPRECATED, login, password);
       }
       if (!updates.isEmpty()) {
+        LOGGER.info("Submitting updates to deprecated rule: " + rule.getKey());
         RuleUpdater.updateRule(rule.getKey(), updates, login, password);
       }
     }
