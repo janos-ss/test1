@@ -31,6 +31,7 @@ public class IntegrityEnforcementService extends RuleManager {
   private static final Logger LOGGER = Logger.getLogger(IntegrityEnforcementService.class.getName());
 
   private static final String TARGETED_LANGUAGES = "Targeted languages";
+  private static final String LABELS = "Labels";
 
 
   public void enforceIntegrity(String login, String password) {
@@ -184,12 +185,12 @@ public class IntegrityEnforcementService extends RuleManager {
       int startLen = newRule.getTags().size();
       newRule.getTags().addAll(oldRule.getTags());
       if (startLen != newRule.getTags().size()){
-        entry.getValue().put("Labels", newRule.getTags());
+        entry.getValue().put(LABELS, newRule.getTags());
       }
     }
     LOGGER.info("Moving tags from deprecated rule " + oldRule.getKey());
     oldRule.getTags().clear();
-    oldRuleUpdates.put("Labels", oldRule.getTags());
+    oldRuleUpdates.put(LABELS, oldRule.getTags());
   }
 
   protected void moveReferencesToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
@@ -458,7 +459,7 @@ public class IntegrityEnforcementService extends RuleManager {
     Set<String> tags = rule.getTags();
     if (!tags.contains(tag)) {
       tags.add(tag);
-      updates.put("Labels", tags);
+      updates.put(LABELS, tags);
     }
   }
 
