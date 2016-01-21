@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class RuleManager {
   private static final Logger LOGGER = Logger.getLogger(RuleManager.class.getName());
 
-  public static final String NEMO = "http://nemo.sonarqube.org";
+  public static final String NEMO = "https://nemo.sonarqube.org";
 
   public List<Rule> getCoveredRulesForLanguage(Language language) {
     return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec() + "\"", language.getRspec());
