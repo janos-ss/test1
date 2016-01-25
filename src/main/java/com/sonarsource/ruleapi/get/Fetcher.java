@@ -317,8 +317,11 @@ public class Fetcher {
     try {
       SSLContext sslcontext = SSLContext.getInstance( "TLS" );
       sslcontext.init(null, new TrustManager[]{new X509TrustManager() {
+        @Override
         public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+        @Override
         public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+        @Override
         public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
 
       }}, new java.security.SecureRandom());
@@ -326,7 +329,7 @@ public class Fetcher {
       Client client = ClientBuilder.newBuilder().sslContext(sslcontext).hostnameVerifier(new HostnameVerifier() {
         @Override
         public boolean verify(String s1, SSLSession s2) {
-          return true;
+          return s1.equalsIgnoreCase(s2.getPeerHost());
         }
       }).build();
 
