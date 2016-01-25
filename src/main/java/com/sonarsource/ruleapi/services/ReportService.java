@@ -151,7 +151,7 @@ public class ReportService extends RuleManager {
   }
 
   protected static void writeFile(String fileName, String content) {
-    if (content == null) {
+    if (content == null || content.isEmpty()) {
       return;
     }
 
