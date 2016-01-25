@@ -36,7 +36,8 @@ import org.json.simple.JSONArray;
 public class ReportService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
-  private static final String COVERAGE_DIR = "target/reports/coverage/";
+  private static final String BASE_DIR = "target/reports/";
+  private static final String COVERAGE_DIR = "coverage/";
   private static final String HTML = ".html";
 
   private String css = "";
@@ -155,7 +156,7 @@ public class ReportService extends RuleManager {
     }
 
     String path = fileName.replaceAll(" ", "_");
-    File file = new File(path);
+    File file = new File(BASE_DIR + path);
     File parent = file.getParentFile();
     if (parent != null) {
       parent.mkdirs();
@@ -183,12 +184,12 @@ public class ReportService extends RuleManager {
 
         String report = externalTool.getDeprecationReport(instance);
         if (!Strings.isNullOrEmpty(report)) {
-          writeFile("target/reports/deprecated_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
+          writeFile("deprecated_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
         }
 
         report = externalTool.getUnspecifiedReport();
         if (!Strings.isNullOrEmpty(report)) {
-          writeFile("target/reports/unspecified_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
+          writeFile("unspecified_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
         }
       }
     }
@@ -207,7 +208,7 @@ public class ReportService extends RuleManager {
         results.add(map);
       }
     }
-    writeFile("target/reports/outdated/summary.json", results.toJSONString());
+    writeFile("outdated/summary.json", results.toJSONString());
   }
 
   /**
@@ -225,7 +226,7 @@ public class ReportService extends RuleManager {
 
     LOGGER.info("Getting outdated rules report for " + language.getRspec() + " on " + instance);
 
-    String fileName = "target/reports/outdated/".concat(language.getSq()).concat("_outdated_rules.txt").toLowerCase();
+    String fileName = "outdated/".concat(language.getSq()).concat("_outdated_rules.txt").toLowerCase();
 
     List<Rule> rspec = getCoveredRulesForLanguage(language);
     Map<String, Rule> rspecRules = mapRulesByKey(rspec);
