@@ -9,23 +9,29 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.sonarsource.ruleapi.domain.RuleException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.CheckForNull;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import javax.annotation.CheckForNull;
+import javax.net.ssl.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -308,11 +314,30 @@ public class Fetcher {
   }
 
   protected Client getClient(String login, String password) {
+    try {
+      SSLContext sslcontext = SSLContext.getInstance( "TLS" );
+      sslcontext.init(null, new TrustManager[]{new X509TrustManager() {
+        public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+        public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+        public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
 
-    Client client = ClientBuilder.newClient();
-    if (login != null && password != null) {
-      client.register(HttpAuthenticationFeature.basic(login, password));
+      }}, new java.security.SecureRandom());
+
+      Client client = ClientBuilder.newBuilder().sslContext(sslcontext).hostnameVerifier(new HostnameVerifier() {
+        @Override
+        public boolean verify(String s1, SSLSession s2) {
+          return true;
+        }
+      }).build();
+
+      if (login != null && password != null) {
+        client.register(HttpAuthenticationFeature.basic(login, password));
+      }
+
+      return client;
+
+    } catch (KeyManagementException| NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
     }
-    return client;
   }
 }
