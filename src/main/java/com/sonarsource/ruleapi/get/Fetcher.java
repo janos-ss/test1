@@ -16,7 +16,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.annotation.CheckForNull;
-import javax.net.ssl.*;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -318,9 +322,13 @@ public class Fetcher {
       SSLContext sslcontext = SSLContext.getInstance( "TLS" );
       sslcontext.init(null, new TrustManager[]{new X509TrustManager() {
         @Override
-        public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+        public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+          // This is useless for Nemo usage
+        }
         @Override
-        public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+        public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+          // No verification for the time being there, however we should check the server certificate
+        }
         @Override
         public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
 
