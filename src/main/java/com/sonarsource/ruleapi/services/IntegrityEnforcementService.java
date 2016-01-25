@@ -88,7 +88,7 @@ public class IntegrityEnforcementService extends RuleManager {
       List<String> seeSectionReferences = getSpecificReferences(rule, cert.getSeeSectionSearchString());
       for (String ref : seeSectionReferences) {
         String title=ref.replace(cert.getStandardName(), "").trim().replaceAll("^, ","").replace(" - ",". ")
-                .replace(".. ",". ").replace(" +"," ");
+                .replace(".. ",". ");
 
         checkCertReference(sb, rule.getKey(), ref, title);
       }
