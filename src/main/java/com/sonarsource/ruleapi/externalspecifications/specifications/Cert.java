@@ -8,11 +8,18 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
+import com.sonarsource.ruleapi.externalspecifications.CleanupReport;
+import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 
 import com.sonarsource.ruleapi.get.Fetcher;
+import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
+import com.sun.deploy.security.CertType;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +28,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 
-public class Cert extends AbstractMultiLanguageStandard implements TaggableStandard{
+public class Cert extends AbstractMultiLanguageStandard implements TaggableStandard, CleanupReport {
 
   private static final Logger LOGGER = Logger.getLogger(Cert.class.getName());
 
@@ -96,6 +103,62 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
     replacements.add(reference);
 
     return false;
+  }
+
+  @Override
+  public String generateCleanupReport() {
+    Cert cert = (Cert) SupportedCodingStandard.CERT.getCodingStandard();
+    List<Rule> rules = RuleMaker.getRulesByJql(cert.getStandardName() + " is not empty", "");
+
+    StringBuilder sb = new StringBuilder();
+
+    for (Rule rule : rules) {
+      List<String> seeSectionReferences = getSpecificReferences(rule);
+      for (String ref : seeSectionReferences) {
+        String title=ref.replace(cert.getStandardName(), "").trim().replaceAll("^, ","").replace(" - ",". ")
+                .replace(".. ",". ");
+
+        checkReference(sb, rule.getKey(), ref, title);
+      }
+    }
+    return sb.toString();
+  }
+
+  protected List<String> getSpecificReferences(Rule rule) {
+
+    List<String> referencesFound = new ArrayList<>();
+
+    String[] referenceLines = rule.getReferences().split("\n");
+    for (String line : referenceLines) {
+      line = ComparisonUtilities.stripHtml(line);
+      if (line.toLowerCase().contains("see also")) {
+        break;
+      }
+      if (line.contains(REFERENCE_NAME)) {
+        referencesFound.add(line);
+      }
+    }
+    return referencesFound;
+  }
+
+  protected void checkReference(StringBuilder sb, String ruleKey, String ref, String title) {
+
+    String baseUrl = "https://www.securecoding.cert.org/confluence/rest/api/content?title=";
+    String newline = "\n";
+
+    try {
+      String encodedTitle = URLEncoder.encode(title, "UTF-8");
+
+      JSONObject json = FETCHER.getJsonFromUrl(baseUrl + encodedTitle);
+      JSONArray results = (JSONArray) json.get("results");
+      if (results.isEmpty()) {
+        sb.append("Not found: ").append(ruleKey).append(" : ").append(ref).append(newline);
+        sb.append(baseUrl).append(encodedTitle).append(newline);
+      }
+    } catch (UnsupportedEncodingException e) {
+      sb.append("Bad Uri: ").append(ruleKey).append(" : ").append(ref).append(newline);
+      sb.append(e.getMessage()).append(newline);
+    }
   }
 
 

@@ -12,6 +12,7 @@ import com.sonarsource.ruleapi.externalspecifications.AbstractReportableExternal
 import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
+import com.sonarsource.ruleapi.externalspecifications.CleanupReport;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMultiLanguageStandard;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
@@ -74,6 +75,7 @@ public class ReportService extends RuleManager {
     writeDetailedCoverageReports(instance);
     writeSummaryCoverageReports(instance);
     writeOutdatedRuleCountReportForWallboard(instance);
+    writeCleanupReports();
 
   }
 
@@ -173,6 +175,17 @@ public class ReportService extends RuleManager {
     }
   }
 
+  public void writeCleanupReports(){
+    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
+
+      if (supportedStandard.getCodingStandard() instanceof CleanupReport) {
+
+        String report = ((CleanupReport)supportedStandard.getCodingStandard()).generateCleanupReport();
+        writeFile(supportedStandard.getCodingStandard().getStandardName().toLowerCase() + "_cleanup.txt", report);
+      }
+    }
+  }
+
   public void writeToolInternalReports(String instance) {
 
     for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
@@ -183,14 +196,10 @@ public class ReportService extends RuleManager {
         LOGGER.info("Getting deprecated, unspecified ids for " + externalTool.getStandardName() + " on " + instance);
 
         String report = externalTool.getDeprecationReport(instance);
-        if (!Strings.isNullOrEmpty(report)) {
-          writeFile("deprecated_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
-        }
+        writeFile("deprecated_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
 
         report = externalTool.getUnspecifiedReport();
-        if (!Strings.isNullOrEmpty(report)) {
-          writeFile("unspecified_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
-        }
+        writeFile("unspecified_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
       }
     }
   }

@@ -12,13 +12,11 @@ import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
-import com.sonarsource.ruleapi.externalspecifications.specifications.Cert;
 import com.sonarsource.ruleapi.get.Fetcher;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,15 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 
 public class IntegrityEnforcementService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(IntegrityEnforcementService.class.getName());
-
-  private static final Fetcher FETCHER = new Fetcher();
 
   private static final String TARGETED_LANGUAGES = "Targeted languages";
   private static final String LABELS = "Labels";
@@ -44,7 +38,6 @@ public class IntegrityEnforcementService extends RuleManager {
     enforceTagReferenceIntegrity(login, password);
     cleanUpDeprecatedRules(login, password);
     dropTargetedForIrrelevant(login, password);
-    checkCertReferences();
     checkUrls();
   }
 
@@ -77,46 +70,6 @@ public class IntegrityEnforcementService extends RuleManager {
       }
     }
   }
-
-  public void checkCertReferences() {
-    Cert cert = (Cert) SupportedCodingStandard.CERT.getCodingStandard();
-    List<Rule> rules = RuleMaker.getRulesByJql(cert.getStandardName() + " is not empty", "");
-
-    StringBuilder sb = new StringBuilder();
-
-    for (Rule rule : rules) {
-      List<String> seeSectionReferences = getSpecificReferences(rule, cert.getSeeSectionSearchString());
-      for (String ref : seeSectionReferences) {
-        String title=ref.replace(cert.getStandardName(), "").trim().replaceAll("^, ","").replace(" - ",". ")
-                .replace(".. ",". ");
-
-        checkCertReference(sb, rule.getKey(), ref, title);
-      }
-    }
-
-    ReportService.writeFile("certIntegrity.txt", sb.toString());
-  }
-
-  protected void checkCertReference(StringBuilder sb, String ruleKey, String ref, String title) {
-
-    String baseUrl = "https://www.securecoding.cert.org/confluence/rest/api/content?title=";
-    String newline = "\n";
-
-    try {
-      String encodedTitle = URLEncoder.encode(title, "UTF-8");
-
-      JSONObject json = FETCHER.getJsonFromUrl(baseUrl + encodedTitle);
-      JSONArray results = (JSONArray) json.get("results");
-      if (results.isEmpty()) {
-        sb.append("Not found: ").append(ruleKey).append(" : ").append(ref).append(newline);
-        sb.append(baseUrl).append(encodedTitle).append(newline);
-      }
-    } catch (Exception e) {
-      sb.append("Bad Uri: ").append(ruleKey).append(" : ").append(ref).append(newline);
-      sb.append(e.getMessage()).append(newline);
-    }
-  }
-
 
   public void cleanUpDeprecatedRules(String login, String password) {
 
