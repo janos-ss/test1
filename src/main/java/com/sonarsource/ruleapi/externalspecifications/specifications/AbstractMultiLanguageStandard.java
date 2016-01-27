@@ -68,6 +68,11 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
   }
 
 
+  /**
+   *
+   * @param instance URL to the SonarQube instance running the reference implementation
+   * @return Standard id mapped to list of rules that implement the standard
+   */
   protected Map<String, List<Rule>> initCoverage(String instance) {
 
     if (getLanguage() == null) {
