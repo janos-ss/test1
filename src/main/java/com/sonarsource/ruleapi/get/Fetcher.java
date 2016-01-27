@@ -205,7 +205,7 @@ public class Fetcher {
   private JSONObject fetchRspecPage(int startAt) {
     JSONObject page = getJsonFromUrl(BASE_URL
             + SEARCH
-            + "project%3DRSPEC%20AND%20resolution%20%3D%20Unresolved"
+            + "project%3DRSPEC"
             + FIELDS
             + "&startAt="
             + startAt);
