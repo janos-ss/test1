@@ -34,7 +34,7 @@ public class CertTest {
     assertThat(cert.doesReferenceNeedUpdating("413",updates, rule.getKey())).isFalse();
     assertThat(updates).hasSize(3);
 
-    assertThat(cert.doesReferenceNeedUpdating("ABC43-Java.",updates, rule.getKey())).isTrue();
+    assertThat(cert.doesReferenceNeedUpdating("ABC43-Java",updates, rule.getKey())).isFalse();
     assertThat(updates).hasSize(4);
 
   }
