@@ -102,7 +102,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
   @Override
   protected String generateReport(String instance, Map<String, List<Rule>> standardRules) {
 
-    if (standardRules.isEmpty() || currentCertLanguage == null) {
+    if (currentCertLanguage == null || standardRules.isEmpty()) {
       return null;
     }
 
