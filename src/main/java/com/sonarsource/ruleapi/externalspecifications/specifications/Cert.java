@@ -188,10 +188,12 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
         implRules = standardRules.get(certId.substring(0, certId.length() - 1));
       }
 
+      String title = certRule.getTitle().replaceFirst(certId, "");
+
       if (implRules != null) {
         covered.append("<tr><td><a href='").append(certRule.getUrl())
                 .append("' target='_blank'>").append(certRule.getId()).append("</a>")
-                .append(certRule.getTitle()).append("</td>\n<td>");
+                .append(title).append("</td>\n<td>");
         for (Rule rule : implRules) {
           covered.append(Utilities.getNemoLinkedRuleReference(instance, rule));
         }
@@ -200,7 +202,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
         uncovered.append("<tr><td><a href='")
                 .append(certRule.getUrl())
                 .append("' target='_blank'>").append(certRule.getId()).append("</a>")
-                .append(certRule.getTitle()).append("</td></tr>\n");
+                .append(title).append("</td></tr>\n");
       }
     }
 
