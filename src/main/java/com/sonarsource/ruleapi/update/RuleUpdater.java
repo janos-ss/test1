@@ -9,6 +9,7 @@ import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.Fetcher;
+import java.util.Set;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -170,6 +171,10 @@ public class RuleUpdater {
       arr.add(value);
     } else if (value instanceof List) {
       for (String val : (List<String>) value) {
+        arr.add(val);
+      }
+    } else if (value instanceof Set) {
+      for (String val : (Set<String>) value) {
         arr.add(val);
       }
     }

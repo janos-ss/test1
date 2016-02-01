@@ -378,6 +378,8 @@ public class IntegrityEnforcementService extends RuleManager {
 
   public void enforceTagReferenceIntegrity(String login, String password, TaggableStandard taggable) {
 
+    LOGGER.info("STARTING: " + taggable.getStandardName());
+
     List<Rule> rules = RuleMaker.getRulesByJql(
             "('" + taggable.getRSpecReferenceFieldName() + "' is not EMPTY OR description ~ '" +
                     taggable.getSeeSectionSearchString() + "' OR labels = " + taggable.getTag() + ")",
@@ -459,6 +461,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
 
     Set<String> tags = rule.getTags();
+    LOGGER.info("Adding missing tag '" + tag + "' to " + rule.getKey());
     if (!tags.contains(tag)) {
       tags.add(tag);
       updates.put(LABELS, tags);
