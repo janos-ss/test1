@@ -78,7 +78,8 @@ public class CertTest {
 
 
     Cert.CertRule certRule = new Cert.CertRule("PRE30-C.", "test title", "http://boo.com");
-    Cert.CertRule[] certRules = {certRule};
+    Cert.CertRule certRule2 = new Cert.CertRule("MSC01-C.", "Miscellaney", "http://misc.com");
+    Cert.CertRule[] certRules = {certRule, certRule2};
 
     result = freshCert.getReportBody(RuleManager.NEMO, standardRules, certRules);
     assertThat(result).isNull();
@@ -92,8 +93,8 @@ public class CertTest {
             "<td><a href='https://nemo.sonarqube.org/coding_rules#rule_key=null%3AruleKey'>ruleKey</a> null<br/>\n" +
             "</td></tr>\n" +
             "</table><h3>Uncovered</h3><table>\n" +
+            "<tr><td><a href='http://misc.com' target='_blank'>MSC01-C.</a>Miscellaney</td></tr>\n" +
             "</table>");
-
   }
 
   @Test
@@ -109,6 +110,24 @@ public class CertTest {
 
     String result = freshCert.generateReport(RuleManager.NEMO, standardRules);
     assertThat(result).isNull();
+  }
+
+  @Test
+  public void testLanguageSetting(){
+    Cert freshCert = new Cert();
+    freshCert.setLanguage(Language.ABAP);
+
+    assertThat(freshCert.getLanguage()).isNull();
+
+    freshCert.setLanguage(Language.CPP);
+    assertThat(freshCert.getLanguage()).isEqualTo(Language.CPP);
+
+    freshCert.setLanguage(Language.JAVA);
+    assertThat(freshCert.getLanguage()).isEqualTo(Language.JAVA);
+
+    freshCert.setLanguage(Language.C);
+    assertThat(freshCert.getLanguage()).isEqualTo(Language.C);
+
   }
 
 }
