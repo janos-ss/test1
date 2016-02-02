@@ -9,6 +9,8 @@ import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
+import java.util.HashSet;
+import java.util.Set;
 import org.fest.assertions.api.Assertions;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -336,6 +338,22 @@ public class RuleUpdaterTest {
   public void testHandleFreeEntryEmpty() {
     String result = RuleUpdater.handleFreeEntry(null);
     Assertions.assertThat(result).isEqualTo("");
+  }
+
+  @Test
+  public void testHandleArrayTypeSet() {
+
+    Set<String> set = new HashSet<>();
+    JSONArray result = RuleUpdater.handleArrayType(set);
+
+    assertThat(result.toJSONString()).isEqualTo("[]");
+
+    set.add("red");
+    set.add("green");
+    set.add("blue");
+
+    result = RuleUpdater.handleArrayType(set);
+    assertThat(result.size()).isEqualTo(3);
   }
 
   @Test
