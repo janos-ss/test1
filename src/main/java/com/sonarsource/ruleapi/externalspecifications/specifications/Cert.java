@@ -109,12 +109,17 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
     Cert cert = (Cert) SupportedCodingStandard.CERT.getCodingStandard();
     List<Rule> rules = RuleMaker.getRulesByJql(cert.getStandardName() + " is not empty", "");
 
+    return getCleanupReportBody(rules);
+  }
+
+  protected String getCleanupReportBody(List<Rule> rules) {
+
     StringBuilder sb = new StringBuilder();
 
     for (Rule rule : rules) {
       List<String> seeSectionReferences = getSpecificReferences(rule);
       for (String ref : seeSectionReferences) {
-        String title=ref.replace(cert.getStandardName(), "").trim().replaceAll("^, ","").replace(" - ",". ")
+        String title=ref.replace(getStandardName(), "").trim().replaceAll("^, ","").replace(" - ",". ")
                 .replace(".. ",". ");
 
         checkReference(sb, rule.getKey(), ref, title);
@@ -168,11 +173,20 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
       return null;
     }
 
+    CertRule[] certRules = (CertRule[]) currentCertLanguage.getCodingStandardRules();
+
+    return getReportBody(instance, standardRules, certRules);
+  }
+
+  protected String getReportBody(String instance, Map<String, List<Rule>> standardRules, CertRule[] certRules) {
+
+    if (currentCertLanguage == null) {
+      return null;
+    }
+
     StringBuilder sb = new StringBuilder();
     sb.append("<h2>").append(currentCertLanguage.language.getRspec()).append(" coverage of ")
             .append(getStandardName()).append("</h2>\n");
-
-    CertRule[] certRules = (CertRule[]) currentCertLanguage.getCodingStandardRules();
 
     StringBuilder covered = new StringBuilder();
     covered.append("<h3>Covered</h3><table>\n");
