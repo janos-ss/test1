@@ -307,28 +307,27 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
         while (!ids.isEmpty()){
           JSONObject jsonObject = FETCHER.getJsonFromUrl(String.format(url, baseUrl, ids.remove(0)));
           List<JSONObject> results = (JSONArray) jsonObject.get("results");
-
-          for (JSONObject obj : results) {
-            extractRulesFromChildPages(baseUrl, ids, obj);
-          }
+          extractRulesFromChildPages(baseUrl, ids, results);
         }
       }
 
       return rules.toArray(new CertRule[rules.size()]);
     }
 
-    protected void extractRulesFromChildPages(String baseUrl, List<String> ids, JSONObject obj) {
+    protected void extractRulesFromChildPages(String baseUrl, List<String> ids, List<JSONObject> results) {
 
-      String title = (String) obj.get("title");
-      String ruleId = title.split(" ")[0];
-      String pageId = (String) obj.get("id");
+      for (JSONObject obj : results) {
+        String title = (String) obj.get("title");
+        String ruleId = title.split(" ")[0];
+        String pageId = (String) obj.get("id");
 
-      if (ruleId.matches(Cert.REFERENCE_PATTERN)) {
-        String tiny = (String) ((JSONObject) obj.get("_links")).get("tinyui");
-        rules.add(new CertRule(ruleId, title, baseUrl + tiny));
+        if (ruleId.matches(Cert.REFERENCE_PATTERN)) {
+          String tiny = (String) ((JSONObject) obj.get("_links")).get("tinyui");
+          rules.add(new CertRule(ruleId, title, baseUrl + tiny));
 
-      } else {
-        ids.add(pageId);
+        } else {
+          ids.add(pageId);
+        }
       }
     }
 
