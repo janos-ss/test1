@@ -54,10 +54,10 @@ public class CertTest {
     String report = cert.getCleanupReportBody(list);
     assertThat(report).isEqualTo("");
 
-    rule.setReferences("CERT, ASDF01");
+    rule.setReferences("CERT, ASDF01-J");
     report = cert.getCleanupReportBody(list);
-    assertThat(report).isEqualTo("Not found: null : CERT, ASDF01\n" +
-            "https://www.securecoding.cert.org/confluence/rest/api/content?title=ASDF01\n");
+    assertThat(report).isEqualTo("Not found: null : CERT, ASDF01-J\n" +
+            "https://www.securecoding.cert.org/confluence/rest/api/content?title=ASDF01-J\n");
   }
 
   @Test
@@ -128,6 +128,23 @@ public class CertTest {
     freshCert.setLanguage(Language.C);
     assertThat(freshCert.getLanguage()).isEqualTo(Language.C);
 
+  }
+
+  @Test
+  public void testGetSpecificReferences(){
+    String references = "<ul>" +
+            "<li><a href='http://blah.com>CERT ASD01-F.</a> - bibbity bobbity boo</li>\n" +
+            "</ul>\n" +
+            "<h3>See also</h3>\n" +
+            "<ul>\n" +
+            "<li>Foo</li>\n" +
+            "</ul>\n";
+
+    Rule rule = new Rule("");
+    rule.setReferences(references);
+
+    List<String> refs = cert.getSpecificReferences(rule);
+    assertThat(refs.size()).isEqualTo(1);
   }
 
 }
