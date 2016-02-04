@@ -5,6 +5,10 @@
  */
 package com.sonarsource.ruleapi.externalspecifications;
 
+/**
+ * Describes whether or not we're interested in covering
+ * any random rule from a standard.
+ */
 public enum Implementability {
   IMPLEMENTABLE, NOT_IMPLEMENTABLE, REJECTED;
 }

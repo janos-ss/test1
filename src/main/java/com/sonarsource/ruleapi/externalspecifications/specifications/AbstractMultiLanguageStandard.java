@@ -18,6 +18,11 @@ import java.util.logging.Logger;
 import org.fest.util.Strings;
 
 
+/**
+ * Some standards, such as CWE apply to multiple langauges, but we want
+ * to report on them per-langauge.
+ * This is the basic reporting implementation for that.
+ */
 public abstract class AbstractMultiLanguageStandard extends AbstractReportableStandard {
 
   private static final ReportType[] reportTypes = {ReportType.INTERNAL_COVERAGE, ReportType.INTERNAL_COVERAGE_SUMMARY, ReportType.HTML};

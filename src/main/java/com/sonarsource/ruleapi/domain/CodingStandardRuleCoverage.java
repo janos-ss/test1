@@ -10,7 +10,14 @@ import com.sonarsource.ruleapi.utilities.Utilities;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Simple map of an id from a standard to the
+ * RSpec rules that are relevant and
+ * <ul>
+ *   <li>have not been implemented - {@link #getSpecifiedBy()}</li>
+ *   <li><em>have</em> been implemented - {@link #getImplementedBy()}</li>
+ * </ul>
+ */
 public class CodingStandardRuleCoverage {
 
   private String codingStandardRuleId = null;

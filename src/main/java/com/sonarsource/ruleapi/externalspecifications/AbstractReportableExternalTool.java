@@ -18,6 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Basic reporting implementation for tracking the reimlementation of
+ * other tools' rules.
+ */
 public abstract class AbstractReportableExternalTool extends AbstractReportableStandard implements CustomerReport{
 
   protected int implementable = 0;

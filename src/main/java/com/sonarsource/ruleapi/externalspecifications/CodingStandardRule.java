@@ -5,6 +5,10 @@
  */
 package com.sonarsource.ruleapi.externalspecifications;
 
+
+/**
+ * A single rule from a standard.
+ */
 public interface CodingStandardRule {
   String getCodingStandardRuleId();
   Implementability getImplementability();

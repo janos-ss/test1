@@ -10,6 +10,11 @@ import com.sonarsource.ruleapi.domain.Rule;
 import java.util.List;
 
 
+/**
+ * A set of coding rules
+ * Can be as set of abstract rules, such as MISRA or CWE
+ * or a concrete tool, such as FindBugs.
+ */
 public interface CodingStandard {
 
   String getStandardName();

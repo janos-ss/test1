@@ -5,6 +5,9 @@
  */
 package com.sonarsource.ruleapi.externalspecifications;
 
+/**
+ * A user-facing report. Hence the expection of an HTML format ({@link #getHtmlReport(String)})
+ */
 public interface CustomerReport {
 
   String getHtmlReport(String instance);

@@ -19,6 +19,10 @@ import java.util.List;
 import java.util.Map;
 import org.fest.util.Strings;
 
+
+/**
+ * Basic reporting implementation
+ */
 public abstract class AbstractReportableStandard implements CodingStandard {
 
   public abstract String getReport(String instance);
@@ -36,6 +40,11 @@ public abstract class AbstractReportableStandard implements CodingStandard {
   private String lastInstance = null;
 
 
+  /**
+   * Retrieve RSpec rules for which the the relevant field on the References
+   * tab is non-blank.
+   * @return list of rules relevant to the standard
+   */
   public List<Rule> getRSpecRulesReferencingStandard() {
     String query = "'" + getRSpecReferenceFieldName() + "' is not EMPTY";
 
@@ -54,10 +63,19 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     return rules;
   }
 
+  /**
+   * Quick map from an id to the list of relevant rules/RSpecs
+   *
+   * @return map of id's for this standard to {@link CodingStandardRuleCoverage} records
+   */
   public Map<String, CodingStandardRuleCoverage> getRulesCoverage(){
     return rulesCoverage;
   }
 
+  /**
+   * Make sure the {@link #rulesCoverage} map is fully populated.
+   * @param instance the SonarQube instance to get rule coverage data from
+   */
   protected void initCoverageResults(String instance) {
 
     if (rulesCoverage == null) {
@@ -78,6 +96,9 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     }
   }
 
+  /**
+   * Create the rulesCoverage map and and an entry per id in the standard
+   */
   public void populateRulesCoverageMap() {
 
     rulesCoverage = new HashMap<>();
@@ -100,6 +121,13 @@ public abstract class AbstractReportableStandard implements CodingStandard {
     rulesCoverage = null;
   }
 
+  /**
+   * Because there's a length limit on Jira fields, some mapping fields contain
+   * entries like: "BC_NULL.*". This method expands the regex to get a full list
+   * of the id's covered by the RSpec.
+   * @param listFromRspec
+   * @return
+   */
   public List<String> getExpandedStandardKeyList(List<String> listFromRspec) {
 
     if (listFromRspec == null){

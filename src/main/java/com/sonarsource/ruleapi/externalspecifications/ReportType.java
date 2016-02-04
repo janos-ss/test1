@@ -6,6 +6,10 @@
 package com.sonarsource.ruleapi.externalspecifications;
 
 
+/**
+ * This enum exists primarily to provide the user the ability
+ * to generate any random report from Main.
+ */
 public enum ReportType {
   INTERNAL_COVERAGE(true),
   INTERNAL_COVERAGE_SUMMARY(true),

@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * Special reports were wanted for the three MISRA standards.
+ * It seemed to make the most sense to do centralize it here.
+ */
 public abstract class AbstractMisraSpecification extends AbstractReportableStandard
         implements TaggableStandard, CustomerReport {
 

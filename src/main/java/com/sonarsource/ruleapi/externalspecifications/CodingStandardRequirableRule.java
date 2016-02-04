@@ -5,6 +5,13 @@
  */
 package com.sonarsource.ruleapi.externalspecifications;
 
+
+/**
+ * Provides the ability to distinguish between optional and required rules.
+ * See {@link AbstractMisraSpecification}
+ *
+ * Can/should be combined with {@link HasLevel}?
+ */
 public interface CodingStandardRequirableRule extends CodingStandardRule {
   boolean isRuleRequired();
 }
