@@ -153,9 +153,6 @@ public class ReportService extends RuleManager {
   }
 
   protected static void writeFile(String fileName, String content) {
-    if (content == null || content.isEmpty()) {
-      return;
-    }
 
     String path = fileName.replaceAll(" ", "_");
     File file = new File(BASE_DIR + path);

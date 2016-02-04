@@ -84,6 +84,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     initCoverageResults(null);
 
     StringBuilder sb = new StringBuilder();
+    sb.append(getStandardName()).append(" unspecified rules\n\n");
 
     for (CodingStandardRule csr : getCodingStandardRules()) {
       CodingStandardRuleCoverage cov = getRulesCoverage().get(csr.getCodingStandardRuleId());
@@ -95,11 +96,6 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
         }
         sb.append("\n");
       }
-    }
-
-    if (sb.length() > 0) {
-      String tmp = getStandardName() + " unspecified rules\n\n";
-      sb.insert(0, tmp);
     }
     return sb.toString();
   }
