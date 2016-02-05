@@ -14,6 +14,10 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Helper class to translate SonarQube-specific JSON
+ * into the fields of a Rule
+ */
 public class SonarQubeHelper {
 
   private static final String HTML_H2 = "<h2>";

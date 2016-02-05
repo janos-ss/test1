@@ -17,6 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * Helper class to translate Jira-specific JSON
+ * into the fields of a Rule
+ */
 public class JiraHelper {
 
   private static final String MARKDOWN_H2 = "h2.";

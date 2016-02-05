@@ -39,7 +39,10 @@ import java.util.Map;
 
 
 /**
- * Retrieves Issue from Jira by key
+ * Retrieve data from a URL.
+ *
+ * At first Jira search, fetches & caches all
+ * RSpecs in JSON format.
  */
 public class Fetcher {
 
@@ -66,7 +69,7 @@ public class Fetcher {
    * or implementation id (S###) or legacy key.
    *
    * If no match is found, <code>null</code> is returned.
-   * Will throw a <code>RuleException</code> when several matches are found for a legacy key search.
+   * Throws a <code>RuleException</code> when several matches are found for a legacy key search.
    *
    * @param key the key to search by.
    * @return Populated Issue retrieved from Jira or null
