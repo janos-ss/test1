@@ -74,6 +74,19 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
   }
 
   @Override
+  protected void initCoverageResults(String instance) {
+    if (getRulesCoverage() == null && language == null) {
+
+      populateRulesCoverageMap();
+      findSpecifiedInRspec(getRSpecRulesReferencingStandard());
+      findImplementedByPlugin(instance);
+
+    } else {
+      super.initCoverageResults(instance);
+    }
+  }
+
+  @Override
   public String getReport(String instance) {
 
     initCoverageResults(instance);
