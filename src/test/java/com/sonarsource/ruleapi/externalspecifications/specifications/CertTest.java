@@ -66,16 +66,13 @@ public class CertTest {
 
     Cert freshCert = new Cert();
 
-    Rule rule = new Rule("");
-    rule.setKey("ruleKey");
-    rule.getCert().add("PRE30-C.");
-
     // pre-empty fetch of rules from CERT cite
     Cert.CertRule certRule = new Cert.CertRule("PRE30-C.", "test title", "http://boo.com");
     Cert.CertRule certRule2 = new Cert.CertRule("MSC01-C.", "Miscellaney", "http://misc.com");
     Cert.CertRule[] certRules = {certRule, certRule2};
 
     freshCert.populateRulesCoverageMap();
+
     CodingStandardRuleCoverage csrc = new CodingStandardRuleCoverage();
     csrc.setCodingStandardRuleId("PRE30-C.");
     freshCert.getRulesCoverage().put("PRE30-C.", csrc);
@@ -84,7 +81,15 @@ public class CertTest {
     csrc.setCodingStandardRuleId("MSC01-C.");
     freshCert.getRulesCoverage().put("MSC01-C.", csrc);
 
+    Rule rule = new Rule("");
+    rule.setKey("ruleKey");
+    rule.getCert().add("PRE30-C.");
     freshCert.setCodingStandardRuleCoverageImplemented(rule.getCert(), rule);
+
+    Rule rule2 = new Rule("");
+    rule2.setKey("rule2");
+    rule2.getCert().add("MSC01-C.");
+    freshCert.setCodingStandardRuleCoverageSpecifiedBy(rule2, rule2.getCert());
 
 
     assertThat(freshCert.generateReport(RuleManager.NEMO)).isNull();
@@ -100,7 +105,8 @@ public class CertTest {
             "<td><a href='https://nemo.sonarqube.org/coding_rules#rule_key=null%3AruleKey'>ruleKey</a> null<br/>\n" +
             "</td></tr>\n" +
             "</table><h3>Uncovered</h3><table>\n" +
-            "<tr><td><a href='http://misc.com' target='_blank'>MSC01-C.</a>Miscellaney</td><td></td></tr>\n" +
+            "<tr><td><a href='http://misc.com' target='_blank'>MSC01-C.</a>Miscellaney</td><td><a href='https://jira.sonarsource.com/browse/rule2'>rule2</a> null<br/>\n" +
+            "</td></tr>\n" +
             "</table>");
   }
 

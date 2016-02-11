@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
+import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
@@ -63,9 +64,6 @@ public class CweTest {
 
     assertThat(cwe.getRulesCoverage()).isNull();
 
-    cwe1.populateRulesCoverageMap();
-    assertThat(cwe1.getRulesCoverage()).isEmpty();
-
     Rule sq2 = new Rule("Java");
     sq2.getCwe().add("CWE-123");
     sq2.getCwe().add("CWE-234");
@@ -85,9 +83,6 @@ public class CweTest {
 
     assertThat(cwe.getRulesCoverage()).isNull();
 
-    cwe1.populateRulesCoverageMap();
-    assertThat(cwe1.getRulesCoverage()).isEmpty();
-
     Rule sq2 = new Rule("Java");
     sq2.getCwe().add("CWE-123");
     sq2.getCwe().add("CWE-234");
@@ -99,6 +94,11 @@ public class CweTest {
 
   }
 
+  @Test
+  public void testGetReportNullLanguage(){
+    Cwe cwe1 = new Cwe();
+    assertThat(cwe1.getReport(RuleManager.NEMO)).isNull();
+  }
 
 
   @Test
