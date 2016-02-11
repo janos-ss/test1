@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.utilities.Language;
@@ -55,55 +56,82 @@ public class CweTest {
   }
 
   @Test
-  public void testPopulateCweMap() {
+  public void testSetCodingStandardRuleCoverageImplementedBy(){
+
     Cwe cwe1 = new Cwe();
+    cwe1.setLanguage(Language.JAVA);
 
-    Map<String,List<Rule>> cweRules = new TreeMap<>();
+    assertThat(cwe.getRulesCoverage()).isNull();
 
-    Rule sq = new Rule("Java");
-    Rule rspec = sq;
-    cwe1.populateStandardMap(cweRules, sq, rspec);
-
-    assertThat(cweRules).isEmpty();
-
-    sq.getCwe().add("CWE-234");
-    cwe1.populateStandardMap(cweRules, sq, rspec);
+    cwe1.populateRulesCoverageMap();
+    assertThat(cwe1.getRulesCoverage()).isEmpty();
 
     Rule sq2 = new Rule("Java");
-    Rule rspec2 = sq2;
     sq2.getCwe().add("CWE-123");
     sq2.getCwe().add("CWE-234");
 
-    cwe1.populateStandardMap(cweRules, sq2, rspec2);
+    cwe1.setCodingStandardRuleCoverageImplemented(sq2.getCwe(), sq2);
 
-    assertThat(cweRules.get("CWE-123")).isEqualTo(Arrays.asList(sq2));
-    assertThat(cweRules.get("CWE-234")).contains(sq);
-    assertThat(cweRules.values()).hasSize(2);
+    assertThat(cwe1.getRulesCoverage()).hasSize(2);
+    assertThat(cwe1.getRulesCoverage().get("CWE-123").getImplementedBy().get(0)).isEqualTo(sq2);
+
   }
+
+  @Test
+  public void testSetCodingStandardRuleCoverageSpecifiedBy(){
+
+    Cwe cwe1 = new Cwe();
+    cwe1.setLanguage(Language.JAVA);
+
+    assertThat(cwe.getRulesCoverage()).isNull();
+
+    cwe1.populateRulesCoverageMap();
+    assertThat(cwe1.getRulesCoverage()).isEmpty();
+
+    Rule sq2 = new Rule("Java");
+    sq2.getCwe().add("CWE-123");
+    sq2.getCwe().add("CWE-234");
+
+    cwe1.setCodingStandardRuleCoverageSpecifiedBy(sq2, sq2.getCwe());
+
+    assertThat(cwe1.getRulesCoverage()).hasSize(2);
+    assertThat(cwe1.getRulesCoverage().get("CWE-123").getSpecifiedBy().get(0)).isEqualTo(sq2);
+
+  }
+
+
 
   @Test
   public void testGetReport(){
     Cwe cwe1 = new Cwe();
     String instance = "http://localhost:9000";
-    Map<String,List<Rule>> cweRules = new TreeMap<>();
 
     Rule sq2 = new Rule("Java");
     sq2.setRepo("abap");
-    Rule rspec2 = sq2;
     sq2.getCwe().add("CWE-123");
     sq2.getCwe().add("CWE-234");
     sq2.setKey("NonNormalKey");
 
-    assertThat(cwe1.generateReport(instance, cweRules)).isNull();
+    assertThat(cwe1.generateReport(instance)).isNull();
 
     cwe1.setLanguage(Language.ABAP);
 
-    assertThat(cwe1.generateReport(instance, cweRules)).isNull();
+    assertThat(cwe1.generateReport(instance)).isNull();
 
     cwe1.setLanguage(null);
-    cwe1.populateStandardMap(cweRules, sq2, rspec2);
+    cwe1.populateRulesCoverageMap();
 
-    assertThat(cwe1.generateReport(instance, cweRules)).isNull();
+    CodingStandardRuleCoverage csrc = new CodingStandardRuleCoverage();
+    csrc.setCodingStandardRuleId("CWE-123");
+    cwe1.getRulesCoverage().put("CWE-123", csrc);
+
+    csrc = new CodingStandardRuleCoverage();
+    csrc.setCodingStandardRuleId("CWE-234");
+    cwe1.getRulesCoverage().put("CWE-234", csrc);
+
+    cwe1.setCodingStandardRuleCoverageImplemented(sq2.getCwe(), sq2);
+
+    assertThat(cwe1.generateReport(instance)).isNull();
 
     cwe1.setLanguage(Language.ABAP);
 
@@ -117,7 +145,7 @@ public class CweTest {
             "</td></tr>\n" +
             "</table>";
 
-    assertThat(cwe1.generateReport(instance, cweRules)).isEqualTo(expectedReport);
+    assertThat(cwe1.generateReport(instance)).isEqualTo(expectedReport);
 
   }
 

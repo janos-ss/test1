@@ -241,34 +241,11 @@ public class SansTop25Test {
   }
 
   @Test
-  public void testPopulateStandardMap() {
-    SansTop25 sans = new SansTop25();
-
-    String id = "CWE-120";
-
-    Rule rule = new Rule("");
-    List<String> list = sans.getRspecReferenceFieldValues(rule);
-    list.add(id);
-    list.add("CWE-234");
-    list.add(id);
-
-    Map<String, List<Rule>> standardRules = new TreeMap<>();
-    sans.populateStandardMap(standardRules, rule, rule);
-
-    assertThat(standardRules).hasSize(1);
-    List<Rule> ruleList = standardRules.get(id);
-    assertThat(ruleList).hasSize(2);
-    assertThat(ruleList.contains(rule)).isTrue();
-
-  }
-
-  @Test
   public void testGenerateReport() {
 
     String instance = "http://localhost:9000";
 
     SansTop25 sans = new SansTop25();
-    Map<String, List<Rule>> standardRules = new TreeMap<>();
 
     String id = "CWE-120";
 
@@ -278,17 +255,20 @@ public class SansTop25Test {
     list.add("89");
 
 
-    assertThat(sans.generateReport(instance, standardRules)).isNull();
+    assertThat(sans.generateReport(instance)).isNull();
 
     sans.setLanguage(Language.C);
-    assertThat(sans.generateReport(instance, standardRules)).isNull();
+    assertThat(sans.generateReport(instance)).isNull();
 
-    sans.populateStandardMap(standardRules, rule, rule);
+    sans.populateRulesCoverageMap();
     sans.setLanguage(null);
-    assertThat(sans.generateReport(instance, standardRules)).isNull();
+
+    assertThat(sans.generateReport(instance)).isNull();
+
+    sans.setCodingStandardRuleCoverageImplemented(list, rule);
 
     sans.setLanguage(Language.C);
-    String report = sans.generateReport(instance, standardRules);
+    String report = sans.generateReport(instance);
 
     assertThat(report).isNotNull();
     assertThat(report).contains("http://www.sans.org/top25-software-errors/");

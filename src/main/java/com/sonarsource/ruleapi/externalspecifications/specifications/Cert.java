@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
@@ -167,20 +168,20 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
 
 
   @Override
-  protected String generateReport(String instance, Map<String, List<Rule>> standardRules) {
+  protected String generateReport(String instance) {
 
-    if (currentCertLanguage == null || standardRules.isEmpty()) {
+    if (currentCertLanguage == null) {
       return null;
     }
 
     CertRule[] certRules = (CertRule[]) currentCertLanguage.getCodingStandardRules();
 
-    return getReportBody(instance, standardRules, certRules);
+    return getReportBody(instance, certRules);
   }
 
-  protected String getReportBody(String instance, Map<String, List<Rule>> standardRules, CertRule[] certRules) {
+  protected String getReportBody(String instance, CertRule[] certRules) {
 
-    if (currentCertLanguage == null) {
+    if (currentCertLanguage == null || getRulesCoverage() == null) {
       return null;
     }
 
@@ -194,17 +195,18 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
     StringBuilder uncovered = new StringBuilder();
     uncovered.append("<h3>Uncovered</h3><table>\n");
 
+    Map<String, CodingStandardRuleCoverage> map = this.getRulesCoverage();
 
     for (CertRule certRule : certRules) {
       String certId = certRule.getId();
-      List<Rule> implRules = standardRules.get(certId);
-      if (implRules == null) {
-        implRules = standardRules.get(certId.substring(0, certId.length() - 1));
-      }
+
+      CodingStandardRuleCoverage csrc = map.get(certId);
+
+      List<Rule> implRules = csrc.getImplementedBy();
 
       String title = certRule.getTitle().replaceFirst(certId, "");
 
-      if (implRules != null) {
+      if (!implRules.isEmpty()) {
         covered.append("<tr><td><a href='").append(certRule.getUrl())
                 .append("' target='_blank'>").append(certRule.getId()).append("</a>")
                 .append(title).append("</td>\n<td>");
@@ -216,7 +218,11 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
         uncovered.append("<tr><td><a href='")
                 .append(certRule.getUrl())
                 .append("' target='_blank'>").append(certRule.getId()).append("</a>")
-                .append(title).append("</td></tr>\n");
+                .append(title).append("</td><td>");
+        for (Rule rule : csrc.getSpecifiedBy()) {
+          uncovered.append(Utilities.getJiraLinkedRuleReference(rule));
+        }
+        uncovered.append("</td></tr>\n");
       }
     }
 
@@ -250,12 +256,9 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
   @Override
   public String getReport(String instance) {
 
-    if (getLanguage() == null) {
-      return null;
-    }
+    initCoverageResults(instance);
 
-    Map<String, List<Rule>> certRules = initCoverage(instance);
-    return generateReport(instance, certRules);
+    return generateReport(instance);
   }
 
   @Override
@@ -275,6 +278,10 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
 
   @Override
   public CodingStandardRule[] getCodingStandardRules() {
+
+    if (currentCertLanguage == null) {
+      return new CodingStandardRule[0];
+    }
 
     return currentCertLanguage.getCodingStandardRules();
   }

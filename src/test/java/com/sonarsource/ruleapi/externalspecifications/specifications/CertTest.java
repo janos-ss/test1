@@ -5,11 +5,10 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
-import java.util.HashMap;
-import java.util.Map;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -69,49 +68,62 @@ public class CertTest {
 
     Rule rule = new Rule("");
     rule.setKey("ruleKey");
-    List<Rule> list = new ArrayList<>();
-    list.add(rule);
+    rule.getCert().add("PRE30-C.");
 
-    Map<String, List<Rule>> standardRules = new HashMap<>();
-    standardRules.put("PRE30-C.", list);
-
-    String result = freshCert.generateReport(RuleManager.NEMO, standardRules);
-    assertThat(result).isNull();
-
-
+    // pre-empty fetch of rules from CERT cite
     Cert.CertRule certRule = new Cert.CertRule("PRE30-C.", "test title", "http://boo.com");
     Cert.CertRule certRule2 = new Cert.CertRule("MSC01-C.", "Miscellaney", "http://misc.com");
     Cert.CertRule[] certRules = {certRule, certRule2};
 
-    result = freshCert.getReportBody(RuleManager.NEMO, standardRules, certRules);
-    assertThat(result).isNull();
+    freshCert.populateRulesCoverageMap();
+    CodingStandardRuleCoverage csrc = new CodingStandardRuleCoverage();
+    csrc.setCodingStandardRuleId("PRE30-C.");
+    freshCert.getRulesCoverage().put("PRE30-C.", csrc);
+
+    csrc = new CodingStandardRuleCoverage();
+    csrc.setCodingStandardRuleId("MSC01-C.");
+    freshCert.getRulesCoverage().put("MSC01-C.", csrc);
+
+    freshCert.setCodingStandardRuleCoverageImplemented(rule.getCert(), rule);
+
+
+    assertThat(freshCert.generateReport(RuleManager.NEMO)).isNull();
+    assertThat(freshCert.getReportBody(RuleManager.NEMO, certRules)).isNull();
+
 
     freshCert.setLanguage(Language.C);
-    result = freshCert.getReportBody(RuleManager.NEMO, standardRules, certRules);
 
+    String result = freshCert.getReportBody(RuleManager.NEMO, certRules);
     assertThat(result).isEqualTo("<h2>C coverage of CERT</h2>\n" +
             "<h3>Covered</h3><table>\n" +
             "<tr><td><a href='http://boo.com' target='_blank'>PRE30-C.</a>test title</td>\n" +
             "<td><a href='https://nemo.sonarqube.org/coding_rules#rule_key=null%3AruleKey'>ruleKey</a> null<br/>\n" +
             "</td></tr>\n" +
             "</table><h3>Uncovered</h3><table>\n" +
-            "<tr><td><a href='http://misc.com' target='_blank'>MSC01-C.</a>Miscellaney</td></tr>\n" +
+            "<tr><td><a href='http://misc.com' target='_blank'>MSC01-C.</a>Miscellaney</td><td></td></tr>\n" +
             "</table>");
   }
 
   @Test
-  public void testGenerateReport() {
+  public void testGenerateReportNullLanguage() {
     Cert freshCert = new Cert();
 
     Rule rule = new Rule("");
-    List<Rule> list = new ArrayList<>();
-    list.add(rule);
+    List<String> ids = new ArrayList<>();
+    ids.add("ASD01-J.");
+    ids.add("ASD02-J.");
 
-    Map<String, List<Rule>> standardRules = new HashMap<>();
-    standardRules.put("PRE30-C.", list);
+    freshCert.setCodingStandardRuleCoverageImplemented(ids, rule);
 
-    String result = freshCert.generateReport(RuleManager.NEMO, standardRules);
+    String result = freshCert.generateReport(RuleManager.NEMO);
     assertThat(result).isNull();
+  }
+
+  @Test
+  public void testGetCodingStandardRules(){
+    Cert freshCert = new Cert();
+
+    assertThat(freshCert.getCodingStandardRules()).isEmpty();
   }
 
   @Test

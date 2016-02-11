@@ -57,9 +57,9 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
   }
 
   @Override
-  protected String generateReport(String instance, Map<String, List<Rule>> standardRules) {
+  protected String generateReport(String instance) {
 
-    if (standardRules.isEmpty() || language == null) {
+    if (language == null || this.getRulesCoverage() == null) {
       return null;
     }
 
@@ -67,18 +67,19 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
     sb.append("<h2>").append(getReportHeader()).append("</h2>\n");
     sb.append("<table>\n");
 
-    for (Map.Entry<String, List<Rule>> entry : standardRules.entrySet()) {
+    for (Map.Entry<String, CodingStandardRuleCoverage> entry : this.getRulesCoverage().entrySet()) {
+      if (!entry.getValue().getImplementedBy().isEmpty()) {
+        StandardRule owasp = StandardRule.valueOf(entry.getKey());
+        sb.append("<tr><td><a href='").append(owasp.getUrl()).append("' target='_blank'>")
+                .append(owasp.name()).append(" ").append(owasp.getTitle())
+                .append("</a></td>\n<td>");
 
-      StandardRule owasp = StandardRule.valueOf(entry.getKey());
-      sb.append("<tr><td><a href='").append(owasp.getUrl()).append("' target='_blank'>")
-              .append(owasp.name()).append(" ").append(owasp.getTitle())
-              .append("</a></td>\n<td>");
+        for (Rule rule : entry.getValue().getImplementedBy()) {
+          sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
+        }
 
-      for (Rule rule : entry.getValue()) {
-        sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
+        sb.append("</td></tr>\n");
       }
-
-      sb.append("</td></tr>\n");
     }
     sb.append("</table>");
 

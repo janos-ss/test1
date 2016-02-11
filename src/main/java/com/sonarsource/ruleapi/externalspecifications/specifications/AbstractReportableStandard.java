@@ -164,6 +164,10 @@ public abstract class AbstractReportableStandard implements CodingStandard {
 
   public void setCodingStandardRuleCoverageSpecifiedBy(Rule rspecRule, List<String> ids) {
 
+    if (getRulesCoverage() == null) {
+      populateRulesCoverageMap();
+    }
+
     if (ids != null && ! ids.isEmpty()) {
       for (String id : ids) {
         CodingStandardRuleCoverage cov = getRulesCoverage().get(id);
@@ -215,6 +219,10 @@ public abstract class AbstractReportableStandard implements CodingStandard {
   }
 
   public void setCodingStandardRuleCoverageImplemented(List<String> ids, Rule rule) {
+
+    if (getRulesCoverage() == null) {
+      populateRulesCoverageMap();
+    }
 
     if (ids != null && ! ids.isEmpty()) {
       for (String id : ids) {

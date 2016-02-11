@@ -253,39 +253,24 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
   }
 
   @Override
-  protected void populateStandardMap(Map<String, List<Rule>> standardRules, Rule sq, Rule rspec) {
+  protected String generateReport(String instance) {
 
-    for (String id : getRspecReferenceFieldValues(rspec)) {
-
-      if (StandardRule.fromString(id) != null) {
-
-        List<Rule> rules = standardRules.get(id);
-        if (rules == null) {
-          rules = new ArrayList<>();
-          standardRules.put(id, rules);
-        }
-        rules.add(sq);
-      }
-    }
-  }
-
-  @Override
-  protected String generateReport(String instance, Map<String, List<Rule>> standardRules) {
-
-    if (standardRules.isEmpty() || getLanguage() == null) {
+    if (getLanguage() == null || this.getRulesCoverage() == null) {
       return null;
     }
 
     Map<Category,Map<StandardRule, List<Rule>>> metaMap = new EnumMap<>(Category.class);
-    for (Map.Entry<String,List<Rule>> entry : standardRules.entrySet()) {
-      StandardRule csr = StandardRule.fromString(entry.getKey());
+    for (Map.Entry<String, CodingStandardRuleCoverage> entry : this.getRulesCoverage().entrySet()) {
+      if (!entry.getValue().getImplementedBy().isEmpty()) {
 
-      Map<StandardRule, List<Rule>> miniMap = metaMap.get(csr.category);
-      if (miniMap == null) {
-        miniMap = new EnumMap<>(StandardRule.class);
-        metaMap.put(csr.category, miniMap);
+        StandardRule csr = StandardRule.fromString(entry.getValue().getCodingStandardRuleId());
+        Map<StandardRule, List<Rule>> miniMap = metaMap.get(csr.category);
+        if (miniMap == null) {
+          miniMap = new EnumMap<>(StandardRule.class);
+          metaMap.put(csr.category, miniMap);
+        }
+        miniMap.put(csr, entry.getValue().getImplementedBy());
       }
-      miniMap.put(csr, entry.getValue());
     }
 
 

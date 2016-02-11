@@ -149,4 +149,26 @@ public class AbstractReportableStandardTest {
     }
   }
 
+  @Test
+  public void testNullRulesCoverageMap(){
+    FindBugs fb = new FindBugs();
+
+    assertThat(fb.getRulesCoverage()).isNull();
+
+    Rule rule = new Rule("Java");
+    List<String> ids = new ArrayList<>();
+    ids.add("ASDF");
+
+    fb.setCodingStandardRuleCoverageImplemented(ids, rule);
+    assertThat(fb.getRulesCoverage()).isNotNull();
+
+
+    fb.resetRulesCoverageMap();
+    assertThat(fb.getRulesCoverage()).isNull();
+
+    fb.setCodingStandardRuleCoverageSpecifiedBy(rule, ids);
+    assertThat(fb.getRulesCoverage()).isNotNull();
+
+  }
+
 }

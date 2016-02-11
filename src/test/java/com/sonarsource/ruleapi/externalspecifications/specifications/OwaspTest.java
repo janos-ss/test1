@@ -178,21 +178,39 @@ public class OwaspTest {
     list.add("A1");
     list.add("A2");
 
-    assertThat(owasp.generateReport(instance, standardRules)).isNull();
+    assertThat(owasp.generateReport(instance)).isNull();
 
     owasp.setLanguage(Language.C);
-    assertThat(owasp.generateReport(instance, standardRules)).isNull();
+    assertThat(owasp.generateReport(instance)).isNull();
 
-    owasp.populateStandardMap(standardRules, rule, rule);
     owasp.setLanguage(null);
-    assertThat(owasp.generateReport(instance, standardRules)).isNull();
+    owasp.setCodingStandardRuleCoverageImplemented(list, rule);
+
+    assertThat(owasp.generateReport(instance)).isNull();
 
     owasp.setLanguage(Language.C);
+    owasp.setCodingStandardRuleCoverageImplemented(list, rule);
 
-    String report = owasp.generateReport(instance, standardRules);
+    String report = owasp.generateReport(instance);
 
     assertThat(report).isNotNull();
     assertThat(report).contains("https://www.owasp.org/index.php/Top_10_2013-A1-Injection");
+
+  }
+
+  @Test
+  public void testSetLanguageResetsRulesCoverageMap() {
+    OwaspTopTen owasp = new OwaspTopTen();
+    assertThat(owasp.getRulesCoverage()).isNull();
+
+    owasp.setLanguage(Language.ABAP);
+    assertThat(owasp.getRulesCoverage()).isNull();
+
+    owasp.populateRulesCoverageMap();
+    assertThat(owasp.getRulesCoverage()).isNotNull();
+
+    owasp.setLanguage(Language.JAVA);
+    assertThat(owasp.getRulesCoverage()).isNull();
 
   }
 

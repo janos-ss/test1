@@ -5,14 +5,16 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class Cwe extends AbstractMultiLanguageStandard implements TaggableStandard {
@@ -96,14 +98,14 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
       return null;
     }
 
-    Map<String, List<Rule>> cweRules = initCoverage(instance);
-    return generateReport(instance, cweRules);
+    initCoverageResults(instance);
+    return generateReport(instance);
   }
 
   @Override
-  protected String generateReport(String instance, Map<String, List<Rule>> standardRules) {
+  protected String generateReport(String instance) {
 
-    if (standardRules.isEmpty() || language == null) {
+    if (language == null || this.getRulesCoverage() == null) {
       return null;
     }
 
@@ -111,20 +113,85 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
     sb.append("<h2>").append(language.getRspec()).append(" coverage of CWE</h2>\n");
     sb.append("<table>\n");
 
-    for (Map.Entry<String, List<Rule>> entry : standardRules.entrySet()) {
+    List<String> sortedKeys = new ArrayList(getRulesCoverage().keySet());
+    Collections.sort(sortedKeys);
 
-      Integer key = Integer.valueOf(entry.getKey().split("-")[1]);
-      sb.append("<tr><td><a href='http://cwe.mitre.org/data/definitions/").append(key)
-              .append("' target='_blank'>CWE-").append(key).append("</a></td>\n<td>");
+    for (String key : sortedKeys) {
+      CodingStandardRuleCoverage csrc = getRulesCoverage().get(key);
+      if (!csrc.getImplementedBy().isEmpty()) {
 
-      for (Rule rule : entry.getValue()) {
-        sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
+        Integer ikey = Integer.valueOf(key.split("-")[1]);
+        sb.append("<tr><td><a href='http://cwe.mitre.org/data/definitions/").append(ikey)
+                .append("' target='_blank'>CWE-").append(ikey).append("</a></td>\n<td>");
+
+        for (Rule rule : csrc.getImplementedBy()) {
+          sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
+        }
+        sb.append("</td></tr>\n");
       }
-      sb.append("</td></tr>\n");
     }
     sb.append("</table>");
 
     return sb.toString();
+  }
+
+  /**
+   * This override required by the fact that we don't hold the list of CWE id's
+   * in this class. As a result the {{rulesCoverage}} map starts out non-null, but empty.
+   *
+   * We must simply assume that each passed id is valid and store the related data.
+   *
+   * @param rspecRule
+   * @param ids list of CWE ids covered by rspecRule
+   */
+  @Override
+  public void setCodingStandardRuleCoverageSpecifiedBy(Rule rspecRule, List<String> ids) {
+
+    if (getRulesCoverage() == null) {
+      populateRulesCoverageMap();
+    }
+
+    if (ids != null && ! ids.isEmpty()) {
+      for (String id : ids) {
+        CodingStandardRuleCoverage cov = getRulesCoverage().get(id);
+        if (cov == null) {
+          cov = new CodingStandardRuleCoverage();
+          cov.setCodingStandardRuleId(id);
+          getRulesCoverage().put(id, cov);
+        }
+        cov.addSpecifiedBy(rspecRule);
+      }
+    }
+  }
+
+  /**
+   /**
+   * This override required by the fact that we don't hold the list of CWE id's
+   * in this class. As a result the {{rulesCoverage}} map starts out non-null, but empty.
+   *
+   * We must simply assume that each passed id is valid and store the related data.
+   *
+   * @param ids list of CWE ids implemented by rspecRule
+   * @param rule
+   */
+  @Override
+  public void setCodingStandardRuleCoverageImplemented(List<String> ids, Rule rule) {
+
+    if (getRulesCoverage() == null) {
+      populateRulesCoverageMap();
+    }
+
+    if (ids != null && ! ids.isEmpty()) {
+      for (String id : ids) {
+        CodingStandardRuleCoverage cov = getRulesCoverage().get(id);
+        if (cov == null) {
+          cov = new CodingStandardRuleCoverage();
+          cov.setCodingStandardRuleId(id);
+          getRulesCoverage().put(id, cov);
+        }
+        cov.addImplementedBy(rule);
+      }
+    }
   }
 
   @Override

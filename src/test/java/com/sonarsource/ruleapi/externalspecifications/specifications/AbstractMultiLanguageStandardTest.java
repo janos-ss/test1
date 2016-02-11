@@ -43,26 +43,9 @@ public class AbstractMultiLanguageStandardTest extends TestCase {
 
   public void testInitCoverage() throws Exception {
 
-    assertThat(cwe.initCoverage(null)).isNull();
-  }
+    cwe.initCoverageResults(null);
 
-  public void testPopulateStandardMap() {
-
-    String id = "CWE-123";
-
-    Rule rule = new Rule("");
-    List<String> list = cwe.getRspecReferenceFieldValues(rule);
-    list.add(id);
-    list.add("CWE-234");
-
-    Map<String, List<Rule>> standardRules = new TreeMap<>();
-    cwe.populateStandardMap(standardRules, rule, rule);
-
-    assertThat(standardRules).hasSize(2);
-    List<Rule> ruleList = standardRules.get(id);
-    assertThat(ruleList).hasSize(1);
-    assertThat(ruleList.contains(rule)).isTrue();
-
+    assertThat(cwe.getRulesCoverage()).isNull();
   }
 
   @Test
