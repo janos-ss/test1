@@ -11,7 +11,7 @@ import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
-import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.services.RuleManager;

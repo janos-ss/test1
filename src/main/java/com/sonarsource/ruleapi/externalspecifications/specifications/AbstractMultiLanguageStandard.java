@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.utilities.Language;
 import java.util.EnumMap;
@@ -66,11 +67,7 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
 
   }
 
-
-  /**
-   *
-   * @param instance URL to the SonarQube instance running the reference implementation
-   */
+  @Override
   protected void initCoverageResults(String instance) {
 
     if (getLanguage() == null) {

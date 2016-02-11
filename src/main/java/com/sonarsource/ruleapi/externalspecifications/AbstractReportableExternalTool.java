@@ -7,7 +7,6 @@ package com.sonarsource.ruleapi.externalspecifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.ArrayList;

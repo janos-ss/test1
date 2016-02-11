@@ -15,7 +15,7 @@ import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.externalspecifications.CleanupReport;
 import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMultiLanguageStandard;
-import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
