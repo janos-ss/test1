@@ -43,6 +43,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
   private static final CertType CPP = new CertType(Language.CPP, "146440541");
   private static final CertType C = new CertType(Language.C, "158237133");
   private static final CertType JAVA = new CertType(Language.JAVA, "158237393");
+  public static final String RESULTS = "results";
 
   private CertType currentCertLanguage = null;
 
@@ -155,7 +156,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
       String encodedTitle = URLEncoder.encode(title, "UTF-8");
 
       JSONObject json = FETCHER.getJsonFromUrl(baseUrl + encodedTitle);
-      JSONArray results = (JSONArray) json.get("results");
+      JSONArray results = (JSONArray) json.get(RESULTS);
       if (results.isEmpty()) {
         sb.append("Not found: ").append(ruleKey).append(" : ").append(ref).append(newline);
         sb.append(baseUrl).append(encodedTitle).append(newline);
@@ -312,7 +313,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
 
         while (!ids.isEmpty()){
           JSONObject jsonObject = FETCHER.getJsonFromUrl(String.format(url, baseUrl, ids.remove(0)));
-          List<JSONObject> results = (JSONArray) jsonObject.get("results");
+          List<JSONObject> results = (JSONArray) jsonObject.get(RESULTS);
           extractRulesFromChildPages(baseUrl, ids, results);
         }
       }
@@ -328,7 +329,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
         String pageId = (String) obj.get("id");
 
         List<String> labels = new ArrayList<>();
-        List<JSONObject> jLabels =  (JSONArray)((JSONObject) ((JSONObject) obj.get("metadata")).get("labels")).get("results");
+        List<JSONObject> jLabels =  (JSONArray)((JSONObject) ((JSONObject) obj.get("metadata")).get("labels")).get(RESULTS);
         if (jLabels != null) {
           for (JSONObject label : jLabels) {
             labels.add((String) label.get("name"));
