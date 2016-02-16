@@ -306,8 +306,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
       if (rules.isEmpty()) {
 
         String baseUrl = "https://www.securecoding.cert.org/confluence";
-        String url = "%s/rest/api/content/%s/child/page?expand=title&limit=200";
-
+        String url = "%s/rest/api/content/%s/child/page?expand=title,metadata.labels&limit=200";
         List<String> ids = new ArrayList<>();
         ids.add(wikiPageId);
 
@@ -328,12 +327,22 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
         String ruleId = title.split(" ")[0];
         String pageId = (String) obj.get("id");
 
-        if (ruleId.matches(Cert.REFERENCE_PATTERN)) {
-          String tiny = (String) ((JSONObject) obj.get("_links")).get("tinyui");
-          rules.add(new CertRule(ruleId, title, baseUrl + tiny));
+        List<String> labels = new ArrayList<>();
+        List<JSONObject> jLabels =  (JSONArray)((JSONObject) ((JSONObject) obj.get("metadata")).get("labels")).get("results");
+        if (jLabels != null) {
+          for (JSONObject label : jLabels) {
+            labels.add((String) label.get("name"));
+          }
+        }
 
-        } else {
-          ids.add(pageId);
+        if (!labels.contains("deprecated")) {
+          if (ruleId.matches(Cert.REFERENCE_PATTERN)) {
+            String tiny = (String) ((JSONObject) obj.get("_links")).get("tinyui");
+            rules.add(new CertRule(ruleId, title, baseUrl + tiny, labels));
+
+          } else {
+            ids.add(pageId);
+          }
         }
       }
     }
@@ -348,11 +357,13 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
     private String id;
     private String title;
     private String url;
+    private List<String> labels;
 
-    public CertRule(String id, String title, String url) {
+    public CertRule(String id, String title, String url, List<String> labels) {
       this.id = id;
       this.title = title;
       this.url = url;
+      this.labels = labels;
     }
 
     @Override
@@ -374,6 +385,10 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
     public String getUrl() {
 
       return url;
+    }
+
+    public List<String> getLabels() {
+      return this.labels;
     }
 
     @Override
