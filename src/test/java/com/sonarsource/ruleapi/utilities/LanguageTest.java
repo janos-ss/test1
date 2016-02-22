@@ -18,9 +18,7 @@ public class LanguageTest {
     assertThat(Language.values().length).isEqualTo(19);
     assertThat(Language.ABAP.sq).isEqualTo("abap");
     assertThat(Language.ABAP.rspec).isEqualTo("ABAP");
-    assertThat(Language.ABAP.update).isTrue();
     assertThat(Language.ABAP.getSqCommon()).isEqualTo("common-abap");
-    assertThat(Language.ABAP.doUpdate()).isTrue();
   }
 
   @Test

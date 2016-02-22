@@ -9,11 +9,11 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleComparison;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableExternalTool;
-import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.externalspecifications.CleanupReport;
-import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
+import com.sonarsource.ruleapi.externalspecifications.Standard;
+import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMultiLanguageStandard;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.get.RuleMaker;
@@ -81,8 +81,8 @@ public class ReportService extends RuleManager {
 
   public void writeUserFacingReports() {
 
-    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
-      CodingStandard standard = supportedStandard.getCodingStandard();
+    for (SupportedStandard supportedStandard : SupportedStandard.values()) {
+      Standard standard = supportedStandard.getStandard();
 
       if (standard instanceof CustomerReport) {
 
@@ -123,9 +123,9 @@ public class ReportService extends RuleManager {
 
 
     StringBuilder sb = new StringBuilder();
-    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
+    for (SupportedStandard supportedStandard : SupportedStandard.values()) {
 
-      CodingStandard standard = supportedStandard.getCodingStandard();
+      Standard standard = supportedStandard.getStandard();
       if (standard instanceof AbstractReportableStandard) {
         String report = ((AbstractReportableStandard)standard).getSummaryReport(instance);
         if (report != null) {
@@ -139,11 +139,11 @@ public class ReportService extends RuleManager {
 
   public void writeDetailedCoverageReports(String instance) {
 
-    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
+    for (SupportedStandard supportedStandard : SupportedStandard.values()) {
 
-      if (supportedStandard.getCodingStandard() instanceof AbstractReportableStandard) {
+      if (supportedStandard.getStandard() instanceof AbstractReportableStandard) {
 
-        AbstractReportableStandard standard = (AbstractReportableStandard) supportedStandard.getCodingStandard();
+        AbstractReportableStandard standard = (AbstractReportableStandard) supportedStandard.getStandard();
 
         LOGGER.info("Getting detailed coverage report for " + standard.getStandardName() + " on " + instance);
 
@@ -173,22 +173,22 @@ public class ReportService extends RuleManager {
   }
 
   public void writeCleanupReports(){
-    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
+    for (SupportedStandard supportedStandard : SupportedStandard.values()) {
 
-      if (supportedStandard.getCodingStandard() instanceof CleanupReport) {
+      if (supportedStandard.getStandard() instanceof CleanupReport) {
 
-        String report = ((CleanupReport)supportedStandard.getCodingStandard()).generateCleanupReport();
-        writeFile(supportedStandard.getCodingStandard().getStandardName().toLowerCase() + "_cleanup.txt", report);
+        String report = ((CleanupReport)supportedStandard.getStandard()).generateCleanupReport();
+        writeFile(supportedStandard.getStandard().getStandardName().toLowerCase() + "_cleanup.txt", report);
       }
     }
   }
 
   public void writeToolInternalReports(String instance) {
 
-    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
+    for (SupportedStandard supportedStandard : SupportedStandard.values()) {
 
-      if (supportedStandard.getCodingStandard() instanceof AbstractReportableExternalTool) {
-        AbstractReportableExternalTool externalTool = (AbstractReportableExternalTool) supportedStandard.getCodingStandard();
+      if (supportedStandard.getStandard() instanceof AbstractReportableExternalTool) {
+        AbstractReportableExternalTool externalTool = (AbstractReportableExternalTool) supportedStandard.getStandard();
 
         LOGGER.info("Getting deprecated, unspecified ids for " + externalTool.getStandardName() + " on " + instance);
 

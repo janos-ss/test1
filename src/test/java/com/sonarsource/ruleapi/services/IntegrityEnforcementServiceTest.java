@@ -7,7 +7,8 @@ package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
+import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
+import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
 import com.sonarsource.ruleapi.externalspecifications.specifications.Cert;
 import com.sonarsource.ruleapi.externalspecifications.specifications.Cwe;
@@ -89,7 +90,7 @@ public class IntegrityEnforcementServiceTest {
     assertThat(oldRule.getFindbugs()).hasSize(1);
 
     enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
-            SupportedCodingStandard.FINDBUGS.getCodingStandard());
+            (CodingStandard) SupportedStandard.FINDBUGS.getStandard());
 
     assertThat(newRule.getCwe()).hasSize(1);
     assertThat(newRule.getFindbugs()).hasSize(1);
@@ -98,7 +99,7 @@ public class IntegrityEnforcementServiceTest {
 
 
     enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
-            SupportedCodingStandard.CWE.getCodingStandard());
+            (CodingStandard) SupportedStandard.CWE.getStandard());
 
     assertThat(newRule.getCwe()).hasSize(2);
     assertThat(newRule.getFindbugs()).hasSize(1);
@@ -110,7 +111,7 @@ public class IntegrityEnforcementServiceTest {
     assertThat(newRule.getCert()).hasSize(0);
 
     enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
-            SupportedCodingStandard.CERT.getCodingStandard());
+            (CodingStandard) SupportedStandard.CERT.getStandard());
 
     assertThat(oldRule.getCert()).hasSize(0);
     assertThat(newRule.getCert()).hasSize(0);
@@ -119,7 +120,7 @@ public class IntegrityEnforcementServiceTest {
     assertThat(newRule.getMisraC04()).hasSize(1);
 
     enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
-            SupportedCodingStandard.MISRA_C_2004.getCodingStandard());
+            (CodingStandard) SupportedStandard.MISRA_C_2004.getStandard());
 
     assertThat(oldRule.getMisraC04()).hasSize(0);
     assertThat(newRule.getMisraC04()).hasSize(3);
@@ -467,7 +468,7 @@ public class IntegrityEnforcementServiceTest {
     enforcer.moveProfilesToNewRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(2);
 
-    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, SupportedCodingStandard.CWE.getCodingStandard());
+    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, (CodingStandard) SupportedStandard.CWE.getStandard());
     assertThat(newRules.get(newRule)).hasSize(3);
 
     enforcer.moveTagsToNewRules(oldRule, oldRuleUpdates, newRules);
@@ -489,7 +490,7 @@ public class IntegrityEnforcementServiceTest {
     enforcer.moveProfilesToNewRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(0);
 
-    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, SupportedCodingStandard.CWE.getCodingStandard());
+    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, (CodingStandard) SupportedStandard.CWE.getStandard());
     assertThat(newRules.get(newRule)).hasSize(0);
 
     enforcer.moveTagsToNewRules(oldRule, oldRuleUpdates, newRules);

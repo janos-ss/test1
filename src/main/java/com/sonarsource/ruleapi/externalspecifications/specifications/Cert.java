@@ -10,7 +10,6 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.externalspecifications.CleanupReport;
-import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 
 import com.sonarsource.ruleapi.get.Fetcher;
@@ -108,8 +107,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
 
   @Override
   public String generateCleanupReport() {
-    Cert cert = (Cert) SupportedCodingStandard.CERT.getCodingStandard();
-    List<Rule> rules = RuleMaker.getRulesByJql(cert.getStandardName() + " is not empty", "");
+    List<Rule> rules = RuleMaker.getRulesByJql(getStandardName() + " is not empty", "");
 
     return getCleanupReportBody(rules);
   }

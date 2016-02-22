@@ -15,9 +15,7 @@ import java.util.List;
  * Can be as set of abstract rules, such as MISRA or CWE
  * or a concrete tool, such as FindBugs.
  */
-public interface CodingStandard {
-
-  String getStandardName();
+public interface CodingStandard extends Standard {
 
   String getRSpecReferenceFieldName();
 

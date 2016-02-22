@@ -8,10 +8,8 @@ package com.sonarsource.ruleapi.externalspecifications;
 /**
  * A user-facing report. Hence the expection of an HTML format ({@link #getHtmlReport(String)})
  */
-public interface CustomerReport {
+public interface CustomerReport extends Standard{
 
   String getHtmlReport(String instance);
-
-  String getStandardName();
 
 }

@@ -11,6 +11,7 @@ import com.sonarsource.ruleapi.externalspecifications.misra.MisraCPP2008;
 import com.sonarsource.ruleapi.externalspecifications.specifications.Cert;
 import com.sonarsource.ruleapi.externalspecifications.specifications.Cwe;
 import com.sonarsource.ruleapi.externalspecifications.specifications.OwaspTopTen;
+import com.sonarsource.ruleapi.externalspecifications.specifications.RuleSpec;
 import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
 import com.sonarsource.ruleapi.externalspecifications.tools.Checkstyle;
 import com.sonarsource.ruleapi.externalspecifications.tools.Cppcheck;
@@ -25,7 +26,10 @@ import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperJavaScript;
 import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperVbNet;
 import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperWarnings;
 
-public enum SupportedCodingStandard {
+
+public enum SupportedStandard {
+
+  RULE_SPEC(new RuleSpec()),
 
   // ReportableStandard
   MISRA_C_2004(new MisraC2004()),
@@ -68,18 +72,18 @@ public enum SupportedCodingStandard {
   SANS_TOP_25_POROUS(SansTop25.Category.POROUS_DEFENSES);
 
 
-  private CodingStandard codingStandard;
+  private Standard standard;
 
-  SupportedCodingStandard(CodingStandard rulesRepository) {
-    this.codingStandard = rulesRepository;
+  SupportedStandard(Standard rulesRepository) {
+    this.standard = rulesRepository;
   }
 
-  public CodingStandard getCodingStandard() {
-    return codingStandard;
+  public Standard getStandard() {
+    return standard;
   }
 
-  public static SupportedCodingStandard fromString(String name) {
-    for (SupportedCodingStandard std : SupportedCodingStandard.values()) {
+  public static SupportedStandard fromString(String name) {
+    for (SupportedStandard std : SupportedStandard.values()) {
       if (std.name().equalsIgnoreCase(name)) {
         return std;
       }

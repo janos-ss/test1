@@ -8,9 +8,9 @@ package com.sonarsource.ruleapi;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.sonarsource.ruleapi.domain.RuleException;
-import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
-import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
+import com.sonarsource.ruleapi.externalspecifications.Standard;
+import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.services.ReportService;
@@ -122,24 +122,25 @@ public class Main {
 
     checkSingleReportInputs(settings);
 
-    SupportedCodingStandard std = SupportedCodingStandard.fromString(settings.tool);
-    AbstractReportableStandard ars = (AbstractReportableStandard) std.getCodingStandard();
+    SupportedStandard std = SupportedStandard.fromString(settings.tool);
+    if (std.getStandard() instanceof AbstractReportableStandard) {
+      AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
 
-    rs.writeSingleReport(Language.fromString(settings.language), settings.instance, ars, ReportType.fromString(settings.report));
-
+      rs.writeSingleReport(Language.fromString(settings.language), settings.instance, ars, ReportType.fromString(settings.report));
+    }
   }
 
   protected static void checkSingleReportInputs(Settings settings) {
 
     ReportType rt = ReportType.fromString(settings.report);
-    SupportedCodingStandard std = SupportedCodingStandard.fromString(settings.tool);
-    if (std == null || ! (std.getCodingStandard() instanceof AbstractReportableStandard)) {
+    SupportedStandard std = SupportedStandard.fromString(settings.tool);
+    if (std == null || ! (std.getStandard() instanceof AbstractReportableStandard)) {
 
       StringBuilder sb = new StringBuilder();
       sb.append("A recognized -tool must be provided: ");
-      for (SupportedCodingStandard scs : SupportedCodingStandard.values()) {
+      for (SupportedStandard scs : SupportedStandard.values()) {
 
-        CodingStandard cs = scs.getCodingStandard();
+        Standard cs = scs.getStandard();
         if (cs instanceof AbstractReportableStandard) {
           sb.append(scs.name()).append(", ");
         }
@@ -147,7 +148,7 @@ public class Main {
       throw new RuleException(sb.toString());
     }
 
-    AbstractReportableStandard ars = (AbstractReportableStandard) std.getCodingStandard();
+    AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
     List<ReportType> reportTypes = Arrays.asList(ars.getReportTypes());
     if (! reportTypes.contains(rt)) {
       StringBuilder sb = new StringBuilder();

@@ -47,7 +47,7 @@ public class AbstractReportableExternalToolTest {
   @Test
   public void testFormatLine() {
 
-    FindBugs fbLocal = (FindBugs) SupportedCodingStandard.FINDBUGS.getCodingStandard();
+    FindBugs fbLocal = (FindBugs) SupportedStandard.FINDBUGS.getStandard();
 
     String result = String.format("  yo                9   37.67%%%n");
     assertThat(fbLocal.formatLine("yo", 9, (float)37.671293)).isEqualTo(result);

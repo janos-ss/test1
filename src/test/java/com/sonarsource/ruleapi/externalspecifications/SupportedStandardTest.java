@@ -10,12 +10,12 @@ import org.junit.Test;
 import static org.fest.assertions.Assertions.assertThat;
 
 
-public class SupportedCodingStandardTest {
+public class SupportedStandardTest {
 
   @Test
   public void testFromString() {
 
-    assertThat(SupportedCodingStandard.fromString("fxcop")).isEqualTo(SupportedCodingStandard.FXCOP);
-    assertThat(SupportedCodingStandard.fromString("boo!")).isNull();
+    assertThat(SupportedStandard.fromString("fxcop")).isEqualTo(SupportedStandard.FXCOP);
+    assertThat(SupportedStandard.fromString("boo!")).isNull();
   }
 }

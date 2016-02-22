@@ -10,7 +10,8 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandard;
 import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
-import com.sonarsource.ruleapi.externalspecifications.SupportedCodingStandard;
+import com.sonarsource.ruleapi.externalspecifications.Standard;
+import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.get.Fetcher;
 import com.sonarsource.ruleapi.get.RuleMaker;
@@ -100,10 +101,12 @@ public class IntegrityEnforcementService extends RuleManager {
   protected Map<Rule, Map<String, Object>> getDeprecationUpdates(Rule oldRule, Map<String, Object> oldRuleUpdates) {
 
     Map<Rule,Map<String,Object>> newRules = new HashMap<>();
-    for (SupportedCodingStandard scs : SupportedCodingStandard.values()) {
+    for (SupportedStandard scs : SupportedStandard.values()) {
 
-      CodingStandard cs = scs.getCodingStandard();
-      moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, cs);
+      Standard cs = scs.getStandard();
+      if (cs instanceof CodingStandard) {
+        moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, (CodingStandard)cs);
+      }
     }
 
     moveLanguagesToNewRules(oldRule, oldRuleUpdates, newRules);
@@ -295,9 +298,6 @@ public class IntegrityEnforcementService extends RuleManager {
 
     for (Language lang : Language.values()) {
       LOGGER.info("Setting covered for " + lang.getRspec());
-      if (!lang.doUpdate()) {
-        LOGGER.warning("Update disabled for " + lang.getSq() + "/" + lang.getRspec());
-      }
       setCoveredForLanguage(login, password, lang, url);
     }
   }
@@ -318,25 +318,21 @@ public class IntegrityEnforcementService extends RuleManager {
         continue;
       }
 
-      if (language.doUpdate()) {
-        String key = sqRule.getKey();
-        Rule rspecRule = rspecRules.remove(key);
-        if (rspecRule == null) {
-          rspecRule = RuleMaker.getRuleByKey(key, language.getRspec());
-        }
-
-        addCoveredForNemoRules(rspecLanguage, needsUpdating, rspecRule);
+      String key = sqRule.getKey();
+      Rule rspecRule = rspecRules.remove(key);
+      if (rspecRule == null) {
+        rspecRule = RuleMaker.getRuleByKey(key, language.getRspec());
       }
+
+      addCoveredForNemoRules(rspecLanguage, needsUpdating, rspecRule);
     }
 
-    if (language.doUpdate()) {
-      dropCoveredForNonNemoRules(rspecLanguage, rspecRules, needsUpdating);
-      for (Rule rule : needsUpdating.values()) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("Covered Languages", rule.getCoveredLanguages());
-        updates.put(TARGETED_LANGUAGES, rule.getTargetedLanguages());
-        RuleUpdater.updateRule(rule.getKey(), updates, login, password);
-      }
+    dropCoveredForNonNemoRules(rspecLanguage, rspecRules, needsUpdating);
+    for (Rule rule : needsUpdating.values()) {
+      Map<String, Object> updates = new HashMap<>();
+      updates.put("Covered Languages", rule.getCoveredLanguages());
+      updates.put(TARGETED_LANGUAGES, rule.getTargetedLanguages());
+      RuleUpdater.updateRule(rule.getKey(), updates, login, password);
     }
   }
 
@@ -367,10 +363,10 @@ public class IntegrityEnforcementService extends RuleManager {
 
   public void enforceTagReferenceIntegrity(String login, String password) {
 
-    for (SupportedCodingStandard supportedStandard : SupportedCodingStandard.values()) {
+    for (SupportedStandard supportedStandard : SupportedStandard.values()) {
 
-      if (supportedStandard.getCodingStandard() instanceof TaggableStandard) {
-        TaggableStandard taggableStandard = (TaggableStandard)supportedStandard.getCodingStandard();
+      if (supportedStandard.getStandard() instanceof TaggableStandard) {
+        TaggableStandard taggableStandard = (TaggableStandard)supportedStandard.getStandard();
         enforceTagReferenceIntegrity(login, password, taggableStandard);
       }
     }
