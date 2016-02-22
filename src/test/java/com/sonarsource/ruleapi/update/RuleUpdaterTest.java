@@ -153,7 +153,7 @@ public class RuleUpdaterTest {
   }
 
   @Test
-  public void testConstrainedValueSadList () {
+  public void testConstrainedValueSadList() {
     JSONObject obj = null;
 
     JSONParser parser = new JSONParser();
@@ -170,6 +170,32 @@ public class RuleUpdaterTest {
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
 
+    } catch (Exception e) {
+      assertThat(e).isInstanceOf(RuleException.class);
+    }
+  }
+
+  @Test
+  public void testConstrainedValueSet(){
+    JSONObject obj = null;
+
+    JSONParser parser = new JSONParser();
+    try {
+      JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
+
+      Set<String> coveredLanguages = new HashSet<>();
+      coveredLanguages.add("Java");
+      coveredLanguages.add("C");
+      coveredLanguages.add("C++");
+
+      Map<String, Object> map = new HashMap<>();
+      map.put("Covered Languages", coveredLanguages);
+
+      obj = RuleUpdater.prepareRequest(map, fieldsMeta);
+
+      assertThat(obj).hasSize(1);
+      JSONArray arr = (JSONArray) ((JSONObject)obj.get("fields")).get("customfield_10004");
+      assertThat(arr).hasSize(3);
     } catch (Exception e) {
       assertThat(e).isInstanceOf(RuleException.class);
     }
@@ -202,11 +228,19 @@ public class RuleUpdaterTest {
 
   @Test
   public void testFreeEntryStringListMultiple () {
+
     JSONObject obj = null;
 
+    JSONObject fieldsMeta = null;
     JSONParser parser = new JSONParser();
     try {
-      JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
+      fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+
+    if (fieldsMeta != null) {
+
       Map<String, Object> map = new HashMap<>();
       List<String> cwe = new ArrayList<>();
       cwe.add("bug");
@@ -218,12 +252,29 @@ public class RuleUpdaterTest {
       map.put("CWE", cwe);
 
       obj = RuleUpdater.prepareRequest(map, fieldsMeta);
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
 
-    assertThat(obj.toJSONString()).isEqualTo("{\"fields\":{\"customfield_10251\":\"bug, clumsy, pitfall, security, performance, obsolete\"}}");
+      assertThat(obj.toJSONString()).isEqualTo("{\"fields\":{\"customfield_10251\":\"bug, clumsy, pitfall, security, performance, obsolete\"}}");
+
+      Set<String> set = new HashSet<>();
+      for (String str : cwe) {
+        set.add(str);
+      }
+
+      map.clear();
+      map.put("CWE", set);
+      obj = RuleUpdater.prepareRequest(map, fieldsMeta);
+
+      String list = (String) ((JSONObject)(obj.get("fields"))).get("customfield_10251");
+      assertThat(list).contains("bug")
+              .contains("clumsy")
+              .contains("pitfall")
+              .contains("security")
+              .contains("performance")
+              .contains("obsolete");
+    }
   }
+
+
 
   @Test
   public void testFreeEntryStringListSingle () {

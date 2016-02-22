@@ -122,6 +122,16 @@ public class RuleUpdater {
         }
       }
       return arr;
+    } else if (candidateFieldValue instanceof Set) {
+      JSONArray arr = new JSONArray();
+      for (Object item : (Set<String>) candidateFieldValue) {
+        if (item instanceof String) {
+          arr.add(jsonObjectOrException(allowedValues, fieldId, (String) item));
+        } else {
+          arr.add(jsonObjectOrException(allowedValues, fieldId, item.toString()));
+        }
+      }
+      return arr;
     }
 
     return new JSONObject();
@@ -191,6 +201,14 @@ public class RuleUpdater {
     } else if (value instanceof List) {
 
       for (Object val : (List<Object>) value) {
+        if (val instanceof String) {
+          appendValue(sb, (String) val);
+        } else if (val instanceof Parameter) {
+          appendValue(sb, ((Parameter) val).toString());
+        }
+      }
+    } else if (value instanceof Set) {
+      for (Object val : (Set<Object>) value) {
         if (val instanceof String) {
           appendValue(sb, (String) val);
         } else if (val instanceof Parameter) {
