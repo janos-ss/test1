@@ -18,6 +18,8 @@ import java.util.List;
 
 public class RuleSpec implements CustomerReport {
 
+  private InvertedCoveredLangaugesCountRuleSort sort = new InvertedCoveredLangaugesCountRuleSort();
+
   @Override
   public String getStandardName() {
 
@@ -39,12 +41,7 @@ public class RuleSpec implements CustomerReport {
     sb.append("<h2>RSpec coverage by language</h2>\n")
             .append("<table><tr><th></th><th>Stronly typed</th><th>Weakly typed</th><th>Legacy</th></tr>");
 
-    Collections.sort(rules, new Comparator<Rule>() {
-      @Override
-      public int compare(Rule o1, Rule o2) {
-        return Integer.compare(o2.getCoveredLanguages().size(), o1.getCoveredLanguages().size());
-      }
-    });
+    Collections.sort(rules, sort);
 
     for (Rule rule : rules) {
       sb.append(buildRuleRow(rule));
@@ -77,6 +74,8 @@ public class RuleSpec implements CustomerReport {
           case LEGACY:
             legacy.add(lang);
             break;
+          default:
+            break;
         }
       }
     }
@@ -88,5 +87,14 @@ public class RuleSpec implements CustomerReport {
 
     return sb.toString();
   }
+
+  private static class InvertedCoveredLangaugesCountRuleSort implements  Comparator<Rule> {
+    @Override
+    public int compare(Rule o1, Rule o2) {
+      // biggest-to-smallest sort desired
+      return Integer.compare(o2.getCoveredLanguages().size(), o1.getCoveredLanguages().size());
+    }
+  }
+
 
 }
