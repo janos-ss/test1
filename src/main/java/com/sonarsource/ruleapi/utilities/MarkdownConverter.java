@@ -192,8 +192,8 @@ public class MarkdownConverter {
     String line = arg;
 
     Language lang = Language.fromString(language.toUpperCase());
-    if (lang != null && line.matches(".*S\\d+(\\s|$).*")) {
-      line = line.replaceAll("(S\\d+)", "{rule:" + lang.getSq() + ":$1}");
+    if (lang != null && line.matches(".*\\bS\\d+(\\s|$).*")) {
+      line = line.replaceAll("(\\b)(S\\d+)", "$1{rule:" + lang.getSq() + ":$2}");
     }
     return line;
   }

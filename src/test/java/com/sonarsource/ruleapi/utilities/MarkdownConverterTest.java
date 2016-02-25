@@ -608,10 +608,10 @@ public class MarkdownConverterTest {
 
   @Test
   public void testRuleLinks() {
-    String line1 = "* Rule S1656 - Implements a check on {{=}}.";
-    String line1Out1 = "* Rule {rule:squid:S1656} - Implements a check on {{=}}.";
+    String line1 = "* Rule S1656 - Implements a ES2015 check on {{=}}.";
+    String line1Out1 = "* Rule {rule:squid:S1656} - Implements a ES2015 check on {{=}}.";
     String line1Out2 = "<ul>\n" +
-            "<li> Rule {rule:squid:S1656} - Implements a check on <code>=</code>.\n" +
+            "<li> Rule {rule:squid:S1656} - Implements a ES2015 check on <code>=</code>.\n" +
             "</li></ul>\n";
 
     String line2 = "This is a test of the emergency broadcast system.";
@@ -629,9 +629,9 @@ public class MarkdownConverterTest {
     assertThat(mc.handleRuleLinks(line3, "Java")).isEqualTo(line3Out);
     assertThat(mc.handleRuleLinks(line3, "")).isEqualTo(line3);
 
-    line1Out1 = "* Rule {rule:javascript:S1656} - Implements a check on {{=}}.";
+    line1Out1 = "* Rule {rule:javascript:S1656} - Implements a ES2015 check on {{=}}.";
     line1Out2 = "<ul>\n" +
-            "<li> Rule {rule:javascript:S1656} - Implements a check on <code>=</code>.\n" +
+            "<li> Rule {rule:javascript:S1656} - Implements a ES2015 check on <code>=</code>.\n" +
             "</li></ul>\n";
 
     assertThat(mc.handleRuleLinks(line1, "JavaScript")).isEqualTo(line1Out1);
