@@ -234,6 +234,7 @@ public class RuleMakerTest {
 
     List<Rule> allRules = new ArrayList<>();
     allRules.add(s1194);
+    allRules.add(s1234);
 
     Profile profile = new Profile("Sonar way");
 

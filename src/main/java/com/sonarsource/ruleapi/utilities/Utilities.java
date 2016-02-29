@@ -37,8 +37,12 @@ public class Utilities {
   }
 
   public static String normalizeKey(String key) {
-
-    return key.replaceAll("^(.+:)?S0*(\\d+)$", "RSPEC-$2");
+    String ret = key;
+    String[] pieces = key.split(":");
+    if (pieces.length > 1) {
+      ret = pieces[1];
+    }
+    return ret.replaceAll("^S0*(\\d+)$", "RSPEC-$1");
   }
 
   public static String denormalizeKey(String key) {

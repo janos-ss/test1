@@ -66,7 +66,7 @@ public class RuleMaker {
     }
 
     for (JSONObject jsonObject : profileRules) {
-      String internalKey = (String) jsonObject.get("internalKey");
+      String internalKey = (String) jsonObject.get("key");
       if (internalKey != null) {
         String key = Utilities.normalizeKey(internalKey);
         Rule rule = rulesByKey.get(key);
