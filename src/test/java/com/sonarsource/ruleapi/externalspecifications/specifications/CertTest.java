@@ -171,7 +171,7 @@ public class CertTest {
 
   @Test
   public void testExtractRulesFromChildPages() {
-    Cert.CertType cppType = new Cert.CertType(Language.CPP, "146440541");
+    Cert.CertType cppType = new Cert.CertType(Language.CPP, new String[]{"146440541"});
 
     String baseUrl = "http://foo.com";
     List<String> ids = new ArrayList<>();
@@ -199,7 +199,7 @@ public class CertTest {
   @Test
   public void testGetCertTypeStandardName() {
 
-    Cert.CertType cppType = new Cert.CertType(Language.CPP, "146440541");
+    Cert.CertType cppType = new Cert.CertType(Language.CPP, new String [] {"146440541"});
 
     assertThat(cppType.getStandardName()).isEqualTo(cert.getStandardName() + " " + cppType.getLanguage().getSq());
 

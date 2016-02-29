@@ -20,6 +20,7 @@ import com.sonarsource.ruleapi.utilities.Utilities;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -39,9 +40,9 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
 
   private static final Fetcher FETCHER = new Fetcher();
 
-  private static final CertType CPP = new CertType(Language.CPP, "146440541");
-  private static final CertType C = new CertType(Language.C, "158237133");
-  private static final CertType JAVA = new CertType(Language.JAVA, "158237393");
+  private static final CertType CPP = new CertType(Language.CPP, new String [] {"146440541", "146440543"});
+  private static final CertType C = new CertType(Language.C, new String [] {"158237133", "158237251"});
+  private static final CertType JAVA = new CertType(Language.JAVA, new String [] {"158237393","158237397"});
   public static final String RESULTS = "results";
 
   private CertType currentCertLanguage = null;
@@ -289,12 +290,12 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
   public static class CertType {
 
     private Language language;
-    private String wikiPageId;
+    private List<String> wikiPageId = new ArrayList<>();
     private final List<CertRule> rules = new ArrayList<>();
 
-    CertType(Language language, String wikiPageId) {
+    CertType(Language language, String[] wikiPageId) {
       this.language = language;
-      this.wikiPageId = wikiPageId;
+      this.wikiPageId = new ArrayList<>(Arrays.asList(wikiPageId));
     }
 
     public Language getLanguage() {
@@ -307,7 +308,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
         String baseUrl = "https://www.securecoding.cert.org/confluence";
         String url = "%s/rest/api/content/%s/child/page?expand=title,metadata.labels&limit=200";
         List<String> ids = new ArrayList<>();
-        ids.add(wikiPageId);
+        ids.addAll(wikiPageId);
 
         while (!ids.isEmpty()){
           JSONObject jsonObject = FETCHER.getJsonFromUrl(String.format(url, baseUrl, ids.remove(0)));
