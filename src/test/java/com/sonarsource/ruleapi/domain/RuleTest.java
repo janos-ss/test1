@@ -268,6 +268,23 @@ public class RuleTest {
   }
 
   @Test
+  public void testMergeDefaultProfilesOverrideNone(){
+    Rule rule = new Rule("");
+    rule.getDefaultProfiles().add(new Profile("Sonar Way"));
+
+    Rule subRule = new Rule("");
+    subRule.setTitle("Java");
+    subRule.getDefaultProfiles().add(new Profile("Override None"));
+
+    assertThat(rule.getDefaultProfiles()).hasSize(1);
+
+    rule.merge(subRule);
+
+    assertThat(rule.getDefaultProfiles()).hasSize(0);
+
+  }
+
+  @Test
   public void testMergeTags(){
 
     Rule rule = new Rule("");

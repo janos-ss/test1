@@ -190,8 +190,17 @@ public class Rule {
   }
 
   protected void mergeDefaultProfiles(Rule subRule) {
-    if (!subRule.getDefaultProfiles().isEmpty()) {
-      this.setDefaultProfiles(new HashSet<Profile>(subRule.getDefaultProfiles()));
+    Set<Profile> subProfiles = subRule.getDefaultProfiles();
+    if (!subProfiles.isEmpty()) {
+      for (Profile p : subProfiles) {
+        if ("override none".equals(p.getLowerCaseName())) {
+          this.getDefaultProfiles().clear();
+          return;
+        }
+        break;
+      }
+
+      this.setDefaultProfiles(new HashSet<Profile>(subProfiles));
     }
   }
 
