@@ -9,7 +9,7 @@
 
 	<groupId>com.sonarsource.rule-api</groupId>
 	<artifactId>rule-api</artifactId>
-	<version>1.11-SNAPSHOT</version>
+	<version>1.11</version>
 	<packaging>jar</packaging>
 	<name>SonarSource :: Rule API</name>
 	<inceptionYear>2014</inceptionYear>
@@ -28,7 +28,7 @@
 		<connection>scm:git:git@github.com:SonarSource/sonar-rule-api.git</connection>
 		<developerConnection>scm:git:git@github.com:SonarSource/sonar-rule-api.git</developerConnection>
 		<url>https://github.com/SonarSource/sonar-rule-api</url>
-		<tag>HEAD</tag>
+		<tag>1.11</tag>
 	</scm>
 	<issueManagement>
 		<system>jira</system>
