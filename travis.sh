@@ -9,5 +9,4 @@ function installTravisTools {
 }
 installTravisTools
 
-build "SonarSource/parent" "32"
 mvn verify -B -e -V
