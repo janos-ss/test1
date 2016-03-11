@@ -21,6 +21,9 @@
     line-height: 1.5;
     padding: 12px 6px;
     }
+  td.number {
+    text-align: right;
+  }
   td:first-child {
     width: 1px;
     padding-right: 24px;

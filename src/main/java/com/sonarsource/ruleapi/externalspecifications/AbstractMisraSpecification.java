@@ -16,13 +16,10 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Special reports were wanted for the three MISRA standards.
- * It seemed to make the most sense to do centralize it here.
+ * Specially-formatted reports for the three MISRA standards.
  */
 public abstract class AbstractMisraSpecification extends AbstractReportableStandard
         implements TaggableStandard, CustomerReport {
-
-  public static final double PERCENT_FACTOR = 100.0D;
 
   private static final ReportType[] reportTypes = {ReportType.INTERNAL_COVERAGE, ReportType.INTERNAL_COVERAGE_SUMMARY, ReportType.HTML};
 
@@ -31,13 +28,15 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   private static final String TAG = "misra";
 
   protected int mandatoryRulesImplemented = 0;
+  protected int mandatoryRulesNotImplementable = 0;
+  private int mandatoryRulesToCover = 0;
+
   protected int optionalRulesImplemented = 0;
-  protected int totalRulesImplemented = 0;
+  protected int optionalRulesNotImplementable = 0;
+  private int optionalRulesToCover = 0;
 
   private CodingStandardRequirableRule [] codingStandardRequirableRules = {};
   private Map<String, CodingStandardRule> ruleMap = new HashMap<>();
-  private int mandatoryRulesToCover = 0;
-  private int optionalRulesToCover = 0;
 
 
   @Override
@@ -64,25 +63,6 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   public CodingStandardRule getCodingStandardRuleFromId(String id) {
 
     return ruleMap.get(id);
-  }
-
-  public boolean isRuleMandatory(String ruleKey) {
-    if (Strings.isNullOrEmpty(ruleKey)) {
-      return false;
-    }
-    CodingStandardRequirableRule sr = (CodingStandardRequirableRule) ruleMap.get(ruleKey);
-    if (sr != null) {
-      return sr.isRuleRequired();
-    }
-    return false;
-  }
-
-  public int getMandatoryRulesToCoverCount() {
-    return mandatoryRulesToCover;
-  }
-
-  public int getOptionalRulesToCoverCount() {
-    return optionalRulesToCover;
   }
 
   @Override
@@ -132,6 +112,8 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   }
 
   private final String generateSummary() {
+    int totalRulesImplemented = mandatoryRulesImplemented + optionalRulesImplemented;
+
     StringBuilder buff = new StringBuilder();
     String indent = "\t";
     String linebreak = String.format("%n");
@@ -139,13 +121,13 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     buff.append(getStandardName()).append(linebreak);
 
     buff.append("Mandatory:");
-    appendSummaryLine(buff, getMandatoryRulesToCoverCount(), mandatoryRulesImplemented, getMandatoryCoveragePercent(), indent, linebreak);
+    appendSummaryLine(buff, mandatoryRulesToCover, mandatoryRulesImplemented, getPercent(mandatoryRulesImplemented, mandatoryRulesToCover), indent, linebreak);
 
     buff.append("Optional:");
-    appendSummaryLine(buff, getOptionalRulesToCoverCount(), optionalRulesImplemented, getOptionalCoveragePercent(), indent, linebreak);
+    appendSummaryLine(buff, optionalRulesToCover, optionalRulesImplemented, getPercent(optionalRulesImplemented, optionalRulesToCover), indent, linebreak);
 
     buff.append("Total:");
-    appendSummaryLine(buff, getMandatoryRulesToCoverCount() + getOptionalRulesToCoverCount(), totalRulesImplemented, getTotalCoveragePercent(), indent, "");
+    appendSummaryLine(buff, mandatoryRulesToCover + optionalRulesToCover, totalRulesImplemented, getPercent(totalRulesImplemented, mandatoryRulesToCover + optionalRulesToCover), indent, "");
 
     return buff.toString();
   }
@@ -197,81 +179,126 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     return buff.toString();
   }
 
-  private static void appendSummaryLine(StringBuilder buff, int toCover, int covered, double percent, String indent, String linebreak) {
-    buff.append(String.format("%sSpecified: %d%sImplemented: %d%s=> %.2f%%%n", indent, toCover, indent, covered, indent, percent ));
+  private static void appendSummaryLine(StringBuilder buff, int toCover, int covered, String percent, String indent, String linebreak) {
+    buff.append(String.format("%sSpecified: %d%sImplemented: %d%s=> %s%n", indent, toCover, indent, covered, indent, percent ));
   }
 
   private final String generateHtmlReport(String instance) {
+
+    String rowStart = "<tr><td>";
+    String rowEnd = "</td></tr>";
+    String cellEnd = "</td><td>";
+    String numCellEnd = "</td><td class='number'>";
+    String tableEnd = "</table>";
+
     StringBuilder sb = new StringBuilder();
 
-    sb.append("<h2>SonarQube ").append(getLanguage().getRspec()).append(" Plugin coverage of ").append(getStandardName()).append("</h2>");
+    sb.append("<h2>SonarQube ").append(getLanguage().getRspec()).append(" coverage of ").append(getStandardName()).append("</h2>");
     sb.append("These are the ").append(getStandardName())
             .append(" rules covered for ").append(getLanguage().getRspec())
             .append(" by the <a href='http://sonarsource.com'>SonarSource</a> ")
             .append("<a href='http://www.sonarsource.com/products/plugins/languages/cpp/'>C/C++ plugin</a>.");
 
-    sb.append("<table>");
+    sb.append("<h3>Summary</h3>")
+            .append("<table><tr><th>&nbsp;</th><th>Optional</th><th>Mandatory</th></tr>");
+    sb.append("<tr><td>Rule count</td><td class='number'>")
+            .append(optionalRulesToCover + optionalRulesNotImplementable)
+            .append(numCellEnd)
+            .append(mandatoryRulesToCover + mandatoryRulesNotImplementable)
+            .append(rowEnd);
+    sb.append("<tr><td><a href='#nc'>Not statically checkable</a></td><td class='number'>")
+            .append(optionalRulesNotImplementable)
+            .append(numCellEnd)
+            .append(mandatoryRulesNotImplementable)
+            .append(rowEnd);
+    sb.append("<tr><td>Statically checkable</td><td class='number'>")
+            .append(optionalRulesToCover)
+            .append(numCellEnd)
+            .append(mandatoryRulesToCover)
+            .append(rowEnd);
+    sb.append("<tr><td><a href='#c'>Covered</a></td><td class='number'>")
+            .append(optionalRulesImplemented)
+            .append(numCellEnd)
+            .append(mandatoryRulesImplemented)
+            .append(rowEnd);
+    sb.append("<tr><td><a href='#p'>Pending</a></td><td class='number'>")
+            .append(optionalRulesToCover - optionalRulesImplemented)
+            .append(numCellEnd)
+            .append(mandatoryRulesToCover - mandatoryRulesImplemented)
+            .append(rowEnd);
+    sb.append(tableEnd);
+
+    StringBuilder nc = new StringBuilder();
+    nc.append("<a name='nc' id='nc'></a><h3>Not Statically Coverable</h3><table>");
+
+    StringBuilder covered = new StringBuilder();
+    covered.append("<a name='c' id='c'></a><h3>Covered</h3><table>");
+
+    StringBuilder pending = new StringBuilder();
+    pending.append("<a name='p' id='p'></a><h3>Pending</h3><table>");
 
     for (CodingStandardRule csr : getCodingStandardRules()) {
       String ruleId = csr.getCodingStandardRuleId();
       CodingStandardRuleCoverage coverage = getRulesCoverage().get(ruleId);
+      String requirable = ((CodingStandardRequirableRule) csr).isRuleRequired() ? "Required" : "Optional";
 
       if (Implementability.NOT_IMPLEMENTABLE.equals(csr.getImplementability())) {
-        sb.append("<tr><td>").append(ruleId).append("</td><td>Not statically checkable</td></tr>");
+        nc.append(rowStart).append(ruleId)
+                .append(cellEnd)
+                .append(requirable)
+                .append(rowEnd);
 
       } else if (! coverage.getImplementedBy().isEmpty()) {
-        sb.append("<tr><td>").append(ruleId).append("</td><td>");
+        covered.append(rowStart).append(ruleId)
+                .append(cellEnd)
+                .append(requirable)
+                .append(cellEnd);
+
         for (Rule rule : coverage.getImplementedBy()) {
-          sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
+          covered.append(Utilities.getNemoLinkedRuleReference(instance, rule));
         }
-        sb.append("</td></tr>");
+        covered.append(rowEnd);
+      } else {
+        pending.append(rowStart).append(ruleId)
+                .append(cellEnd)
+                .append(requirable)
+                .append(cellEnd);
+        for (Rule rule : coverage.getSpecifiedBy()) {
+          pending.append(Utilities.getJiraLinkedRuleReference(rule));
+        }
+        pending.append(rowEnd);
       }
     }
 
-    sb.append("</table>");
-
-    String rowEnd = "%</td></tr>";
-
-    sb.append("<h3>Summary</h3><table>");
-    sb.append("<tr><td>Mandatory rules covered:</td>");
-    sb.append("<td>").append(mandatoryRulesImplemented).append(", ").append(String.format("%.2f",getMandatoryCoveragePercent())).append(rowEnd);
-    sb.append("<tr><td>Optional rules covered:</td>");
-    sb.append("<td>").append(optionalRulesImplemented).append(", ").append(String.format("%.2f",getOptionalCoveragePercent())).append(rowEnd);
-    sb.append("<tr><td>Total:</td>");
-    sb.append("<td>").append(totalRulesImplemented).append(", ").append(String.format("%.2f",getTotalCoveragePercent())).append(rowEnd);
-    sb.append("</table>");
+    sb.append(covered).append(tableEnd)
+            .append(pending).append(tableEnd)
+            .append(nc).append(tableEnd);
 
     return sb.toString();
   }
 
   protected void computeCoverage() {
 
-    mandatoryRulesImplemented = 0;
-    optionalRulesImplemented = 0;
-    totalRulesImplemented = 0;
-
-    for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
-      if (!cov.getImplementedBy().isEmpty()) {
-        if (isRuleMandatory(cov.getCodingStandardRuleId())) {
-          mandatoryRulesImplemented++;
-        } else {
-          optionalRulesImplemented++;
-        }
-      }
+    if (mandatoryRulesImplemented > 0 || mandatoryRulesNotImplementable > 0) {
+      return;
     }
 
-    totalRulesImplemented = mandatoryRulesImplemented + optionalRulesImplemented;
+    for (CodingStandardRule csr : getCodingStandardRules()){
+      if (((CodingStandardRequirableRule)csr).isRuleRequired()) {
+        if (Implementability.NOT_IMPLEMENTABLE.equals(csr.getImplementability())) {
+          mandatoryRulesNotImplementable++;
+        } else if (! getRulesCoverage().get(csr.getCodingStandardRuleId()).getImplementedBy().isEmpty()){
+          mandatoryRulesImplemented++;
+        }
+      } else  if (Implementability.NOT_IMPLEMENTABLE.equals(csr.getImplementability())) {
+        optionalRulesNotImplementable++;
+      } else if (! getRulesCoverage().get(csr.getCodingStandardRuleId()).getImplementedBy().isEmpty()) {
+        optionalRulesImplemented++;
+      }
+    }
   }
 
-  public double getMandatoryCoveragePercent() {
-    return mandatoryRulesImplemented * PERCENT_FACTOR / getMandatoryRulesToCoverCount();
-  }
-
-  public double getOptionalCoveragePercent() {
-    return optionalRulesImplemented * PERCENT_FACTOR / getOptionalRulesToCoverCount();
-  }
-
-  public double getTotalCoveragePercent() {
-    return totalRulesImplemented * PERCENT_FACTOR / (getMandatoryRulesToCoverCount() + getOptionalRulesToCoverCount());
+  public String getPercent(int num, int denom) {
+    return String.format("%.2f%%",(float)num * 100 / denom);
   }
 }
