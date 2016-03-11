@@ -299,6 +299,6 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   }
 
   public String getPercent(int num, int denom) {
-    return String.format("%.2f%%",(float)num * 100 / denom);
+    return String.format("%.2f%%",(double)num * 100 / denom);
   }
 }
