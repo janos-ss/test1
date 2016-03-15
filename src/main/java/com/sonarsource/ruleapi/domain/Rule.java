@@ -158,6 +158,7 @@ public class Rule {
   private List<String> pylint = new ArrayList<>();
   private List<String> fxCop = new ArrayList<>();
   private List<String> pcLint = new ArrayList<>();
+  private List<String> msftRoslyn = new ArrayList<>();
 
   public Rule(String language) {
     this.language = language;
@@ -719,5 +720,15 @@ public class Rule {
   public void setPcLint(List<String> pcLint) {
 
     this.pcLint = pcLint;
+  }
+
+  public List<String> getMsftRoslyn() {
+
+    return msftRoslyn;
+  }
+
+  public void setMsftRoslyn(List<String> msftRoslyn) {
+
+    this.msftRoslyn = msftRoslyn;
   }
 }
