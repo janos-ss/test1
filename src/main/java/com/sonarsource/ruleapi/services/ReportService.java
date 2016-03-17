@@ -54,16 +54,6 @@ public class ReportService extends RuleManager {
       }
     }
   }
-
-  public void generateRuleDescriptions(List<String> ruleKeys, String language) {
-    if (ruleKeys != null) {
-      for (String ruleKey : ruleKeys) {
-        Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
-        writeFile(ruleKey + HTML, rule.getHtmlDescription());
-      }
-    }
-  }
-
   /**
    * Writes internal reports based on passed-in SonarQube url
    *

@@ -16,6 +16,17 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class MainTest {
 
+  @Test
+  public void wip(){
+    String[] args = { "generate"
+                      , "-rule", "S1543"
+                      , "-language", "java"
+                    };
+
+    Main.main(args);
+
+  }
+
 
   @Test
   public void testHappyPath(){
@@ -24,7 +35,7 @@ public class MainTest {
     Main.Settings settings = new Main.Settings();
     new JCommander(settings, args);
 
-    Main.checkSingleReportInputs(settings);
+    Main.checkSingleReportInputs( settings );
     assertThat(true).isTrue();
 
   }

@@ -6,11 +6,14 @@
 package com.sonarsource.ruleapi.domain;
 
 import com.google.common.base.Strings;
+import com.sonarsource.ruleapi.utilities.JSONWriter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.*;
 
 public class Rule {
 
@@ -28,7 +31,17 @@ public class Rule {
   }
 
   public enum Severity {
-    BLOCKER, CRITICAL, MAJOR, MINOR, INFO
+    BLOCKER("Blocker"), CRITICAL("Critical"), MAJOR("Major"), MINOR("Minor"), INFO("Info");
+
+    protected final String severityName;
+
+    Severity(String severityName) {
+      this.severityName = severityName;
+    }
+
+    public String getSeverityName() {
+      return this.severityName;
+    }
   }
 
   public enum RemediationFunction {
@@ -101,7 +114,6 @@ public class Rule {
       return this.rspecName;
     }
   }
-
 
   private String language = null;
   private String key = null;
@@ -275,12 +287,63 @@ public class Rule {
     return description + nonCompliant + compliant + exceptions + references + deprecation;
   }
 
+  public String getSquidJson( ) throws IOException {
+
+    LinkedHashMap objOrderedFields = new LinkedHashMap();
+    objOrderedFields.put("title", this.title);
+
+    JSONArray profiles = new JSONArray();
+    for( Profile profile : this.getDefaultProfiles() ) {
+      profiles.add(profile.getName());
+    }
+    objOrderedFields.put("profiles", profiles);
+
+    JSONObject remediation = new JSONObject();
+    remediation.put("func", this.sqaleRemediationFunction.getFunctionName());
+    switch( this.sqaleRemediationFunction ) {
+      case CONSTANT_ISSUE:
+        remediation.put("constantCost", this.sqaleConstantCostOrLinearThreshold);
+        break;
+      case LINEAR:
+        remediation.put("linearDesc", this.sqaleLinearArgDesc);
+        remediation.put("linearFactor", this.sqaleLinearFactor);
+      break;
+      case LINEAR_OFFSET:
+        remediation.put("linearDesc", this.sqaleLinearArgDesc);
+        remediation.put("linearOffset", this.sqaleLinearOffset);
+        remediation.put("linearFactor", this.sqaleLinearFactor);
+        break;
+      default:
+        throw new IllegalStateException("Unknown sqaleRemediationFunction");
+    }
+    objOrderedFields.put("remediation", remediation);
+
+    JSONArray tags = new JSONArray();
+    for( String tag : this.tags ) {
+      tags.add(tag);
+    }
+    objOrderedFields.put("tags", tags);
+
+    objOrderedFields.put("defaultSeverity", this.severity.getSeverityName());
+
+    Writer writer = new JSONWriter();
+    JSONValue.writeJSONString(objOrderedFields, writer);
+    return writer.toString();
+  }
+
   public String getKey() {
     return key;
   }
 
   public void setKey(String key) {
+    if( ! "RSPEC-".equals(key.substring(0,"RSPEC-".length()))) {
+      throw new RuleException("Bad key:" + key );
+    }
     this.key = key;
+  }
+
+  public String getCanonicalKey() {
+    return String.format("S%s", this.key.substring("RSPEC-".length()));
   }
 
   public Status getStatus() {

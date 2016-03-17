@@ -12,6 +12,7 @@ import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.services.DescriptionFilesService;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.services.RuleManager;
@@ -84,6 +85,8 @@ public class Main {
 
     IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
     ReportService rs = new ReportService();
+    // TODO set up the current directory appropriately
+    DescriptionFilesService dfs = new DescriptionFilesService( "." );
     Language language = Language.fromString(settings.language);
 
     switch (option) {
@@ -100,7 +103,7 @@ public class Main {
         break;
 
       case GENERATE:
-        rs.generateRuleDescriptions(settings.ruleKeys, settings.language);
+        dfs.generateRuleDescriptions(settings.ruleKeys, settings.language);
         break;
 
       case DIFF:
