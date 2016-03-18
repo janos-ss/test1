@@ -216,7 +216,7 @@ public class Main {
     SINGLE_REPORT(false, "Generate a single -report against -instance (defaults to Nemo), -language, and -tool."),
     OUTDATED(true,  "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
     INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
-    GENERATE(false, "Generates html description file specified by -rule and -language parameters at directory specified by -d"),
+    GENERATE(false, "Generates html description file specified by -rule and -language parameters at directory specified by -directory"),
     DIFF(false, "Generates a diff report for the specified -language and -instance");
 
     private String description;
