@@ -298,7 +298,7 @@ public class Rule {
     }
     objOrderedFields.put("profiles", profiles);
 
-    JSONObject remediation = new JSONObject();
+    LinkedHashMap remediation = new LinkedHashMap();
     remediation.put("func", this.sqaleRemediationFunction.getFunctionName());
     switch( this.sqaleRemediationFunction ) {
       case CONSTANT_ISSUE:
