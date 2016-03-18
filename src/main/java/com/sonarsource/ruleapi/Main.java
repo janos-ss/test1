@@ -85,8 +85,7 @@ public class Main {
 
     IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
     ReportService rs = new ReportService();
-    // TODO set up the current directory appropriately
-    DescriptionFilesService dfs = new DescriptionFilesService( "." );
+    DescriptionFilesService dfs = new DescriptionFilesService( settings.directory );
     Language language = Language.fromString(settings.language);
 
     switch (option) {
@@ -204,6 +203,9 @@ public class Main {
     @Parameter(names="-report")
     private String report;
 
+    @Parameter(names="-directory")
+    private String directory;
+
     @Parameter(names="-tool")
     private String tool;
 
@@ -214,7 +216,7 @@ public class Main {
     SINGLE_REPORT(false, "Generate a single -report against -instance (defaults to Nemo), -language, and -tool."),
     OUTDATED(true,  "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
     INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
-    GENERATE(false, "Generates html description file specified by -rule and -language parameters."),
+    GENERATE(false, "Generates html description file specified by -rule and -language parameters at directory specified by -d"),
     DIFF(false, "Generates a diff report for the specified -language and -instance");
 
     private String description;

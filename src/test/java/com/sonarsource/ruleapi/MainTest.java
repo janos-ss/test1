@@ -8,25 +8,20 @@ package com.sonarsource.ruleapi;
 import com.beust.jcommander.JCommander;
 import com.sonarsource.ruleapi.domain.RuleException;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.PrintStream;
+
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 
 public class MainTest {
 
-  @Test
-  public void wip(){
-    String[] args = { "generate"
-                      , "-rule", "S1543"
-                      , "-language", "java"
-                    };
-
-    Main.main(args);
-
-  }
-
+  @Rule
+  public TemporaryFolder testFolder = new TemporaryFolder();
 
   @Test
   public void testHappyPath(){
@@ -116,6 +111,26 @@ public class MainTest {
 
     assertThat(Main.credentialsProvided(settings)).isFalse();
   }
+
+
+
+  @Test
+  public void testGenerationDescriptionFile() throws Exception{
+
+    File outputDir = testFolder.newFolder();
+    assertThat(outputDir.listFiles().length).isEqualTo(0);
+
+    String[] args = { "generate"
+            , "-rule", "S1543"
+            , "-language", "java"
+            , "-directory", outputDir.getAbsolutePath()
+    };
+    Main.main(args);
+
+    assertThat(outputDir.listFiles().length).isGreaterThan(0);
+
+  }
+
   @Test
   public void testCredentialsProvidedPasswdProvided(){
     String[] args = {"single_report", "-password", "bar"};
@@ -125,7 +140,6 @@ public class MainTest {
 
     assertThat(Main.credentialsProvided(settings)).isFalse();
   }
-
 
   @Test
   public void testOption() {
