@@ -287,7 +287,7 @@ public class Rule {
     return description + nonCompliant + compliant + exceptions + references + deprecation;
   }
 
-  public String getSquidJson( ) throws IOException {
+  public String getSquidJson( ) {
 
     LinkedHashMap objOrderedFields = new LinkedHashMap();
     objOrderedFields.put("title", this.title);
@@ -327,7 +327,11 @@ public class Rule {
     objOrderedFields.put("defaultSeverity", this.severity.getSeverityName());
 
     Writer writer = new JSONWriter();
-    JSONValue.writeJSONString(objOrderedFields, writer);
+    try {
+      JSONValue.writeJSONString(objOrderedFields, writer);
+    } catch( IOException e ) {
+      throw new RuleException(e);
+    }
     return writer.toString();
   }
 
@@ -336,14 +340,15 @@ public class Rule {
   }
 
   public void setKey(String key) {
-    if( ! "RSPEC-".equals(key.substring(0,"RSPEC-".length()))) {
-      throw new RuleException("Bad key:" + key );
-    }
     this.key = key;
   }
 
   public String getCanonicalKey() {
-    return String.format("S%s", this.key.substring("RSPEC-".length()));
+    if("RSPEC-".equals(this.key.substring(0,"RSPEC-".length()))) {
+      return String.format("S%s", this.key.substring("RSPEC-".length()));
+    } else {
+      throw new RuleException("Canonical key requires RSPEC-");
+    }
   }
 
   public Status getStatus() {

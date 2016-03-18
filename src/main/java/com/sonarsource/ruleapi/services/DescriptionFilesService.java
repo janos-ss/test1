@@ -26,31 +26,35 @@ public class DescriptionFilesService extends RuleManager {
   }
 
   public void generateRuleDescriptions(List<String> ruleKeys, String language) {
+
+    int countGeneratedFiles = 0;
+
     if (ruleKeys != null) {
       for (String ruleKey : ruleKeys) {
         Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
-        String htmlFilePath = String.format("%s/%s_%s%s", this.baseDir, rule.getCanonicalKey(), language, HTMLtermination );
-        String squidJsonFileePath = String.format("%s/%s_%s%s", this.baseDir, rule.getCanonicalKey(), language, JSONtermination );
+
+        String htmlFilePath = String.format("%s/%s_%s%s", this.baseDir, rule.getCanonicalKey(), language, HTMLtermination);
         writeFile(htmlFilePath, rule.getHtmlDescription());
-        try {
-          writeFile(squidJsonFileePath, rule.getSquidJson());
-        } catch( IOException e ) {
-          throw new RuleException(e);
-        }
+        countGeneratedFiles++;
+
+        String squidJsonFileePath = String.format("%s/%s_%s%s", this.baseDir, rule.getCanonicalKey(), language, JSONtermination);
+        writeFile(squidJsonFileePath, rule.getSquidJson());
+
+        countGeneratedFiles++;
       }
     }
+
+    LOGGER.info(String.format("Output: (%d) files", countGeneratedFiles));
   }
 
   private void writeFile(String fileName, String content) {
 
-    String path = fileName.replaceAll(" ", "_");
-    File file = new File(this.baseDir + "/" + path);
+    String protectedPath = fileName.replaceAll(" ", "_");
+    File file = new File(protectedPath);
 
     try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
 
       writer.println(content);
-
-      LOGGER.info("Output: " + file.toString());
 
     } catch (FileNotFoundException | UnsupportedEncodingException e) {
       throw new RuleException(e);

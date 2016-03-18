@@ -8,6 +8,8 @@ package com.sonarsource.ruleapi.domain;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -304,5 +306,72 @@ public class RuleTest {
     assertThat(rule.getTags()).contains("blue");
 
   }
+
+  @Test(expected = RuleException.class)
+  public void testCanicalKeyNotForLegacyKey() {
+    Rule rule = new Rule("foo");
+    rule.setKey("loremIpsum");
+    rule.getCanonicalKey();
+  }
+
+  @Test
+  public void testGetSquidJson( ) {
+
+    Rule rule = new Rule("foo");
+    rule.setTitle("Lorem Ipsum");
+    HashSet<Profile> defaultProfiles = new HashSet<>();
+    defaultProfiles.add(new Profile("bar"));
+    rule.setDefaultProfiles(defaultProfiles);
+    rule.setSqaleRemediationFunction (Rule.RemediationFunction.CONSTANT_ISSUE);
+    rule.setSqaleConstantCostOrLinearThreshold("17 seconds");
+    ArrayList<String> tags = new ArrayList<>(1);
+    tags.add("qux");
+    rule.setTags(tags);
+    rule.setSeverity(Rule.Severity.MINOR);
+
+    // well formatted nice looking JSON with ordered fields
+    final String expected1 = "{\n" +
+            "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"profiles\": [\n" +
+            "    \"bar\"\n" +
+            "  ],\n" +
+            "  \"remediation\": {\n" +
+            "    \"func\": \"Constant\\/Issue\",\n" +
+            "    \"constantCost\": \"17 seconds\"\n" +
+            "  },\n" +
+            "  \"tags\": [\n" +
+            "    \"qux\"\n" +
+            "  ],\n" +
+            "  \"defaultSeverity\": \"Minor\"\n" +
+            "}";
+
+    assertThat( rule.getSquidJson()).isEqualTo(expected1);
+
+    rule.setSqaleRemediationFunction (Rule.RemediationFunction.LINEAR);
+    rule.setSqaleLinearArgDesc("dolor sit amet");
+    rule.setSqaleLinearFactor("666");
+    rule.setSeverity(Rule.Severity.BLOCKER);
+    final String expected2 = "{\n" +
+            "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"profiles\": [\n" +
+            "    \"bar\"\n" +
+            "  ],\n" +
+            "  \"remediation\": {\n" +
+            "    \"func\": \"Linear\",\n" +
+            "    \"linearDesc\": \"dolor sit amet\",\n" +
+            "    \"linearFactor\": \"666\"\n" +
+            "  },\n" +
+            "  \"tags\": [\n" +
+            "    \"qux\"\n" +
+            "  ],\n" +
+            "  \"defaultSeverity\": \"Blocker\"\n" +
+            "}";
+
+    assertThat( rule.getSquidJson()).isEqualTo(expected2);
+
+  }
+
+
+
 
 }
