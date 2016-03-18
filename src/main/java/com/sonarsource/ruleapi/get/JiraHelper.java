@@ -236,6 +236,7 @@ public class JiraHelper {
     rule.setPylint(getCustomFieldValueAsList(issue, "Pylint"));
     rule.setFxCop(getCustomFieldValueAsList(issue, "FxCop"));
     rule.setPcLint(getCustomFieldValueAsList(issue, "PC-Lint"));
+    rule.setMsftRoslyn(getCustomFieldValueAsList(issue, "MSFT Roslyn"));
   }
 
   protected static void setSqale(Rule rule, JSONObject issue) {
