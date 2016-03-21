@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.utilities.Language;
 
 public class DescriptionFilesService extends RuleManager {
   private static final Logger LOGGER = Logger.getLogger(DescriptionFilesService.class.getName());
@@ -75,27 +76,43 @@ public class DescriptionFilesService extends RuleManager {
     assertBaseDir( );
 
     // sanitize user input
-    if (!language.matches("(?:\\w|-)+")) {
-      throw new IllegalArgumentException();
+    Language verifiedLanguage = Language.fromString(language);
+    if (verifiedLanguage == null) {
+      throw new IllegalArgumentException("bad language");
     }
 
+    HashSet<String> rulesToUpdateKeys = findTheRulesToUpdate( verifiedLanguage.getRspec().toLowerCase() );
+    LOGGER.info(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
+
+    int countGeneratedFiles = 0;
+    for (String canonicalKey : rulesToUpdateKeys) {
+      Rule rule = RuleMaker.getRuleByKey(canonicalKey, language);
+      countGeneratedFiles += generateOneRuleDescriptions(rule);
+    }
+
+    LOGGER.info(String.format("Wrote %d file(s)", countGeneratedFiles));
+
+  }
+
+  private HashSet<String> findTheRulesToUpdate( String languageRSpecName ) {
+
     // match string like S123456_java., the termination is matched apart
-    final Pattern descriptionFileBaseNamePattern = Pattern.compile("^S(\\d+)_" + language + "\\.");
+    final Pattern descriptionFileBaseNamePattern = Pattern.compile("^S(\\d+)_" + languageRSpecName  + "\\.");
 
     // establish the list of rules to update
-    // HashBasedTable will make unique entry
+    // HashBasedTable will make  entry unique
     File[] allTheDescriptionFiles = new File(this.baseDir).listFiles(new FileFilter() {
       @Override
       public boolean accept(File file) {
         return file.isFile()
-          &&
-          // match string like S123456_java., the termination is matched apart
-          descriptionFileBaseNamePattern.matcher(file.getName()).find()
-          &&
-          (file.getName().toLowerCase().endsWith(JSON_TERMINATION)
-          ||
-          file.getName().toLowerCase().endsWith(HTML_TERMINATION)
-          );
+                &&
+                // match string like S123456_java., the termination is matched apart
+                descriptionFileBaseNamePattern.matcher(file.getName()).find()
+                &&
+                      (file.getName().toLowerCase().endsWith(JSON_TERMINATION)
+                        ||
+                        file.getName().toLowerCase().endsWith(HTML_TERMINATION)
+                );
       }
     });
     HashSet<String> rulesToUpdateKeys = new HashSet<>();
@@ -111,17 +128,9 @@ public class DescriptionFilesService extends RuleManager {
       }
     }
 
-    LOGGER.info(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
-
-    int countGeneratedFiles = 0;
-    for (String canonicalKey : rulesToUpdateKeys) {
-      Rule rule = RuleMaker.getRuleByKey(canonicalKey, language);
-      countGeneratedFiles += generateOneRuleDescriptions(rule);
-    }
-
-    LOGGER.info(String.format("Wrote %d file(s)", countGeneratedFiles));
-
+    return rulesToUpdateKeys;
   }
+
 
   private static void writeFile(String fileName, String content) {
 

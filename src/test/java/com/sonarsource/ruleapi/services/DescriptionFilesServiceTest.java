@@ -61,7 +61,15 @@ public class DescriptionFilesServiceTest {
   }
 
   @Test
-  public void testUpdateDescriptions( ) throws Exception {
+  public void testGenerateRuleDescriptionsNoRule() throws Exception {
+    File outputDir = testFolder.newFolder();
+    DescriptionFilesService dfs = new DescriptionFilesService(outputDir.toString());
+    dfs.generateRulesDescriptions(null, "java");
+    assertThat(outputDir.listFiles().length).isEqualTo(0);
+  }
+
+  @Test
+  public void testUpdateDescriptions() throws Exception {
     File outputDir = testFolder.newFolder();
     DescriptionFilesService dfs = new DescriptionFilesService(outputDir.toString());
 
@@ -71,53 +79,68 @@ public class DescriptionFilesServiceTest {
     dfs.generateRulesDescriptions(listOfKeys, "java");
 
     // record checksums
-    File S1234HtmlFile =  new  File(outputDir.getAbsolutePath() + File.separator + "S1234_java.html" );
+    File S1234HtmlFile = new File(outputDir.getAbsolutePath() + File.separator + "S1234_java.html");
     assertThat(S1234HtmlFile.exists()).isTrue();
     long S1234HtmlChecksum = org.apache.commons.io.FileUtils.checksumCRC32(S1234HtmlFile);
-    File  S1234JsonFile =  new  File(outputDir.getAbsolutePath() + File.separator + "S1234_java.json" );
+    File S1234JsonFile = new File(outputDir.getAbsolutePath() + File.separator + "S1234_java.json");
     assertThat(S1234JsonFile.exists()).isTrue();
     long S1234JsonChecksum = org.apache.commons.io.FileUtils.checksumCRC32(S1234JsonFile);
-    File S1111HtmlFile =  new  File(outputDir.getAbsolutePath() + File.separator + "S1111_java.html" );
+    File S1111HtmlFile = new File(outputDir.getAbsolutePath() + File.separator + "S1111_java.html");
     assertThat(S1111HtmlFile.exists()).isTrue();
     long S1111HtmlChecksum = org.apache.commons.io.FileUtils.checksumCRC32(S1111HtmlFile);
-    File  S1111JsonFile =  new  File(outputDir.getAbsolutePath() + File.separator + "S1111_java.json" );
+    File S1111JsonFile = new File(outputDir.getAbsolutePath() + File.separator + "S1111_java.json");
     assertThat(S1111JsonFile.exists()).isTrue();
 
-    // overwrite content of the  S1234 files
-    try( PrintWriter writer = new PrintWriter(S1234HtmlFile) ) {
+    // overwrite content of the S1234 files
+    try (PrintWriter writer = new PrintWriter(S1234HtmlFile)) {
       writer.print("Lorem ipsum dolor sit amet");
     }
-    try( PrintWriter writer = new PrintWriter(S1234JsonFile) ) {
+    try (PrintWriter writer = new PrintWriter(S1234JsonFile)) {
       writer.print("{ \"lorem\": \"ipsum\"}");
     }
+
 
     // delete the S1111 json file, one file of html or json must be enough to trigger the generation of the rule
     S1111JsonFile.delete();
 
     // those two files should not be taken by the update
-    File quxJson = new  File(outputDir.getAbsolutePath() + File.separator + "qux.json" );
-    assertThat( quxJson.createNewFile() ).isTrue();
-    File quuxHtml = new  File(outputDir.getAbsolutePath() + File.separator + "quux.html" );
-    assertThat( quuxHtml.createNewFile() ).isTrue();
+    File quxJson = new File(outputDir.getAbsolutePath() + File.separator + "qux.json");
+    assertThat(quxJson.createNewFile()).isTrue();
+    File quuxHtml = new File(outputDir.getAbsolutePath() + File.separator + "quux.html");
+    assertThat(quuxHtml.createNewFile()).isTrue();
+    // create a directory with a compatible name
+    File s1000Directory = new File(outputDir.getAbsolutePath() + File.separator + "S1000_language.html");
+    s1000Directory.mkdir();
 
     // fire
     dfs.updateDescriptions("java");
 
     // check all the files back the right content
-    assertThat(outputDir.listFiles().length).isEqualTo(2*2+2);
-    assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234JsonFile) ).isEqualTo(S1234JsonChecksum);
-    assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234HtmlFile) ).isEqualTo(S1234HtmlChecksum);
-    assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1111HtmlFile) ).isEqualTo(S1111HtmlChecksum);
+    assertThat(outputDir.listFiles().length).isEqualTo(2 * 2 + 2 + 1 );
+    assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234JsonFile)).isEqualTo(S1234JsonChecksum);
+    assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234HtmlFile)).isEqualTo(S1234HtmlChecksum);
+    assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1111HtmlFile)).isEqualTo(S1111HtmlChecksum);
 
     assertThat(getTestCapturedLog()).contains("Found 2 rule(s) to update");
     assertThat(getTestCapturedLog()).contains("Wrote 4 file(s)");
   }
 
-  @Test
-  public void testUpdateDescriptionsOnline( ) throws Exception {
-    DescriptionFilesService dfs = new DescriptionFilesService("/Users/erichirlemann/Developer/workspace/sonar-rule-api");
+  @Test(expected = IllegalArgumentException.class)
+  public void testUpdateDescriptionsBadDirectory() throws Exception {
+    DescriptionFilesService dfs = new DescriptionFilesService("/non/existing/directory");
+    dfs.updateDescriptions("language");
+  }
 
-    dfs.updateDescriptions("java");
+  @Test(expected = IllegalArgumentException.class)
+  public void testUpdateDescriptionsNoDirectory() throws Exception {
+    DescriptionFilesService dfs = new DescriptionFilesService(null);
+    dfs.updateDescriptions("language");
+  }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testUpdateDescriptionsBadLanguage() throws Exception {
+    File outputDir = testFolder.newFolder();
+    DescriptionFilesService dfs = new DescriptionFilesService(outputDir.toString());
+    dfs.updateDescriptions("cheatTheRegExp|*");
   }
 }
