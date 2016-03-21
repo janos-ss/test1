@@ -23,8 +23,11 @@ import java.io.StringWriter;
  */
 public class JSONWriter extends StringWriter {
 
-  static final String INDENTSTRING = "  "; // define as you wish
-  static final String SPACEAFTERCOLON = " "; // use "" if you don't want space after colon
+  // define as you wish
+  static final String INDENTSTRING = "  ";
+  
+  // use "" if you don't want space after colon
+  static final String SPACEAFTERCOLON = " ";
 
   private int indentlevel = 0;
 
