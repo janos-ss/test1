@@ -40,8 +40,8 @@ public class DescriptionFilesService extends RuleManager {
         writeFile(htmlFilePath, rule.getHtmlDescription());
         countGeneratedFiles++;
 
-        String squidJsonFileePath = String.format("%s/%s_%s%s", this.baseDir, rule.getCanonicalKey(), language, JSON_TERMINATION);
-        writeFile(squidJsonFileePath, rule.getSquidJson());
+        String squidJsonFilePath = String.format("%s/%s_%s%s", this.baseDir, rule.getCanonicalKey(), language, JSON_TERMINATION);
+        writeFile(squidJsonFilePath, rule.getSquidJson());
 
         countGeneratedFiles++;
       }
@@ -50,7 +50,7 @@ public class DescriptionFilesService extends RuleManager {
     LOGGER.info(String.format("Output: (%d) files", countGeneratedFiles));
   }
 
-  static private void writeFile(String fileName, String content) {
+  private static void writeFile(String fileName, String content) {
 
     String protectedPath = fileName.replaceAll(" ", "_");
     File file = new File(protectedPath);

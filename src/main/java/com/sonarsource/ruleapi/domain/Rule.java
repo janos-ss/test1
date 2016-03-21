@@ -346,12 +346,12 @@ public class Rule {
   }
 
   public String getCanonicalKey() {
-    final String RSPEChyphen = "RSPEC-";
+    final String RSPEC_HYPHEN = "RSPEC-";
 
-    if (RSPEChyphen.equals(this.key.substring(0, RSPEChyphen.length()))) {
-      return String.format("S%s", this.key.substring(RSPEChyphen.length()));
+    if (RSPEC_HYPHEN.equals(this.key.substring(0, RSPEC_HYPHEN.length()))) {
+      return String.format("S%s", this.key.substring(RSPEC_HYPHEN.length()));
     } else {
-      throw new RuleException("Canonical key requires " + RSPEChyphen);
+      throw new RuleException("Canonical key requires " + RSPEC_HYPHEN);
     }
   }
 

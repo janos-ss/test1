@@ -22,9 +22,9 @@ import java.io.StringWriter;
  * @version 0.2
  */
 public class JSONWriter extends StringWriter {
-  
-  final static String indentstring = "  "; // define as you wish
-  final static String spaceaftercolon = " "; // use "" if you don't want space after colon
+
+  static final String INDENTSTRING = "  "; // define as you wish
+  static final String SPACEAFTERCOLON = " "; // use "" if you don't want space after colon
 
   private int indentlevel = 0;
 
@@ -32,42 +32,32 @@ public class JSONWriter extends StringWriter {
   public void write(int c)
   {
     char ch = (char) c;
-    if (ch == '[' || ch == '{')
-    {
+    if (ch == '[' || ch == '{') {
       super.write(c);
       super.write('\n');
       indentlevel++;
       writeIndentation();
-    }
-    else if (ch == ',')
-    {
+    } else if (ch == ',') {
       super.write(c);
       super.write('\n');
       writeIndentation();
-    }
-    else if (ch == ']' || ch == '}')
-    {
+    } else if (ch == ']' || ch == '}') {
       super.write('\n');
       indentlevel--;
       writeIndentation();
       super.write(c);
-    }
-    else if (ch == ':')
-    {
+    } else if (ch == ':') {
       super.write(c);
-      super.write(spaceaftercolon);
-    }
-    else
-    {
+      super.write(SPACEAFTERCOLON);
+    } else {
       super.write(c);
     }
   }
 
   private void writeIndentation()
   {
-    for (int i = 0; i < indentlevel; i++)
-    {
-      super.write(indentstring);
+    for (int i = 0; i < indentlevel; i++) {
+      super.write(INDENTSTRING);
     }
   }
 }
