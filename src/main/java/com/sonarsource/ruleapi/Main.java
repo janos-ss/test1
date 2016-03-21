@@ -102,7 +102,7 @@ public class Main {
         break;
 
       case GENERATE:
-        dfs.generateRuleDescriptions(settings.ruleKeys, settings.language);
+        dfs.generateRulesDescriptions(settings.ruleKeys, settings.language);
         break;
 
       case DIFF:
