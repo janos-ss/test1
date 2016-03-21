@@ -21,8 +21,8 @@ import java.io.StringWriter;
  * @since 28-Nov-2011
  * @version 0.2
  */
-public class JSONWriter extends StringWriter
-{
+public class JSONWriter extends StringWriter {
+  
   final static String indentstring = "  "; // define as you wish
   final static String spaceaftercolon = " "; // use "" if you don't want space after colon
 
@@ -38,26 +38,29 @@ public class JSONWriter extends StringWriter
       super.write('\n');
       indentlevel++;
       writeIndentation();
-    } else if (ch == ',')
+    }
+    else if (ch == ',')
     {
       super.write(c);
       super.write('\n');
       writeIndentation();
-    } else if (ch == ']' || ch == '}')
+    }
+    else if (ch == ']' || ch == '}')
     {
       super.write('\n');
       indentlevel--;
       writeIndentation();
       super.write(c);
-    } else if (ch == ':')
+    }
+    else if (ch == ':')
     {
       super.write(c);
       super.write(spaceaftercolon);
-    } else
+    }
+    else
     {
       super.write(c);
     }
-
   }
 
   private void writeIndentation()
