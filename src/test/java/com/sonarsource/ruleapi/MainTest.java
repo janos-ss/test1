@@ -128,7 +128,6 @@ public class MainTest {
     Main.main(args);
 
     assertThat(outputDir.listFiles().length).isGreaterThan(0);
-
   }
 
   @Test

@@ -126,7 +126,12 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     appendSummaryLine(buff, optionalRulesToCover, optionalRulesImplemented, getPercent(optionalRulesImplemented, optionalRulesToCover), indent, linebreak);
 
     buff.append("Total:");
-    appendSummaryLine(buff, mandatoryRulesToCover + optionalRulesToCover, totalRulesImplemented, getPercent(totalRulesImplemented, mandatoryRulesToCover + optionalRulesToCover), indent, "");
+    appendSummaryLine(buff, mandatoryRulesToCover + optionalRulesToCover
+                            , totalRulesImplemented
+                            , getPercent(totalRulesImplemented
+                            , mandatoryRulesToCover + optionalRulesToCover)
+                            , indent
+                            , "");
 
     return buff.toString();
   }

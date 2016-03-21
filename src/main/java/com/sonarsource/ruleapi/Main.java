@@ -105,6 +105,10 @@ public class Main {
         dfs.generateRulesDescriptions(settings.ruleKeys, settings.language);
         break;
 
+      case UPDATE:
+        dfs.updateDescriptions(settings.language);
+        break;
+
       case DIFF:
         rs.writeOutdatedRulesReport(language, settings.instance);
         break;
@@ -216,7 +220,8 @@ public class Main {
     SINGLE_REPORT(false, "Generate a single -report against -instance (defaults to Nemo), -language, and -tool."),
     OUTDATED(true,  "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
     INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
-    GENERATE(false, "Generates html description file specified by -rule and -language parameters at directory specified by -directory"),
+    GENERATE(false, "Generates html and json description files specified by -rule and -language parameters at directory specified by -directory"),
+    UPDATE(false, "Update html and json description files specified by -language found at directory specified by -directory"),
     DIFF(false, "Generates a diff report for the specified -language and -instance");
 
     private String description;

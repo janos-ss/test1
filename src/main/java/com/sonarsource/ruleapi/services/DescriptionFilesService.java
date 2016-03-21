@@ -5,14 +5,12 @@
  */
 package com.sonarsource.ruleapi.services;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -48,6 +46,9 @@ public class DescriptionFilesService extends RuleManager {
   }
 
   public int generateOneRuleDescriptions(Rule rule) {
+
+    assertBaseDir( );
+
     int countGeneratedFiles = 0;
 
     String htmlFilePath = String.format("%s/%s_%s%s"
@@ -69,10 +70,17 @@ public class DescriptionFilesService extends RuleManager {
     return countGeneratedFiles;
   }
 
-  public void updateDescriptions() {
+  public void updateDescriptions(String language) {
+
+    assertBaseDir( );
+
+    // sanitize user input
+    if (!language.matches("(?:\\w|-)+")) {
+      throw new IllegalArgumentException();
+    }
 
     // match string like S123456_java., the termination is matched apart
-    final Pattern descriptionFileBaseNamePattern = Pattern.compile("^S(\\d+)_(\\w+)\\.");
+    final Pattern descriptionFileBaseNamePattern = Pattern.compile("^S(\\d+)_" + language + "\\.");
 
     // establish the list of rules to update
     // HashBasedTable will make unique entry
@@ -82,30 +90,37 @@ public class DescriptionFilesService extends RuleManager {
         return file.isFile()
           &&
           // match string like S123456_java., the termination is matched apart
-          descriptionFileBaseNamePattern.matcher(file.getName()).matches()
+          descriptionFileBaseNamePattern.matcher(file.getName()).find()
           &&
-          (file.getName().endsWith(JSON_TERMINATION) || file.getName().endsWith(HTML_TERMINATION));
+          (file.getName().toLowerCase().endsWith(JSON_TERMINATION)
+          ||
+          file.getName().toLowerCase().endsWith(HTML_TERMINATION)
+          );
       }
     });
-    Table<String, String, Rule> rulesToUdate = HashBasedTable.create();
+    HashSet<String> rulesToUpdateKeys = new HashSet<>();
     for (File file : allTheDescriptionFiles) {
       Matcher m = descriptionFileBaseNamePattern.matcher(file.getName());
-      String canonicalKey = m.group(1);
-      String language = m.group(1);
-      if (!rulesToUdate.contains(canonicalKey, language)) {
-        rulesToUdate.put(canonicalKey, language, null);
+      if( m.find() ) {
+        String canonicalKey = m.group(1);
+        if (!rulesToUpdateKeys.contains(canonicalKey)) {
+          rulesToUpdateKeys.add(canonicalKey);
+        }
+      } else {
+        throw new IllegalStateException("Inconsistent data");
       }
     }
 
-    // populate the rules
-    for (Table.Cell<String, String, Rule> cell : rulesToUdate.cellSet()) {
-      rulesToUdate.put(
-        cell.getRowKey()
-        , cell.getColumnKey()
-        , RuleMaker.getRuleByKey(cell.getRowKey(), cell.getColumnKey()));
+    LOGGER.info(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
+
+    int countGeneratedFiles = 0;
+    for (String canonicalKey : rulesToUpdateKeys) {
+      Rule rule = RuleMaker.getRuleByKey(canonicalKey, language);
+      countGeneratedFiles += generateOneRuleDescriptions(rule);
     }
 
-    // TODO loop on the rules to overwrite the files
+    LOGGER.info(String.format("Wrote %d file(s)", countGeneratedFiles));
+
   }
 
   private static void writeFile(String fileName, String content) {
@@ -122,4 +137,14 @@ public class DescriptionFilesService extends RuleManager {
     }
   }
 
+  private void assertBaseDir() {
+    if( this.baseDir == null ) {
+      throw new IllegalArgumentException("directory is required");
+    } else {
+      File baseDirFile = new File(this.baseDir);
+      if( ! baseDirFile.isDirectory()) {
+        throw new IllegalArgumentException("directory does not exist");
+      }
+    }
+  }
 }
