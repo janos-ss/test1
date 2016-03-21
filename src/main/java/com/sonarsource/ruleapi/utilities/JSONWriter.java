@@ -32,8 +32,7 @@ public class JSONWriter extends StringWriter {
   private int indentlevel = 0;
 
   @Override
-  public void write(int c)
-  {
+  public void write(int c) {
     char ch = (char) c;
     if (ch == '[' || ch == '{') {
       super.write(c);
@@ -57,8 +56,7 @@ public class JSONWriter extends StringWriter {
     }
   }
 
-  private void writeIndentation()
-  {
+  private void writeIndentation() {
     for (int i = 0; i < indentlevel; i++) {
       super.write(INDENTSTRING);
     }
