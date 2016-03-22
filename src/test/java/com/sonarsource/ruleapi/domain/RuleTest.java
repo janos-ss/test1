@@ -327,7 +327,7 @@ public class RuleTest {
     // well formatted nice looking JSON with ordered fields
     final String expected1 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
-            "  \"deprecated\": true,\n" +
+            "  \"status\": \"deprecated\",\n" +
             "  \"profiles\": [\n" +
             "    \"bar\"\n" +
             "  ],\n" +
@@ -351,6 +351,7 @@ public class RuleTest {
     rule.setSeverity(Rule.Severity.BLOCKER);
     final String expected2 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"status\": \"ready\",\n" +
             "  \"profiles\": [\n" +
             "    \"bar\"\n" +
             "  ],\n" +
@@ -376,6 +377,7 @@ public class RuleTest {
     rule.setSqaleCharac(null);
     final String expected3 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"status\": \"beta\",\n" +
             "  \"profiles\": [\n" +
             "    \"bar\"\n" +
             "  ],\n" +

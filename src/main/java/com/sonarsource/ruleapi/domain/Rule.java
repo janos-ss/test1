@@ -21,7 +21,13 @@ import java.util.Set;
 public class Rule {
 
   public enum Status {
-    BETA, READY, DEPRECATED;
+    BETA("beta"), READY("ready"), DEPRECATED("deprecated");
+
+    protected final String statusName;
+
+    Status(String statusName) {
+      this.statusName = statusName;
+    }
 
     public static Status fromString(String string) {
       for (Status s : Status.values()) {
@@ -30,6 +36,10 @@ public class Rule {
         }
       }
       return Status.READY;
+    }
+
+    public String getStatusName() {
+      return this.statusName;
     }
   }
 
@@ -295,8 +305,8 @@ public class Rule {
     LinkedHashMap objOrderedFields = new LinkedHashMap();
     objOrderedFields.put("title", this.title);
 
-    if( this.status == Status.DEPRECATED ) {
-      objOrderedFields.put("deprecated", true);
+    if (this.status != null) {
+      objOrderedFields.put("status", this.status.getStatusName());
     }
 
     JSONArray profiles = new JSONArray();

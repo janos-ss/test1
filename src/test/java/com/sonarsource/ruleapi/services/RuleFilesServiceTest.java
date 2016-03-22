@@ -44,7 +44,7 @@ public class RuleFilesServiceTest {
   public TemporaryFolder testFolder = new TemporaryFolder();
 
   @Test
-  public void testGenerateRuleDescriptions() throws Exception {
+  public void testGenerateRuleFiles() throws Exception {
     File outputDir = testFolder.newFolder();
 
     RuleFilesService dfs = new RuleFilesService(outputDir.toString());
@@ -66,6 +66,26 @@ public class RuleFilesServiceTest {
     RuleFilesService rfs = new RuleFilesService(outputDir.toString());
     rfs.generateRuleFiles(null, "java");
     assertThat(outputDir.listFiles().length).isEqualTo(0);
+  }
+
+  @Test
+  public void testGenerateRuleFilesWoSeverity() throws Exception {
+    File outputDir = testFolder.newFolder();
+
+    RuleFilesService dfs = new RuleFilesService(outputDir.toString());
+
+    List<String> listOfKeys = new ArrayList<>(1);
+    // this ticket is deprecated and wo severity
+    listOfKeys.add("RSPEC-2297");
+
+    dfs.generateRuleFiles(listOfKeys, "java");
+
+    // must be 2 files per rule
+    int supposedCount = listOfKeys.size() * 2;
+    assertThat(outputDir.listFiles().length).isEqualTo(supposedCount);
+    assertThat(getTestCapturedLog()).contains(String.format("(%d)", supposedCount));
+    assertThat(getTestCapturedLog()).contains("Missing severity for rule");
+
   }
 
   @Test
