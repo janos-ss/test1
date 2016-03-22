@@ -20,10 +20,10 @@ import java.util.logging.StreamHandler;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class DescriptionFilesServiceTest {
+public class RuleFilesServiceTest {
 
   // log capturer see http://blog.diabol.se/?p=474
-  private static Logger log = Logger.getLogger(DescriptionFilesService.class.getName()); // matches the logger in the affected class
+  private static Logger log = Logger.getLogger(RuleFilesService.class.getName()); // matches the logger in the affected class
   private static OutputStream logCapturingStream;
   private static StreamHandler customLogHandler;
 
@@ -47,12 +47,12 @@ public class DescriptionFilesServiceTest {
   public void testGenerateRuleDescriptions() throws Exception {
     File outputDir = testFolder.newFolder();
 
-    DescriptionFilesService dfs = new DescriptionFilesService(outputDir.toString());
+    RuleFilesService dfs = new RuleFilesService(outputDir.toString());
 
     List<String> listOfKeys = new ArrayList<>(2);
     listOfKeys.add("RSPEC-1234");
     listOfKeys.add("S1111");
-    dfs.generateRulesDescriptions(listOfKeys, "java");
+    dfs.generateRuleFiles(listOfKeys, "java");
 
     // must be 2 files per rule
     int supposedCount = listOfKeys.size() * 2;
@@ -63,20 +63,20 @@ public class DescriptionFilesServiceTest {
   @Test
   public void testGenerateRuleDescriptionsNoRule() throws Exception {
     File outputDir = testFolder.newFolder();
-    DescriptionFilesService dfs = new DescriptionFilesService(outputDir.toString());
-    dfs.generateRulesDescriptions(null, "java");
+    RuleFilesService rfs = new RuleFilesService(outputDir.toString());
+    rfs.generateRuleFiles(null, "java");
     assertThat(outputDir.listFiles().length).isEqualTo(0);
   }
 
   @Test
   public void testUpdateDescriptions() throws Exception {
     File outputDir = testFolder.newFolder();
-    DescriptionFilesService dfs = new DescriptionFilesService(outputDir.toString());
+    RuleFilesService rfs = new RuleFilesService(outputDir.toString());
 
     List<String> listOfKeys = new ArrayList<>(2);
     listOfKeys.add("RSPEC-1234");
     listOfKeys.add("S1111");
-    dfs.generateRulesDescriptions(listOfKeys, "java");
+    rfs.generateRuleFiles(listOfKeys, "java");
 
     // record checksums
     File S1234HtmlFile = new File(outputDir.getAbsolutePath() + File.separator + "S1234_java.html");
@@ -108,14 +108,14 @@ public class DescriptionFilesServiceTest {
     assertThat(quxJson.createNewFile()).isTrue();
     File quuxHtml = new File(outputDir.getAbsolutePath() + File.separator + "quux.html");
     assertThat(quuxHtml.createNewFile()).isTrue();
-    // create a directory with a compatible name
+    // create a directory with a compatible name, should be ignored
     File s1000Directory = new File(outputDir.getAbsolutePath() + File.separator + "S1000_language.html");
     s1000Directory.mkdir();
 
     // fire
-    dfs.updateDescriptions("java");
+    rfs.updateDescriptions("java");
 
-    // check all the files back the right content
+    // check all the files for the right content
     assertThat(outputDir.listFiles().length).isEqualTo(2 * 2 + 2 + 1 );
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234JsonFile)).isEqualTo(S1234JsonChecksum);
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234HtmlFile)).isEqualTo(S1234HtmlChecksum);
@@ -127,20 +127,20 @@ public class DescriptionFilesServiceTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testUpdateDescriptionsBadDirectory() throws Exception {
-    DescriptionFilesService dfs = new DescriptionFilesService("/non/existing/directory");
-    dfs.updateDescriptions("language");
+    RuleFilesService rfs = new RuleFilesService("/non/existing/directory");
+    rfs.updateDescriptions("language");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testUpdateDescriptionsNoDirectory() throws Exception {
-    DescriptionFilesService dfs = new DescriptionFilesService(null);
-    dfs.updateDescriptions("language");
+    RuleFilesService rfs = new RuleFilesService(null);
+    rfs.updateDescriptions("language");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testUpdateDescriptionsBadLanguage() throws Exception {
     File outputDir = testFolder.newFolder();
-    DescriptionFilesService dfs = new DescriptionFilesService(outputDir.toString());
-    dfs.updateDescriptions("cheatTheRegExp|*");
+    RuleFilesService rfs = new RuleFilesService(outputDir.toString());
+    rfs.updateDescriptions("cheatTheRegExp|*");
   }
 }

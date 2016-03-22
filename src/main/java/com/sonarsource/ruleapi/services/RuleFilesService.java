@@ -20,41 +20,45 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 
-public class DescriptionFilesService extends RuleManager {
-  private static final Logger LOGGER = Logger.getLogger(DescriptionFilesService.class.getName());
+public class RuleFilesService extends RuleManager {
+  private static final Logger LOGGER = Logger.getLogger(RuleFilesService.class.getName());
 
   private static final String HTML_TERMINATION = ".html";
   private static final String JSON_TERMINATION = ".json";
 
   private String baseDir;
 
-  public DescriptionFilesService(String baseDir) {
+  public RuleFilesService(String baseDir) {
     this.baseDir = baseDir;
   }
 
-  public void generateRulesDescriptions(List<String> ruleKeys, String language) {
+  public void generateRuleFiles(List<String> ruleKeys, String language) {
+
     int countGeneratedFiles = 0;
 
     if (ruleKeys != null) {
       for (String ruleKey : ruleKeys) {
         Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
-        countGeneratedFiles += this.generateOneRuleDescriptions(rule);
+        countGeneratedFiles += this.generateOneRuleFiles(rule);
       }
     }
 
     LOGGER.info(String.format("Output: (%d) files", countGeneratedFiles));
   }
 
-  public int generateOneRuleDescriptions(Rule rule) {
+  private int generateOneRuleFiles(Rule rule) {
 
     assertBaseDir( );
 
     int countGeneratedFiles = 0;
 
+    final String denormalizedKey = Utilities.denormalizeKey(rule.getKey());
+
     String htmlFilePath = String.format("%s/%s_%s%s"
       , this.baseDir
-      , rule.getCanonicalKey()
+      , denormalizedKey
       , rule.getLanguage()
       , HTML_TERMINATION);
     writeFile(htmlFilePath, rule.getHtmlDescription());
@@ -62,7 +66,7 @@ public class DescriptionFilesService extends RuleManager {
 
     String squidJsonFilePath = String.format("%s/%s_%s%s"
       , this.baseDir
-      , rule.getCanonicalKey()
+      , denormalizedKey
       , rule.getLanguage()
       , JSON_TERMINATION);
     writeFile(squidJsonFilePath, rule.getSquidJson());
@@ -87,7 +91,7 @@ public class DescriptionFilesService extends RuleManager {
     int countGeneratedFiles = 0;
     for (String canonicalKey : rulesToUpdateKeys) {
       Rule rule = RuleMaker.getRuleByKey(canonicalKey, language);
-      countGeneratedFiles += generateOneRuleDescriptions(rule);
+      countGeneratedFiles += generateOneRuleFiles(rule);
     }
 
     LOGGER.info(String.format("Wrote %d file(s)", countGeneratedFiles));

@@ -295,31 +295,40 @@ public class Rule {
     LinkedHashMap objOrderedFields = new LinkedHashMap();
     objOrderedFields.put("title", this.title);
 
+    if( this.status == Status.DEPRECATED ) {
+      objOrderedFields.put("deprecated", true);
+    }
+
     JSONArray profiles = new JSONArray();
     for (Profile profile : this.getDefaultProfiles()) {
       profiles.add(profile.getName());
     }
     objOrderedFields.put("profiles", profiles);
 
-    LinkedHashMap remediation = new LinkedHashMap();
-    remediation.put("func", this.sqaleRemediationFunction.getFunctionName());
-    switch (this.sqaleRemediationFunction) {
-      case CONSTANT_ISSUE:
-        remediation.put("constantCost", this.sqaleConstantCostOrLinearThreshold);
-        break;
-      case LINEAR:
-        remediation.put("linearDesc", this.sqaleLinearArgDesc);
-        remediation.put("linearFactor", this.sqaleLinearFactor);
-        break;
-      case LINEAR_OFFSET:
-        remediation.put("linearDesc", this.sqaleLinearArgDesc);
-        remediation.put("linearOffset", this.sqaleLinearOffset);
-        remediation.put("linearFactor", this.sqaleLinearFactor);
-        break;
-      default:
-        throw new IllegalStateException("Unknown sqaleRemediationFunction");
+    if (this.sqaleRemediationFunction != null) {
+      LinkedHashMap remediation = new LinkedHashMap();
+      remediation.put("func", this.sqaleRemediationFunction.getFunctionName());
+      switch (this.sqaleRemediationFunction) {
+        case CONSTANT_ISSUE:
+          remediation.put("constantCost", this.sqaleConstantCostOrLinearThreshold);
+          break;
+        case LINEAR:
+          remediation.put("linearDesc", this.sqaleLinearArgDesc);
+          remediation.put("linearFactor", this.sqaleLinearFactor);
+          break;
+        case LINEAR_OFFSET:
+          remediation.put("linearDesc", this.sqaleLinearArgDesc);
+          remediation.put("linearOffset", this.sqaleLinearOffset);
+          remediation.put("linearFactor", this.sqaleLinearFactor);
+          break;
+        default:
+          throw new IllegalStateException("Unknown sqaleRemediationFunction");
+      }
+      objOrderedFields.put("remediation", remediation);
     }
-    objOrderedFields.put("remediation", remediation);
+    if (this.sqaleCharac != null) {
+      objOrderedFields.put("sqaleCharac", this.sqaleCharac);
+    }
 
     JSONArray tagsJSON = new JSONArray();
     for (String tag : this.tags) {
@@ -327,9 +336,11 @@ public class Rule {
     }
     objOrderedFields.put("tags", tagsJSON);
 
-    objOrderedFields.put("defaultSeverity", this.severity.getSeverityName());
+    if (this.severity != null) {
+      objOrderedFields.put("defaultSeverity", this.severity.getSeverityName());
+    }
 
-    try( Writer writer = new JSONWriter(); )   {
+    try (Writer writer = new JSONWriter();) {
       JSONValue.writeJSONString(objOrderedFields, writer);
       return writer.toString();
     } catch (IOException e) {
@@ -343,16 +354,6 @@ public class Rule {
 
   public void setKey(String key) {
     this.key = key;
-  }
-
-  public String getCanonicalKey() {
-    final String rspecHyphen = "RSPEC-";
-
-    if (rspecHyphen.equals(this.key.substring(0, rspecHyphen.length()))) {
-      return String.format("S%s", this.key.substring(rspecHyphen.length()));
-    } else {
-      throw new RuleException("Canonical key requires " + rspecHyphen);
-    }
   }
 
   public Status getStatus() {
