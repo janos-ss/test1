@@ -307,17 +307,11 @@ public class RuleTest {
 
   }
 
-  @Test(expected = RuleException.class)
-  public void testCanicalKeyNotForLegacyKey() {
-    Rule rule = new Rule("foo");
-    rule.setKey("loremIpsum");
-    rule.getCanonicalKey();
-  }
-
   @Test
   public void testGetSquidJson( ) {
 
     Rule rule = new Rule("foo");
+    rule.setStatus(Rule.Status.DEPRECATED);
     rule.setTitle("Lorem Ipsum");
     HashSet<Profile> defaultProfiles = new HashSet<>();
     defaultProfiles.add(new Profile("bar"));
@@ -327,11 +321,13 @@ public class RuleTest {
     ArrayList<String> tags = new ArrayList<>(1);
     tags.add("qux");
     rule.setTags(tags);
+    rule.setSqaleCharac("quux");
     rule.setSeverity(Rule.Severity.MINOR);
 
     // well formatted nice looking JSON with ordered fields
     final String expected1 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"deprecated\": true,\n" +
             "  \"profiles\": [\n" +
             "    \"bar\"\n" +
             "  ],\n" +
@@ -339,6 +335,7 @@ public class RuleTest {
             "    \"func\": \"Constant\\/Issue\",\n" +
             "    \"constantCost\": \"17 seconds\"\n" +
             "  },\n" +
+            "  \"sqaleCharac\": \"quux\",\n" +
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ],\n" +
@@ -347,6 +344,7 @@ public class RuleTest {
 
     assertThat( rule.getSquidJson()).isEqualTo(expected1);
 
+    rule.setStatus(Rule.Status.READY);
     rule.setSqaleRemediationFunction (Rule.RemediationFunction.LINEAR);
     rule.setSqaleLinearArgDesc("dolor sit amet");
     rule.setSqaleLinearFactor("666");
@@ -361,6 +359,7 @@ public class RuleTest {
             "    \"linearDesc\": \"dolor sit amet\",\n" +
             "    \"linearFactor\": \"666\"\n" +
             "  },\n" +
+            "  \"sqaleCharac\": \"quux\",\n" +
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ],\n" +
@@ -368,6 +367,24 @@ public class RuleTest {
             "}";
 
     assertThat( rule.getSquidJson()).isEqualTo(expected2);
+
+
+    rule.setStatus(Rule.Status.BETA);
+  // without the optional fields
+    rule.setSeverity(null);
+    rule.setSqaleRemediationFunction (null);
+    rule.setSqaleCharac(null);
+    final String expected3 = "{\n" +
+            "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"profiles\": [\n" +
+            "    \"bar\"\n" +
+            "  ],\n" +
+            "  \"tags\": [\n" +
+            "    \"qux\"\n" +
+            "  ]\n" +
+            "}";
+
+    assertThat( rule.getSquidJson()).isEqualTo(expected3);
 
   }
 

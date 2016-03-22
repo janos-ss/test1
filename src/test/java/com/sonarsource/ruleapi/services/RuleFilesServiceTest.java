@@ -22,10 +22,10 @@ import java.util.logging.StreamHandler;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class DescriptionFilesServiceTest {
+public class RuleFilesServiceTest {
 
   // log capturer see http://blog.diabol.se/?p=474
-  private static Logger log = Logger.getLogger(DescriptionFilesService.class.getName()); // matches the logger in the affected class
+  private static Logger log = Logger.getLogger(RuleFilesService.class.getName()); // matches the logger in the affected class
   private static OutputStream logCapturingStream;
   private static StreamHandler customLogHandler;
 
@@ -49,12 +49,12 @@ public class DescriptionFilesServiceTest {
   public void testGenerateRuleDescriptions() throws Exception {
     File outputDir = testFolder.newFolder();
 
-    DescriptionFilesService dfs = new DescriptionFilesService(outputDir.toString());
+    RuleFilesService dfs = new RuleFilesService(outputDir.toString());
 
     List<String> listOfKeys = new ArrayList<>(2);
     listOfKeys.add("RSPEC-1234");
     listOfKeys.add("S1111");
-    dfs.generateRuleDescriptions(listOfKeys, "java");
+    dfs.generateRuleFiles(listOfKeys, "java");
 
     // must be 2 files per rule
     int supposedCount = listOfKeys.size() * 2;
