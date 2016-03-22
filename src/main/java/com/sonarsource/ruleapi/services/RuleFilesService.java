@@ -38,6 +38,10 @@ public class RuleFilesService extends RuleManager {
         Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
         final String denormalizedKey = Utilities.denormalizeKey(rule.getKey() );
 
+        if( rule.getSeverity() == null ) {
+          LOGGER.warning(String.format("Missing severity for rule %s", rule.getKey()));
+        }
+
         String htmlFilePath = String.format("%s/%s_%s%s", this.baseDir, denormalizedKey, language, HTML_TERMINATION);
         writeFile(htmlFilePath, rule.getHtmlDescription());
         countGeneratedFiles++;
