@@ -28,13 +28,21 @@ public class RuleFilesService extends RuleManager {
 
   public void generateRuleFiles(List<String> ruleKeys, String language) {
 
+    // check inputs
     assertBaseDir();
+    if( language == null || language.isEmpty() ) {
+      throw new IllegalArgumentException("no language found");
+    }
 
     int countGeneratedFiles = 0;
 
     if (ruleKeys != null) {
       for (String ruleKey : ruleKeys) {
         Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
+        if( rule == null || rule.getKey() == null ) {
+          throw new IllegalArgumentException("invalid rule");
+        }
+
         final String denormalizedKey = Utilities.denormalizeKey(rule.getKey() );
 
         if( rule.getSeverity() == null ) {

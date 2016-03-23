@@ -50,6 +50,40 @@ public class RuleFilesServiceTest {
 
   }
 
+  @Test( expected = IllegalArgumentException.class )
+  public void testGenerateRuleFilesUnknownRule() throws Exception {
+    File outputDir = testFolder.newFolder();
+
+    RuleFilesService dfs = new RuleFilesService(outputDir.toString());
+    List<String> listOfKeys = new ArrayList<>(1);
+    listOfKeys.add("foo");
+    dfs.generateRuleFiles(listOfKeys, "bar");
+    assertThat(outputDir.listFiles().length).isEqualTo(0);
+  }
+
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testGenerateRuleFilesEmptyLanguage() throws Exception {
+    File outputDir = testFolder.newFolder();
+
+    RuleFilesService dfs = new RuleFilesService(outputDir.toString());
+    List<String> listOfKeys = new ArrayList<>(0);
+    dfs.generateRuleFiles(listOfKeys, "");
+    assertThat(outputDir.listFiles().length).isEqualTo(0);
+  }
+
+  @Test( expected = IllegalArgumentException.class )
+  public void testGenerateRuleFilesNullLanguage() throws Exception {
+    File outputDir = testFolder.newFolder();
+
+    RuleFilesService dfs = new RuleFilesService(outputDir.toString());
+    List<String> listOfKeys = new ArrayList<>(0);
+    dfs.generateRuleFiles(listOfKeys, null);
+    assertThat(outputDir.listFiles().length).isEqualTo(0);
+    assertThat(systemOutRule.getLog()).contains("no valid language");
+  }
+
+
   @Test
   public void testGenerateRuleFilesWoSeverity() throws Exception {
     File outputDir = testFolder.newFolder();
