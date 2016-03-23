@@ -1,72 +1,73 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.sonarsource.parent</groupId>
-		<artifactId>parent</artifactId>
-		<version>33</version>
-	</parent>
+  <parent>
+    <groupId>com.sonarsource.parent</groupId>
+    <artifactId>parent</artifactId>
+    <version>33</version>
+  </parent>
 
-	<groupId>com.sonarsource.rule-api</groupId>
-	<artifactId>rule-api</artifactId>
-	<version>1.12-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	<name>SonarSource :: Rule API</name>
-	<inceptionYear>2014</inceptionYear>
+  <groupId>com.sonarsource.rule-api</groupId>
+  <artifactId>rule-api</artifactId>
+  <version>1.12-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>SonarSource :: Rule API</name>
+  <inceptionYear>2014</inceptionYear>
 
-	<organization>
-		<name>SonarSource</name>
-		<url>http://www.sonarsource.com</url>
-	</organization>
-	<licenses>
-		<license>
-			<name>Commercial</name>
-		</license>
-	</licenses>
+  <organization>
+    <name>SonarSource</name>
+    <url>http://www.sonarsource.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Commercial</name>
+    </license>
+  </licenses>
 
-	<scm>
-		<connection>scm:git:git@github.com:SonarSource/sonar-rule-api.git</connection>
-		<developerConnection>scm:git:git@github.com:SonarSource/sonar-rule-api.git</developerConnection>
-		<url>https://github.com/SonarSource/sonar-rule-api</url>
-		<tag>HEAD</tag>
-	</scm>
-	<issueManagement>
-		<system>jira</system>
-		<url>http://jira.sonarsource.com/browse/RULEAPI</url>
-	</issueManagement>
+  <scm>
+    <connection>scm:git:git@github.com:SonarSource/sonar-rule-api.git</connection>
+    <developerConnection>scm:git:git@github.com:SonarSource/sonar-rule-api.git</developerConnection>
+    <url>https://github.com/SonarSource/sonar-rule-api</url>
+    <tag>HEAD</tag>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.sonarsource.com/browse/RULEAPI</url>
+  </issueManagement>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <gitRepositoryName>sonar-rule-api</gitRepositoryName>
+  </properties>
 
-	<build>
-		<plugins>
-			<plugin>
-				<!-- Build an executable JAR -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>com.sonarsource.ruleapi.Main</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.2</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
+  <build>
+    <plugins>
+      <plugin>
+        <!-- Build an executable JAR -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
+              <mainClass>com.sonarsource.ruleapi.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.2</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
               <filters>
                 <filter>
                   <artifact>*:*</artifact>
@@ -77,79 +78,54 @@
                   </excludes>
                 </filter>
               </filters>
-							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>com.sonarsource.ruleapi.Main</mainClass>
-								</transformer>
-							</transformers>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>com.sonarsource.ruleapi.Main</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>19.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.easytesting</groupId>
-			<artifactId>fest-assert-core</artifactId>
-			<version>2.0M10</version>
-		</dependency>
-		<dependency>
-			<groupId>org.easytesting</groupId>
-			<artifactId>fest-assert</artifactId>
-			<version>1.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.core</groupId>
-			<artifactId>jersey-client</artifactId>
-			<version>2.13</version>
-		</dependency>
-		<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.beust</groupId>
-			<artifactId>jcommander</artifactId>
-			<version>1.47</version>
-		</dependency>
-        <dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>2.13</version>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.json-simple</groupId>
+      <artifactId>json-simple</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>1.6.1</version>
     </dependency>
-		<dependency>
-			<groupId>jaxen</groupId>
-			<artifactId>jaxen</artifactId>
-			<version>1.1.6</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<version>3.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.stefanbirkner</groupId>
-			<artifactId>system-rules</artifactId>
-			<version>1.12.1</version>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>1.1.6</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.stefanbirkner</groupId>
+      <artifactId>system-rules</artifactId>
+      <version>1.12.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
