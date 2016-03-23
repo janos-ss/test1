@@ -12,6 +12,7 @@ import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.services.RuleFilesService;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.services.RuleManager;
@@ -84,6 +85,7 @@ public class Main {
 
     IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
     ReportService rs = new ReportService();
+    RuleFilesService dfs = new RuleFilesService( settings.directory );
     Language language = Language.fromString(settings.language);
 
     switch (option) {
@@ -100,7 +102,7 @@ public class Main {
         break;
 
       case GENERATE:
-        rs.generateRuleDescriptions(settings.ruleKeys, settings.language);
+        dfs.generateRuleFiles(settings.ruleKeys, settings.language);
         break;
 
       case DIFF:
@@ -201,6 +203,9 @@ public class Main {
     @Parameter(names="-report")
     private String report;
 
+    @Parameter(names="-directory")
+    private String directory;
+
     @Parameter(names="-tool")
     private String tool;
 
@@ -211,7 +216,7 @@ public class Main {
     SINGLE_REPORT(false, "Generate a single -report against -instance (defaults to Nemo), -language, and -tool."),
     OUTDATED(true,  "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
     INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
-    GENERATE(false, "Generates html description file specified by -rule and -language parameters."),
+    GENERATE(false, "Generates html description and json metadata files specified by -rule and -language parameters at directory specified by -directory"),
     DIFF(false, "Generates a diff report for the specified -language and -instance");
 
     private String description;

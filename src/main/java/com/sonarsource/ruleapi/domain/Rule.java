@@ -6,16 +6,28 @@
 package com.sonarsource.ruleapi.domain;
 
 import com.google.common.base.Strings;
+import com.sonarsource.ruleapi.utilities.JSONWriter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
 public class Rule {
 
   public enum Status {
-    BETA, READY, DEPRECATED;
+    BETA("beta"), READY("ready"), DEPRECATED("deprecated");
+
+    protected final String statusName;
+
+    Status(String statusName) {
+      this.statusName = statusName;
+    }
 
     public static Status fromString(String string) {
       for (Status s : Status.values()) {
@@ -25,10 +37,24 @@ public class Rule {
       }
       return Status.READY;
     }
+
+    public String getStatusName() {
+      return this.statusName;
+    }
   }
 
   public enum Severity {
-    BLOCKER, CRITICAL, MAJOR, MINOR, INFO
+    BLOCKER("Blocker"), CRITICAL("Critical"), MAJOR("Major"), MINOR("Minor"), INFO("Info");
+
+    protected final String severityName;
+
+    Severity(String severityName) {
+      this.severityName = severityName;
+    }
+
+    public String getSeverityName() {
+      return this.severityName;
+    }
   }
 
   public enum RemediationFunction {
@@ -101,7 +127,6 @@ public class Rule {
       return this.rspecName;
     }
   }
-
 
   private String language = null;
   private String key = null;
@@ -274,6 +299,64 @@ public class Rule {
 
   public String getHtmlDescription() {
     return description + nonCompliant + compliant + exceptions + references + deprecation;
+  }
+
+  public String getSquidJson() {
+
+    LinkedHashMap objOrderedFields = new LinkedHashMap();
+    objOrderedFields.put("title", this.title);
+
+    if (this.status != null) {
+      objOrderedFields.put("status", this.status.getStatusName());
+    }
+
+    JSONArray profiles = new JSONArray();
+    for (Profile profile : this.getDefaultProfiles()) {
+      profiles.add(profile.getName());
+    }
+    objOrderedFields.put("profiles", profiles);
+
+    if (this.sqaleRemediationFunction != null) {
+      LinkedHashMap remediation = new LinkedHashMap();
+      remediation.put("func", this.sqaleRemediationFunction.getFunctionName());
+      switch (this.sqaleRemediationFunction) {
+        case CONSTANT_ISSUE:
+          remediation.put("constantCost", this.sqaleConstantCostOrLinearThreshold);
+          break;
+        case LINEAR:
+          remediation.put("linearDesc", this.sqaleLinearArgDesc);
+          remediation.put("linearFactor", this.sqaleLinearFactor);
+          break;
+        case LINEAR_OFFSET:
+          remediation.put("linearDesc", this.sqaleLinearArgDesc);
+          remediation.put("linearOffset", this.sqaleLinearOffset);
+          remediation.put("linearFactor", this.sqaleLinearFactor);
+          break;
+        default:
+          throw new IllegalStateException("Unknown sqaleRemediationFunction");
+      }
+      objOrderedFields.put("remediation", remediation);
+    }
+    if (this.sqaleSubCharac != null) {
+      objOrderedFields.put("sqaleSubCharac", this.sqaleSubCharac.getRspecName());
+    }
+
+    JSONArray tagsJSON = new JSONArray();
+    for (String tag : this.tags) {
+      tagsJSON.add(tag);
+    }
+    objOrderedFields.put("tags", tagsJSON);
+
+    if (this.severity != null) {
+      objOrderedFields.put("defaultSeverity", this.severity.getSeverityName());
+    }
+
+    try (Writer writer = new JSONWriter();) {
+      JSONValue.writeJSONString(objOrderedFields, writer);
+      return writer.toString();
+    } catch (IOException e) {
+      throw new RuleException(e);
+    }
   }
 
   public String getKey() {
