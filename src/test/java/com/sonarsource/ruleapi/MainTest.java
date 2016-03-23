@@ -118,7 +118,6 @@ public class MainTest {
   public void testGenerationDescriptionFile() throws Exception{
 
     File outputDir = testFolder.newFolder();
-    assertThat(outputDir.listFiles().length).isEqualTo(0);
 
     String[] args = { "generate"
             , "-rule", "S1543"
@@ -128,7 +127,6 @@ public class MainTest {
     Main.main(args);
 
     assertThat(outputDir.listFiles().length).isGreaterThan(0);
-
   }
 
   @Test
@@ -142,8 +140,23 @@ public class MainTest {
   }
 
   @Test
-  public void testOption() {
+  public void testNoOption() {
 
+    PrintStream original = System.out;
+
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+
+    String[] args = { };
+    Main.main(args);
+
+    assertThat(outContent.toString()).contains("USAGE");
+
+    System.setOut(original);
+  }
+
+  @Test
+  public void testOption() {
     assertThat(Main.Option.fromString("single_report")).isEqualTo(Main.Option.SINGLE_REPORT);
   }
 

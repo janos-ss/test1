@@ -25,7 +25,7 @@ public class JSONWriter extends StringWriter {
 
   // define as you wish
   static final String INDENTSTRING = "  ";
-  
+
   // use "" if you don't want space after colon
   static final String SPACEAFTERCOLON = " ";
 
