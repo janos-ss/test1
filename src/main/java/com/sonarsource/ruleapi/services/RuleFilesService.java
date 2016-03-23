@@ -15,11 +15,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class RuleFilesService extends RuleManager {
-  private static final Logger LOGGER = Logger.getLogger(RuleFilesService.class.getName());
-
   private static final String HTML_TERMINATION = ".html";
   private static final String JSON_TERMINATION = ".json";
 
@@ -31,6 +28,8 @@ public class RuleFilesService extends RuleManager {
 
   public void generateRuleFiles(List<String> ruleKeys, String language) {
 
+    assertBaseDir();
+
     int countGeneratedFiles = 0;
 
     if (ruleKeys != null) {
@@ -39,7 +38,7 @@ public class RuleFilesService extends RuleManager {
         final String denormalizedKey = Utilities.denormalizeKey(rule.getKey() );
 
         if( rule.getSeverity() == null ) {
-          LOGGER.warning(String.format("Missing severity for rule %s", rule.getKey()));
+          System.out.println(String.format("WARNING: missing severity for rule %s", rule.getKey()));
         }
 
         String htmlFilePath = String.format("%s/%s_%s%s", this.baseDir, denormalizedKey, language, HTML_TERMINATION);
@@ -52,7 +51,7 @@ public class RuleFilesService extends RuleManager {
       }
     }
 
-    LOGGER.info(String.format("Output: (%d) files", countGeneratedFiles));
+    System.out.println(String.format("Output: (%d) files", countGeneratedFiles));
   }
 
   private static void writeFile(String fileName, String content) {
@@ -69,4 +68,14 @@ public class RuleFilesService extends RuleManager {
     }
   }
 
+  private void assertBaseDir() {
+    if( this.baseDir == null ) {
+      throw new IllegalArgumentException("directory is required");
+    } else {
+      File baseDirFile = new File(this.baseDir);
+      if( ! baseDirFile.isDirectory()) {
+        throw new IllegalArgumentException("directory does not exist");
+      }
+    }
+  }
 }
