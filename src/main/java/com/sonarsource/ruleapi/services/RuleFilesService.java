@@ -34,13 +34,21 @@ public class RuleFilesService extends RuleManager {
 
   public void generateRuleFiles(List<String> ruleKeys, String language) {
 
+    // check inputs
     assertBaseDir();
+    if( language == null || language.isEmpty() ) {
+      throw new IllegalArgumentException("no language found");
+    }
 
     int countGeneratedFiles = 0;
 
     if (ruleKeys != null) {
       for (String ruleKey : ruleKeys) {
         Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
+        if( rule == null || rule.getKey() == null ) {
+          throw new IllegalArgumentException("invalid rule");
+        }
+
         countGeneratedFiles += this.generateOneRuleFiles(rule);
       }
     }
@@ -49,7 +57,6 @@ public class RuleFilesService extends RuleManager {
   }
 
   private int generateOneRuleFiles(Rule rule) {
-    assertBaseDir( );
 
     if( rule.getSeverity() == null ) {
       System.out.println(String.format("WARNING: missing severity for rule %s", rule.getKey()));
@@ -94,11 +101,13 @@ public class RuleFilesService extends RuleManager {
     int countGeneratedFiles = 0;
     for (String canonicalKey : rulesToUpdateKeys) {
       Rule rule = RuleMaker.getRuleByKey(canonicalKey, language);
+      if( rule == null || rule.getKey() == null ) {
+        throw new IllegalArgumentException("invalid rule");
+      }
       countGeneratedFiles += generateOneRuleFiles(rule);
     }
 
     System.out.println(String.format("Wrote %d file(s)", countGeneratedFiles));
-
   }
 
   private HashSet<String> findTheRulesToUpdate( String languageRSpecName ) {
