@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Logger;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,8 +23,6 @@ import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
 public class RuleFilesService extends RuleManager {
-  private static final Logger LOGGER = Logger.getLogger(RuleFilesService.class.getName());
-
   private static final String HTML_TERMINATION = ".html";
   private static final String JSON_TERMINATION = ".json";
 
@@ -36,6 +34,8 @@ public class RuleFilesService extends RuleManager {
 
   public void generateRuleFiles(List<String> ruleKeys, String language) {
 
+    assertBaseDir();
+
     int countGeneratedFiles = 0;
 
     if (ruleKeys != null) {
@@ -45,20 +45,19 @@ public class RuleFilesService extends RuleManager {
       }
     }
 
-    LOGGER.info(String.format("Output: (%d) files", countGeneratedFiles));
+    System.out.println(String.format("Output: (%d) files", countGeneratedFiles));
   }
 
   private int generateOneRuleFiles(Rule rule) {
-
     assertBaseDir( );
+
+    if( rule.getSeverity() == null ) {
+      System.out.println(String.format("WARNING: missing severity for rule %s", rule.getKey()));
+    }
 
     int countGeneratedFiles = 0;
 
     final String denormalizedKey = Utilities.denormalizeKey(rule.getKey());
-
-    if( rule.getSeverity() == null ) {
-      LOGGER.warning(String.format("Missing severity for rule %s", rule.getKey()));
-    }
 
     String htmlFilePath = String.format("%s/%s_%s%s"
       , this.baseDir
@@ -90,7 +89,7 @@ public class RuleFilesService extends RuleManager {
     }
 
     HashSet<String> rulesToUpdateKeys = findTheRulesToUpdate( verifiedLanguage.getRspec().toLowerCase() );
-    LOGGER.info(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
+    System.out.println(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
 
     int countGeneratedFiles = 0;
     for (String canonicalKey : rulesToUpdateKeys) {
@@ -98,14 +97,14 @@ public class RuleFilesService extends RuleManager {
       countGeneratedFiles += generateOneRuleFiles(rule);
     }
 
-    LOGGER.info(String.format("Wrote %d file(s)", countGeneratedFiles));
+    System.out.println(String.format("Wrote %d file(s)", countGeneratedFiles));
 
   }
 
   private HashSet<String> findTheRulesToUpdate( String languageRSpecName ) {
 
     // match string like S123456_java., the termination is matched apart
-    final Pattern descriptionFileBaseNamePattern = Pattern.compile("^S(\\d+)_" + languageRSpecName  + "\\.");
+    final Pattern descriptionFileBaseNamePattern = Pattern.compile("^S(\\d+)_" + languageRSpecName + "\\.");
 
     // establish the list of rules to update
     // HashBasedTable will make  entry unique
@@ -117,7 +116,7 @@ public class RuleFilesService extends RuleManager {
                 // match string like S123456_java., the termination is matched apart
                 descriptionFileBaseNamePattern.matcher(file.getName()).find()
                 &&
-                      (file.getName().toLowerCase().endsWith(JSON_TERMINATION)
+                (file.getName().toLowerCase().endsWith(JSON_TERMINATION)
                         ||
                         file.getName().toLowerCase().endsWith(HTML_TERMINATION)
                 );
@@ -126,7 +125,7 @@ public class RuleFilesService extends RuleManager {
     HashSet<String> rulesToUpdateKeys = new HashSet<>();
     for (File file : allTheDescriptionFiles) {
       Matcher m = descriptionFileBaseNamePattern.matcher(file.getName());
-      if( m.find() ) {
+      if (m.find()) {
         String canonicalKey = m.group(1);
         if (!rulesToUpdateKeys.contains(canonicalKey)) {
           rulesToUpdateKeys.add(canonicalKey);

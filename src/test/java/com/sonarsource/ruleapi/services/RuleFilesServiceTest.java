@@ -5,40 +5,22 @@
  */
 package com.sonarsource.ruleapi.services;
 
-import com.sonarsource.ruleapi.domain.Profile;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.*;
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 public class RuleFilesServiceTest {
 
-  // log capturer see http://blog.diabol.se/?p=474
-  private static Logger log = Logger.getLogger(RuleFilesService.class.getName()); // matches the logger in the affected class
-  private static OutputStream logCapturingStream;
-  private static StreamHandler customLogHandler;
-
-  @Before
-  public void attachLogCapturer() {
-    logCapturingStream = new ByteArrayOutputStream();
-    Handler[] handlers = log.getParent().getHandlers();
-    customLogHandler = new StreamHandler(logCapturingStream, handlers[0].getFormatter());
-    log.addHandler(customLogHandler);
-  }
-
-  public String getTestCapturedLog() throws IOException {
-    customLogHandler.flush();
-    return logCapturingStream.toString();
-  }
+  @Rule
+  public final SystemOutRule systemOutRule = new SystemOutRule().enableLog().mute();
 
   @Rule
   public TemporaryFolder testFolder = new TemporaryFolder();
@@ -57,7 +39,7 @@ public class RuleFilesServiceTest {
     // must be 2 files per rule
     int supposedCount = listOfKeys.size() * 2;
     assertThat(outputDir.listFiles().length).isEqualTo(supposedCount);
-    assertThat(getTestCapturedLog()).contains(String.format("(%d)", supposedCount));
+    assertThat(systemOutRule.getLog()).contains(String.format("(%d)", supposedCount));
   }
 
   @Test
@@ -83,8 +65,8 @@ public class RuleFilesServiceTest {
     // must be 2 files per rule
     int supposedCount = listOfKeys.size() * 2;
     assertThat(outputDir.listFiles().length).isEqualTo(supposedCount);
-    assertThat(getTestCapturedLog()).contains(String.format("(%d)", supposedCount));
-    assertThat(getTestCapturedLog()).contains("Missing severity for rule");
+    assertThat(systemOutRule.getLog()).contains(String.format("(%d)", supposedCount));
+    assertThat(systemOutRule.getLog()).contains("missing severity for rule");
 
   }
 
@@ -141,8 +123,8 @@ public class RuleFilesServiceTest {
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234HtmlFile)).isEqualTo(S1234HtmlChecksum);
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1111HtmlFile)).isEqualTo(S1111HtmlChecksum);
 
-    assertThat(getTestCapturedLog()).contains("Found 2 rule(s) to update");
-    assertThat(getTestCapturedLog()).contains("Wrote 4 file(s)");
+    assertThat(systemOutRule.getLog()).contains("Found 2 rule(s) to update");
+    assertThat(systemOutRule.getLog()).contains("Wrote 4 file(s)");
   }
 
   @Test(expected = IllegalArgumentException.class)

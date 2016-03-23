@@ -321,7 +321,7 @@ public class RuleTest {
     ArrayList<String> tags = new ArrayList<>(1);
     tags.add("qux");
     rule.setTags(tags);
-    rule.setSqaleCharac("quux");
+    rule.setSqaleSubCharac(Rule.Subcharacteristic.COMPILER_RELATED_PORTABILITY);
     rule.setSeverity(Rule.Severity.MINOR);
 
     // well formatted nice looking JSON with ordered fields
@@ -335,7 +335,7 @@ public class RuleTest {
             "    \"func\": \"Constant\\/Issue\",\n" +
             "    \"constantCost\": \"17 seconds\"\n" +
             "  },\n" +
-            "  \"sqaleCharac\": \"quux\",\n" +
+            "  \"sqaleSubCharac\": \"Compiler related portability\",\n" +
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ],\n" +
@@ -360,7 +360,7 @@ public class RuleTest {
             "    \"linearDesc\": \"dolor sit amet\",\n" +
             "    \"linearFactor\": \"666\"\n" +
             "  },\n" +
-            "  \"sqaleCharac\": \"quux\",\n" +
+            "  \"sqaleSubCharac\": \"Compiler related portability\",\n" +
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ],\n" +
@@ -374,7 +374,7 @@ public class RuleTest {
   // without the optional fields
     rule.setSeverity(null);
     rule.setSqaleRemediationFunction (null);
-    rule.setSqaleCharac(null);
+    rule.setSqaleSubCharac(null);
     final String expected3 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
             "  \"status\": \"beta\",\n" +
