@@ -442,7 +442,7 @@ public class MarkdownConverter {
     int openCode = Utilities.findBefore(line, pos, CODE_OPEN);
     int firstCloseCode = line.indexOf(CODE_CLOSE, openCode);
 
-    return openCode > -1 && openCode < pos && firstCloseCode > pos;
+    return openCode > -1 && firstCloseCode > pos;
   }
 
 }

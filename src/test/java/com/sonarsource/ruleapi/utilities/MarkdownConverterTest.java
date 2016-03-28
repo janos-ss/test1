@@ -852,4 +852,15 @@ public class MarkdownConverterTest {
 
     assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
   }
+
+  @Test
+  public void hasCloseIndicator(){
+
+    String line = "*Now ^is^ the time_";
+
+    assertThat(mc.hasCloseIndicator(line, 0, '*')).isFalse();
+    assertThat(mc.hasCloseIndicator(line, 18, '_')).isFalse();
+    assertThat(mc.hasCloseIndicator(line, 5, '^')).isTrue();
+  }
+
 }
