@@ -28,6 +28,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.fest.util.Strings;
@@ -47,8 +48,8 @@ public class ReportService extends RuleManager {
   public ReportService() {
     java.net.URL url = this.getClass().getResource("/services");
     if (url != null) {
-      try {
-        css = new java.util.Scanner(new File(url.getPath() + "/report.css"), "UTF8").useDelimiter("\\Z").next();
+      try (Scanner scan = new java.util.Scanner(new File(url.getPath() + "/report.css"), "UTF8")){
+        css = scan.useDelimiter("\\Z").next();
       } catch (FileNotFoundException e) {
         LOGGER.log(Level.WARNING, "CSS file not found", e);
       }

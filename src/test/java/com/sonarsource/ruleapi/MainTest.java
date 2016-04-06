@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -30,9 +31,11 @@ public class MainTest {
     Main.Settings settings = new Main.Settings();
     new JCommander(settings, args);
 
-    Main.checkSingleReportInputs( settings );
-    assertThat(true).isTrue();
-
+    try {
+      Main.checkSingleReportInputs(settings);
+    } catch (Exception e) {
+      Assert.fail();
+    }
   }
 
   @Test(expected = RuleException.class)
