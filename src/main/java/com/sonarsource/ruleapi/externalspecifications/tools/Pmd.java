@@ -256,7 +256,7 @@ public class Pmd extends AbstractReportableExternalTool {
     SIMPLIFYBOOLEANEXPRESSIONS("SimplifyBooleanExpressions", Implementability.IMPLEMENTABLE),
     SIMPLIFYBOOLEANRETURNS("SimplifyBooleanReturns", Implementability.IMPLEMENTABLE),
     SIMPLIFYCONDITIONAL("SimplifyConditional", Implementability.IMPLEMENTABLE),
-    SIMPLIFYSTARTSWITH("SimplifyStartsWith", Implementability.IMPLEMENTABLE),
+    SIMPLIFYSTARTSWITH("SimplifyStartsWith", Implementability.REJECTED),
     SINGULARFIELD("SingularField", Implementability.IMPLEMENTABLE),
     STATICEJBFIELDSHOULDBEFINAL("StaticEJBFieldShouldBeFinal", Implementability.IMPLEMENTABLE),
     STDCYCLOMATICCOMPLEXITY("StdCyclomaticComplexity", Implementability.IMPLEMENTABLE),
