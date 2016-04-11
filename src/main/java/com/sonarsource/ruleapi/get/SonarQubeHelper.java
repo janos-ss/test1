@@ -76,7 +76,7 @@ public class SonarQubeHelper {
 
   private static void handleTags(JSONObject jsonRule, Rule rule) {
 
-    rule.setTags(new ArrayList<>((JSONArray) jsonRule.get("sysTags")));
+    rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
     if (rule.getType().equals(Rule.Type.BUG)) {
       rule.getTags().add("bug");
     } else if (rule.getType().equals(Rule.Type.VULNERABILITY)) {
