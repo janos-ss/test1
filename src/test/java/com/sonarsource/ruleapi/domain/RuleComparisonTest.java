@@ -35,6 +35,32 @@ public class RuleComparisonTest {
   }
 
   @Test
+  public void ruleTypes() {
+
+    Rule bug = new Rule("");
+    bug.setType(Rule.Type.BUG);
+
+    Rule vuln = new Rule("");
+    vuln.setType(Rule.Type.VULNERABILITY);
+
+    Rule bug2 = new Rule("");
+    bug2.setType(Rule.Type.BUG);
+
+    RuleComparison rc = new RuleComparison(bug, vuln);
+    assertThat(rc.compare()).isEqualTo(-1);
+    assertThat(rc.toString()).isEqualTo("null\n" +
+            "  type\n" +
+            "    spec: Bug\n" +
+            "    impl: Vunlerability\n");
+
+    rc = new RuleComparison(bug, bug2);
+    assertThat(rc.compare()).isEqualTo(0);
+    assertThat(rc.toString()).isEqualTo("");
+
+  }
+
+
+  @Test
   public void testCompareTagsEq() throws Exception {
     Rule spec = new Rule(LANG);
     Set<String> specTags = new HashSet<>();
@@ -202,7 +228,7 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void testCompareSqaleConstantCostEasy() throws Exception {
+  public void testCompareConstantCostEasy() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -214,7 +240,7 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void testCompareSqaleConstantCostHard() throws Exception {
+  public void testCompareConstantCostHard() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -226,7 +252,7 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void testCompareSqaleConstantCostNeq() throws Exception {
+  public void testCompareConstantCostNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -238,7 +264,7 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void testCompareSqaleConstantCostWithNull() throws Exception {
+  public void testCompareConstantCostWithNull() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -398,7 +424,7 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void testToStringSqaleConstantCostEasy() throws Exception {
+  public void testToStringConstantCostEasy() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -410,7 +436,7 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void testToStringSqaleConstantCostHard() throws Exception {
+  public void testToStringConstantCostHard() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -422,7 +448,7 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void testToStringSqaleConstantCostNeq() throws Exception {
+  public void testToStringConstantCostNeq() throws Exception {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -682,7 +708,7 @@ public class RuleComparisonTest {
 
     RuleMaker.setSubcharacteristic(spec, str);
 
-    assertThat(rc.compare()).isEqualTo(-1);
+    assertThat(rc.compare()).isEqualTo(0);
   }
 
   @Test
@@ -695,10 +721,7 @@ public class RuleComparisonTest {
 
     RuleMaker.setSubcharacteristic(spec, str);
 
-    assertThat(rc.toString()).isEqualTo("null\n" +
-            "  SQALE sub-characteristic\n" +
-            "    spec: MEMORY_EFFICIENCY\n" +
-            "    impl: null\n");
+    assertThat(rc.toString()).isEqualTo("");
   }
 
   @Test
@@ -713,7 +736,7 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void differentSqaleRemediationToString() {
+  public void differentRemediationToString() {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -721,13 +744,13 @@ public class RuleComparisonTest {
     spec.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
-            "  SQALE remediation function\n" +
+            "  Remediation function\n" +
             "    spec: CONSTANT_ISSUE\n" +
             "    impl: null\n");
   }
 
   @Test
-  public void differentSqaleLinearArg() {
+  public void differentLinearArg() {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -740,7 +763,7 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void differentSqaleLinearArgToString() {
+  public void differentLinearArgToString() {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -750,13 +773,13 @@ public class RuleComparisonTest {
     spec.setSqaleLinearArgDesc(str);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
-            "  SQALE linear argument\n" +
+            "  Linear argument\n" +
             "    spec: this is a test\n" +
             "    impl: null\n");
   }
 
   @Test
-  public void differentSqaleLinearFactor() {
+  public void differentLinearFactor() {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -769,7 +792,7 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void differentButEqualSqaleLinearFactor() {
+  public void differentButEqualLinearFactor() {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -781,7 +804,7 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void differentSqaleLinearFactorToString() {
+  public void differentLinearFactorToString() {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
@@ -791,7 +814,7 @@ public class RuleComparisonTest {
     spec.setSqaleLinearFactor(str);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
-            "  SQALE linear factor\n" +
+            "  Linear factor\n" +
             "    spec: this is a test\n" +
             "    impl: null\n");
   }

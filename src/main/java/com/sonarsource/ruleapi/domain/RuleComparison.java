@@ -49,6 +49,11 @@ public class RuleComparison{
       return result;
     }
 
+    result = compareType();
+    if (result !=0) {
+      return result;
+    }
+
     result = compareTitle();
     if (result != 0) {
       return result;
@@ -74,7 +79,7 @@ public class RuleComparison{
       return result;
     }
 
-    result = compareSqaleValues();
+    result = compareRemediation();
     if (result != 0) {
       return result;
     }
@@ -136,13 +141,8 @@ public class RuleComparison{
     return result;
   }
 
-  private int compareSqaleValues() {
-    int result = compareSqaleSubcharacertistic();
-    if (result != 0) {
-      return result;
-    }
-
-    result = compareSqaleRemediationFunction();
+  private int compareRemediation() {
+    int result = compareSqaleRemediationFunction();
     if (result != 0) {
       return result;
     }
@@ -175,6 +175,9 @@ public class RuleComparison{
   public String toString() {
     StringBuilder sb = new StringBuilder();
 
+    if (compareType() != 0) {
+      logDifference(sb, "type", spec.getType(), impl.getType());
+    }
 
     if (compareTitle() != 0) {
       logDifference(sb, "title", spec.getTitle(), impl.getTitle());
@@ -249,28 +252,25 @@ public class RuleComparison{
   private String toStringForSqale() {
 
     StringBuilder sb = new StringBuilder();
-    if (compareSqaleSubcharacertistic() != 0) {
-      logDifference(sb, "SQALE sub-characteristic", spec.getSqaleSubCharac(), impl.getSqaleSubCharac());
-    }
 
     if (compareSqaleRemediationFunction() != 0) {
-      logDifference(sb, "SQALE remediation function", spec.getSqaleRemediationFunction(), impl.getSqaleRemediationFunction());
+      logDifference(sb, "Remediation function", spec.getSqaleRemediationFunction(), impl.getSqaleRemediationFunction());
     }
 
     if (compareSqaleConstantCost() != 0) {
-      logDifference(sb, "SQALE constant cost or linear threshold", spec.getSqaleConstantCostOrLinearThreshold(), impl.getSqaleConstantCostOrLinearThreshold());
+      logDifference(sb, "Constant cost or linear threshold", spec.getSqaleConstantCostOrLinearThreshold(), impl.getSqaleConstantCostOrLinearThreshold());
     }
 
     if (compareSqaleLinearArg() != 0) {
-      logDifference(sb, "SQALE linear argument", spec.getSqaleLinearArgDesc(), impl.getSqaleLinearArgDesc());
+      logDifference(sb, "Linear argument", spec.getSqaleLinearArgDesc(), impl.getSqaleLinearArgDesc());
     }
 
     if (compareSqaleLinearFactor() != 0) {
-      logDifference(sb, "SQALE linear factor", spec.getSqaleLinearFactor(), impl.getSqaleLinearFactor());
+      logDifference(sb, "Linear factor", spec.getSqaleLinearFactor(), impl.getSqaleLinearFactor());
     }
 
     if (compareSqaleLinearOffset() != 0) {
-      logDifference(sb, "SQALE linear offset", spec.getSqaleLinearOffset(), impl.getSqaleLinearOffset());
+      logDifference(sb, "Linear offset", spec.getSqaleLinearOffset(), impl.getSqaleLinearOffset());
     }
     return sb.toString();
   }
@@ -367,12 +367,8 @@ public class RuleComparison{
     return ComparisonUtilities.compareTextFunctionalEquivalence(spec.getReferences(), impl.getReferences());
   }
 
-  protected int compareSqaleSubcharacertistic() {
-    int result = checkForNulls(spec.getSqaleSubCharac(), impl.getSqaleSubCharac());
-    if (result != 0 || spec.getSqaleSubCharac() == null) {
-      return result;
-    }
-    return spec.getSqaleSubCharac().compareTo(impl.getSqaleSubCharac());
+  protected int compareType() {
+    return spec.getType().compareTo(impl.getType());
   }
 
   protected int compareSqaleRemediationFunction() {
