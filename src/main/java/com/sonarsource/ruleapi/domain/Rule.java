@@ -139,6 +139,7 @@ public class Rule {
       this.typeName = typeName;
     }
 
+    @Override
     public String toString() {
       return this.typeName;
     }
