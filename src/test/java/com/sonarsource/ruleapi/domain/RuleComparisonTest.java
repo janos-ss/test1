@@ -51,7 +51,7 @@ public class RuleComparisonTest {
     assertThat(rc.toString()).isEqualTo("null\n" +
             "  type\n" +
             "    spec: Bug\n" +
-            "    impl: Vunlerability\n");
+            "    impl: Vulnerability\n");
 
     rc = new RuleComparison(bug, bug2);
     assertThat(rc.compare()).isEqualTo(0);

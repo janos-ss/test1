@@ -130,7 +130,7 @@ public class Rule {
 
   public enum Type {
     BUG("Bug"),
-    VULNERABILITY("Vunlerability"),
+    VULNERABILITY("Vulnerability"),
     CODE_SMELL("Code Smell");
 
     protected final String typeName;
