@@ -128,10 +128,41 @@ public class Rule {
     }
   }
 
+  public enum Type {
+    BUG("Bug"),
+    VULNERABILITY("Vulnerability"),
+    CODE_SMELL("Code Smell");
+
+    protected final String typeName;
+
+    Type(String typeName) {
+      this.typeName = typeName;
+    }
+
+    @Override
+    public String toString() {
+      return this.typeName;
+    }
+
+    public static Type fromString(String value){
+      if (Strings.isNullOrEmpty(value)) {
+        return Type.CODE_SMELL;
+      }
+
+      for (Type type : Type.values()) {
+        if (type.name().equals(value)) {
+          return type;
+        }
+      }
+      return Type.CODE_SMELL;
+    }
+  }
+
   private String language = null;
   private String key = null;
   private String repo = null;
   private Status status = null;
+  private Type type = Type.CODE_SMELL;
 
   private List<String> deprecationLinks = new ArrayList<>();
 
@@ -373,6 +404,16 @@ public class Rule {
 
   public void setStatus(Status status) {
     this.status = status;
+  }
+
+  public Type getType() {
+
+    return type;
+  }
+
+  public void setType(Type type) {
+
+    this.type = type;
   }
 
   public String getFullDescription() {

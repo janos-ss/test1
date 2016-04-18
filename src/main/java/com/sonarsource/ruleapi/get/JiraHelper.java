@@ -10,6 +10,7 @@ import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import java.util.HashSet;
+import java.util.Set;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -48,22 +49,24 @@ public class JiraHelper {
 
     rule.setLegacyKeys(getCustomFieldValueAsList(issue, "Legacy Key"));
 
-    rule.setTargetedLanguages(new HashSet<String>(getCustomFieldStoredAsList(issue, "Targeted languages")));
-    rule.setCoveredLanguages(new HashSet<String>(getCustomFieldStoredAsList(issue, "Covered Languages")));
-    rule.setIrrelevantLanguages(new HashSet<String>(getCustomFieldStoredAsList(issue, "Irrelevant for Languages")));
+    rule.setTargetedLanguages(new HashSet<>(getCustomFieldStoredAsList(issue, "Targeted languages")));
+    rule.setCoveredLanguages(new HashSet<>(getCustomFieldStoredAsList(issue, "Covered Languages")));
+    rule.setIrrelevantLanguages(new HashSet<>(getCustomFieldStoredAsList(issue, "Irrelevant for Languages")));
 
     rule.setTitle(getJsonFieldValue(issue, "summary"));
     rule.setMessage(getCustomFieldValue(issue, "Message"));
 
     RuleMaker.setDescription(rule, getJsonFieldValue(issue, "description"), true);
 
-    setSqale(rule, issue);
+    setRemediation(rule, issue);
 
     rule.setTemplate("Yes".equals(getCustomFieldValue(issue, "Template Rule")));
 
     rule.setParameterList(handleParameterList(getCustomFieldValue(issue, "List of parameters"), rule.getLanguage()));
 
     rule.setTags(getListFromJsonFieldValue(issue, "labels"));
+
+    setType(rule);
 
     setReferences(rule, issue);
   }
@@ -216,7 +219,6 @@ public class JiraHelper {
     }
   }
 
-
   protected static void setReferences(Rule rule, JSONObject issue) {
 
     rule.setCwe(getCustomFieldValueAsList(issue, "CWE"));
@@ -239,7 +241,7 @@ public class JiraHelper {
     rule.setMsftRoslyn(getCustomFieldValueAsList(issue, "MSFT Roslyn"));
   }
 
-  protected static void setSqale(Rule rule, JSONObject issue) {
+  protected static void setRemediation(Rule rule, JSONObject issue) {
 
     rule.setSqaleCharac(getCustomFieldValue(issue, "SQALE Characteristic"));
     JSONObject sqaleCharMap = getJsonField(issue, "SQALE Characteristic");
@@ -303,6 +305,17 @@ public class JiraHelper {
       }
     }
     return list;
+  }
+
+  protected static void setType(Rule rule) {
+
+    Set<String> tags = rule.getTags();
+    if (tags.contains("bug")){
+      rule.setType(Rule.Type.BUG);
+    } else if (tags.contains("security")) {
+      rule.setType(Rule.Type.VULNERABILITY);
+    }
+
   }
 
   public static List<Parameter> handleParameterList(String paramString, String language) {

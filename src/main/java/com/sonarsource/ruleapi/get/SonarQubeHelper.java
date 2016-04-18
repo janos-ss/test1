@@ -31,6 +31,8 @@ public class SonarQubeHelper {
   protected static Rule populateFields(JSONObject jsonRule) {
     Rule rule = new Rule((String) jsonRule.get("langName"));
 
+    rule.setType(Rule.Type.fromString((String) jsonRule.get("type")));
+
     String rawKey = ((String) jsonRule.get("key")).split(":")[1];
     rule.setKey(Utilities.normalizeKey(rawKey));
     rule.setRepo((String) jsonRule.get("repo"));
@@ -47,11 +49,11 @@ public class SonarQubeHelper {
     rule.setSqaleCharac((String) jsonRule.get("defaultDebtChar"));
     RuleMaker.setSubcharacteristic(rule, (String) jsonRule.get("defaultDebtSubChar"));
     RuleMaker.setRemediationFunction(rule, (String) jsonRule.get("defaultDebtRemFnType"));
-    setSqaleConstantValueFromSqInstance(rule, (String) jsonRule.get("defaultDebtRemFnOffset"));
-    rule.setSqaleLinearFactor((String) jsonRule.get("defaultDebtRemFnCoeff"));
-    rule.setSqaleLinearArgDesc((String) jsonRule.get("effortToFixDescription"));
+    setSqaleConstantValueFromSqInstance(rule, (String) jsonRule.get("defaultRemFnBaseEffort"));
+    rule.setSqaleLinearFactor((String) jsonRule.get("defaultRemFnGapMultiplier"));
+    rule.setSqaleLinearArgDesc((String) jsonRule.get("gapDescription"));
 
-    rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
+    handleTags(jsonRule, rule);
 
     rule.setTemplate((Boolean) jsonRule.get("isTemplate"));
 
@@ -71,6 +73,17 @@ public class SonarQubeHelper {
 
     return rule;
   }
+
+  private static void handleTags(JSONObject jsonRule, Rule rule) {
+
+    rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
+    if (rule.getType().equals(Rule.Type.BUG)) {
+      rule.getTags().add("bug");
+    } else if (rule.getType().equals(Rule.Type.VULNERABILITY)) {
+      rule.getTags().add("security");
+    }
+  }
+
 
   static void handleHtml(Rule rule, String[] pieces) {
 
