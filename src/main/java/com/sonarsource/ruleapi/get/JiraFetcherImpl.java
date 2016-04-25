@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.get;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -101,6 +102,7 @@ public class JiraFetcherImpl implements JiraFetcher {
     return legacyKeys.contains(key);
   }
 
+  @Override
   public List<JSONObject> fetchIssuesBySearch(String search) {
     ensureRspecsByKeyCachePopulated();
 
@@ -122,6 +124,7 @@ public class JiraFetcherImpl implements JiraFetcher {
   /**
    * Fetches every single RSPEC from Jira in only a few REST calls
    */
+  @VisibleForTesting
   protected void ensureRspecsByKeyCachePopulated() {
     if (rspecJsonCacheByKey != null) {
       return;
@@ -166,7 +169,7 @@ public class JiraFetcherImpl implements JiraFetcher {
    * Fetches a RSPEC issues page. Returns <code>null</code> if no issue is found.
    */
   @CheckForNull
-  private JSONObject fetchRspecPage(int startAt) {
+  private static JSONObject fetchRspecPage(int startAt) {
     JSONObject page = Fetcher.getJsonFromUrl(BASE_URL
       + SEARCH
       + "project%3DRSPEC"

@@ -52,7 +52,7 @@ public class IntegrityEnforcementService extends RuleManager {
     checkUrls();
   }
 
-  private void checkUrls() {
+  private static void checkUrls() {
     List<Rule> rules = RuleMaker.getRulesByJql("description ~ \"See http://\" or description ~ \"https://\"", "");
     for (Rule rule : rules) {
       if (!Strings.isNullOrEmpty(rule.getReferences())) {
@@ -64,7 +64,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  private void checkUrlInReferenceLine(String ruleKey, String line) {
+  private static void checkUrlInReferenceLine(String ruleKey, String line) {
 
     if (line.contains("http")) {
 
