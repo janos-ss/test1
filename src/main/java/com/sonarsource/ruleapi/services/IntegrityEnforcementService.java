@@ -13,11 +13,14 @@ import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard
 import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
-import com.sonarsource.ruleapi.get.Fetcher;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,31 +47,44 @@ public class IntegrityEnforcementService extends RuleManager {
 
   public void checkUrls() {
 
-    Fetcher fetcher = new Fetcher();
-
     List<Rule> rules = RuleMaker.getRulesByJql("description ~ \"See http://\" or description ~ \"https://\"", "");
     for (Rule rule : rules) {
       if (!Strings.isNullOrEmpty(rule.getReferences())) {
         String[] lines = rule.getReferences().split("\n");
         for (String line : lines) {
-          checkUrlInReferenceLine(fetcher, rule.getKey(), line);
+          checkUrlInReferenceLine(rule.getKey(), line);
         }
       }
     }
   }
 
-  protected void checkUrlInReferenceLine(Fetcher fetcher, String ruleKey, String line) {
+  protected void checkUrlInReferenceLine(String ruleKey, String line) {
 
     if (line.contains("http")) {
 
       String link = line.replaceAll(".*\"(https?://[^'\"]+)\".*", "$1");
       try {
-        if (!Strings.isNullOrEmpty(link) && !fetcher.isUrlGood(link)) {
+        if (!Strings.isNullOrEmpty(link) && !isUrlGood(link)) {
           LOGGER.warning("Bad url in " + ruleKey + ": " + link);
         }
       } catch (RuleException e) {
         LOGGER.warning("Bad url in " + ruleKey + ": " + link + "\n" + e.getMessage());
       }
+    }
+  }
+
+  private static boolean isUrlGood(String urlString) {
+    try {
+      URL u = new URL(urlString);
+      HttpURLConnection huc = (HttpURLConnection) u.openConnection();
+      huc.setRequestMethod("GET");
+      huc.setInstanceFollowRedirects(true);
+      huc.connect();
+      int code = huc.getResponseCode();
+
+      return code >= 200 && code <=299;
+    } catch (IOException e) {
+      throw new RuleException(e);
     }
   }
 

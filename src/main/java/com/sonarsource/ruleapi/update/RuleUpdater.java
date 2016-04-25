@@ -9,13 +9,14 @@ import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.Fetcher;
-import java.util.Set;
+import com.sonarsource.ruleapi.get.JiraFetcherImpl;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class RuleUpdater {
@@ -34,8 +35,7 @@ public class RuleUpdater {
       return false;
     }
 
-    Fetcher fetcher = new Fetcher();
-    JSONObject jobj = fetcher.getJsonFromUrl(Fetcher.BASE_URL + Fetcher.ISSUE + ruleKey + "/editmeta", login, password);
+    JSONObject jobj = Fetcher.getJsonFromUrl(JiraFetcherImpl.BASE_URL + JiraFetcherImpl.ISSUE + ruleKey + "/editmeta", login, password);
     JSONObject fieldsMeta = (JSONObject)jobj.get("fields");
 
     JSONObject request = prepareRequest(fieldValuesToUpdate, fieldsMeta);
@@ -47,8 +47,7 @@ public class RuleUpdater {
 
   public static boolean updateRuleStatus(String ruleKey, Rule.Status status, String login, String password) {
 
-    Fetcher fetcher = new Fetcher();
-    JSONObject jobj = fetcher.getJsonFromUrl(Fetcher.BASE_URL + Fetcher.ISSUE + ruleKey + "/transitions?expand=transitions.fields", login, password);
+    JSONObject jobj = Fetcher.getJsonFromUrl(JiraFetcherImpl.BASE_URL + JiraFetcherImpl.ISSUE + ruleKey + "/transitions?expand=transitions.fields", login, password);
 
     JSONObject request = prepareTransitionRequest(status, jobj);
     LOGGER.fine("Update " + ruleKey + " : " + request.toJSONString());

@@ -7,16 +7,18 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.CleanupReport;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
-import com.sonarsource.ruleapi.externalspecifications.CleanupReport;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
-
 import com.sonarsource.ruleapi.get.Fetcher;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -24,8 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 
 public class Cert extends AbstractMultiLanguageStandard implements TaggableStandard, CleanupReport {
@@ -37,8 +37,6 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
   private static final String REFERENCE_NAME = "CERT";
 
   private static final String REFERENCE_PATTERN = "[A-Z]{3}\\d\\d-[A-Za-z]+.";
-
-  private static final Fetcher FETCHER = new Fetcher();
 
   private static final CertType CPP = new CertType(Language.CPP, new String [] {"146440541", "146440543"});
   private static final CertType C = new CertType(Language.C, new String [] {"158237133", "158237251"});
@@ -154,7 +152,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
     try {
       String encodedTitle = URLEncoder.encode(title, "UTF-8");
 
-      JSONObject json = FETCHER.getJsonFromUrl(baseUrl + encodedTitle);
+      JSONObject json = Fetcher.getJsonFromUrl(baseUrl + encodedTitle);
       JSONArray results = (JSONArray) json.get(RESULTS);
       if (results.isEmpty()) {
         sb.append("Not found: ").append(ruleKey).append(" : ").append(ref).append(newline);
@@ -311,7 +309,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
         ids.addAll(wikiPageId);
 
         while (!ids.isEmpty()){
-          JSONObject jsonObject = FETCHER.getJsonFromUrl(String.format(url, baseUrl, ids.remove(0)));
+          JSONObject jsonObject = Fetcher.getJsonFromUrl(String.format(url, baseUrl, ids.remove(0)));
           List<JSONObject> results = (JSONArray) jsonObject.get(RESULTS);
           extractRulesFromChildPages(baseUrl, ids, results);
         }

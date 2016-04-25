@@ -28,30 +28,22 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 public class FetcherTest {
 
-  private Fetcher fetcher = new Fetcher();
-
-
-  @Test(expected = RuleException.class)
-  public void testIsUrlGood() {
-    fetcher.isUrlGood("http://localhost:1");
-  }
-
   @Test
   public void testGetClient() {
 
-    assertThat(fetcher.getClient(null, null)).isNotNull();
-    assertThat(fetcher.getClient("yellow", "red")).isNotNull();
-    assertThat(fetcher.getClient("yellow", null)).isNotNull();
-    assertThat(fetcher.getClient(null, "red")).isNotNull();
+    assertThat(Fetcher.getClient(null, null)).isNotNull();
+    assertThat(Fetcher.getClient("yellow", "red")).isNotNull();
+    assertThat(Fetcher.getClient("yellow", null)).isNotNull();
+    assertThat(Fetcher.getClient(null, "red")).isNotNull();
   }
 
   @Test(expected=RuleException.class)
   public void testCheckStatusValueLow(){
 
     Response response = new TestResponse();
-    Client client = fetcher.getClient(null, null);
+    Client client = Fetcher.getClient(null, null);
 
-    fetcher.checkStatus("", client, response);
+    Fetcher.checkStatus("", client, response);
   }
 
   @Test(expected=RuleException.class)
@@ -59,9 +51,9 @@ public class FetcherTest {
 
     TestResponse response = new TestResponse();
     response.setStatus(500);
-    Client client = fetcher.getClient(null, null);
+    Client client = Fetcher.getClient(null, null);
 
-    fetcher.checkStatus("", client, response);
+    Fetcher.checkStatus("", client, response);
   }
 
   @Test
@@ -69,10 +61,10 @@ public class FetcherTest {
 
     TestResponse response = new TestResponse();
     response.setStatus(200);
-    Client client = fetcher.getClient(null, null);
+    Client client = Fetcher.getClient(null, null);
 
     try {
-      fetcher.checkStatus("", client, response);
+      Fetcher.checkStatus("", client, response);
     } catch (Exception e) {
       Assert.fail();
     }

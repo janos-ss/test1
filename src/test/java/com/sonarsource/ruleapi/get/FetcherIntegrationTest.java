@@ -12,7 +12,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 public class FetcherIntegrationTest {
 
-  private final Fetcher fetcher = new Fetcher();
+  private final JiraFetcherImpl fetcher = new JiraFetcherImpl();
   @Test
   public void testActualFetches() {
 
