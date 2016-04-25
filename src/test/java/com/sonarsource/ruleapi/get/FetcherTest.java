@@ -6,12 +6,9 @@
 package com.sonarsource.ruleapi.get;
 
 import com.sonarsource.ruleapi.domain.RuleException;
-import java.lang.annotation.Annotation;
-import java.net.URI;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import org.junit.Assert;
+import org.junit.Test;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericType;
@@ -20,9 +17,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import org.json.simple.JSONObject;
-import org.junit.Assert;
-import org.junit.Test;
+import java.lang.annotation.Annotation;
+import java.net.URI;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -34,38 +34,6 @@ public class FetcherTest {
   @Test(expected = RuleException.class)
   public void testIsUrlGood() {
     fetcher.isUrlGood("http://localhost:1");
-  }
-
-  // This is an integration test that relies on real data from RSPEC JIRA's project
-  @Test
-  public void testActualFetches() {
-
-    // pre-cache fetch
-    JSONObject byKeyFromJira = fetcher.fetchIssueByKey("S1234");
-    JSONObject byLegacyKeyFromJira = fetcher.fetchIssueByKey("Union");
-
-    assertThat(byKeyFromJira.get("key")).isEqualTo("RSPEC-1234");
-    assertThat(byLegacyKeyFromJira.get("key")).isEqualTo("RSPEC-953"); // PC-Lint
-
-    // populate cache
-    fetcher.ensureRspecsByKeyCachePopulated();
-
-    JSONObject byKeyFromCache = fetcher.fetchIssueByKey("S1234");
-    JSONObject byLegacyKeyFromCache = fetcher.fetchIssueByKey("Union");
-
-    // field value differs by retrieval method (/issue vs /search)
-    byKeyFromJira.remove("expand");
-    byLegacyKeyFromJira.remove("expand");
-    byKeyFromCache.remove("expand");
-    byLegacyKeyFromCache.remove("expand");
-
-    assertThat(byKeyFromCache).isEqualTo(byKeyFromJira);
-    assertThat(byLegacyKeyFromCache).isEqualTo(byLegacyKeyFromJira); // PC-Lint
-
-    assertThat(fetcher.fetchIssueByKey("SelectWithoutOtherwise").get("key")).isEqualTo("RSPEC-131"); // Should ignore subtask RSPEC-2315
-
-    assertThat(fetcher.fetchIssuesBySearch("summary is empty")).isEmpty();
-    assertThat(fetcher.fetchIssuesBySearch("labels = clumsy")).isNotEmpty();
   }
 
   @Test
