@@ -22,14 +22,15 @@ import java.util.logging.Logger;
 public class RuleUpdater {
 
   private static final Logger LOGGER = Logger.getLogger(RuleUpdater.class.getName());
+  private final String login;
+  private final String password;
 
-
-  private RuleUpdater() {
-    // hide utility class instantiation
+  public RuleUpdater(String login, String password) {
+    this.login = login;
+    this.password = password;
   }
 
-
-  public static boolean updateRule(String ruleKey, Map<String,Object> fieldValuesToUpdate, String login, String password) {
+  public boolean updateRule(String ruleKey, Map<String,Object> fieldValuesToUpdate) {
 
     if (!ruleKey.matches("RSPEC-[0-9]+") || fieldValuesToUpdate.isEmpty()) {
       return false;
@@ -41,19 +42,17 @@ public class RuleUpdater {
     JSONObject request = prepareRequest(fieldValuesToUpdate, fieldsMeta);
     LOGGER.fine("Update " + ruleKey + " : " + request.toJSONString());
 
-    Updater updater = new Updater();
-    return updater.putIssueUpdate(login, password, ruleKey, request);
+    return new Updater().putIssueUpdate(login, password, ruleKey, request);
   }
 
-  public static boolean updateRuleStatus(String ruleKey, Rule.Status status, String login, String password) {
+  public boolean updateRuleStatus(String ruleKey, Rule.Status status) {
 
     JSONObject jobj = Fetcher.getJsonFromUrl(JiraFetcherImpl.BASE_URL + JiraFetcherImpl.ISSUE + ruleKey + "/transitions?expand=transitions.fields", login, password);
 
     JSONObject request = prepareTransitionRequest(status, jobj);
     LOGGER.fine("Update " + ruleKey + " : " + request.toJSONString());
 
-    Updater updater = new Updater();
-    return updater.postIssueUpdate(login, password, ruleKey + "/transitions", request);
+    return new Updater().postIssueUpdate(login, password, ruleKey + "/transitions", request);
   }
 
   protected static JSONObject prepareTransitionRequest(Rule.Status status, JSONObject jobj) {

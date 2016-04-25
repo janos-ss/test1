@@ -9,8 +9,6 @@ import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
-import java.util.HashSet;
-import java.util.Set;
 import org.fest.assertions.api.Assertions;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -21,8 +19,10 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
@@ -432,13 +432,13 @@ public class RuleUpdaterTest {
 
     Map<String, Object> updates = new HashMap<>();
 
-    assertThat(RuleUpdater.updateRule("RSPEC-123", updates, "boo", "hoo")).isFalse();
+    assertThat(new RuleUpdater("boo", "hoo").updateRule("RSPEC-123", updates)).isFalse();
 
     List<String> tags = new ArrayList<>();
     tags.add("foo");
     updates.put("Labels", tags);
 
-    Assertions.assertThat(RuleUpdater.updateRule("S123", updates, "boo", "hoo")).isFalse();
+    Assertions.assertThat(new RuleUpdater("boo", "hoo").updateRule("S123", updates)).isFalse();
   }
 
 }

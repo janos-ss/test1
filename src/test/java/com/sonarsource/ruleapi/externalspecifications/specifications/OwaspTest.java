@@ -26,9 +26,7 @@ public class OwaspTest {
     references.add("MITRE, CWE-123 - title");
     references.add("OWASP Top Ten 2013 Category A9");
 
-    IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
-
-    List<String> refs = enforcer.parseReferencesFromStrings(OwaspTopTen.StandardRule.A9,references);
+    List<String> refs = IntegrityEnforcementService.parseReferencesFromStrings(OwaspTopTen.StandardRule.A9,references);
 
     assertThat(refs).hasSize(1).contains("A9");
   }

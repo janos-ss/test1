@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
@@ -36,17 +37,22 @@ public class IntegrityEnforcementService extends RuleManager {
 
   private static final String TARGETED_LANGUAGES = "Targeted languages";
   private static final String LABELS = "Labels";
+  private final RuleUpdater ruleUpdater;
+
+  public IntegrityEnforcementService(String login, String password) {
+    super();
+    ruleUpdater = new RuleUpdater(login, password);
+  }
 
 
-  public void enforceIntegrity(String login, String password) {
-    enforceTagReferenceIntegrity(login, password);
-    cleanUpDeprecatedRules(login, password);
-    dropTargetedForIrrelevant(login, password);
+  public void enforceIntegrity() {
+    enforceTagReferenceIntegrity();
+    cleanUpDeprecatedRules();
+    dropTargetedForIrrelevant();
     checkUrls();
   }
 
-  public void checkUrls() {
-
+  private void checkUrls() {
     List<Rule> rules = RuleMaker.getRulesByJql("description ~ \"See http://\" or description ~ \"https://\"", "");
     for (Rule rule : rules) {
       if (!Strings.isNullOrEmpty(rule.getReferences())) {
@@ -58,7 +64,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  protected void checkUrlInReferenceLine(String ruleKey, String line) {
+  private void checkUrlInReferenceLine(String ruleKey, String line) {
 
     if (line.contains("http")) {
 
@@ -88,7 +94,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  public void cleanUpDeprecatedRules(String login, String password) {
+  private void cleanUpDeprecatedRules() {
 
     List<Rule> rules = RuleMaker.getRulesByJql(" issueFunction in hasLinks(\"is deprecated by\") OR status = DEPRECATED", "");
     for (Rule rule : rules) {
@@ -100,20 +106,21 @@ public class IntegrityEnforcementService extends RuleManager {
       for (Map.Entry<Rule, Map<String,Object>> entry : deprecatingRulesNeedingUpdate.entrySet()) {
         String newRuleKey = entry.getKey().getKey();
         LOGGER.info("Submitting updates to replacement rule: " + newRuleKey);
-        RuleUpdater.updateRule(newRuleKey, entry.getValue(), login, password);
+        ruleUpdater.updateRule(newRuleKey, entry.getValue());
       }
 
       if (!Rule.Status.DEPRECATED.equals(rule.getStatus())) {
         LOGGER.info("Setting status to DEPRECATED for " + rule.getKey());
-        RuleUpdater.updateRuleStatus(rule.getKey(), Rule.Status.DEPRECATED, login, password);
+        ruleUpdater.updateRuleStatus(rule.getKey(), Rule.Status.DEPRECATED);
       }
       if (!updates.isEmpty()) {
         LOGGER.info("Submitting updates to deprecated rule: " + rule.getKey());
-        RuleUpdater.updateRule(rule.getKey(), updates, login, password);
+        ruleUpdater.updateRule(rule.getKey(), updates);
       }
     }
   }
 
+  @VisibleForTesting
   protected Map<Rule, Map<String, Object>> getDeprecationUpdates(Rule oldRule, Map<String, Object> oldRuleUpdates) {
 
     Map<Rule,Map<String,Object>> newRules = new HashMap<>();
@@ -133,6 +140,7 @@ public class IntegrityEnforcementService extends RuleManager {
     return newRules;
   }
 
+  @VisibleForTesting
   protected void dropEmptyMapEntries(Map<Rule, Map<String, Object>> newRules) {
 
     Iterator<Map.Entry<Rule, Map<String, Object>>> itr = newRules.entrySet().iterator();
@@ -144,6 +152,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
+  @VisibleForTesting
   protected void moveProfilesToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
                                          Map<Rule, Map<String, Object>> newRules) {
 
@@ -165,6 +174,7 @@ public class IntegrityEnforcementService extends RuleManager {
     oldRuleUpdates.put("Default Quality Profiles", oldRule.getDefaultProfiles());
   }
 
+  @VisibleForTesting
   protected void moveLanguagesToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
                                          Map<Rule, Map<String, Object>> newRules) {
 
@@ -194,6 +204,7 @@ public class IntegrityEnforcementService extends RuleManager {
     oldRuleUpdates.put(TARGETED_LANGUAGES, oldRule.getTargetedLanguages());
   }
 
+  @VisibleForTesting
   protected void moveTagsToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
                                           Map<Rule, Map<String, Object>> newRules) {
 
@@ -214,6 +225,7 @@ public class IntegrityEnforcementService extends RuleManager {
     oldRuleUpdates.put(LABELS, oldRule.getTags());
   }
 
+  @VisibleForTesting
   protected void moveReferencesToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
                                         Map<Rule, Map<String, Object>> newRules,CodingStandard cs) {
 
@@ -282,15 +294,12 @@ public class IntegrityEnforcementService extends RuleManager {
 
   /**
    * No language should show up in both the Targeted and Irrelevant lists
-   *
-   * @param login
-   * @param password
    */
-  protected void dropTargetedForIrrelevant(String login, String password) {
+  protected void dropTargetedForIrrelevant() {
 
     List<Rule> rules = RuleMaker.getRulesByJql("\"Irrelevant for Languages\" is not empty", "");
     for (Rule rule : rules) {
-      RuleUpdater.updateRule(rule.getKey(), doDropTargetedForIrrelevant(rule), login, password);
+      ruleUpdater.updateRule(rule.getKey(), doDropTargetedForIrrelevant(rule));
     }
   }
 
@@ -308,17 +317,17 @@ public class IntegrityEnforcementService extends RuleManager {
   }
 
 
-  public void setCoveredLanguages(String login, String password) {
+  public void setCoveredLanguages() {
 
     String url = RuleManager.NEMO;
 
     for (Language lang : Language.values()) {
       LOGGER.info("Setting covered for " + lang.getRspec());
-      setCoveredForLanguage(login, password, lang, url);
+      setCoveredForLanguage(lang, url);
     }
   }
 
-  public void setCoveredForLanguage(String login, String password, Language language, String url) {
+  private void setCoveredForLanguage(Language language, String url) {
     String rspecLanguage = language.getRspec();
 
     Map<String,Rule> needsUpdating = new HashMap<>();
@@ -348,10 +357,11 @@ public class IntegrityEnforcementService extends RuleManager {
       Map<String, Object> updates = new HashMap<>();
       updates.put("Covered Languages", rule.getCoveredLanguages());
       updates.put(TARGETED_LANGUAGES, rule.getTargetedLanguages());
-      RuleUpdater.updateRule(rule.getKey(), updates, login, password);
+      ruleUpdater.updateRule(rule.getKey(), updates);
     }
   }
 
+  @VisibleForTesting
   protected void dropCoveredForNonNemoRules(String rspecLanguage, Map<String, Rule> rspecRules, Map<String, Rule> needsUpdating) {
 
     for (Rule rspecRule : rspecRules.values()) {
@@ -364,6 +374,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
+  @VisibleForTesting
   protected void addCoveredForNemoRules(String rspecLanguage, Map<String, Rule> needsUpdating, Rule rspecRule) {
 
     if (! rspecRule.getCoveredLanguages().contains(rspecLanguage)) {
@@ -377,18 +388,18 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  public void enforceTagReferenceIntegrity(String login, String password) {
+  private void enforceTagReferenceIntegrity() {
 
     for (SupportedStandard supportedStandard : SupportedStandard.values()) {
 
       if (supportedStandard.getStandard() instanceof TaggableStandard) {
         TaggableStandard taggableStandard = (TaggableStandard)supportedStandard.getStandard();
-        enforceTagReferenceIntegrity(login, password, taggableStandard);
+        enforceTagReferenceIntegrity(taggableStandard);
       }
     }
   }
 
-  public void enforceTagReferenceIntegrity(String login, String password, TaggableStandard taggable) {
+  public void enforceTagReferenceIntegrity(TaggableStandard taggable) {
 
     LOGGER.info("STARTING: " + taggable.getStandardName());
 
@@ -402,7 +413,7 @@ public class IntegrityEnforcementService extends RuleManager {
       if (!Rule.Status.DEPRECATED.equals(rule.getStatus())) {
 
         Map<String, Object> updates = getUpdates(rule, taggable);
-        RuleUpdater.updateRule(rule.getKey(), updates, login, password);
+        ruleUpdater.updateRule(rule.getKey(), updates);
       }
     }
   }
@@ -503,7 +514,7 @@ public class IntegrityEnforcementService extends RuleManager {
   }
 
 
-  public List<String> parseReferencesFromStrings(TaggableStandard taggable, List<String> references) {
+  public static List<String> parseReferencesFromStrings(TaggableStandard taggable, List<String> references) {
     List<String> refs = new ArrayList<>();
 
     String pattern = taggable.getReferencePattern();

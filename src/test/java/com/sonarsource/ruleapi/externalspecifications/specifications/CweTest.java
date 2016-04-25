@@ -28,8 +28,7 @@ public class CweTest {
     references.add("MITRE, CWE-123 - title");
     references.add("MITRE, 404 - RAH!");
 
-    IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
-    List<String> refs = enforcer.parseReferencesFromStrings(cwe, references);
+    List<String> refs = IntegrityEnforcementService.parseReferencesFromStrings(cwe, references);
 
     assertThat(refs).hasSize(1).contains("CWE-123");
   }

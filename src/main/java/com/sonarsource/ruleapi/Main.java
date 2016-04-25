@@ -8,19 +8,19 @@ package com.sonarsource.ruleapi;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.sonarsource.ruleapi.domain.RuleException;
+import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
-import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
-import com.sonarsource.ruleapi.services.RuleFilesService;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.services.ReportService;
+import com.sonarsource.ruleapi.services.RuleFilesService;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
-import java.util.Arrays;
 import org.fest.util.Strings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -83,18 +83,17 @@ public class Main {
   protected static void doRequestedOption(Option option, Settings settings) {
 
 
-    IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
     ReportService rs = new ReportService();
     RuleFilesService dfs = new RuleFilesService( settings.directory );
     Language language = Language.fromString(settings.language);
 
     switch (option) {
       case OUTDATED :
-        enforcer.setCoveredLanguages(settings.login, settings.password);
+        new IntegrityEnforcementService(settings.login, settings.password).setCoveredLanguages();
         break;
 
       case INTEGRITY :
-        enforcer.enforceIntegrity(settings.login, settings.password);
+        new IntegrityEnforcementService(settings.login, settings.password).enforceIntegrity();
         break;
 
       case REPORTS:
