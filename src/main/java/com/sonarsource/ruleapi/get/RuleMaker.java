@@ -269,6 +269,7 @@ public class RuleMaker {
           return;
         }
       }
+      throw new IllegalStateException("No sqale subcharac matching : "+candidate+" for rule "+rule.getKey());
     }
   }
 

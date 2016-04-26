@@ -363,7 +363,7 @@ public class Rule {
       objOrderedFields.put("remediation", remediation);
     }
     if (this.sqaleSubCharac != null) {
-      objOrderedFields.put("sqaleSubCharac", this.sqaleSubCharac.getRspecName());
+      objOrderedFields.put("sqaleSubCharac", this.sqaleSubCharac.name());
     }
 
     JSONArray tagsJSON = new JSONArray();

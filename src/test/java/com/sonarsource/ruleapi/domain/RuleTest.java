@@ -331,7 +331,7 @@ public class RuleTest {
             "    \"func\": \"Constant\\/Issue\",\n" +
             "    \"constantCost\": \"17 seconds\"\n" +
             "  },\n" +
-            "  \"sqaleSubCharac\": \"Compiler related portability\",\n" +
+            "  \"sqaleSubCharac\": \"COMPILER_RELATED_PORTABILITY\",\n" +
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ],\n" +
@@ -353,7 +353,7 @@ public class RuleTest {
             "    \"linearDesc\": \"dolor sit amet\",\n" +
             "    \"linearFactor\": \"666\"\n" +
             "  },\n" +
-            "  \"sqaleSubCharac\": \"Compiler related portability\",\n" +
+            "  \"sqaleSubCharac\": \"COMPILER_RELATED_PORTABILITY\",\n" +
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ],\n" +
