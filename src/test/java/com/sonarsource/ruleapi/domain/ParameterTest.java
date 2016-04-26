@@ -106,6 +106,16 @@ public class ParameterTest {
   }
 
   @Test
+  public void NeqObject() {
+
+    assertThat(full.equals(null)).isFalse();
+
+    Object obj = new Object();
+    assertThat(full.equals(obj)).isFalse();
+
+  }
+
+  @Test
   public void testHashCodeDefault () throws Exception {
 
     assertThat(full.hashCode()).isEqualTo(-1130130840);
