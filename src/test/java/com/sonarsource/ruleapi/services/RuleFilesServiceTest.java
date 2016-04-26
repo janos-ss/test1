@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.utilities.Language;
+import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemOutRule;
@@ -38,7 +39,7 @@ public class RuleFilesServiceTest {
     dfs.generateRuleFiles(listOfKeys);
 
     // must be 2 files per rule
-    int supposedCount = listOfKeys.size() * 2;
+    int supposedCount = listOfKeys.size() * 2 + 2;
     assertThat(outputDir.listFiles().length).isEqualTo(supposedCount);
     assertThat(systemOutRule.getLog()).contains(String.format("(%d)", supposedCount));
   }
@@ -144,11 +145,12 @@ public class RuleFilesServiceTest {
     rfs.updateDescriptions();
 
     // check all the files for the right content
-    assertThat(outputDir.listFiles().length).isEqualTo(2 * 2 + 2 + 1 );
+    assertThat(outputDir.listFiles().length).isEqualTo(2 * 2 + 2 + 1 + 2);
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234JsonFile)).isEqualTo(S1234JsonChecksum);
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234HtmlFile)).isEqualTo(S1234HtmlChecksum);
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1111HtmlFile)).isEqualTo(S1111HtmlChecksum);
-
+    File profile = new File(outputDir.getAbsolutePath() + File.separator + "Sonar_way_profile.json");
+    assertThat(FileUtils.readFileToString(profile)).contains("S1234").doesNotContain("RSPEC");
     assertThat(systemOutRule.getLog()).contains("Found 2 rule(s) to update");
     assertThat(systemOutRule.getLog()).contains("Output: (4) files");
   }

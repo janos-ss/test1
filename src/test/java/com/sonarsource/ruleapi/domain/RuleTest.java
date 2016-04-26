@@ -327,9 +327,6 @@ public class RuleTest {
     final String expected1 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
             "  \"status\": \"deprecated\",\n" +
-            "  \"profiles\": [\n" +
-            "    \"bar\"\n" +
-            "  ],\n" +
             "  \"remediation\": {\n" +
             "    \"func\": \"Constant\\/Issue\",\n" +
             "    \"constantCost\": \"17 seconds\"\n" +
@@ -351,9 +348,6 @@ public class RuleTest {
     final String expected2 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
             "  \"status\": \"ready\",\n" +
-            "  \"profiles\": [\n" +
-            "    \"bar\"\n" +
-            "  ],\n" +
             "  \"remediation\": {\n" +
             "    \"func\": \"Linear\",\n" +
             "    \"linearDesc\": \"dolor sit amet\",\n" +
@@ -377,9 +371,6 @@ public class RuleTest {
     final String expected3 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
             "  \"status\": \"beta\",\n" +
-            "  \"profiles\": [\n" +
-            "    \"bar\"\n" +
-            "  ],\n" +
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ]\n" +

@@ -5,6 +5,9 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.RuleMaker;
@@ -13,10 +16,14 @@ import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +32,7 @@ public class RuleFilesService {
 
   private static final String HTML_TERMINATION = ".html";
   private static final String JSON_TERMINATION = ".json";
+  private static final String PROFILE_TERMINATION = "_profile.json";
   private final String language;
   private final File baseDir;
   private final Pattern descriptionFileBaseNamePattern;
@@ -48,16 +56,83 @@ public class RuleFilesService {
   public void generateRuleFiles(Iterable<String> ruleKeys) {
     countGeneratedFiles = 0;
     if (ruleKeys != null) {
+      List<Rule> updatedRules = new ArrayList<>();
       for (String ruleKey : ruleKeys) {
         Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
         if( rule == null || rule.getKey() == null ) {
           throw new IllegalArgumentException("invalid rule");
         }
         generateSingleRuleFiles(rule);
+        updatedRules.add(rule);
+      }
+      updateProfiles(updatedRules);
+    }
+    System.out.println(String.format("Output: (%d) files", countGeneratedFiles));
+  }
+
+  private void updateProfiles(List<Rule> updatedRules) {
+    Map<String, RulesProfile> profiles = findProfiles();
+    Set<RulesProfile> profilesToUpdate = new HashSet<>();
+    for (Rule updatedRule : updatedRules) {
+      // Add rule to profile if required
+      Set<String> ruleProfileNames = new HashSet<>();
+      String ruleKey = Utilities.denormalizeKey(updatedRule.getKey());
+      for (Profile profile : updatedRule.getDefaultProfiles()) {
+        String profileName = profile.getName();
+        ruleProfileNames.add(profileName);
+        if(profiles.containsKey(profileName)) {
+          RulesProfile rp = profiles.get(profileName);
+          if(!rp.ruleKeys.contains(ruleKey)) {
+            rp.ruleKeys.add(ruleKey);
+            profilesToUpdate.add(rp);
+          }
+        } else {
+          // profile file not found, creating the profile
+          RulesProfile newRP = new RulesProfile();
+          newRP.name = profileName;
+          newRP.ruleKeys = Lists.newArrayList(ruleKey);
+          profilesToUpdate.add(newRP);
+          profiles.put(profileName, newRP);
+        }
+      }
+      // Remove rule from profile
+      for (RulesProfile rulesProfile : profiles.values()) {
+        if(rulesProfile.ruleKeys.contains(ruleKey) && !ruleProfileNames.contains(rulesProfile.name)) {
+          rulesProfile.ruleKeys.remove(ruleKey);
+          profilesToUpdate.add(rulesProfile);
+        }
       }
     }
+    // update required profiles
+    writeProfiles(profilesToUpdate);
+  }
 
-    System.out.println(String.format("Output: (%d) files", countGeneratedFiles));
+  private Map<String, RulesProfile> findProfiles() {
+    final Map<String, RulesProfile> result = new HashMap<>();
+    final Gson gson = new Gson();
+    baseDir.listFiles(new FileFilter() {
+      @Override
+      public boolean accept(File file) {
+        if(file.getName().endsWith(PROFILE_TERMINATION)) {
+          try(FileReader fr = new FileReader(file)) {
+            RulesProfile rulesProfile = gson.fromJson(fr, RulesProfile.class);
+            result.put(rulesProfile.name, rulesProfile);
+          } catch (IOException e) {
+            throw new RuleException(e);
+          }
+          return true;
+        }
+        return false;
+      }
+    });
+    return result;
+  }
+
+  private void writeProfiles(Set<RulesProfile> profilesToUpdate) {
+    for (RulesProfile rulesProfile : profilesToUpdate) {
+      System.out.println(String.format("Updating profile %s", rulesProfile.name));
+      writeFile(rulesProfile.name+PROFILE_TERMINATION, new Gson().toJson(rulesProfile));
+    }
   }
 
   private void generateSingleRuleFiles(Rule rule) {
@@ -103,7 +178,7 @@ public class RuleFilesService {
     File file = new File(baseDir, protectedPath);
     try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
       writer.println(content);
-    } catch (FileNotFoundException | UnsupportedEncodingException e) {
+    } catch (IOException e) {
       throw new RuleException(e);
     }
     countGeneratedFiles++;
@@ -119,5 +194,10 @@ public class RuleFilesService {
       }
       return baseDirFile;
     }
+  }
+
+  private static class RulesProfile {
+    String name;
+    List<String> ruleKeys;
   }
 }

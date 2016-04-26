@@ -257,7 +257,7 @@ public class Rule {
         break;
       }
 
-      this.setDefaultProfiles(new HashSet<Profile>(subProfiles));
+      this.setDefaultProfiles(new HashSet<>(subProfiles));
     }
   }
 
@@ -340,12 +340,6 @@ public class Rule {
     if (this.status != null) {
       objOrderedFields.put("status", this.status.getStatusName());
     }
-
-    JSONArray profiles = new JSONArray();
-    for (Profile profile : this.getDefaultProfiles()) {
-      profiles.add(profile.getName());
-    }
-    objOrderedFields.put("profiles", profiles);
 
     if (this.sqaleRemediationFunction != null) {
       LinkedHashMap remediation = new LinkedHashMap();
