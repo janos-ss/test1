@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.sonarsource.ruleapi.domain.Profile;
@@ -16,8 +17,9 @@ import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,8 +116,8 @@ public class RuleFilesService {
       @Override
       public boolean accept(File file) {
         if(file.getName().endsWith(PROFILE_TERMINATION)) {
-          try(FileReader fr = new FileReader(file)) {
-            RulesProfile rulesProfile = gson.fromJson(fr, RulesProfile.class);
+          try(InputStreamReader ir = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)) {
+            RulesProfile rulesProfile = gson.fromJson(ir, RulesProfile.class);
             result.put(rulesProfile.name, rulesProfile);
           } catch (IOException e) {
             throw new RuleException(e);

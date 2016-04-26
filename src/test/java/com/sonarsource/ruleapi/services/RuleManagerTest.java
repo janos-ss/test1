@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -19,24 +18,6 @@ import static org.fest.assertions.Assertions.assertThat;
 public class RuleManagerTest {
 
   private RuleManager manager = new RuleManager();
-
-  @Test
-  public void testMapRulesByKey() {
-
-    List<Rule> rules = new ArrayList<>();
-
-    Rule r1 = new Rule(Language.JAVA.getRspec());
-    r1.setKey("key1");
-    rules.add(r1);
-
-    Rule r2 = new Rule(Language.JAVA.getRspec());
-    r2.setKey("key2");
-    rules.add(r2);
-
-    Map<String, Rule> map = manager.mapRulesByKey(rules);
-    assertThat(map.size()).isEqualTo(2);
-    assertThat(map.get("key1")).isEqualTo(r1);
-  }
 
   @Test
   public void testGetNormalKey() {

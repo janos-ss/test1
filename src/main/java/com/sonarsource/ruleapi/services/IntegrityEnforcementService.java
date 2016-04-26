@@ -318,23 +318,20 @@ public class IntegrityEnforcementService extends RuleManager {
 
 
   public void setCoveredLanguages() {
-
-    String url = RuleManager.NEMO;
-
     for (Language lang : Language.values()) {
       LOGGER.info("Setting covered for " + lang.getRspec());
-      setCoveredForLanguage(lang, url);
+      setCoveredForLanguage(lang);
     }
   }
 
-  private void setCoveredForLanguage(Language language, String url) {
+  private void setCoveredForLanguage(Language language) {
     String rspecLanguage = language.getRspec();
 
     Map<String,Rule> needsUpdating = new HashMap<>();
 
-    Map<String, Rule> rspecRules = mapRulesByKey(getCoveredRulesForLanguage(language));
+    Map<String, Rule> rspecRules = getCoveredRulesForLanguage(language);
 
-    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeForLanguage(language, url);
+    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeForLanguage(language, RuleManager.NEMO);
     List<Rule> specNotFound = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);
 
     for (Rule sqRule : sqCovered) {

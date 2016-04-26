@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
@@ -20,18 +21,11 @@ public class RuleManager {
 
   public static final String NEMO = "https://nemo.sonarqube.org";
 
-  public List<Rule> getCoveredRulesForLanguage(Language language) {
-    return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec() + "\"", language.getRspec());
+  public Map<String,Rule> getCoveredRulesForLanguage(Language language) {
+    return mapRulesByKey(RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec() + "\"", language.getRspec()));
   }
 
-  public List<Rule> getCoveredAndTargetedRulesForLanguage(Language language) {
-    return RuleMaker.getRulesByJql("\"Covered Languages\" = \"" + language.getRspec()
-                            + "\" or \"Targeted Languages\" = \"" + language.getRspec() + "\"",
-            language.getRspec());
-  }
-
-  protected Map<String,Rule> mapRulesByKey(List<Rule> rules) {
-
+  private static Map<String,Rule> mapRulesByKey(List<Rule> rules) {
     Map<String, Rule> map = new HashMap<>();
     for (Rule rule : rules) {
       map.put(rule.getKey(), rule);
@@ -39,12 +33,10 @@ public class RuleManager {
     return map;
   }
 
+  @VisibleForTesting
   protected String getNormalKey(String legacyKey, Language language) {
-
     String key = Utilities.normalizeKey(legacyKey);
-
     if (! key.matches("RSPEC-\\d+")) {
-
       Rule freshFetch = RuleMaker.getRuleByKey(legacyKey, language.getRspec());
       key = freshFetch.getKey();
       if (key == null) {

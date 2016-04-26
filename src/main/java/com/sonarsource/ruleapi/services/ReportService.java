@@ -9,16 +9,19 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleComparison;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableExternalTool;
+import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.externalspecifications.CleanupReport;
 import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
-import com.sonarsource.ruleapi.externalspecifications.CleanupReport;
 import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMultiLanguageStandard;
-import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
+import org.fest.util.Strings;
+import org.json.simple.JSONArray;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -31,8 +34,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.fest.util.Strings;
-import org.json.simple.JSONArray;
 
 
 public class ReportService extends RuleManager {
@@ -225,8 +226,7 @@ public class ReportService extends RuleManager {
 
     String fileName = "outdated/".concat(language.getSq()).concat("_outdated_rules.txt").toLowerCase();
 
-    List<Rule> rspec = getCoveredRulesForLanguage(language);
-    Map<String, Rule> rspecRules = mapRulesByKey(rspec);
+    Map<String, Rule> rspecRules = getCoveredRulesForLanguage(language);
 
     List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
     List<Rule> specNotFoundForLegacyKey = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);
