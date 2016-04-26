@@ -19,6 +19,7 @@ import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import java.security.KeyManagementException;
@@ -48,7 +49,7 @@ public class Fetcher {
 
     WebTarget webResource = client.target(url);
 
-    Response response = webResource.request().accept("application/json").get(Response.class);
+    Response response = webResource.request().accept(MediaType.APPLICATION_JSON).get(Response.class);
 
     checkStatus(url, client, response);
 
