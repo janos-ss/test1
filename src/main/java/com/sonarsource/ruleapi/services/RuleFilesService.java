@@ -5,171 +5,119 @@
  */
 package com.sonarsource.ruleapi.services;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
-import java.util.List;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
-public class RuleFilesService extends RuleManager {
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class RuleFilesService {
+
   private static final String HTML_TERMINATION = ".html";
   private static final String JSON_TERMINATION = ".json";
+  private final String language;
+  private final File baseDir;
+  private final Pattern descriptionFileBaseNamePattern;
+  private int countGeneratedFiles;
 
-  private String baseDir;
-
-  public RuleFilesService(String baseDir) {
+  private RuleFilesService(File baseDir, Language language) {
     this.baseDir = baseDir;
+    this.language = language.getRspec().toLowerCase();
+    // match string like S123456_java., the termination is matched apart
+    descriptionFileBaseNamePattern = Pattern.compile("^S(\\d+)_" + this.language + "\\.");
   }
 
-  public void generateRuleFiles(List<String> ruleKeys, String language) {
-
-    // check inputs
-    assertBaseDir();
-    if( language == null || language.isEmpty() ) {
+  public static RuleFilesService create(String baseDir, Language language) {
+    File baseDirFile = assertBaseDir(baseDir);
+    if(language == null) {
       throw new IllegalArgumentException("no language found");
     }
+    return new RuleFilesService(baseDirFile, language);
+  }
 
-    int countGeneratedFiles = 0;
-
+  public void generateRuleFiles(Iterable<String> ruleKeys) {
+    countGeneratedFiles = 0;
     if (ruleKeys != null) {
       for (String ruleKey : ruleKeys) {
         Rule rule = RuleMaker.getRuleByKey(ruleKey, language);
         if( rule == null || rule.getKey() == null ) {
           throw new IllegalArgumentException("invalid rule");
         }
-
-        countGeneratedFiles += this.generateOneRuleFiles(rule);
+        generateSingleRuleFiles(rule);
       }
     }
 
     System.out.println(String.format("Output: (%d) files", countGeneratedFiles));
   }
 
-  private int generateOneRuleFiles(Rule rule) {
-
-    if( rule.getSeverity() == null ) {
+  private void generateSingleRuleFiles(Rule rule) {
+    if(rule.getSeverity() == null) {
       System.out.println(String.format("WARNING: missing severity for rule %s", rule.getKey()));
     }
-
-    int countGeneratedFiles = 0;
-
-    final String denormalizedKey = Utilities.denormalizeKey(rule.getKey());
-
-    String htmlFilePath = String.format("%s/%s_%s%s"
-      , this.baseDir
-      , denormalizedKey
-      , rule.getLanguage()
-      , HTML_TERMINATION);
-    writeFile(htmlFilePath, rule.getHtmlDescription());
-    countGeneratedFiles++;
-
-    String squidJsonFilePath = String.format("%s/%s_%s%s"
-      , this.baseDir
-      , denormalizedKey
-      , rule.getLanguage()
-      , JSON_TERMINATION);
-    writeFile(squidJsonFilePath, rule.getSquidJson());
-    countGeneratedFiles++;
-
-    return countGeneratedFiles;
+    writeFile(computePath(rule, HTML_TERMINATION), rule.getHtmlDescription());
+    writeFile(computePath(rule, JSON_TERMINATION), rule.getSquidJson());
   }
 
-  public void updateDescriptions(String language) {
-
-    assertBaseDir( );
-
-    // sanitize user input
-    Language verifiedLanguage = Language.fromString(language);
-    if (verifiedLanguage == null) {
-      throw new IllegalArgumentException("bad language");
-    }
-
-    HashSet<String> rulesToUpdateKeys = findTheRulesToUpdate( verifiedLanguage.getRspec().toLowerCase() );
-    System.out.println(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
-
-    int countGeneratedFiles = 0;
-    for (String canonicalKey : rulesToUpdateKeys) {
-      Rule rule = RuleMaker.getRuleByKey(canonicalKey, language);
-      if( rule == null || rule.getKey() == null ) {
-        throw new IllegalArgumentException("invalid rule");
-      }
-      countGeneratedFiles += generateOneRuleFiles(rule);
-    }
-
-    System.out.println(String.format("Wrote %d file(s)", countGeneratedFiles));
+  private static String computePath(Rule rule, String fileExtension) {
+    String denormalizedKey = Utilities.denormalizeKey(rule.getKey());
+    return String.format("%s_%s%s", denormalizedKey, rule.getLanguage(), fileExtension);
   }
 
-  private HashSet<String> findTheRulesToUpdate( String languageRSpecName ) {
+  public void updateDescriptions() {
+    generateRuleFiles(findRulesToUpdate());
+  }
 
-    // match string like S123456_java., the termination is matched apart
-    final Pattern descriptionFileBaseNamePattern = Pattern.compile("^S(\\d+)_" + languageRSpecName + "\\.");
-
-    // establish the list of rules to update
-    // HashBasedTable will make  entry unique
-    File[] allTheDescriptionFiles = new File(this.baseDir).listFiles(new FileFilter() {
+  private Set<String> findRulesToUpdate() {
+    final Set<String> rulesToUpdateKeys = new HashSet<>();
+    baseDir.listFiles(new FileFilter() {
       @Override
       public boolean accept(File file) {
-        return file.isFile()
-                &&
-                // match string like S123456_java., the termination is matched apart
-                descriptionFileBaseNamePattern.matcher(file.getName()).find()
-                &&
-                (file.getName().toLowerCase().endsWith(JSON_TERMINATION)
-                        ||
-                        file.getName().toLowerCase().endsWith(HTML_TERMINATION)
-                );
+        String fileName = file.getName();
+        if(file.isFile() && (fileName.toLowerCase().endsWith(JSON_TERMINATION) || fileName.toLowerCase().endsWith(HTML_TERMINATION))) {
+          Matcher m = descriptionFileBaseNamePattern.matcher(fileName);
+          if (m.find()) {
+            rulesToUpdateKeys.add(m.group(1));
+            return true;
+          }
+        }
+        return false;
       }
     });
-    HashSet<String> rulesToUpdateKeys = new HashSet<>();
-    for (File file : allTheDescriptionFiles) {
-      Matcher m = descriptionFileBaseNamePattern.matcher(file.getName());
-      if (m.find()) {
-        String canonicalKey = m.group(1);
-        if (!rulesToUpdateKeys.contains(canonicalKey)) {
-          rulesToUpdateKeys.add(canonicalKey);
-        }
-      } else {
-        throw new IllegalStateException("Inconsistent data");
-      }
-    }
-
+    System.out.println(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
     return rulesToUpdateKeys;
   }
 
 
-  private static void writeFile(String fileName, String content) {
-
+  private void writeFile(String fileName, String content) {
     String protectedPath = fileName.replaceAll(" ", "_");
-    File file = new File(protectedPath);
-
+    File file = new File(baseDir, protectedPath);
     try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
-
       writer.println(content);
-
     } catch (FileNotFoundException | UnsupportedEncodingException e) {
       throw new RuleException(e);
     }
+    countGeneratedFiles++;
   }
 
-  private void assertBaseDir() {
-    if( this.baseDir == null ) {
+  private static File assertBaseDir(String baseDir) {
+    if (baseDir == null) {
       throw new IllegalArgumentException("directory is required");
     } else {
-      File baseDirFile = new File(this.baseDir);
-      if( ! baseDirFile.isDirectory()) {
+      File baseDirFile = new File(baseDir);
+      if (!baseDirFile.isDirectory()) {
         throw new IllegalArgumentException("directory does not exist");
       }
+      return baseDirFile;
     }
   }
 }

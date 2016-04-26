@@ -84,38 +84,30 @@ public class Main {
 
 
     ReportService rs = new ReportService();
-    RuleFilesService dfs = new RuleFilesService( settings.directory );
     Language language = Language.fromString(settings.language);
 
     switch (option) {
       case OUTDATED :
         new IntegrityEnforcementService(settings.login, settings.password).setCoveredLanguages();
         break;
-
       case INTEGRITY :
         new IntegrityEnforcementService(settings.login, settings.password).enforceIntegrity();
         break;
-
       case REPORTS:
         generateReports(settings, rs);
         break;
-
       case GENERATE:
-        dfs.generateRuleFiles(settings.ruleKeys, settings.language);
+        RuleFilesService.create(settings.directory, language).generateRuleFiles(settings.ruleKeys);
         break;
-
       case UPDATE:
-        dfs.updateDescriptions(settings.language);
+        RuleFilesService.create(settings.directory, language).updateDescriptions();
         break;
-
       case DIFF:
         rs.writeOutdatedRulesReport(language, settings.instance);
         break;
-
       case SINGLE_REPORT:
         handleSingleReport(settings, rs);
         break;
-
       default:
         printHelpMessage();
         break;

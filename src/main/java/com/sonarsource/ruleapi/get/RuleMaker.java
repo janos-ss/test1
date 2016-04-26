@@ -33,8 +33,8 @@ import java.util.Map;
  */
 public class RuleMaker {
 
-  private static final JiraFetcherImpl JIRA_FETCHER = new JiraFetcherImpl();
-  private static final SQFetcherImpl SQ_FETCHER = new SQFetcherImpl();
+  private static final JiraFetcher JIRA_FETCHER = new JiraFetcherImpl();
+  private static final SQFetcher SQ_FETCHER = new SQFetcherImpl();
 
   private RuleMaker() {
   }
@@ -143,7 +143,7 @@ public class RuleMaker {
     return rules;
   }
 
-  protected static void fleshOutRule(JiraFetcherImpl fetcher, Rule rule, JSONObject jsonRule) {
+  protected static void fleshOutRule(JiraFetcher fetcher, Rule rule, JSONObject jsonRule) {
     if (jsonRule != null) {
       JiraHelper.populateFields(rule, jsonRule);
 
@@ -160,7 +160,7 @@ public class RuleMaker {
     }
   }
 
-  private static JSONObject getSubtask(JiraFetcherImpl fetcher, String language, JSONArray tasks) {
+  private static JSONObject getSubtask(JiraFetcher fetcher, String language, JSONArray tasks) {
     if (tasks != null && ! Strings.isNullOrEmpty(language)) {
       for (JSONObject subt : (Iterable<JSONObject>) tasks) {
         if (isLanguageMatch(language, JiraHelper.getJsonFieldValue(subt, "summary").trim())) {

@@ -158,7 +158,7 @@ public class Rule {
     }
   }
 
-  private String language = null;
+  private final String language;
   private String key = null;
   private String repo = null;
   private Status status = null;
@@ -544,13 +544,7 @@ public class Rule {
   }
 
   public String getLanguage() {
-
     return language;
-  }
-
-  public void setLanguage(String language) {
-
-    this.language = language;
   }
 
   public String getSqaleLinearArgDesc() {

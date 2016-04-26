@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemOutRule;
@@ -29,12 +30,12 @@ public class RuleFilesServiceTest {
   public void testGenerateRuleFiles() throws Exception {
     File outputDir = testFolder.newFolder();
 
-    RuleFilesService dfs = new RuleFilesService(outputDir.toString());
+    RuleFilesService dfs = RuleFilesService.create(outputDir.toString(), Language.fromString("java"));
 
     List<String> listOfKeys = new ArrayList<>(2);
     listOfKeys.add("RSPEC-1234");
     listOfKeys.add("S1111");
-    dfs.generateRuleFiles(listOfKeys, "java");
+    dfs.generateRuleFiles(listOfKeys);
 
     // must be 2 files per rule
     int supposedCount = listOfKeys.size() * 2;
@@ -45,8 +46,8 @@ public class RuleFilesServiceTest {
   @Test
   public void testGenerateRuleDescriptionsNoRule() throws Exception {
     File outputDir = testFolder.newFolder();
-    RuleFilesService rfs = new RuleFilesService(outputDir.toString());
-    rfs.generateRuleFiles(null, "java");
+    RuleFilesService rfs = RuleFilesService.create(outputDir.toString(), Language.fromString("java"));
+    rfs.generateRuleFiles(null);
     assertThat(outputDir.listFiles().length).isEqualTo(0);
   }
 
@@ -54,10 +55,10 @@ public class RuleFilesServiceTest {
   public void testGenerateRuleFilesUnknownRule() throws Exception {
     File outputDir = testFolder.newFolder();
 
-    RuleFilesService dfs = new RuleFilesService(outputDir.toString());
+    RuleFilesService dfs = RuleFilesService.create(outputDir.toString(), Language.fromString("java"));
     List<String> listOfKeys = new ArrayList<>(1);
     listOfKeys.add("foo");
-    dfs.generateRuleFiles(listOfKeys, "bar");
+    dfs.generateRuleFiles(listOfKeys);
     assertThat(outputDir.listFiles().length).isEqualTo(0);
   }
 
@@ -65,22 +66,13 @@ public class RuleFilesServiceTest {
   @Test( expected = IllegalArgumentException.class )
   public void testGenerateRuleFilesEmptyLanguage() throws Exception {
     File outputDir = testFolder.newFolder();
-
-    RuleFilesService dfs = new RuleFilesService(outputDir.toString());
-    List<String> listOfKeys = new ArrayList<>(0);
-    dfs.generateRuleFiles(listOfKeys, "");
-    assertThat(outputDir.listFiles().length).isEqualTo(0);
+    RuleFilesService.create(outputDir.toString(), Language.fromString(""));
   }
 
   @Test( expected = IllegalArgumentException.class )
   public void testGenerateRuleFilesNullLanguage() throws Exception {
     File outputDir = testFolder.newFolder();
-
-    RuleFilesService dfs = new RuleFilesService(outputDir.toString());
-    List<String> listOfKeys = new ArrayList<>(0);
-    dfs.generateRuleFiles(listOfKeys, null);
-    assertThat(outputDir.listFiles().length).isEqualTo(0);
-    assertThat(systemOutRule.getLog()).contains("no valid language");
+    RuleFilesService.create(outputDir.toString(), null);
   }
 
 
@@ -88,13 +80,13 @@ public class RuleFilesServiceTest {
   public void testGenerateRuleFilesWoSeverity() throws Exception {
     File outputDir = testFolder.newFolder();
 
-    RuleFilesService dfs = new RuleFilesService(outputDir.toString());
+    RuleFilesService dfs = RuleFilesService.create(outputDir.toString(), Language.fromString("java"));
 
     List<String> listOfKeys = new ArrayList<>(1);
     // this ticket is deprecated and wo severity
     listOfKeys.add("RSPEC-2297");
 
-    dfs.generateRuleFiles(listOfKeys, "java");
+    dfs.generateRuleFiles(listOfKeys);
 
     // must be 2 files per rule
     int supposedCount = listOfKeys.size() * 2;
@@ -107,12 +99,12 @@ public class RuleFilesServiceTest {
   @Test
   public void testUpdateRuleFiles() throws Exception {
     File outputDir = testFolder.newFolder();
-    RuleFilesService rfs = new RuleFilesService(outputDir.toString());
+    RuleFilesService rfs = RuleFilesService.create(outputDir.toString(), Language.fromString("java"));
 
     List<String> listOfKeys = new ArrayList<>(2);
     listOfKeys.add("RSPEC-1234");
     listOfKeys.add("S1111");
-    rfs.generateRuleFiles(listOfKeys, "java");
+    rfs.generateRuleFiles(listOfKeys);
 
     // record checksums
     File S1234HtmlFile = new File(outputDir.getAbsolutePath() + File.separator + "S1234_java.html");
@@ -149,7 +141,7 @@ public class RuleFilesServiceTest {
     s1000Directory.mkdir();
 
     // fire
-    rfs.updateDescriptions("java");
+    rfs.updateDescriptions();
 
     // check all the files for the right content
     assertThat(outputDir.listFiles().length).isEqualTo(2 * 2 + 2 + 1 );
@@ -158,25 +150,22 @@ public class RuleFilesServiceTest {
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1111HtmlFile)).isEqualTo(S1111HtmlChecksum);
 
     assertThat(systemOutRule.getLog()).contains("Found 2 rule(s) to update");
-    assertThat(systemOutRule.getLog()).contains("Wrote 4 file(s)");
+    assertThat(systemOutRule.getLog()).contains("Output: (4) files");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testUpdateDescriptionsBadDirectory() throws Exception {
-    RuleFilesService rfs = new RuleFilesService("/non/existing/directory");
-    rfs.updateDescriptions("language");
+    RuleFilesService.create("/non/existing/directory", Language.fromString("ln"));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testUpdateDescriptionsNoDirectory() throws Exception {
-    RuleFilesService rfs = new RuleFilesService(null);
-    rfs.updateDescriptions("language");
+   RuleFilesService.create(null, Language.fromString("lang"));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testUpdateDescriptionsBadLanguage() throws Exception {
     File outputDir = testFolder.newFolder();
-    RuleFilesService rfs = new RuleFilesService(outputDir.toString());
-    rfs.updateDescriptions("cheatTheRegExp|*");
+    RuleFilesService.create(outputDir.toString(), Language.fromString("cheatTheRegExp|*"));
   }
 }
