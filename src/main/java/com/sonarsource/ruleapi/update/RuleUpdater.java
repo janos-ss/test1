@@ -5,13 +5,22 @@
  */
 package com.sonarsource.ruleapi.update;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.Fetcher;
-import java.util.Set;
+import com.sonarsource.ruleapi.get.JiraFetcherImpl;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,42 +30,34 @@ import java.util.logging.Logger;
 public class RuleUpdater {
 
   private static final Logger LOGGER = Logger.getLogger(RuleUpdater.class.getName());
+  private static final String ISSUE_BASE_URL = JiraFetcherImpl.BASE_URL + JiraFetcherImpl.ISSUE;
+  private final String login;
+  private final String password;
 
-
-  private RuleUpdater() {
-    // hide utility class instantiation
+  public RuleUpdater(String login, String password) {
+    this.login = login;
+    this.password = password;
   }
 
-
-  public static boolean updateRule(String ruleKey, Map<String,Object> fieldValuesToUpdate, String login, String password) {
-
+  public boolean updateRule(String ruleKey, Map<String,Object> fieldValuesToUpdate) {
     if (!ruleKey.matches("RSPEC-[0-9]+") || fieldValuesToUpdate.isEmpty()) {
       return false;
     }
-
-    Fetcher fetcher = new Fetcher();
-    JSONObject jobj = fetcher.getJsonFromUrl(Fetcher.BASE_URL + Fetcher.ISSUE + ruleKey + "/editmeta", login, password);
+    JSONObject jobj = Fetcher.getJsonFromUrl(ISSUE_BASE_URL + ruleKey + "/editmeta", login, password);
     JSONObject fieldsMeta = (JSONObject)jobj.get("fields");
-
     JSONObject request = prepareRequest(fieldValuesToUpdate, fieldsMeta);
     LOGGER.fine("Update " + ruleKey + " : " + request.toJSONString());
-
-    Updater updater = new Updater();
-    return updater.putIssueUpdate(login, password, ruleKey, request);
+    return putIssueUpdate(ruleKey, request);
   }
 
-  public static boolean updateRuleStatus(String ruleKey, Rule.Status status, String login, String password) {
-
-    Fetcher fetcher = new Fetcher();
-    JSONObject jobj = fetcher.getJsonFromUrl(Fetcher.BASE_URL + Fetcher.ISSUE + ruleKey + "/transitions?expand=transitions.fields", login, password);
-
+  public boolean updateRuleStatus(String ruleKey, Rule.Status status) {
+    JSONObject jobj = Fetcher.getJsonFromUrl(ISSUE_BASE_URL + ruleKey + "/transitions?expand=transitions.fields", login, password);
     JSONObject request = prepareTransitionRequest(status, jobj);
     LOGGER.fine("Update " + ruleKey + " : " + request.toJSONString());
-
-    Updater updater = new Updater();
-    return updater.postIssueUpdate(login, password, ruleKey + "/transitions", request);
+    return postIssueUpdate(ruleKey + "/transitions", request);
   }
 
+  @VisibleForTesting
   protected static JSONObject prepareTransitionRequest(Rule.Status status, JSONObject jobj) {
 
     List<JSONObject> transitions = (JSONArray)jobj.get("transitions");
@@ -75,6 +76,7 @@ public class RuleUpdater {
     return request;
   }
 
+  @VisibleForTesting
   protected static JSONObject prepareRequest(Map<String, Object> fieldValuesToUpdate, JSONObject fieldsMeta) {
 
     Map<String,String> fieldIds = extractFieldIds(fieldsMeta);
@@ -106,39 +108,21 @@ public class RuleUpdater {
   }
 
 
-  protected static Object handleConstrainedValueList(Object candidateFieldValue, Map<String, String> allowedValues, String fieldId) {
-
+  private static Object handleConstrainedValueList(Object candidateFieldValue, Map<String, String> allowedValues, String fieldId) {
     if (candidateFieldValue instanceof String) {
       String passedVal = (String) candidateFieldValue;
       return jsonObjectOrException(allowedValues, fieldId, passedVal);
-
-    } else if (candidateFieldValue instanceof List) {
+    } else if (candidateFieldValue instanceof Iterable) {
       JSONArray arr = new JSONArray();
-      for (Object item : (List<String>) candidateFieldValue) {
-        if (item instanceof String) {
-          arr.add(jsonObjectOrException(allowedValues, fieldId, (String) item));
-        } else {
-          arr.add(jsonObjectOrException(allowedValues, fieldId, item.toString()));
-        }
-      }
-      return arr;
-    } else if (candidateFieldValue instanceof Set) {
-      JSONArray arr = new JSONArray();
-      for (Object item : (Set<String>) candidateFieldValue) {
-        if (item instanceof String) {
-          arr.add(jsonObjectOrException(allowedValues, fieldId, (String) item));
-        } else {
-          arr.add(jsonObjectOrException(allowedValues, fieldId, item.toString()));
-        }
+      for (Object item : (Iterable<String>) candidateFieldValue) {
+        arr.add(jsonObjectOrException(allowedValues, fieldId, item.toString()));
       }
       return arr;
     }
-
     return new JSONObject();
   }
 
   private static JSONObject jsonObjectOrException(Map<String, String> allowedValues, String fieldId, String passedVal) {
-
     if (allowedValues.containsKey(passedVal)) {
       JSONObject jsonObject = new JSONObject();
       jsonObject.put("id", allowedValues.get(passedVal));
@@ -148,7 +132,7 @@ public class RuleUpdater {
     }
   }
 
-  protected static Map<String,String> extractFieldIds(JSONObject fieldMeta) {
+  private static Map<String,String> extractFieldIds(JSONObject fieldMeta) {
     Map<String, String> fields = new HashMap<>(fieldMeta.size());
 
     for (Map.Entry<String, JSONObject> entry : (Iterable<Map.Entry<String, JSONObject>>) fieldMeta.entrySet()) {
@@ -179,12 +163,8 @@ public class RuleUpdater {
     JSONArray arr = new JSONArray();
     if (value instanceof String) {
       arr.add(value);
-    } else if (value instanceof List) {
-      for (String val : (List<String>) value) {
-        arr.add(val);
-      }
-    } else if (value instanceof Set) {
-      for (String val : (Set<String>) value) {
+    } else if (value instanceof Iterable) {
+      for (String val : (Iterable<String>) value) {
         arr.add(val);
       }
     }
@@ -196,23 +176,13 @@ public class RuleUpdater {
     StringBuilder sb = new StringBuilder();
 
     if (value instanceof String) {
-
       return (String) value;
-    } else if (value instanceof List) {
-
-      for (Object val : (List<Object>) value) {
+    } else if (value instanceof Iterable) {
+      for (Object val : (Iterable) value) {
         if (val instanceof String) {
           appendValue(sb, (String) val);
         } else if (val instanceof Parameter) {
-          appendValue(sb, ((Parameter) val).toString());
-        }
-      }
-    } else if (value instanceof Set) {
-      for (Object val : (Set<Object>) value) {
-        if (val instanceof String) {
-          appendValue(sb, (String) val);
-        } else if (val instanceof Parameter) {
-          appendValue(sb, ((Parameter) val).toString());
+          appendValue(sb, val.toString());
         }
       }
     }
@@ -224,5 +194,25 @@ public class RuleUpdater {
       sb.append(", ");
     }
     sb.append(value);
+  }
+
+  private boolean putIssueUpdate(String ruleKey, JSONObject request) {
+    Client client = ClientBuilder.newClient().register(HttpAuthenticationFeature.basic(login, password));
+    WebTarget target = client.target(ISSUE_BASE_URL + ruleKey);
+    Response response = target.request(MediaType.APPLICATION_JSON_TYPE).put(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+    return readAndCloseResponse(client, response);
+  }
+
+  private boolean postIssueUpdate(String apiTarget, JSONObject request) {
+    Client client = ClientBuilder.newClient().register(HttpAuthenticationFeature.basic(login, password));
+    WebTarget target = client.target(ISSUE_BASE_URL + apiTarget);
+    Response response = target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+    return readAndCloseResponse(client, response);
+  }
+
+  private static boolean readAndCloseResponse(Client client, Response response) {
+    response.close();
+    client.close();
+    return response.getStatus() == 204;
   }
 }

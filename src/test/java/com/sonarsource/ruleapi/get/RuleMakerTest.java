@@ -8,16 +8,17 @@ package com.sonarsource.ruleapi.get;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 import org.fest.assertions.api.Assertions;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Test;
+
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
@@ -34,15 +35,6 @@ public class RuleMakerTest {
     assertThat(rule.getKey()).isEqualTo("RSPEC-1234");
   }
 
-  @Test
-  public void testGetRulesByJql(){
-
-    List<Rule> rules = RuleMaker.getRulesByJql("labels = clumsy", "Java");
-    assertThat(rules).isNotEmpty();
-
-    assertThat(rules.get(0).getTags()).contains("clumsy");
-    assertThat(rules.get(0).getStatus()).isNotNull();
-  }
 
   @Test
   public void testPrivateConstructors() {
@@ -178,7 +170,7 @@ public class RuleMakerTest {
   @Test
   public void testFleshOutRuleNullIssue() {
     Rule rule = new Rule("");
-    RuleMaker.fleshOutRule(new Fetcher(), rule, null);
+    RuleMaker.fleshOutRule(new JiraFetcherImpl(), rule, null);
     assertThat(rule.getTitle()).isNull();
   }
 
@@ -188,7 +180,7 @@ public class RuleMakerTest {
 
     Rule rule = new Rule("");
     try {
-      RuleMaker.fleshOutRule(new Fetcher(), rule, (JSONObject) parser.parse(json));
+      RuleMaker.fleshOutRule(new JiraFetcherImpl(), rule, (JSONObject) parser.parse(json));
     } catch (ParseException e) {
       e.printStackTrace();
     }

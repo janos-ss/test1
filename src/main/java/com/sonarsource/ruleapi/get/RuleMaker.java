@@ -10,13 +10,13 @@ import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 /**
  * Given a key and a language, retrieves the relevant Issue
@@ -33,7 +33,8 @@ import org.json.simple.JSONObject;
  */
 public class RuleMaker {
 
-  private static final Fetcher FETCHER = new Fetcher();
+  private static final JiraFetcherImpl JIRA_FETCHER = new JiraFetcherImpl();
+  private static final SQFetcherImpl SQ_FETCHER = new SQFetcherImpl();
 
   private RuleMaker() {
   }
@@ -49,10 +50,10 @@ public class RuleMaker {
 
   protected static void populateSonarQubeProfiles(Language language, String instance, List<Rule> allRules) {
 
-    List<Profile> profiles = getProfiles(language, FETCHER.fetchProfilesFromSonarQube(instance));
+    List<Profile> profiles = getProfiles(language, SQ_FETCHER.fetchProfilesFromSonarQube(instance));
 
     for (Profile profile : profiles) {
-      List<JSONObject> profileRules = FETCHER.fetchRulesFromSonarQube(instance,
+      List<JSONObject> profileRules = SQ_FETCHER.fetchRulesFromSonarQube(instance,
               "activation=true&f=internalKey&qprofile=" + profile.getKey());
       addProfilesToSonarQubeRules(allRules, profile, profileRules);
     }
@@ -77,19 +78,6 @@ public class RuleMaker {
     }
   }
 
-  public static Rule getRuleFromSonarQubeByKey(String sonarQubeInstance, String ruleKey, Language language) {
-
-    Fetcher fetcher = new Fetcher();
-
-    String extendedKey = language.getSq() + ":" + ruleKey;
-
-    JSONObject jsonRule = fetcher.fetchRuleFromSonarQube(sonarQubeInstance, extendedKey);
-    Rule rule = SonarQubeHelper.populateFields(jsonRule);
-    populateSonarQubeProfiles(language, sonarQubeInstance, Arrays.asList(rule));
-
-    return rule;
-  }
-
   /**
    * Given a rule key and a language (e.g. Java, ABAP, etc), fetches
    * Issue from Jira and creates from it a Rule. Rule population includes
@@ -103,8 +91,8 @@ public class RuleMaker {
   public static Rule getRuleByKey(String key, String language) {
 
     Rule rule = new Rule(language);
-    JSONObject jsonRule = FETCHER.fetchIssueByKey(key);
-    fleshOutRule(FETCHER, rule, jsonRule);
+    JSONObject jsonRule = JIRA_FETCHER.fetchIssueByKey(key);
+    fleshOutRule(JIRA_FETCHER, rule, jsonRule);
 
     return rule;
   }
@@ -113,7 +101,7 @@ public class RuleMaker {
 
     List<Rule> rules = new ArrayList<>();
 
-    List<JSONObject> jsonRules = FETCHER.fetchRulesFromSonarQube(instance, query);
+    List<JSONObject> jsonRules = SQ_FETCHER.fetchRulesFromSonarQube(instance, query);
 
     for (JSONObject jsonRule : jsonRules) {
       rules.add(SonarQubeHelper.populateFields(jsonRule));
@@ -144,18 +132,18 @@ public class RuleMaker {
   public static List<Rule> getRulesByJql(String query, String language) {
     List<Rule> rules = new ArrayList<>();
 
-    List<JSONObject> issues = FETCHER.fetchIssuesBySearch(query);
+    List<JSONObject> issues = JIRA_FETCHER.fetchIssuesBySearch(query);
 
     for (JSONObject jsonRule : issues) {
       Rule rule = new Rule(language);
-      fleshOutRule(FETCHER, rule, jsonRule);
+      fleshOutRule(JIRA_FETCHER, rule, jsonRule);
       rules.add(rule);
     }
 
     return rules;
   }
 
-  protected static void fleshOutRule(Fetcher fetcher, Rule rule, JSONObject jsonRule) {
+  protected static void fleshOutRule(JiraFetcherImpl fetcher, Rule rule, JSONObject jsonRule) {
     if (jsonRule != null) {
       JiraHelper.populateFields(rule, jsonRule);
 
@@ -172,7 +160,7 @@ public class RuleMaker {
     }
   }
 
-  private static JSONObject getSubtask(Fetcher fetcher, String language, JSONArray tasks) {
+  private static JSONObject getSubtask(JiraFetcherImpl fetcher, String language, JSONArray tasks) {
     if (tasks != null && ! Strings.isNullOrEmpty(language)) {
       for (JSONObject subt : (Iterable<JSONObject>) tasks) {
         if (isLanguageMatch(language, JiraHelper.getJsonFieldValue(subt, "summary").trim())) {

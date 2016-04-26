@@ -24,7 +24,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class IntegrityEnforcementServiceTest {
 
-  IntegrityEnforcementService enforcer = new IntegrityEnforcementService();
+  IntegrityEnforcementService enforcer = new IntegrityEnforcementService("login", "password");
 
 
   @Test
