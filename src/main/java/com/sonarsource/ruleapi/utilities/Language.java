@@ -5,43 +5,48 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
+import java.util.EnumSet;
 import org.fest.util.Strings;
 
 
 public enum Language {
   //     SonarQube      RSpec          common repo  securityProfile
-  ABAP  ("abap",        "ABAP",        "common-abap",  false,         LanguageType.LEGACY),
-  C     ("c",           "C",           "common-c",     false,         LanguageType.STRONG),
-  COBOL ("cobol",       "Cobol",       "common-cobol", false,         LanguageType.LEGACY),
-  CPP   ("cpp",         "C++",         "common-cpp",   false,         LanguageType.STRONG),
-  CSH   ("csharpsquid", "C#",          "common-cs",    false,         LanguageType.STRONG),
-  FLEX  ("flex",        "Flex",        "common-flex",  false,         LanguageType.STRONG),
-  JAVA  ("squid",       "Java",        "common-java",  false,         LanguageType.STRONG),
-  JS    ("javascript",  "JavaScript",  "common-js",    false,         LanguageType.LOOSE),
-  OBJC  ("objc",        "Objective-C", "common-objc",  false,         LanguageType.STRONG),
-  PHP   ("php",         "PHP",         "common-php",   false,         LanguageType.LOOSE),
-  PLI   ("pli",         "PL/I",        "common-pli",   false,         LanguageType.LEGACY),
-  PLSQL ("plsql",       "PL/SQL",      "common-plsql", false,         LanguageType.LEGACY),
-  PY    ("python",      "Python",      "common-py",    false,         LanguageType.LOOSE),
-  RPG   ("rpg",         "RPG",         "common-rpg",   false,         LanguageType.LEGACY),
-  SWIFT ("swift",       "Swift",       "common-swift", false,         LanguageType.STRONG),
-  VB    ("vb",          "VB6",         "common-vb",    false,         LanguageType.STRONG),
-  VBNET ("vbnet",       "VB.Net",      "common-vbnet", false,         LanguageType.STRONG),
-  WEB   ("Web",         "Web",         "",             false,         LanguageType.LEGACY),
-  XML   ("xml",         "XML",         "",             false,         LanguageType.LEGACY),;
+  ABAP  ("abap",        "ABAP",        "common-abap",  false),
+  C     ("c",           "C",           "common-c",     false),
+  COBOL ("cobol",       "Cobol",       "common-cobol", false),
+  CPP   ("cpp",         "C++",         "common-cpp",   false),
+  CSH   ("csharpsquid", "C#",          "common-cs",    false),
+  FLEX  ("flex",        "Flex",        "common-flex",  false),
+  JAVA  ("squid",       "Java",        "common-java",  false),
+  JS    ("javascript",  "JavaScript",  "common-js",    false),
+  OBJC  ("objc",        "Objective-C", "common-objc",  false),
+  PHP   ("php",         "PHP",         "common-php",   false),
+  PLI   ("pli",         "PL/I",        "common-pli",   false),
+  PLSQL ("plsql",       "PL/SQL",      "common-plsql", false),
+  PY    ("python",      "Python",      "common-py",    false),
+  RPG   ("rpg",         "RPG",         "common-rpg",   false),
+  SWIFT ("swift",       "Swift",       "common-swift", false),
+  VB    ("vb",          "VB6",         "common-vb",    false),
+  VBNET ("vbnet",       "VB.Net",      "common-vbnet", false),
+  WEB   ("Web",         "Web",         "",             false),
+  XML   ("xml",         "XML",         "",             false);
 
   protected final String sq;
   protected final String rspec;
   protected final String sqCommon;
   protected final boolean securityProfile;
-  protected final LanguageType languageType;
 
-  Language(String sq, String rspec, String sqCommon, boolean securityProfile, LanguageType languageType) {
+  public static final EnumSet<Language> LEGACY_LANGUAGES = EnumSet.of(Language.ABAP, Language.COBOL, Language.PLI,
+          Language.PLSQL, Language.RPG);
+  public static final EnumSet<Language> STRONGLY_TYPED_LANGUAGES = EnumSet.of(Language.C, Language.CPP, Language.CSH,
+          Language.FLEX, Language.JAVA, Language.OBJC, Language.SWIFT, Language.VB, Language.VBNET);
+  public static final EnumSet<Language> LOOSLY_TYPE_LANGUAGES = EnumSet.of(Language.JS, Language.PHP, Language.PY);
+
+  Language(String sq, String rspec, String sqCommon, boolean securityProfile) {
     this.sq = sq;
     this.rspec = rspec;
     this.sqCommon = sqCommon;
     this.securityProfile = securityProfile;
-    this.languageType = languageType;
   }
 
   public String getSq() {
@@ -60,10 +65,6 @@ public enum Language {
   public boolean hasSecurityProfile() {
 
     return securityProfile;
-  }
-
-  public LanguageType getLanguageType() {
-    return this.languageType;
   }
 
   public static Language fromString(String value) {
