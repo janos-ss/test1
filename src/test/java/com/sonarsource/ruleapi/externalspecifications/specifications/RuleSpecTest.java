@@ -6,7 +6,6 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +21,23 @@ public class RuleSpecTest {
     rule.setKey("S1234");
     rule.setTitle("Don't do bad things");
     Set<String> covered = rule.getCoveredLanguages();
+
+    // Strongly typed
     covered.add("Java");
     covered.add("C#");
+
+    // Loosely typed
     covered.add("JavaScript");
+
+    // Legacy
     covered.add("COBOL");
-    covered.add("XML");  // supported language, but not included in any type
-    covered.add("Groovy");  // not a supported language
+
+    // Not typed
+    covered.add("XML");
+
+    // Not supported
+    covered.add("Groovy");
+
     rule.getIrrelevantLanguages().add("Flex");
     return rule;
   }
@@ -106,6 +116,50 @@ public class RuleSpecTest {
     rules.add(rule);
     ruleSpec = new RuleSpec();
     assertThat(ruleSpec.getRuleTable(rules)).contains("<h2>").contains("</h2>").contains("<table>").contains("</table>").contains(rule.getTitle());
+
+  }
+
+  @Test
+  public void buildRuleRow(){
+
+    Rule rule = new Rule("");
+    Set<String> covered = rule.getCoveredLanguages();
+
+    // rules with only one covered language suppressed
+    covered.add("foo");
+    assertThat(RuleSpec.buildRuleRow(rule)).isEmpty();
+
+    // rules with all languages covered suppressed
+    for (Language language : Language.values()) {
+      covered.add(language.getRspec());
+    }
+    assertThat(RuleSpec.buildRuleRow(rule)).isEmpty();
+
+    // rules with only irrelevant rules left uncovered suppressed
+    covered.remove("XML");
+    covered.remove("Web");
+    covered.remove("JavaScript");
+    rule.getIrrelevantLanguages().add("JavaScript");
+    assertThat(RuleSpec.buildRuleRow(rule)).isEmpty();
+
+
+    // rule types with no covering langauges suppressed
+    rule = getRuleWithEachLanguageType();
+    covered = rule.getCoveredLanguages();
+
+    assertThat(RuleSpec.buildRuleRow(rule)).contains("ABAP").contains("C++").contains("PHP");
+
+    covered.remove("COBOL");
+    assertThat(RuleSpec.buildRuleRow(rule)).doesNotContain("ABAP").contains("PHP").contains("C++");
+
+    covered.add("ABAP");
+    covered.remove("JavaScript");
+    assertThat(RuleSpec.buildRuleRow(rule)).contains("ABAP").doesNotContain("PHP").contains("C++");
+
+    covered.add("JavaScript");
+    covered.remove("Java");
+    covered.remove("C#");
+    assertThat(RuleSpec.buildRuleRow(rule)).contains("ABAP").contains("PHP").doesNotContain("C++");
 
   }
 
