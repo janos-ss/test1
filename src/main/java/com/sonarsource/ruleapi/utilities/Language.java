@@ -38,11 +38,29 @@ public enum Language {
   protected final String sqCommon;
   protected final boolean securityProfile;
 
-  public static final Set<Language> LEGACY_LANGUAGES = Collections.unmodifiableSet(EnumSet.of(Language.ABAP, Language.COBOL, Language.PLI,
-          Language.PLSQL, Language.RPG));
-  public static final Set<Language> STRONGLY_TYPED_LANGUAGES = Collections.unmodifiableSet(EnumSet.of(Language.C, Language.CPP, Language.CSH,
-          Language.FLEX, Language.JAVA, Language.OBJC, Language.SWIFT, Language.VB, Language.VBNET));
-  public static final Set<Language> LOOSLY_TYPE_LANGUAGES = Collections.unmodifiableSet(EnumSet.of(Language.JS, Language.PHP, Language.PY));
+  public static final Set<Language> LEGACY_LANGUAGES = Collections.unmodifiableSet(EnumSet.of(
+          Language.ABAP,
+          Language.COBOL,
+          Language.PLI,
+          Language.PLSQL,
+          Language.RPG
+  ));
+  public static final Set<Language> STRONGLY_TYPED_LANGUAGES = Collections.unmodifiableSet(EnumSet.of(
+          Language.C,
+          Language.CPP,
+          Language.CSH,
+          Language.FLEX,
+          Language.JAVA,
+          Language.OBJC,
+          Language.SWIFT,
+          Language.VB,
+          Language.VBNET
+  ));
+  public static final Set<Language> LOOSLY_TYPE_LANGUAGES = Collections.unmodifiableSet(EnumSet.of(
+          Language.JS,
+          Language.PHP,
+          Language.PY
+  ));
 
   Language(String sq, String rspec, String sqCommon, boolean securityProfile) {
     this.sq = sq;
