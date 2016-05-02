@@ -42,8 +42,9 @@ public class RuleSpec implements CustomerReport {
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append("<h2>Missing RSpec coverage </h2>\n")
-            .append("<table><tr><th colspan='3'>Missing from</th></tr><tr><th>Stronly typed</th><th>Weakly typed</th><th>Legacy</th><th></th></tr>");
+    sb.append("<h2>Backlog of Most Relevant Missing Rules</h2>\n")
+            .append("<table><tr><th colspan='3'>By Language</th></tr>" +
+                    "<tr><th class='left'>Stronly typed</th><th class='left'>Weakly typed</th><th class='left'>Legacy</th><th></th></tr>");
 
     Collections.sort(rules, sort);
 

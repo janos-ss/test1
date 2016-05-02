@@ -151,15 +151,24 @@ public class RuleSpecTest {
 
     covered.remove("COBOL");
     assertThat(RuleSpec.buildRuleRow(rule)).doesNotContain("ABAP").contains("PHP").contains("C++");
-
-    covered.add("ABAP");
     covered.remove("JavaScript");
-    assertThat(RuleSpec.buildRuleRow(rule)).contains("ABAP").doesNotContain("PHP").contains("C++");
+    assertThat(RuleSpec.buildRuleRow(rule)).doesNotContain("ABAP").doesNotContain("PHP").contains("C++");
 
-    covered.add("JavaScript");
+
+    covered.add("COBOL");
+    assertThat(RuleSpec.buildRuleRow(rule)).contains("ABAP").doesNotContain("PHP").contains("C++");
     covered.remove("Java");
     covered.remove("C#");
+    assertThat(RuleSpec.buildRuleRow(rule)).contains("ABAP").doesNotContain("PHP").doesNotContain("C++");
+
+    covered.add("JavaScript");
     assertThat(RuleSpec.buildRuleRow(rule)).contains("ABAP").contains("PHP").doesNotContain("C++");
+    covered.remove("COBOL");
+    assertThat(RuleSpec.buildRuleRow(rule)).doesNotContain("ABAP").contains("PHP").doesNotContain("C++");
+
+    covered.add("Java");
+    assertThat(RuleSpec.buildRuleRow(rule)).doesNotContain("ABAP").contains("PHP").contains("C++");
+
 
   }
 
