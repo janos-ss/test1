@@ -55,7 +55,7 @@ public class RuleSpec implements CustomerReport {
     return sb.toString();
   }
 
-  protected String buildRuleRow(Rule rule) {
+  protected static String buildRuleRow(Rule rule) {
 
     if (rule.getCoveredLanguages().size() == 1 || rule.getCoveredLanguages().size() >= TOTAL_LANGUAGES){
       return "";
@@ -143,6 +143,5 @@ public class RuleSpec implements CustomerReport {
       return Integer.compare(o2.getCoveredLanguages().size(), o1.getCoveredLanguages().size());
     }
   }
-
 
 }
