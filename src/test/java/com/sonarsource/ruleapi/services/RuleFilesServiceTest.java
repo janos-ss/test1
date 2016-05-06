@@ -39,7 +39,7 @@ public class RuleFilesServiceTest {
     dfs.generateRuleFiles(listOfKeys);
 
     // must be 2 files per rule
-    int supposedCount = listOfKeys.size() * 2 + 2;
+    int supposedCount = listOfKeys.size() * 2 + 1;
     assertThat(outputDir.listFiles().length).isEqualTo(supposedCount);
     assertThat(systemOutRule.getLog()).contains(String.format("(%d)", supposedCount));
   }
@@ -145,7 +145,7 @@ public class RuleFilesServiceTest {
     rfs.updateDescriptions();
 
     // check all the files for the right content
-    assertThat(outputDir.listFiles().length).isEqualTo(2 * 2 + 2 + 1 + 2);
+    assertThat(outputDir.listFiles().length).isEqualTo(2 * 2 + 2 + 1 + 1);
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234JsonFile)).isEqualTo(S1234JsonChecksum);
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234HtmlFile)).isEqualTo(S1234HtmlChecksum);
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1111HtmlFile)).isEqualTo(S1111HtmlChecksum);
