@@ -229,7 +229,7 @@ public class Pmd extends AbstractReportableExternalTool {
     NULLASSIGNMENT("NullAssignment", Implementability.REJECTED),
     ONEDECLARATIONPERLINE("OneDeclarationPerLine", Implementability.IMPLEMENTABLE),
     ONLYONERETURN("OnlyOneReturn", Implementability.IMPLEMENTABLE),
-    OPTIMIZABLETOARRAYCALL("OptimizableToArrayCall", Implementability.IMPLEMENTABLE),
+    OPTIMIZABLETOARRAYCALL("OptimizableToArrayCall", Implementability.REJECTED),
     OVERRIDEBOTHEQUALSANDHASHCODE("OverrideBothEqualsAndHashcode", Implementability.IMPLEMENTABLE),
     PACKAGECASE("PackageCase", Implementability.IMPLEMENTABLE),
     POSITIONLITERALSFIRSTINCASEINSENSITIVECOMPARISONS("PositionLiteralsFirstInCaseInsensitiveComparisons", Implementability.IMPLEMENTABLE),
