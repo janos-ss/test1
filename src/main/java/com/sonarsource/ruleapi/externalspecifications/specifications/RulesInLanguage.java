@@ -74,7 +74,7 @@ public class RulesInLanguage {
     return sb.toString();
   }
 
-  private String iterateRulesInType(String instance, Rule.Type type, List<Rule> typeRules) {
+  private static String iterateRulesInType(String instance, Rule.Type type, List<Rule> typeRules) {
 
     String td = "</td><td>";
     StringBuilder rulesBuilder = new StringBuilder();
@@ -96,7 +96,9 @@ public class RulesInLanguage {
 
       rulesBuilder.append("<tr><td>")
               .append(Utilities.getInstanceLinkedRuleKey(instance, rule, true)).append(td)
-              .append("<a title='").append(severityName).append("'>").append("<i class=\"icon-severity-").append(severityName).append("\"></i></a> ").append(rule.getTitle()).append("</td>")
+              .append("<a title='").append(severityName).append("'>")
+              .append("<i class=\"icon-severity-").append(severityName).append("\"></i></a> ")
+              .append(rule.getTitle()).append("</td>")
               .append("<td class=\"text-center\">").append(isRuleDefault(rule)?"<a title='Included in Sonar way'><span id=\"checkmark\"></span></a>":"").append(td)
               .append(Utilities.setToString(tags, true)).append(td)
               .append(getInActionLink(rule, instance));
