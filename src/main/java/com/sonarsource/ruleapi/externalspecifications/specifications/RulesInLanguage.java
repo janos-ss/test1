@@ -59,12 +59,15 @@ public class RulesInLanguage {
     for (Rule.Type type : Rule.Type.values()) {
       List<Rule> typeRules = typeMap.get(type);
 
-      sb.append("<div class=\"col-md-4\"><p class=\"text-center header-counter\">")
-              .append(type.toString()).append("</br>")
-              .append("<a href='#").append(type.toString()).append("'>")
-              .append(typeRules.size()).append("</a></p></div>\n");
+      if (typeRules != null) {
 
-      rulesBuilder.append(iterateRulesInType(instance, type, typeRules));
+        sb.append("<div class=\"col-md-4\"><p class=\"text-center header-counter\">")
+                .append(type.toString()).append("</br>")
+                .append("<a href='#").append(type.toString()).append("'>")
+                .append(typeRules.size()).append("</a></p></div>\n");
+
+        rulesBuilder.append(iterateRulesInType(instance, type, typeRules));
+      }
     }
     sb.append("</div>");
 
