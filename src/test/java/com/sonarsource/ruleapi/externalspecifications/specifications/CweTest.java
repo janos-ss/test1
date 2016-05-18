@@ -137,10 +137,10 @@ public class CweTest {
     String expectedReport = "<h2>ABAP coverage of CWE</h2>\n" +
             "<table>\n" +
             "<tr><td><a href='http://cwe.mitre.org/data/definitions/123' target='_blank'>CWE-123</a></td>\n" +
-            "<td><a href='http://localhost:9000/coding_rules#rule_key=abap%3ANonNormalKey'>NonNormalKey</a> null<br/>\n" +
+            "<td><a href='http://localhost:9000/coding_rules#rule_key=abap%3ANonNormalKey' target='rule'>NonNormalKey</a> null<br/>\n" +
             "</td></tr>\n" +
             "<tr><td><a href='http://cwe.mitre.org/data/definitions/234' target='_blank'>CWE-234</a></td>\n" +
-            "<td><a href='http://localhost:9000/coding_rules#rule_key=abap%3ANonNormalKey'>NonNormalKey</a> null<br/>\n" +
+            "<td><a href='http://localhost:9000/coding_rules#rule_key=abap%3ANonNormalKey' target='rule'>NonNormalKey</a> null<br/>\n" +
             "</td></tr>\n" +
             "</table>";
 

@@ -89,19 +89,10 @@ public class UtilitiesTest {
     rule.setKey("RSPEC-1234");
     rule.setTitle("This is a rule title");
 
-    String expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3AS1234'>S1234</a> This is a rule title<br/>\n";
+    String expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3AS1234' target='rule'>S1234</a> This is a rule title<br/>\n";
 
     assertThat(Utilities.getNemoLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
 
-    List<String> legacyKeys = new ArrayList<>();
-    rule.setLegacyKeys(legacyKeys);
-    expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3AS1234'>S1234</a> This is a rule title<br/>\n";
-    assertThat(Utilities.getNemoLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
-
-
-    legacyKeys.add("blue");
-    expectedLink = "<a href='http://localhost:9000/coding_rules#rule_key=c%3Ablue'>blue</a> This is a rule title<br/>\n";
-    assertThat(Utilities.getNemoLinkedRuleReference("http://localhost:9000", rule)).isEqualTo(expectedLink);
   }
 
   @Test
@@ -115,6 +106,47 @@ public class UtilitiesTest {
 
     assertThat(Utilities.getJiraLinkedRuleReference(rule)).isEqualTo(expectedLink);
 
+  }
+
+  @Test
+  public void getInstanceLinkedRuleKey(){
+
+    String instance = "http://bubba.com";
+
+    Rule rule = new Rule("Java");
+    rule.setKey("RSPEC-123");
+    rule.setRepo("squid");
+
+    String expectedLink = "<a href='http://bubba.com/coding_rules#rule_key=squid%3AS123' target='rule'>S123</a>";
+    assertThat(Utilities.getInstanceLinkedRuleKey(instance, rule, false)).isEqualTo(expectedLink);
+
+    rule.getLegacyKeys().add("foo");
+    expectedLink = "<a href='http://bubba.com/coding_rules#rule_key=squid%3Afoo' target='rule'>foo</a>";
+    assertThat(Utilities.getInstanceLinkedRuleKey(instance, rule, false)).isEqualTo(expectedLink);
+
+    rule.getLegacyKeys().clear();
+    rule.getLegacyKeys().add("ThisIsAReallyLongLegacyKey");
+    expectedLink = "<a href='http://bubba.com/coding_rules#rule_key=squid%3AThisIsAReallyLongLegacyKey' target='rule'>ThisIsAR.</a>";
+    assertThat(Utilities.getInstanceLinkedRuleKey(instance, rule, true)).isEqualTo(expectedLink);
+
+    expectedLink = "<a href='http://bubba.com/coding_rules#rule_key=squid%3AThisIsAReallyLongLegacyKey' target='rule'>ThisIsAReallyLongLegacyKey</a>";
+    assertThat(Utilities.getInstanceLinkedRuleKey(instance, rule, false)).isEqualTo(expectedLink);
 
   }
+
+  @Test
+  public void getDeployedKey(){
+    Rule rule = new Rule("Java");
+    rule.setKey("RSPEC-123");
+
+    assertThat(Utilities.getDeployedKey(rule)).isEqualTo("S123");
+
+    rule.getLegacyKeys().add("foo");
+    assertThat(Utilities.getDeployedKey(rule)).isEqualTo("foo");
+
+    rule.getLegacyKeys().add("bar");
+    assertThat(Utilities.getDeployedKey(rule)).isEqualTo("foo");
+
+  }
+
 }

@@ -100,17 +100,38 @@ public class Utilities {
 
   public static String getNemoLinkedRuleReference(String instance, Rule rule) {
 
-    String ruleKey = denormalizeRuleKey(rule.getKey());
-    if (rule.getLegacyKeys() != null && ! rule.getLegacyKeys().isEmpty()) {
-      ruleKey = rule.getLegacyKeys().get(0);
+    StringBuilder sb = new StringBuilder();
+    // http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS2066
+    sb.append(getInstanceLinkedRuleKey(instance, rule, false))
+            .append(" ")
+            .append(MarkdownConverter.handleEntities(rule.getTitle()))
+            .append("<br/>\n");
+    return sb.toString();
+  }
+
+  public static String getInstanceLinkedRuleKey(String instance, Rule rule, boolean abbreviateLongKeys) {
+
+    int maxAbbreviatedKeyLength = 8;
+    String ruleKey = getDeployedKey(rule);
+    String dispalyKey = ruleKey;
+
+    if (abbreviateLongKeys && dispalyKey.length() + 1 > maxAbbreviatedKeyLength) {
+      dispalyKey = dispalyKey.substring(0, maxAbbreviatedKeyLength) + ".";
     }
 
     StringBuilder sb = new StringBuilder();
     // http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS2066
     sb.append("<a href='").append(instance).append("/coding_rules#rule_key=")
-            .append(rule.getRepo()).append("%3A").append(ruleKey).append("'>")
-            .append(ruleKey).append("</a> ")
-            .append(MarkdownConverter.handleEntities(rule.getTitle())).append("<br/>\n");
+            .append(rule.getRepo()).append("%3A").append(ruleKey).append("' target='rule'>")
+            .append(dispalyKey).append("</a>");
     return sb.toString();
+  }
+
+  public static String getDeployedKey(Rule rule) {
+    String ruleKey = denormalizeRuleKey(rule.getKey());
+    if (rule.getLegacyKeys() != null && ! rule.getLegacyKeys().isEmpty()) {
+      ruleKey = rule.getLegacyKeys().get(0);
+    }
+    return ruleKey;
   }
 }

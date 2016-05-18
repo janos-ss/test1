@@ -5,18 +5,10 @@
  */
 package com.sonarsource.ruleapi.services;
 
-import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.fest.assertions.Assertions.assertThat;
 
 
 public class ReportServiceTest {
@@ -43,55 +35,6 @@ public class ReportServiceTest {
     } catch (RuleException e) {
 
     }
-  }
-
-  @Test
-  public void testSortRulesBySeverity() {
-
-    ReportService rs = new ReportService();
-
-    List<Rule> rules = new ArrayList<>();
-    Rule rule = new Rule("");
-    rule.setTitle("Rule1");
-    rule.setSeverity(Rule.Severity.CRITICAL);
-
-    rules.add(rule);
-
-    rule = new Rule("");
-    rule.setTitle("Rule2");
-    rule.setSeverity(Rule.Severity.CRITICAL);
-
-    rules.add(rule);
-
-    Map<Rule.Severity, List<Rule>> severityMap = rs.sortRulesBySeverity(rules);
-
-    assertThat(severityMap.get(Rule.Severity.CRITICAL)).hasSize(2);
-    assertThat(severityMap.get(Rule.Severity.BLOCKER)).isNull();
-  }
-
-  @Test
-  public void testAssembleLanguageRuleReport(){
-
-    ReportService rs = new ReportService();
-
-    Map<Rule.Severity, List<Rule>> severityMap = new EnumMap<>(Rule.Severity.class);
-
-    List<Rule> list = new ArrayList<>();
-    Rule rule = new Rule("Java");
-    rule.setSeverity(Rule.Severity.MAJOR);
-    rule.setKey("RSPEC-123");
-    rule.setLegacyKeys(new ArrayList<String>());
-    rule.getLegacyKeys().add("S123");
-    rule.setTitle("X should [not] y!");
-    rule.setRepo("squid");
-
-    list.add(rule);
-    severityMap.put(Rule.Severity.MAJOR, list);
-
-    String report = rs.assembleLanguageRuleReport(Language.JAVA, "http://nemo.sonarqube.org", severityMap);
-    assertThat(report).contains("Available Java rules");
-    assertThat(report).contains("http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS123");
-
   }
 
 }

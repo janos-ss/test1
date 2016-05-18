@@ -16,9 +16,9 @@ import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMultiLanguageStandard;
+import com.sonarsource.ruleapi.externalspecifications.specifications.RulesInLanguage;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
-import com.sonarsource.ruleapi.utilities.Utilities;
 import org.fest.util.Strings;
 import org.json.simple.JSONArray;
 
@@ -26,8 +26,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -267,26 +265,15 @@ public class ReportService extends RuleManager {
   }
 
   public void writeRulesInLanguagesReports(String instance) {
+
+    RulesInLanguage ril = new RulesInLanguage();
+
     for (Language language : Language.values()) {
-      writeRulesInLanguageReport(language, instance);
+      LOGGER.info("Getting list-of-rules report for " + language.getRspec());
+
+      String fileName = COVERAGE_DIR.concat("rules_in_").concat(language.getSq()).concat(HTML).toLowerCase();
+      writeFile(fileName, ril.getHtmlLanguageReport(instance, language));
     }
-  }
-
-  public void writeRulesInLanguageReport(Language language, String instance) {
-
-    LOGGER.info("Getting list-of-rules report for " + language.getRspec());
-
-    List<Rule> rules = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
-    if (rules.isEmpty()) {
-      return;
-    }
-
-    String fileName = COVERAGE_DIR.concat("rules_in_").concat(language.getSq()).concat(HTML).toLowerCase();
-
-    Map<Rule.Severity, List<Rule>> severityMap = sortRulesBySeverity(rules);
-
-    writeFile(fileName, assembleLanguageRuleReport(language, instance, severityMap));
-
   }
 
   public void writeSingleReport(Language language, String instance, AbstractReportableStandard standard, ReportType reportType) {
@@ -324,42 +311,6 @@ public class ReportService extends RuleManager {
         break;
     }
 
-  }
-
-  protected String assembleLanguageRuleReport(Language language, String instance, Map<Rule.Severity, List<Rule>> severityMap) {
-
-    StringBuilder sb = new StringBuilder();
-    sb.append(css);
-    sb.append("<h2>Available ").append(language.getRspec()).append(" rules</h2>\n");
-
-    for (Rule.Severity severity : Rule.Severity.values()) {
-      List<Rule> severityList = severityMap.get(severity);
-      if (severityList == null) {
-        continue;
-      }
-
-      sb.append("<h3>").append(severity.name()).append("</h3><p>");
-      for (Rule rule : severityList) {
-        sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
-      }
-      sb.append("</p>");
-    }
-    return sb.toString();
-  }
-
-  protected Map<Rule.Severity, List<Rule>> sortRulesBySeverity(List<Rule> rules) {
-
-    Map<Rule.Severity, List<Rule>> severityMap = new EnumMap<>(Rule.Severity.class);
-
-    for (Rule rule : rules) {
-      List<Rule> severityList = severityMap.get(rule.getSeverity());
-      if (severityList == null) {
-        severityList = new ArrayList<>();
-        severityMap.put(rule.getSeverity(), severityList);
-      }
-      severityList.add(rule);
-    }
-    return severityMap;
   }
 
 }
