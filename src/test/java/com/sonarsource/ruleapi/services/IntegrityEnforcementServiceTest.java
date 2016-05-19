@@ -459,6 +459,10 @@ public class IntegrityEnforcementServiceTest {
     Rule oldRule = setUpDeprecatedRule();
     Map<String, Object> oldRuleUpdates = new HashMap<>();
     Rule newRule = new Rule("");
+    newRule.getCoveredLanguages().add("java");
+    newRule.getCoveredLanguages().add("javascript");
+    newRule.getTargetedLanguages().add("java");
+    newRule.getTargetedLanguages().add("javascript");
     Map<Rule,Map<String,Object>> newRules = new HashMap<>();
     newRules.put(newRule, new HashMap<String, Object>());
 

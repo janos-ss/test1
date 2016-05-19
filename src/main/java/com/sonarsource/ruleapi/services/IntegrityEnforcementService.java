@@ -189,11 +189,8 @@ public class IntegrityEnforcementService extends RuleManager {
       newRule.getTargetedLanguages().addAll(oldRule.getTargetedLanguages());
       newRule.getTargetedLanguages().addAll(oldRule.getCoveredLanguages());
 
-      for (String lang : newRule.getTargetedLanguages()) {
-        if (newRule.getCoveredLanguages().contains(lang) || newRule.getIrrelevantLanguages().contains(lang)) {
-          newRule.getTargetedLanguages().remove(lang);
-        }
-      }
+      newRule.getTargetedLanguages().removeAll(newRule.getIrrelevantLanguages());
+      newRule.getTargetedLanguages().removeAll(newRule.getCoveredLanguages());
 
       if (startLen != newRule.getTargetedLanguages().size()){
         entry.getValue().put(TARGETED_LANGUAGES, newRule.getTargetedLanguages());
