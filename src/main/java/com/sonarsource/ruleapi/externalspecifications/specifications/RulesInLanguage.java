@@ -86,7 +86,7 @@ public class RulesInLanguage {
 
     rulesBuilder.append("<h3>").append(type.toString()).append(" Detection Rules</h3>\n")
             .append("<table class=\"table table-striped table-condensed table-hover\">\n")
-            .append(" <thead><tr> <th>Rule ID</th> <th>Name</th> <th>In Sonar&nbsp;way</th> <th>Tags</th> <th>In Action</th> </tr> </thead>\n")
+            .append(" <thead><tr> <th>Rule ID</th> <th>Name</th> <th>Sonar&nbsp;way</th> <th>Tags</th> <th>In Action</th> </tr> </thead>\n")
             .append(" <tbody> \n");
 
     Collections.sort(typeRules, RULE_SEVERITY_COMPARATOR);
