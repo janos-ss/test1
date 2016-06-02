@@ -31,7 +31,7 @@ public class ImageData {
     labelWidth = fontProvider.computeWidth(label) + (2 * X_MARGIN);
     labelMidpoint = labelWidth / 2;
     valueWidth = fontProvider.computeWidth(value) + (2 * X_MARGIN);
-    valueMidPoint = labelMidpoint + (valueWidth / 2);
+    valueMidPoint = labelWidth + (valueWidth / 2);
 
     totalTextWidth = labelWidth + valueWidth;
   }
