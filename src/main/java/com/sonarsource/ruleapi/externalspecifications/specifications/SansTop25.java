@@ -318,7 +318,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
   }
 
   @Override
-  protected void setLanguage(Language language) {
+  public void setLanguage(Language language) {
     this.language = language;
   }
 

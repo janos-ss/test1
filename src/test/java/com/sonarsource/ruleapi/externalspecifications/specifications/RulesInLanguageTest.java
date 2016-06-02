@@ -24,9 +24,9 @@ public class RulesInLanguageTest {
   @Test
   public void getHtmlLanguageReport() {
 
-    assertThat(ril.getHtmlLanguageReport(null, null)).isEmpty();
-    assertThat(ril.getHtmlLanguageReport(null, Language.JAVA)).isEmpty();
-    assertThat(ril.getHtmlLanguageReport(RuleManager.NEMO, null)).isEmpty();
+    assertThat(ril.getHtmlLanguageReport(null, null).getReport()).isEmpty();
+    assertThat(ril.getHtmlLanguageReport(null, Language.JAVA).getReport()).isEmpty();
+    assertThat(ril.getHtmlLanguageReport(RuleManager.NEMO, null).getReport()).isEmpty();
   }
 
   @Test
