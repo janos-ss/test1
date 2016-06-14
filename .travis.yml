@@ -9,6 +9,12 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
 
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+
 install: true
 script: ./travis.sh
 
@@ -22,4 +28,6 @@ cache:
 notifications:
   email: false
   webhooks:
-    - secure: "Cvc3l6tKXao9somUHuxbhl9u/QDSPzqUs6aI98yaOB/l27768vTRC4hD68MduYe77PGvZ1cEV2a4z6Z8YSj9kY9ky9PNi89oOM2HvnRxp+fECMG4ukB1NTJQpPXMPN+mcmV3gHzeUeYmpPQkV3DwWt2lo2SFKuoTZOTM85qJ1ec="
+    urls:
+      - secure: "Cvc3l6tKXao9somUHuxbhl9u/QDSPzqUs6aI98yaOB/l27768vTRC4hD68MduYe77PGvZ1cEV2a4z6Z8YSj9kY9ky9PNi89oOM2HvnRxp+fECMG4ukB1NTJQpPXMPN+mcmV3gHzeUeYmpPQkV3DwWt2lo2SFKuoTZOTM85qJ1ec="
+    on_start: always

@@ -67,29 +67,6 @@ public class JiraHelperTest {
   }
 
   @Test
-  public void testGetJsonField() {
-
-    try {
-      assertThat(JiraHelper.getJsonField((JSONObject) parser.parse(FULL_JSON), "customfield_10007")).isNotNull();
-      assertThat(JiraHelper.getJsonField((JSONObject) parser.parse(FULL_JSON), "SQALE Characteristic")).isNotNull();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Test
-  public void testGetJsonFieldSadPath() {
-
-    try {
-      assertThat(JiraHelper.getJsonField((JSONObject) parser.parse("{}"), "foo")).isNull();
-      assertThat(JiraHelper.getJsonField((JSONObject) parser.parse(FULL_JSON), null)).isNull();
-      assertThat(JiraHelper.getJsonField((JSONObject) parser.parse(FULL_JSON), "foo")).isNull();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Test
   public void testGetJsonFieldValueNulls() {
 
     try {

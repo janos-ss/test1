@@ -168,13 +168,13 @@ public class RulesInLanguage implements BadgableMultiLanguage {
 
     String ruleKey = Utilities.getDeployedKey(rule);
 
-    // get count: https://nemo.sonarqube.org/api/issues/search?rule=squid%3S1154&ps=1
+    // get count: https://sonarqube.com/api/issues/search?rule=squid%3S1154&ps=1
     JSONObject response = Fetcher.getJsonFromUrl(String.format("%s/api/issues/search?ps=1&rules=%s:%s",instance,rule.getRepo(),ruleKey));
     long total = (long) response.get("total");
 
     if (total > 0) {
       String tot = NUMBER_FORMAT.format(total);
-      // link to list: https://nemo.sonarqube.org/issues/search#resolved=false|rules=squid%3AS1191
+      // link to list: https://sonarqube.com/issues/search#resolved=false|rules=squid%3AS1191
       return String.format("~<a href='%s/issues/search#resolved=false|rules=%s:%s' target='issues'>%s issue%s</a>",instance, rule.getRepo(), ruleKey, tot, total>1?"s":"");
     }
 

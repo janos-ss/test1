@@ -243,33 +243,11 @@ public class JiraHelper {
 
   protected static void setRemediation(Rule rule, JSONObject issue) {
 
-    rule.setSqaleCharac(getCustomFieldValue(issue, "SQALE Characteristic"));
-    JSONObject sqaleCharMap = getJsonField(issue, "SQALE Characteristic");
-    if (sqaleCharMap != null) {
-      Object o = sqaleCharMap.get("child");
-      RuleMaker.setSubcharacteristic(rule, (String) ((Map<String, Object>) o).get(VALUE));
-    }
-
     RuleMaker.setRemediationFunction(rule, getCustomFieldValue(issue, "SQALE Remediation Function"));
     rule.setSqaleConstantCostOrLinearThreshold(getCustomFieldValue(issue, "SQALE Constant Cost"));
     rule.setSqaleLinearArgDesc(getCustomFieldValue(issue, "SQALE Linear Argument Description"));
     rule.setSqaleLinearFactor(getCustomFieldValue(issue, "SQALE Linear Factor"));
     rule.setSqaleLinearOffset(getCustomFieldValue(issue, "SQALE Linear Offset"));
-  }
-
-  protected static JSONObject getJsonField(JSONObject jobj, String key) {
-    JSONObject fields = (JSONObject)jobj.get(FIELDS);
-
-    if (fields != null && key != null) {
-      Object obj = fields.get(key);
-      if (obj == null) {
-        obj = fields.get(getCustomFieldKey(jobj, key));
-      }
-      if (obj instanceof JSONObject) {
-        return (JSONObject) obj;
-      }
-    }
-    return null;
   }
 
   protected static List<String> stringToList(String str) {

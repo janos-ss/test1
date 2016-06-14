@@ -88,7 +88,7 @@ public class ReportService extends RuleManager {
 
         LOGGER.info("Getting user-facing report for " + standardName);
 
-        Map<Language, ReportAndBadge> reports = multiLanguageStandard.getHtmlLanguageReports(RuleManager.NEMO);
+        Map<Language, ReportAndBadge> reports = multiLanguageStandard.getHtmlLanguageReports(RuleManager.SONARQUBE_COM);
         for (Map.Entry<Language, ReportAndBadge> entry : reports.entrySet()) {
           String report = entry.getValue().getReport();
           String badge = entry.getValue().getBadge();
@@ -111,7 +111,7 @@ public class ReportService extends RuleManager {
 
         LOGGER.info("Getting user-facing report for " + standardName);
 
-        String report = customerReport.getHtmlReport(RuleManager.NEMO);
+        String report = customerReport.getHtmlReport(RuleManager.SONARQUBE_COM);
         if (!Strings.isNullOrEmpty(report)) {
           report = css + report;
           writeFile(COVERAGE_DIR.concat(standardName).concat(HTML).toLowerCase(), report);
@@ -120,7 +120,7 @@ public class ReportService extends RuleManager {
         if (customerReport instanceof Badgable) {
           Badgable badgable = (Badgable) customerReport;
           String badgeLabel = badgable.getStandardName();
-          String badgeValue = badgable.getBadgeValue(RuleManager.NEMO);
+          String badgeValue = badgable.getBadgeValue(RuleManager.SONARQUBE_COM);
           if (!Strings.isNullOrEmpty(badgeLabel) && !Strings.isNullOrEmpty(badgeValue)) {
             writeFile(BADGE_DIR.concat(standardName).concat(".svg").toLowerCase(), BADGER.getBadge(badgeLabel, badgeValue));
           }

@@ -181,7 +181,7 @@ public class Main {
     private List<String> option = new ArrayList<>();
 
     @Parameter(names = "-instance")
-    private String instance = RuleManager.NEMO;
+    private String instance = RuleManager.SONARQUBE_COM;
 
     @Parameter(names = "-login")
     private String login;

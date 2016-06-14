@@ -33,7 +33,7 @@ public class AbstractMultiLanguageStandardTest extends TestCase {
 
   public void testGetHtmlLanguageReport() {
 
-    assertThat(cwe.getHtmlLanguageReport(RuleManager.NEMO, null)).isNull();
+    assertThat(cwe.getHtmlLanguageReport(RuleManager.SONARQUBE_COM, null)).isNull();
     assertThat(cwe.getHtmlLanguageReport(null, Language.JAVA)).isNull();
     assertThat(cwe.getHtmlLanguageReport(null, null)).isNull();
 
