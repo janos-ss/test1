@@ -104,7 +104,7 @@ public class CertTest {
     assertThat(result).isEqualTo("<h2>C coverage of CERT</h2>\n" +
             "<h3>Covered</h3><table>\n" +
             "<tr><td><a href='http://boo.com' target='_blank'>PRE30-C.</a>test title</td>\n" +
-            "<td><a href='https://nemo.sonarqube.org/coding_rules#rule_key=null%3AruleKey' target='rule'>ruleKey</a> null<br/>\n" +
+            "<td><a href='https://sonarqube.com/coding_rules#rule_key=null%3AruleKey' target='rule'>ruleKey</a> null<br/>\n" +
             "</td></tr>\n" +
             "</table><h3>Uncovered</h3><table>\n" +
             "<tr><td><a href='http://misc.com' target='_blank'>MSC01-C.</a>Miscellaney</td><td><a href='https://jira.sonarsource.com/browse/rule2'>rule2</a> null<br/>\n" +
