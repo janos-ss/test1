@@ -261,18 +261,6 @@ public class RuleMaker {
     }
   }
 
-  public static void setSubcharacteristic(Rule rule, String candidate) {
-    if (! Strings.isNullOrEmpty(candidate)) {
-      for (Rule.Subcharacteristic subchar : Rule.Subcharacteristic.values()) {
-        if (subchar.name().equals(candidate) || subchar.getRspecName().equals(candidate)) {
-          rule.setSqaleSubCharac(subchar);
-          return;
-        }
-      }
-      throw new IllegalStateException("No sqale subcharac matching : "+candidate+" for rule "+rule.getKey());
-    }
-  }
-
   public static void setRemediationFunction(Rule rule, String candidate) {
     if (! Strings.isNullOrEmpty(candidate)) {
       for (Rule.RemediationFunction fcn: Rule.RemediationFunction.values()) {

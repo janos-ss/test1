@@ -23,15 +23,11 @@ public class RuleTest {
     Rule r1 = new Rule("Java");
     Rule r2 = new Rule("Java");
 
-    r2.setSqaleCharac("Blue");
-    r2.setSqaleSubCharac(Rule.Subcharacteristic.DATA_CHANGEABILITY);
     r2.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
     r2.setSqaleConstantCostOrLinearThreshold("10min");
 
     r1.mergeSqalePieces(r2);
 
-    assertThat(r1.getSqaleCharac()).isEqualTo(r2.getSqaleCharac());
-    assertThat(r1.getSqaleSubCharac()).isEqualTo(r2.getSqaleSubCharac());
     assertThat(r1.getSqaleRemediationFunction()).isEqualTo(r2.getSqaleRemediationFunction());
     assertThat(r1.getSqaleConstantCostOrLinearThreshold()).isEqualTo(r2.getSqaleConstantCostOrLinearThreshold());
   }
@@ -41,15 +37,11 @@ public class RuleTest {
     Rule r1 = new Rule("Java");
     Rule r2 = new Rule("Java");
 
-    r1.setSqaleCharac("Blue");
-    r1.setSqaleSubCharac(Rule.Subcharacteristic.DATA_CHANGEABILITY);
     r1.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
     r1.setSqaleConstantCostOrLinearThreshold("10min");
 
     r1.mergeSqalePieces(r2);
 
-    assertThat(r1.getSqaleCharac()).isEqualTo("Blue");
-    assertThat(r1.getSqaleSubCharac()).isEqualTo(Rule.Subcharacteristic.DATA_CHANGEABILITY);
     assertThat(r1.getSqaleRemediationFunction()).isEqualTo(Rule.RemediationFunction.CONSTANT_ISSUE);
     assertThat(r1.getSqaleConstantCostOrLinearThreshold()).isEqualTo("10min");
 
@@ -320,7 +312,6 @@ public class RuleTest {
     ArrayList<String> tags = new ArrayList<>(1);
     tags.add("qux");
     rule.setTags(tags);
-    rule.setSqaleSubCharac(Rule.Subcharacteristic.COMPILER_RELATED_PORTABILITY);
     rule.setSeverity(Rule.Severity.MINOR);
 
     // well formatted nice looking JSON with ordered fields
@@ -331,7 +322,6 @@ public class RuleTest {
             "    \"func\": \"Constant\\/Issue\",\n" +
             "    \"constantCost\": \"17 seconds\"\n" +
             "  },\n" +
-            "  \"sqaleSubCharac\": \"COMPILER_RELATED_PORTABILITY\",\n" +
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ],\n" +
@@ -353,8 +343,7 @@ public class RuleTest {
             "    \"linearDesc\": \"dolor sit amet\",\n" +
             "    \"linearFactor\": \"666\"\n" +
             "  },\n" +
-            "  \"sqaleSubCharac\": \"COMPILER_RELATED_PORTABILITY\",\n" +
-            "  \"tags\": [\n" +
+              "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ],\n" +
             "  \"defaultSeverity\": \"Blocker\"\n" +
@@ -367,7 +356,6 @@ public class RuleTest {
   // without the optional fields
     rule.setSeverity(null);
     rule.setSqaleRemediationFunction (null);
-    rule.setSqaleSubCharac(null);
     final String expected3 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
             "  \"status\": \"beta\",\n" +
@@ -379,8 +367,5 @@ public class RuleTest {
     assertThat( rule.getSquidJson()).isEqualTo(expected3);
 
   }
-
-
-
 
 }

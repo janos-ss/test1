@@ -699,32 +699,6 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void differentSqaleSubChar() {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    String str = "Processor use";
-
-    RuleMaker.setSubcharacteristic(spec, str);
-
-    assertThat(rc.compare()).isEqualTo(0);
-  }
-
-  @Test
-  public void differentSqaleSubCharToString() {
-    Rule spec = new Rule(LANG);
-    Rule impl = new Rule(LANG);
-    RuleComparison rc = new RuleComparison(spec, impl);
-
-    String str = "Memory use";
-
-    RuleMaker.setSubcharacteristic(spec, str);
-
-    assertThat(rc.toString()).isEqualTo("");
-  }
-
-  @Test
   public void differentSqaleRemediation() {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);

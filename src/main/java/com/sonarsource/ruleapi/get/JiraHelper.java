@@ -243,13 +243,6 @@ public class JiraHelper {
 
   protected static void setRemediation(Rule rule, JSONObject issue) {
 
-    rule.setSqaleCharac(getCustomFieldValue(issue, "SQALE Characteristic"));
-    JSONObject sqaleCharMap = getJsonField(issue, "SQALE Characteristic");
-    if (sqaleCharMap != null) {
-      Object o = sqaleCharMap.get("child");
-      RuleMaker.setSubcharacteristic(rule, (String) ((Map<String, Object>) o).get(VALUE));
-    }
-
     RuleMaker.setRemediationFunction(rule, getCustomFieldValue(issue, "SQALE Remediation Function"));
     rule.setSqaleConstantCostOrLinearThreshold(getCustomFieldValue(issue, "SQALE Constant Cost"));
     rule.setSqaleLinearArgDesc(getCustomFieldValue(issue, "SQALE Linear Argument Description"));
