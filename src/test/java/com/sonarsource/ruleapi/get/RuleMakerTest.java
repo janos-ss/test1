@@ -185,8 +185,6 @@ public class RuleMakerTest {
       e.printStackTrace();
     }
     assertThat(rule.getSeverity()).isNull();
-    assertThat(rule.getSqaleCharac()).isNull();
-    assertThat(rule.getSqaleSubCharac()).isNull();
   }
 
   @Test

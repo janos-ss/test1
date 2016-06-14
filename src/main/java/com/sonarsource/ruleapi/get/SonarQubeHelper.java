@@ -46,8 +46,6 @@ public class SonarQubeHelper {
     rule.setTitle((String) jsonRule.get("name"));
     RuleMaker.setDescription(rule, (String) jsonRule.get("htmlDesc"), false);
 
-    rule.setSqaleCharac((String) jsonRule.get("defaultDebtChar"));
-    RuleMaker.setSubcharacteristic(rule, (String) jsonRule.get("defaultDebtSubChar"));
     RuleMaker.setRemediationFunction(rule, (String) jsonRule.get("defaultDebtRemFnType"));
     setSqaleConstantValueFromSqInstance(rule, (String) jsonRule.get("defaultRemFnBaseEffort"));
     rule.setSqaleLinearFactor((String) jsonRule.get("defaultRemFnGapMultiplier"));

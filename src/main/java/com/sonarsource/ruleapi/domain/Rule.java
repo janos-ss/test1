@@ -73,61 +73,6 @@ public class Rule {
     }
   }
 
-  public enum Subcharacteristic {
-    // Portability
-    COMPILER_RELATED_PORTABILITY("Compiler related portability"),
-    HARDWARE_RELATED_PORTABILITY("Hardware related portability"),
-    LANGUAGE_RELATED_PORTABILITY("Language related portability"),
-    OS_RELATED_PORTABILITY("OS related portability"),
-    SOFTWARE_RELATED_PORTABILITY("Software related portability"),
-    TIME_ZONE_RELATED_PORTABILITY("Time zone related portability"),
-
-    // Maintainability
-    READABILITY("Readability"),
-    UNDERSTANDABILITY("Understandability"),
-
-    // Security
-    API_ABUSE("API abuse"),
-    ERRORS("Errors"),
-    INPUT_VALIDATION_AND_REPRESENTATION("Input validation and representation"),
-    SECURITY_FEATURES("Security features"),
-
-    // Efficiency
-    CPU_EFFICIENCY("Processor use"),
-    MEMORY_EFFICIENCY("Memory use"),
-    NETWORK_USE("Network use"),
-
-    // Changability
-    ARCHITECTURE_CHANGEABILITY("Architecture related changeability"),
-    DATA_CHANGEABILITY("Data related changeability"),
-    LOGIC_CHANGEABILITY("Logic related changeability"),
-
-    // Reliability
-    ARCHITECTURE_RELIABILITY("Architecture related reliability"),
-    DATA_RELIABILITY("Data related reliability"),
-    EXCEPTION_HANDLING("Exception handling"),
-    FAULT_TOLERANCE("Fault tolerance"),
-    INSTRUCTION_RELIABILITY("Instruction related reliability"),
-    LOGIC_RELIABILITY("Logic related reliability"),
-    RESOURCE_RELIABILITY("Resource related reliability"),
-    SYNCHRONIZATION_RELIABILITY("Synchronization related reliability"),
-    UNIT_TESTS("Unit tests"),
-
-    // Testability
-    INTEGRATION_TESTABILITY("Integration level testability"),
-    UNIT_TESTABILITY("Unit level testability");
-
-    protected final String rspecName;
-
-    Subcharacteristic(String rspecName) {
-      this.rspecName = rspecName;
-    }
-
-    public String getRspecName() {
-      return this.rspecName;
-    }
-  }
-
   public enum Type {
     BUG("Bug"),
     VULNERABILITY("Vulnerability"),
@@ -182,8 +127,6 @@ public class Rule {
   private String references = "";
   private String deprecation = "";
 
-  private String sqaleCharac = null;
-  private Subcharacteristic sqaleSubCharac = null;
   private RemediationFunction sqaleRemediationFunction = null;
   private String sqaleConstantCostOrLinearThreshold = null;
   private String sqaleLinearArgDesc = null;
@@ -254,7 +197,6 @@ public class Rule {
           this.getDefaultProfiles().clear();
           return;
         }
-        break;
       }
 
       this.setDefaultProfiles(new HashSet<>(subProfiles));
@@ -262,13 +204,6 @@ public class Rule {
   }
 
   protected void mergeSqalePieces(Rule subRule) {
-    if (!Strings.isNullOrEmpty(subRule.sqaleCharac)) {
-      this.sqaleCharac = subRule.getSqaleCharac();
-    }
-
-    if (subRule.sqaleSubCharac != null) {
-      this.sqaleSubCharac = subRule.sqaleSubCharac;
-    }
 
     if (subRule.sqaleRemediationFunction != null) {
       this.sqaleRemediationFunction = subRule.sqaleRemediationFunction;
@@ -361,9 +296,6 @@ public class Rule {
           throw new IllegalStateException("Unknown sqaleRemediationFunction");
       }
       objOrderedFields.put("remediation", remediation);
-    }
-    if (this.sqaleSubCharac != null) {
-      objOrderedFields.put("sqaleSubCharac", this.sqaleSubCharac.name());
     }
 
     JSONArray tagsJSON = new JSONArray();
@@ -529,14 +461,6 @@ public class Rule {
     this.references = references;
   }
 
-  public String getSqaleCharac() {
-    return sqaleCharac;
-  }
-
-  public void setSqaleCharac(String sqaleCharac) {
-    this.sqaleCharac = sqaleCharac;
-  }
-
   public String getLanguage() {
     return language;
   }
@@ -579,16 +503,6 @@ public class Rule {
   public void setTemplate(boolean isTemplate) {
 
     this.template = isTemplate;
-  }
-
-  public Subcharacteristic getSqaleSubCharac() {
-
-    return sqaleSubCharac;
-  }
-
-  public void setSqaleSubCharac(Subcharacteristic sqaleSubCharac) {
-
-    this.sqaleSubCharac = sqaleSubCharac;
   }
 
   public void setTags(List<String> tags) {
