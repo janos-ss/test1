@@ -250,21 +250,6 @@ public class JiraHelper {
     rule.setSqaleLinearOffset(getCustomFieldValue(issue, "SQALE Linear Offset"));
   }
 
-  protected static JSONObject getJsonField(JSONObject jobj, String key) {
-    JSONObject fields = (JSONObject)jobj.get(FIELDS);
-
-    if (fields != null && key != null) {
-      Object obj = fields.get(key);
-      if (obj == null) {
-        obj = fields.get(getCustomFieldKey(jobj, key));
-      }
-      if (obj instanceof JSONObject) {
-        return (JSONObject) obj;
-      }
-    }
-    return null;
-  }
-
   protected static List<String> stringToList(String str) {
     List<String> list = new ArrayList<>();
     if (str != null) {
