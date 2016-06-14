@@ -328,7 +328,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
     Map<String, Rule> rspecRules = getCoveredRulesForLanguage(language);
 
-    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeForLanguage(language, RuleManager.NEMO);
+    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeForLanguage(language, RuleManager.SONARQUBE_COM);
     List<Rule> specNotFound = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);
 
     for (Rule sqRule : sqCovered) {

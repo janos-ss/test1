@@ -101,7 +101,7 @@ public class Utilities {
   public static String getNemoLinkedRuleReference(String instance, Rule rule) {
 
     StringBuilder sb = new StringBuilder();
-    // http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS2066
+    // https://sonarqube.com/coding_rules#rule_key=squid%3AS2066
     sb.append(getInstanceLinkedRuleKey(instance, rule, false))
             .append(" ")
             .append(MarkdownConverter.handleEntities(rule.getTitle()))
@@ -120,7 +120,7 @@ public class Utilities {
     }
 
     StringBuilder sb = new StringBuilder();
-    // http://nemo.sonarqube.org/coding_rules#rule_key=squid%3AS2066
+    // https://sonarqube.com/coding_rules#rule_key=squid%3AS2066
     sb.append("<a href='").append(instance).append("/coding_rules#rule_key=")
             .append(rule.getRepo()).append("%3A").append(ruleKey).append("' target='rule'>")
             .append(dispalyKey).append("</a>");

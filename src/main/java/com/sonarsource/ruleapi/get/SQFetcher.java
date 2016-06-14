@@ -13,7 +13,7 @@ public interface SQFetcher {
   /**
    * Retrieves raw JSON rules from a running SonarQube instance by query.
    *
-   * @param instance base SonarQube instance address. E.G. http://nemo.sonarqube.org
+   * @param instance base SonarQube instance address. E.G. https://sonarqube.com
    * @param search query to execute in query string format (with '&amp;' separating parameters)
    *               E. G. repositories=c
    * @return list of retrieved JSON rules

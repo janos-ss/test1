@@ -5,15 +5,12 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
-import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
 import junit.framework.TestCase;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -35,7 +32,7 @@ public class AbstractMultiLanguageStandardTest extends TestCase {
 
   public void testGetHtmlLanguageReport() {
 
-    assertThat(cwe.getHtmlLanguageReport(RuleManager.NEMO, null)).isNull();
+    assertThat(cwe.getHtmlLanguageReport(RuleManager.SONARQUBE_COM, null)).isNull();
     assertThat(cwe.getHtmlLanguageReport(null, Language.JAVA)).isNull();
     assertThat(cwe.getHtmlLanguageReport(null, null)).isNull();
 

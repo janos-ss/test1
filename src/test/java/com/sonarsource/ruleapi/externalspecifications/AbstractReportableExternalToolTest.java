@@ -109,7 +109,7 @@ public class AbstractReportableExternalToolTest {
 
     cs.computeCoverage();
 
-    String report = cs.getHtmlDeprecationByToolKey(RuleManager.NEMO);
+    String report = cs.getHtmlDeprecationByToolKey(RuleManager.SONARQUBE_COM);
 
     assertThat(report).isNotEmpty();
     assertThat(report).contains("<h3>Rejected " + cs.getStandardName() + " rules</h3>");

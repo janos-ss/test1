@@ -96,7 +96,7 @@ public class CweTest {
   @Test
   public void testGetReportNullLanguage(){
     Cwe cwe1 = new Cwe();
-    assertThat(cwe1.getReport(RuleManager.NEMO)).isNull();
+    assertThat(cwe1.getReport(RuleManager.SONARQUBE_COM)).isNull();
   }
 
 
