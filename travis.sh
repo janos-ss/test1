@@ -9,5 +9,4 @@ function configureTravis {
 }
 configureTravis
 
-#start_xvfb
 regular_mvn_build_deploy_analyze
