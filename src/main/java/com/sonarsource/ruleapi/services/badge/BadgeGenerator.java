@@ -18,8 +18,8 @@ public class BadgeGenerator {
     ImageData data = new ImageData(FONT_PROVIDER,label, value);
 
     return IMAGE_TEMPLATE
-      .replaceAll("--fontFamily--", FONT_PROVIDER.FONT_FAMILY)
-      .replaceAll("--fontSize--", Integer.toString(FONT_PROVIDER.FONT_SIZE))
+      .replaceAll("--fontFamily--", FontProvider.FONT_FAMILY)
+      .replaceAll("--fontSize--", Integer.toString(FontProvider.FONT_SIZE))
 
       .replaceAll("--labelText--", data.labelText())
       .replaceAll("--labelWidth--", data.labelWidth())

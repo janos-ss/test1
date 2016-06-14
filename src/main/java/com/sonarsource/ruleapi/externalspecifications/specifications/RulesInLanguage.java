@@ -38,12 +38,8 @@ public class RulesInLanguage implements BadgableMultiLanguage {
   private Language language = null;
   private List<Rule> rules = null;
 
-  private static final Comparator<Rule> RULE_SEVERITY_COMPARATOR = new Comparator<Rule>() {
-    @Override
-    public int compare(Rule r1, Rule r2) {
-      return r1.getSeverity().compareTo(r2.getSeverity());
-    }
-  };
+  private static final Comparator<Rule> RULE_SEVERITY_COMPARATOR = (Rule r1, Rule r2)->
+          r1.getSeverity().compareTo(r2.getSeverity());
 
 
   @Override

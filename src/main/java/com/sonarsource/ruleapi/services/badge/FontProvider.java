@@ -32,7 +32,7 @@ public class FontProvider {
    *
    * @throws RuleException if the preferred {@link Font} cannot be loaded.
    */
-  public FontProvider() throws RuleException {
+  public FontProvider() {
     final Font preferredFont = new Font(FONT_NAME, FONT_STYLE, FONT_SIZE);
     if (preferredFont.getFontName().equals(Font.DIALOG)) {
       throw new RuleException("Unable to load font: " + FONT_NAME);

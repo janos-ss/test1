@@ -22,6 +22,7 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMul
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
+import java.util.Locale;
 import org.fest.util.Strings;
 import org.json.simple.JSONArray;
 
@@ -114,7 +115,7 @@ public class ReportService extends RuleManager {
         String report = customerReport.getHtmlReport(RuleManager.SONARQUBE_COM);
         if (!Strings.isNullOrEmpty(report)) {
           report = css + report;
-          writeFile(COVERAGE_DIR.concat(standardName).concat(HTML).toLowerCase(), report);
+          writeFile(COVERAGE_DIR.concat(standardName).concat(HTML).toLowerCase(Locale.ENGLISH), report);
         }
 
         if (customerReport instanceof Badgable) {
