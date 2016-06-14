@@ -15,7 +15,7 @@ public class ReportGeneratorTest {
   public void generateReports() {
   	if("true".equals(System.getProperty("reports.generation", "false"))) {
       ReportService rs = new ReportService();
-      rs.writeInternalReports(RuleManager.NEMO);
+      rs.writeInternalReports(RuleManager.SONARQUBE_COM);
       rs.writeUserFacingReports();
   	}
   }

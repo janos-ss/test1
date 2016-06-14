@@ -7,8 +7,6 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
-import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.json.simple.JSONArray;
@@ -94,13 +92,13 @@ public class CertTest {
     freshCert.setCodingStandardRuleCoverageSpecifiedBy(rule2, rule2.getCert());
 
 
-    assertThat(freshCert.generateReport(RuleManager.NEMO)).isNull();
-    assertThat(freshCert.getReportBody(RuleManager.NEMO, certRules)).isNull();
+    assertThat(freshCert.generateReport(RuleManager.SONARQUBE_COM)).isNull();
+    assertThat(freshCert.getReportBody(RuleManager.SONARQUBE_COM, certRules)).isNull();
 
 
     freshCert.setLanguage(Language.C);
 
-    String result = freshCert.getReportBody(RuleManager.NEMO, certRules);
+    String result = freshCert.getReportBody(RuleManager.SONARQUBE_COM, certRules);
     assertThat(result).isEqualTo("<h2>C coverage of CERT</h2>\n" +
             "<h3>Covered</h3><table>\n" +
             "<tr><td><a href='http://boo.com' target='_blank'>PRE30-C.</a>test title</td>\n" +
@@ -123,7 +121,7 @@ public class CertTest {
 
     freshCert.setCodingStandardRuleCoverageImplemented(ids, rule);
 
-    String result = freshCert.generateReport(RuleManager.NEMO);
+    String result = freshCert.generateReport(RuleManager.SONARQUBE_COM);
     assertThat(result).isNull();
   }
 

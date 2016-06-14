@@ -80,7 +80,7 @@ public class ReportService extends RuleManager {
 
         LOGGER.info("Getting user-facing report for " + customerReport.getStandardName());
 
-        String report = customerReport.getHtmlReport(RuleManager.NEMO);
+        String report = customerReport.getHtmlReport(RuleManager.SONARQUBE_COM);
         if (!Strings.isNullOrEmpty(report)) {
           report = css + report;
           writeFile(COVERAGE_DIR.concat(customerReport.getStandardName()).concat(HTML).toLowerCase(), report);
@@ -92,7 +92,7 @@ public class ReportService extends RuleManager {
 
         LOGGER.info("Getting user-facing report for " + multiLanguageStandard.getStandardName());
 
-        Map<Language, String> reports = multiLanguageStandard.getHtmlLanguageReports(RuleManager.NEMO);
+        Map<Language, String> reports = multiLanguageStandard.getHtmlLanguageReports(RuleManager.SONARQUBE_COM);
         for (Map.Entry<Language, String> entry : reports.entrySet()) {
 
           String standardName = multiLanguageStandard.getStandardName();
@@ -104,7 +104,7 @@ public class ReportService extends RuleManager {
       }
     }
 
-    writeRulesInLanguagesReports(RuleManager.NEMO);
+    writeRulesInLanguagesReports(RuleManager.SONARQUBE_COM);
   }
 
   public void writeSummaryCoverageReports(String instance) {

@@ -26,7 +26,7 @@ public class RulesInLanguageTest {
 
     assertThat(ril.getHtmlLanguageReport(null, null)).isEmpty();
     assertThat(ril.getHtmlLanguageReport(null, Language.JAVA)).isEmpty();
-    assertThat(ril.getHtmlLanguageReport(RuleManager.NEMO, null)).isEmpty();
+    assertThat(ril.getHtmlLanguageReport(RuleManager.SONARQUBE_COM, null)).isEmpty();
   }
 
   @Test
