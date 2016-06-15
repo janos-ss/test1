@@ -98,7 +98,7 @@ public class ReportService extends RuleManager {
 
           if (!Strings.isNullOrEmpty(report)) {
             String fileName = COVERAGE_DIR.concat(standardName).concat("/").concat(baseFileName).concat("_coverage.html").toLowerCase();
-            writeFile(fileName, css + entry.getValue());
+            writeFile(fileName, css + report);
           }
           if (!Strings.isNullOrEmpty(badge)) {
             String fileName = BADGE_DIR.concat(baseFileName).concat(".svg").toLowerCase();
