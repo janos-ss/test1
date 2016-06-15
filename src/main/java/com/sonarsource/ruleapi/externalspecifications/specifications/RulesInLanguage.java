@@ -124,7 +124,7 @@ public class RulesInLanguage implements BadgableMultiLanguage {
     return sb.toString();
   }
 
-  private static String iterateRulesInType(String instance, Rule.Type type, List<Rule> typeRules) {
+  protected static String iterateRulesInType(String instance, Rule.Type type, List<Rule> typeRules) {
 
     String td = "</td><td>";
     StringBuilder rulesBuilder = new StringBuilder();

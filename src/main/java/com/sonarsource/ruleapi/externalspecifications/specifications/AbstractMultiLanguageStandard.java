@@ -78,17 +78,17 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
   }
 
   private int getImplementedCount(){
+    int count = 0;
+
     Map<String, CodingStandardRuleCoverage> rulesCoverage = getRulesCoverage();
     if (rulesCoverage != null) {
-      int count = 0;
       for (CodingStandardRuleCoverage csrc : getRulesCoverage().values()) {
         if (!csrc.getImplementedBy().isEmpty()) {
           count++;
         }
       }
-      return count;
     }
-    return 0;
+    return count;
   }
 
 }

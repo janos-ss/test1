@@ -18,7 +18,7 @@ import static org.fest.assertions.Assertions.assertThat;
 public class AbstractMisraSpecificationTest {
 
   @Test
-  public void testReportsEmpty() {
+  public void reportsEmpty() {
 
     MisraC2004 c4 = new MisraC2004();
     c4.populateRulesCoverageMap();
@@ -41,6 +41,15 @@ public class AbstractMisraSpecificationTest {
   }
 
   @Test
+  public void getBadgeValue() {
+
+    MisraC2004 c4 = new MisraC2004();
+    c4.populateRulesCoverageMap();
+
+    assertThat(c4.getBadgeValue(null)).isEqualTo("0");
+  }
+
+    @Test
   public void testReportsNonEmpty() {
 
     MisraC2004 c4 = new MisraC2004();

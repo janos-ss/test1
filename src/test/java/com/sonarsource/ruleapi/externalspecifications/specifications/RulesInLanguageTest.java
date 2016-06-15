@@ -20,6 +20,12 @@ public class RulesInLanguageTest {
 
   RulesInLanguage ril = new RulesInLanguage();
 
+  @Test
+  public void getBadgeValue(){
+    RulesInLanguage report = new RulesInLanguage();
+
+    assertThat(report.getBadgeValue(null)).isEqualTo("");
+  }
 
   @Test
   public void getHtmlLanguageReport() {

@@ -41,10 +41,10 @@ import java.util.logging.Logger;
 public class ReportService extends RuleManager {
 
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
-  private static final String BASE_DIR = "target/reports/";
-  private static final String COVERAGE_DIR = "coverage/";
-  private static final String BADGE_DIR = "badges/";
-  private static final String HTML = ".html";
+  protected static final String BASE_DIR = "target/reports/";
+  protected static final String COVERAGE_DIR = "coverage/";
+  protected static final String BADGE_DIR = "badges/";
+  protected static final String HTML = ".html";
 
   private static final BadgeGenerator BADGER = new BadgeGenerator();
 
@@ -118,7 +118,7 @@ public class ReportService extends RuleManager {
     }
   }
 
-  private void writeReportAndBadge(String standardName, Map.Entry<Language, ReportAndBadge> entry) {
+  protected void writeReportAndBadge(String standardName, Map.Entry<Language, ReportAndBadge> entry) {
 
     String report = entry.getValue().getReport();
     String badge = entry.getValue().getBadge();

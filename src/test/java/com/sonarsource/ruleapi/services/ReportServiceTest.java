@@ -5,17 +5,62 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.sonarsource.ruleapi.domain.ReportAndBadge;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.utilities.Language;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
+import static org.fest.assertions.Assertions.assertThat;
 
 
 public class ReportServiceTest {
 
+  private ReportService rs = new ReportService();
+
+  @Test
+  public void writeReportAndBadge(){
+
+    String standardName = "foo";
+    ReportAndBadge rab = new ReportAndBadge();
+
+    Map<Language, ReportAndBadge> map = new HashMap<>();
+    map.put(Language.ABAP, rab);
+    Map.Entry<Language, ReportAndBadge> entry = map.entrySet().iterator().next();
+
+    String baseFileName = entry.getKey().getSq().concat("_").concat(standardName);
+    Path reportPath = Paths.get(ReportService.BASE_DIR.concat(ReportService.COVERAGE_DIR).concat(standardName).concat("/").concat(baseFileName).concat("_coverage.html"));
+    Path badgePath = Paths.get(ReportService.BASE_DIR.concat(ReportService.BADGE_DIR).concat(baseFileName).concat(".svg").toLowerCase());
+
+
+    try {
+      Files.deleteIfExists(reportPath);
+      Files.deleteIfExists(badgePath);
+    } catch (IOException e) {
+    }
+
+    rs.writeReportAndBadge(standardName, entry);
+
+    assertThat(Files.exists(reportPath)).isFalse();
+    assertThat(Files.exists(badgePath)).isFalse();
+
+    rab.setBadge("badge");
+    rab.setReport("report");
+
+    rs.writeReportAndBadge(standardName, entry);
+
+    assertThat(Files.exists(reportPath)).isTrue();
+    assertThat(Files.exists(badgePath)).isTrue();
+
+  }
+
   @Test
   public void testNoOutdatedReport() {
-    ReportService rs = new ReportService();
 
     try {
       rs.writeOutdatedRulesReport(null, null);

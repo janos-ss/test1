@@ -20,10 +20,12 @@ public class AbstractMultiLanguageStandardTest extends TestCase {
 
   private static Cwe cwe = new Cwe();
 
+  @Test
   public void testGetReportTypes(){
     assertThat(cwe.getReportTypes()).isNotEmpty();
   }
 
+  @Test
   public void testGetHtmlLanguageReports() {
 
     Map<Language,ReportAndBadge> reports = cwe.getHtmlLanguageReports(null);
@@ -31,6 +33,14 @@ public class AbstractMultiLanguageStandardTest extends TestCase {
 
   }
 
+  @Test
+  public void getBadgeValue(){
+
+    assertThat(cwe.getBadgeValue(null)).isEqualTo("");
+  }
+
+
+  @Test
   public void testGetHtmlLanguageReport() {
 
     assertThat(cwe.getHtmlLanguageReport(RuleManager.SONARQUBE_COM, null)).isNull();
@@ -39,6 +49,7 @@ public class AbstractMultiLanguageStandardTest extends TestCase {
 
   }
 
+  @Test
   public void testInitCoverage() throws Exception {
 
     cwe.initCoverageResults(null);
