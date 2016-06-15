@@ -5,20 +5,24 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.sonarsource.ruleapi.domain.ReportAndBadge;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleComparison;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableExternalTool;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.externalspecifications.Badgable;
 import com.sonarsource.ruleapi.externalspecifications.CleanupReport;
 import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
+import com.sonarsource.ruleapi.externalspecifications.BadgableMultiLanguage;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMultiLanguageStandard;
-import com.sonarsource.ruleapi.externalspecifications.specifications.RulesInLanguage;
 import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
+import java.util.Locale;
 import org.fest.util.Strings;
 import org.json.simple.JSONArray;
 
@@ -39,7 +43,11 @@ public class ReportService extends RuleManager {
   private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
   private static final String BASE_DIR = "target/reports/";
   private static final String COVERAGE_DIR = "coverage/";
+  private static final String BADGE_DIR = "badges/";
   private static final String HTML = ".html";
+
+  private static final BadgeGenerator BADGER = new BadgeGenerator();
+
 
   private String css = "";
 
@@ -54,6 +62,7 @@ public class ReportService extends RuleManager {
       }
     }
   }
+
   /**
    * Writes internal reports based on passed-in SonarQube url
    *
@@ -73,38 +82,52 @@ public class ReportService extends RuleManager {
 
     for (SupportedStandard supportedStandard : SupportedStandard.values()) {
       Standard standard = supportedStandard.getStandard();
+      String standardName = standard.getStandardName();
 
-      if (standard instanceof CustomerReport) {
+      if (standard instanceof BadgableMultiLanguage) {
+        BadgableMultiLanguage multiLanguageStandard = (BadgableMultiLanguage) standard;
+
+        LOGGER.info("Getting user-facing report for " + standardName);
+
+        Map<Language, ReportAndBadge> reports = multiLanguageStandard.getHtmlLanguageReports(RuleManager.SONARQUBE_COM);
+        for (Map.Entry<Language, ReportAndBadge> entry : reports.entrySet()) {
+          String report = entry.getValue().getReport();
+          String badge = entry.getValue().getBadge();
+
+          String baseFileName = entry.getKey().getSq().concat("_").concat(standardName);
+
+          if (!Strings.isNullOrEmpty(report)) {
+            String fileName = COVERAGE_DIR.concat(standardName).concat("/").concat(baseFileName).concat("_coverage.html").toLowerCase();
+            writeFile(fileName, css + entry.getValue());
+          }
+          if (!Strings.isNullOrEmpty(badge)) {
+            String fileName = BADGE_DIR.concat(baseFileName).concat(".svg").toLowerCase();
+            writeFile(fileName, badge);
+          }
+        }
+
+      } else if (standard instanceof CustomerReport) {
 
         CustomerReport customerReport = (CustomerReport) standard;
 
-        LOGGER.info("Getting user-facing report for " + customerReport.getStandardName());
+        LOGGER.info("Getting user-facing report for " + standardName);
 
         String report = customerReport.getHtmlReport(RuleManager.SONARQUBE_COM);
         if (!Strings.isNullOrEmpty(report)) {
           report = css + report;
-          writeFile(COVERAGE_DIR.concat(customerReport.getStandardName()).concat(HTML).toLowerCase(), report);
-
+          writeFile(COVERAGE_DIR.concat(standardName).concat(HTML).toLowerCase(Locale.ENGLISH), report);
         }
-      } else if (standard instanceof AbstractMultiLanguageStandard) {
 
-        AbstractMultiLanguageStandard multiLanguageStandard = (AbstractMultiLanguageStandard)standard;
-
-        LOGGER.info("Getting user-facing report for " + multiLanguageStandard.getStandardName());
-
-        Map<Language, String> reports = multiLanguageStandard.getHtmlLanguageReports(RuleManager.SONARQUBE_COM);
-        for (Map.Entry<Language, String> entry : reports.entrySet()) {
-
-          String standardName = multiLanguageStandard.getStandardName();
-          String fileName = COVERAGE_DIR.concat(standardName).concat("/").concat(entry.getKey().getSq())
-                  .concat("_").concat(standardName).concat("_coverage.html").toLowerCase();
-
-          writeFile(fileName, css + entry.getValue());
+        if (customerReport instanceof Badgable) {
+          Badgable badgable = (Badgable) customerReport;
+          String badgeLabel = badgable.getStandardName();
+          String badgeValue = badgable.getBadgeValue(RuleManager.SONARQUBE_COM);
+          if (!Strings.isNullOrEmpty(badgeLabel) && !Strings.isNullOrEmpty(badgeValue)) {
+            writeFile(BADGE_DIR.concat(standardName).concat(".svg").toLowerCase(), BADGER.getBadge(badgeLabel, badgeValue));
+          }
         }
       }
     }
-
-    writeRulesInLanguagesReports(RuleManager.SONARQUBE_COM);
   }
 
   public void writeSummaryCoverageReports(String instance) {
@@ -264,18 +287,6 @@ public class ReportService extends RuleManager {
     return notAlike;
   }
 
-  public void writeRulesInLanguagesReports(String instance) {
-
-    RulesInLanguage ril = new RulesInLanguage();
-
-    for (Language language : Language.values()) {
-      LOGGER.info("Getting list-of-rules report for " + language.getRspec());
-
-      String fileName = COVERAGE_DIR.concat("rules_in_").concat(language.getSq()).concat(HTML).toLowerCase();
-      writeFile(fileName, ril.getHtmlLanguageReport(instance, language));
-    }
-  }
-
   public void writeSingleReport(Language language, String instance, AbstractReportableStandard standard, ReportType reportType) {
 
     String reportName = standard.getStandardName() + "_"
@@ -295,7 +306,7 @@ public class ReportService extends RuleManager {
         if (standard instanceof CustomerReport) {
           writeFile(reportName,((CustomerReport)standard).getHtmlReport(instance));
         } else {
-          writeFile(reportName,((AbstractMultiLanguageStandard)standard).getHtmlLanguageReport(instance, language));
+          writeFile(reportName,((AbstractMultiLanguageStandard)standard).getHtmlLanguageReport(instance, language).getReport());
         }
         break;
       case DEPRECATION:

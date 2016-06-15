@@ -6,9 +6,12 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Profile;
+import com.sonarsource.ruleapi.domain.ReportAndBadge;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.externalspecifications.BadgableMultiLanguage;
 import com.sonarsource.ruleapi.get.Fetcher;
 import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 import java.text.NumberFormat;
@@ -20,33 +23,77 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import org.fest.util.Strings;
 import org.json.simple.JSONObject;
 
 
-public class RulesInLanguage {
+public class RulesInLanguage implements BadgableMultiLanguage {
+
+  private static final Logger LOGGER = Logger.getLogger(RulesInLanguage.class.getName());
 
   private static final String SPEC = "SonarAnalyzer";
   private static final NumberFormat NUMBER_FORMAT = NumberFormat.getNumberInstance(Locale.US);
 
-  private static final Comparator<Rule> RULE_SEVERITY_COMPARATOR = new Comparator<Rule>() {
-    @Override
-    public int compare(Rule r1, Rule r2) {
-      return r1.getSeverity().compareTo(r2.getSeverity());
+  private Language language = null;
+  private List<Rule> rules = null;
+
+  private static final Comparator<Rule> RULE_SEVERITY_COMPARATOR = (Rule r1, Rule r2)->
+          r1.getSeverity().compareTo(r2.getSeverity());
+
+
+  @Override
+  public void setLanguage(Language language) {
+    this.language = language;
+    rules = null;
+  }
+
+  @Override
+  public String getStandardName() {
+
+    return "Rules";
+  }
+
+  @Override
+  public String getBadgeValue(String instance) {
+    fetchRules(instance);
+
+    if (rules == null) {
+      return "";
     }
-  };
+    return Integer.toString(rules.size());
+  }
 
+  private void fetchRules(String instance) {
+    if (language != null && ! Strings.isNullOrEmpty(instance) && rules == null) {
+      rules = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
+    }
+  }
 
-  public String getHtmlLanguageReport(String instance, Language language) {
+  @Override
+  public ReportAndBadge getHtmlLanguageReport(String instance, Language language) {
 
-    if (language == null || Strings.isNullOrEmpty(instance)) {
+    setLanguage(language);
+
+    ReportAndBadge reportAndBadge = new ReportAndBadge();
+    reportAndBadge.setReport(generateReport(instance));
+
+    if (rules != null) {
+      BadgeGenerator badger = new BadgeGenerator();
+      reportAndBadge.setBadge(badger.getBadge(getStandardName(), Integer.toString(rules.size())));
+    }
+
+    return reportAndBadge;
+  }
+
+  protected String generateReport(String instance) {
+
+    fetchRules(instance);
+    if (rules == null || rules.isEmpty()) {
       return "";
     }
 
-    List<Rule> rules = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
-    if (rules.isEmpty()) {
-      return "";
-    }
+    LOGGER.info("Getting Rules in Language report for " + language.getRspec());
 
     Map<Rule.Type, List<Rule>> typeMap = groupRulesByType(rules);
 

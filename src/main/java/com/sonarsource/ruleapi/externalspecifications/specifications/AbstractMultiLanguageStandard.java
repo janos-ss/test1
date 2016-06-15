@@ -5,29 +5,27 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
+import com.sonarsource.ruleapi.domain.ReportAndBadge;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.externalspecifications.BadgableMultiLanguage;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
+import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
-import java.util.EnumMap;
 import java.util.Map;
-import java.util.logging.Logger;
 import org.fest.util.Strings;
 
 
 /**
- * Some standards, such as CWE apply to multiple langauges, but we want
- * to report on them per-langauge.
+ * Some standards, such as CWE apply to multiple langauges,
+ * and we want to report on them per-langauge.
  * This is the basic reporting implementation for that.
  */
-public abstract class AbstractMultiLanguageStandard extends AbstractReportableStandard {
-
-  private static final Logger LOGGER = Logger.getLogger(AbstractMultiLanguageStandard.class.getName());
+public abstract class AbstractMultiLanguageStandard extends AbstractReportableStandard implements BadgableMultiLanguage {
 
   private static final ReportType[] reportTypes = {ReportType.INTERNAL_COVERAGE, ReportType.INTERNAL_COVERAGE_SUMMARY, ReportType.HTML};
 
   protected abstract String generateReport(String instance);
-
-  protected abstract void setLanguage(Language language);
 
 
   @Override
@@ -35,26 +33,8 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
     return reportTypes;
   }
 
-  public Map<Language, String> getHtmlLanguageReports(String instance) {
-
-    if (instance == null) {
-      return null;
-    }
-
-    Map<Language, String> reports = new EnumMap<>(Language.class);
-
-    for (Language language : Language.values()) {
-      LOGGER.info("Getting " + getStandardName() + " coverage report for " + language.getRspec());
-
-      String report = getHtmlLanguageReport(instance, language);
-      if (report != null) {
-        reports.put(language, report);
-      }
-    }
-    return reports;
-  }
-
-  public String getHtmlLanguageReport(String instance, Language language) {
+  @Override
+  public ReportAndBadge getHtmlLanguageReport(String instance, Language language) {
 
     if (language == null || Strings.isNullOrEmpty(instance)) {
       return null;
@@ -63,8 +43,17 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
     setLanguage(language);
 
     initCoverageResults(instance);
-    return generateReport(instance);
+    ReportAndBadge reportAndBadge = new ReportAndBadge();
 
+    reportAndBadge.setReport(generateReport(instance));
+
+    BadgeGenerator badger = new BadgeGenerator();
+    int count = getImplementedCount();
+    if (count > 0) {
+      reportAndBadge.setBadge(badger.getBadge(getStandardName(), Integer.toString(count)));
+    }
+
+    return reportAndBadge;
   }
 
   @Override
@@ -75,6 +64,31 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
     }
     resetRulesCoverageMap();
     super.initCoverageResults(instance);
+  }
+
+  @Override
+  public String getBadgeValue(String instance) {
+
+    if (Strings.isNullOrEmpty(instance)) {
+      return "";
+    }
+    initCoverageResults(instance);
+
+    return Integer.toString(getImplementedCount());
+  }
+
+  private int getImplementedCount(){
+    Map<String, CodingStandardRuleCoverage> rulesCoverage = getRulesCoverage();
+    if (rulesCoverage != null) {
+      int count = 0;
+      for (CodingStandardRuleCoverage csrc : getRulesCoverage().values()) {
+        if (!csrc.getImplementedBy().isEmpty()) {
+          count++;
+        }
+      }
+      return count;
+    }
+    return 0;
   }
 
 }

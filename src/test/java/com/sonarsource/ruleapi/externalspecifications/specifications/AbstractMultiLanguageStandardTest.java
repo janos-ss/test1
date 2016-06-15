@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.sonarsource.ruleapi.domain.ReportAndBadge;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
 import junit.framework.TestCase;
@@ -25,7 +26,7 @@ public class AbstractMultiLanguageStandardTest extends TestCase {
 
   public void testGetHtmlLanguageReports() {
 
-    Map<Language,String> reports = cwe.getHtmlLanguageReports(null);
+    Map<Language,ReportAndBadge> reports = cwe.getHtmlLanguageReports(null);
     assertThat(reports).isNull();
 
   }

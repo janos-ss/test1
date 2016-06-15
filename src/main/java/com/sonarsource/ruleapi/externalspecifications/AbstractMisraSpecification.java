@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * Specially-formatted reports for the three MISRA standards.
  */
 public abstract class AbstractMisraSpecification extends AbstractReportableStandard
-        implements TaggableStandard, CustomerReport {
+        implements TaggableStandard, CustomerReport, Badgable {
 
   private static final ReportType[] reportTypes = {ReportType.INTERNAL_COVERAGE, ReportType.INTERNAL_COVERAGE_SUMMARY, ReportType.HTML};
 
@@ -57,6 +57,15 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
         }
       }
     }
+  }
+
+
+  @Override
+  public String getBadgeValue(String instance) {
+    initCoverageResults(instance);
+    computeCoverage();
+
+    return Integer.toString(mandatoryRulesImplemented + optionalRulesImplemented);
   }
 
   public CodingStandardRule getCodingStandardRuleFromId(String id) {

@@ -12,6 +12,7 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.Cert;
 import com.sonarsource.ruleapi.externalspecifications.specifications.Cwe;
 import com.sonarsource.ruleapi.externalspecifications.specifications.OwaspTopTen;
 import com.sonarsource.ruleapi.externalspecifications.specifications.RuleSpec;
+import com.sonarsource.ruleapi.externalspecifications.specifications.RulesInLanguage;
 import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
 import com.sonarsource.ruleapi.externalspecifications.tools.Checkstyle;
 import com.sonarsource.ruleapi.externalspecifications.tools.Cppcheck;
@@ -29,6 +30,7 @@ import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperWarnings;
 
 public enum SupportedStandard {
 
+  RULES_IN_LANGUAGE(new RulesInLanguage()),
   RULE_SPEC(new RuleSpec()),
 
   // ReportableStandard
