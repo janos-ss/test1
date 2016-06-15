@@ -261,12 +261,6 @@ public class RulesInLanguage implements BadgableMultiLanguage {
           "  </head>\n" +
           "  <body><a name='top' id='top'></a>\n" +
           "\n" +
-          "<div style=\"background-color: rgb(25, 25, 25);height:66px;padding-left:6px\">\n" +
-          "  <div class='container'>\n" +
-          "  <img src=\"http://www.sonarsource.com/wp-content/themes/sonarsource/images/logo.png\">\n" +
-          "  </div>" +
-          "</div>\n" +
-          "\n" +
           "<div class=\"container\">\n" +
           "\n" +
           "<h2>%2$s for %1$s</h2>\n" +
