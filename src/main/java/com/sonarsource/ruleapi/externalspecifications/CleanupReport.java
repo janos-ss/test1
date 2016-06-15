@@ -14,6 +14,7 @@ package com.sonarsource.ruleapi.externalspecifications;
  * A cleanup report should be a list of id's and/or titles that have
  * changed in the source but not in RSpec.
  */
+@FunctionalInterface
 public interface CleanupReport {
 
   String generateCleanupReport();

@@ -7,9 +7,10 @@ package com.sonarsource.ruleapi.externalspecifications;
 
 /**
  * Relevant to Tool reports (specifically ReSharper) where
- * there's a need to indicate teh "level" the rule has in
+ * there's a need to indicate Tthe "level" the rule has in
  * the original tool.
  */
+@FunctionalInterface
 public interface HasLevel {
   String getLevel();
 }

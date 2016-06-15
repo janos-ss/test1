@@ -94,12 +94,9 @@ public class Fetcher {
 
       }}, new java.security.SecureRandom());
 
-      Client client = ClientBuilder.newBuilder().sslContext(sslcontext).hostnameVerifier(new HostnameVerifier() {
-        @Override
-        public boolean verify(String s1, SSLSession s2) {
-          return s1.equalsIgnoreCase(s2.getPeerHost());
-        }
-      }).build();
+      Client client = ClientBuilder.newBuilder().sslContext(sslcontext)
+              .hostnameVerifier((s1, s2) -> s1.equalsIgnoreCase(s2.getPeerHost()))
+              .build();
 
       if (login != null && password != null) {
         client.register(HttpAuthenticationFeature.basic(login, password));

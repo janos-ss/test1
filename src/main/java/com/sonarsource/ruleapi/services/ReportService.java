@@ -91,19 +91,7 @@ public class ReportService extends RuleManager {
 
         Map<Language, ReportAndBadge> reports = multiLanguageStandard.getHtmlLanguageReports(RuleManager.SONARQUBE_COM);
         for (Map.Entry<Language, ReportAndBadge> entry : reports.entrySet()) {
-          String report = entry.getValue().getReport();
-          String badge = entry.getValue().getBadge();
-
-          String baseFileName = entry.getKey().getSq().concat("_").concat(standardName);
-
-          if (!Strings.isNullOrEmpty(report)) {
-            String fileName = COVERAGE_DIR.concat(standardName).concat("/").concat(baseFileName).concat("_coverage.html").toLowerCase();
-            writeFile(fileName, css + report);
-          }
-          if (!Strings.isNullOrEmpty(badge)) {
-            String fileName = BADGE_DIR.concat(baseFileName).concat(".svg").toLowerCase();
-            writeFile(fileName, badge);
-          }
+          writeReportAndBadge(standardName, entry);
         }
 
       } else if (standard instanceof CustomerReport) {
@@ -127,6 +115,23 @@ public class ReportService extends RuleManager {
           }
         }
       }
+    }
+  }
+
+  private void writeReportAndBadge(String standardName, Map.Entry<Language, ReportAndBadge> entry) {
+
+    String report = entry.getValue().getReport();
+    String badge = entry.getValue().getBadge();
+
+    String baseFileName = entry.getKey().getSq().concat("_").concat(standardName);
+
+    if (!Strings.isNullOrEmpty(report)) {
+      String fileName = COVERAGE_DIR.concat(standardName).concat("/").concat(baseFileName).concat("_coverage.html").toLowerCase();
+      writeFile(fileName, css + report);
+    }
+    if (!Strings.isNullOrEmpty(badge)) {
+      String fileName = BADGE_DIR.concat(baseFileName).concat(".svg").toLowerCase();
+      writeFile(fileName, badge);
     }
   }
 

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -42,7 +43,7 @@ public class RuleFilesService {
 
   private RuleFilesService(File baseDir, Language language) {
     this.baseDir = baseDir;
-    this.language = language.getRspec().toLowerCase();
+    this.language = language.getRspec().toLowerCase(Locale.ENGLISH);
     // match string like S123456_java., the termination is matched apart
     descriptionFileBaseNamePattern = Pattern.compile("^S(\\d+)_" + this.language + "\\.");
   }
