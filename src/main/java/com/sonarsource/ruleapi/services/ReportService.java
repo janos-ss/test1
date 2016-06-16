@@ -100,21 +100,28 @@ public class ReportService extends RuleManager {
 
         LOGGER.info("Getting user-facing report for " + standardName);
 
-        String report = customerReport.getHtmlReport(RuleManager.SONARQUBE_COM);
-        if (!Strings.isNullOrEmpty(report)) {
-          report = css + report;
-          writeFile(COVERAGE_DIR.concat(standardName).concat(HTML).toLowerCase(Locale.ENGLISH), report);
-        }
+        writeCustomerReport(standardName, customerReport.getHtmlReport(RuleManager.SONARQUBE_COM));
 
         if (customerReport instanceof Badgable) {
           Badgable badgable = (Badgable) customerReport;
-          String badgeLabel = badgable.getStandardName();
-          String badgeValue = badgable.getBadgeValue(RuleManager.SONARQUBE_COM);
-          if (!Strings.isNullOrEmpty(badgeLabel) && !Strings.isNullOrEmpty(badgeValue)) {
-            writeFile(BADGE_DIR.concat(standardName).concat(".svg").toLowerCase(), BADGER.getBadge(badgeLabel, badgeValue));
-          }
+          writeCustomerBadge(standardName, badgable.getStandardName(), badgable.getBadgeValue(RuleManager.SONARQUBE_COM));
         }
       }
+    }
+  }
+
+  protected void writeCustomerBadge(String standardName, String badgeLabel, String badgeValue) {
+
+    if (!Strings.isNullOrEmpty(badgeLabel) && !Strings.isNullOrEmpty(badgeValue)) {
+      writeFile(BADGE_DIR.concat(standardName).concat(".svg").toLowerCase(), BADGER.getBadge(badgeLabel, badgeValue));
+    }
+  }
+
+  protected void writeCustomerReport(String standardName, String report) {
+
+    if (!Strings.isNullOrEmpty(report)) {
+      report = css + report;
+      writeFile(COVERAGE_DIR.concat(standardName).concat(HTML).toLowerCase(Locale.ENGLISH), report);
     }
   }
 

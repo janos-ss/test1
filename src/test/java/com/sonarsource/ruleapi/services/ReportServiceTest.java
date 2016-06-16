@@ -13,9 +13,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static com.sun.corba.se.spi.activation.IIOP_CLEAR_TEXT.value;
 import static org.fest.assertions.Assertions.assertThat;
 
 
@@ -55,6 +58,44 @@ public class ReportServiceTest {
     rs.writeReportAndBadge(standardName, entry);
 
     assertThat(Files.exists(reportPath)).isTrue();
+    assertThat(Files.exists(badgePath)).isTrue();
+
+  }
+
+  @Test
+  public void writeCustomerReport(){
+    String standardName = "foo";
+
+    Path reportPath = Paths.get(ReportService.BASE_DIR.concat(ReportService.COVERAGE_DIR).concat(standardName).concat(".html").toLowerCase(Locale.ENGLISH));
+    try {
+      Files.deleteIfExists(reportPath);
+    } catch (IOException e) {
+    }
+
+    rs.writeCustomerReport(standardName, "foo");
+    assertThat(Files.exists(reportPath)).isTrue();
+  }
+
+  @Test
+  public void writeCustomerBadge(){
+    String standardName = "foo";
+
+    Path badgePath = Paths.get(ReportService.BASE_DIR.concat(ReportService.BADGE_DIR).concat(standardName).concat(".svg").toLowerCase(Locale.ENGLISH));
+    try {
+      Files.deleteIfExists(badgePath);
+    } catch (IOException e) {
+    }
+
+    rs.writeCustomerBadge(standardName, null, null);
+    assertThat(Files.exists(badgePath)).isFalse();
+
+    rs.writeCustomerBadge(standardName, "label", null);
+    assertThat(Files.exists(badgePath)).isFalse();
+
+    rs.writeCustomerBadge(standardName, null, "value");
+    assertThat(Files.exists(badgePath)).isFalse();
+
+    rs.writeCustomerBadge(standardName, "label", "value");
     assertThat(Files.exists(badgePath)).isTrue();
 
   }
