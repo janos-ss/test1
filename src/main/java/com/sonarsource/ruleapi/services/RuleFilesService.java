@@ -113,21 +113,19 @@ public class RuleFilesService {
   private Map<String, RulesProfile> findProfiles() {
     final Map<String, RulesProfile> result = new HashMap<>();
     final Gson gson = new Gson();
-    baseDir.listFiles(new FileFilter() {
-      @Override
-      public boolean accept(File file) {
-        if(file.getName().endsWith(PROFILE_TERMINATION)) {
-          try(InputStreamReader ir = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)) {
+    baseDir.listFiles(file -> {
+        boolean retVal = false;
+        if (file.getName().endsWith(PROFILE_TERMINATION)) {
+          try (InputStreamReader ir = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)) {
             RulesProfile rulesProfile = gson.fromJson(ir, RulesProfile.class);
             result.put(rulesProfile.name, rulesProfile);
           } catch (IOException e) {
             throw new RuleException(e);
           }
-          return true;
+          retVal = true;
         }
-        return false;
-      }
-    });
+        return retVal;
+      });
     return result;
   }
 
@@ -157,19 +155,17 @@ public class RuleFilesService {
 
   private Set<String> findRulesToUpdate() {
     final Set<String> rulesToUpdateKeys = new HashSet<>();
-    baseDir.listFiles(new FileFilter() {
-      @Override
-      public boolean accept(File file) {
-        String fileName = file.getName();
-        if(file.isFile() && (fileName.toLowerCase().endsWith(JSON_TERMINATION) || fileName.toLowerCase().endsWith(HTML_TERMINATION))) {
-          Matcher m = descriptionFileBaseNamePattern.matcher(fileName);
-          if (m.find()) {
-            rulesToUpdateKeys.add(m.group(1));
-            return true;
-          }
+    baseDir.listFiles(file-> {
+      boolean retVal = false;
+      String fileName = file.getName();
+      if(file.isFile() && (fileName.toLowerCase().endsWith(JSON_TERMINATION) || fileName.toLowerCase().endsWith(HTML_TERMINATION))) {
+        Matcher m = descriptionFileBaseNamePattern.matcher(fileName);
+        if (m.find()) {
+          rulesToUpdateKeys.add(m.group(1));
+          retVal = true;
         }
-        return false;
       }
+      return retVal;
     });
     System.out.println(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
     return rulesToUpdateKeys;
