@@ -120,8 +120,7 @@ public class ReportService extends RuleManager {
   protected void writeCustomerReport(String standardName, String report) {
 
     if (!Strings.isNullOrEmpty(report)) {
-      report = css + report;
-      writeFile(COVERAGE_DIR.concat(standardName).concat(HTML).toLowerCase(Locale.ENGLISH), report);
+      writeFile(COVERAGE_DIR.concat(standardName).concat(HTML).toLowerCase(Locale.ENGLISH), css + report);
     }
   }
 

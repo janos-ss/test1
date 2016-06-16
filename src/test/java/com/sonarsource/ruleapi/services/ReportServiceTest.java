@@ -72,6 +72,10 @@ public class ReportServiceTest {
     } catch (IOException e) {
     }
 
+    rs.writeCustomerReport(standardName, "");
+    assertThat(Files.exists(reportPath)).isFalse();
+
+
     rs.writeCustomerReport(standardName, "foo");
     assertThat(Files.exists(reportPath)).isTrue();
   }
