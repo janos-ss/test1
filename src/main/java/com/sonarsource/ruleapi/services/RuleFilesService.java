@@ -114,18 +114,18 @@ public class RuleFilesService {
     final Map<String, RulesProfile> result = new HashMap<>();
     final Gson gson = new Gson();
     baseDir.listFiles(file -> {
-        boolean retVal = false;
-        if (file.getName().endsWith(PROFILE_TERMINATION)) {
-          try (InputStreamReader ir = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)) {
-            RulesProfile rulesProfile = gson.fromJson(ir, RulesProfile.class);
-            result.put(rulesProfile.name, rulesProfile);
-          } catch (IOException e) {
-            throw new RuleException(e);
-          }
-          retVal = true;
+      boolean retVal = false;
+      if (file.getName().endsWith(PROFILE_TERMINATION)) {
+        try (InputStreamReader ir = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)) {
+          RulesProfile rulesProfile = gson.fromJson(ir, RulesProfile.class);
+          result.put(rulesProfile.name, rulesProfile);
+        } catch (IOException e) {
+          throw new RuleException(e);
         }
-        return retVal;
-      });
+        retVal = true;
+      }
+      return retVal;
+    });
     return result;
   }
 
