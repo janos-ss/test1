@@ -13,6 +13,7 @@ import com.sonarsource.ruleapi.get.Fetcher;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import com.sonarsource.ruleapi.utilities.Utilities;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -148,7 +149,7 @@ public class RulesInLanguage implements BadgableMultiLanguage {
               .append(Utilities.getInstanceLinkedRuleKey(instance, rule, true)).append(td)
               .append("<a title='").append(severityName).append("'>")
               .append("<i class=\"icon-severity-").append(severityName).append("\"></i></a> ")
-              .append(rule.getTitle()).append("</td>")
+              .append(MarkdownConverter.handleEntities(rule.getTitle())).append("</td>")
               .append("<td class=\"text-center\">").append(isRuleDefault(rule)?"<a title='Included in Sonar way'><span id=\"checkmark\"></span></a>":"").append(td)
               .append(Utilities.setToString(tags, true)).append(td)
               .append(getInActionLink(rule, instance));
