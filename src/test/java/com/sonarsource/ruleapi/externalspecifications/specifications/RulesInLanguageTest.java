@@ -86,4 +86,18 @@ public class RulesInLanguageTest {
     assertThat(map.get(Rule.Type.CODE_SMELL)).hasSize(1);
   }
 
+  @Test
+  public void getRuleRow(){
+    Rule rule = new Rule("Java");
+    rule.setKey("S111");
+
+    rule.setTitle("\"<stdio.h>\" should not be used");
+    rule.setSeverity(Rule.Severity.CRITICAL);
+
+    String expectedHtml="<tr><td><a href='https://sonarqube.com/coding_rules#rule_key=null%3AS111' target='rule'>S111</a></td><td><a title='Critical'><i class=\"icon-severity-Critical\"></i></a> \"&lt;stdio.h&gt;\" should not be used</td><td class=\"text-center\"></td><td></td><td></td></tr>\n";
+
+    assertThat(ril.getRuleRow(rule, RuleManager.SONARQUBE_COM, "")).isEqualTo(expectedHtml);
+
+  }
+
 }
