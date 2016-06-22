@@ -13,6 +13,7 @@ import com.sonarsource.ruleapi.get.Fetcher;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import com.sonarsource.ruleapi.utilities.Utilities;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -126,7 +127,6 @@ public class RulesInLanguage implements BadgableMultiLanguage {
 
   protected static String iterateRulesInType(String instance, Rule.Type type, List<Rule> typeRules) {
 
-    String td = "</td><td>";
     StringBuilder rulesBuilder = new StringBuilder();
 
     rulesBuilder.append("<a name='").append(type.toString()).append("'></a>");
@@ -138,26 +138,37 @@ public class RulesInLanguage implements BadgableMultiLanguage {
 
     Collections.sort(typeRules, RULE_SEVERITY_COMPARATOR);
     for (Rule rule : typeRules) {
-      Set<String> tags = rule.getTags();
-      tags.remove("bug");
-      tags.remove("security");
 
-      String severityName = rule.getSeverity().getSeverityName();
-
-      rulesBuilder.append("<tr><td>")
-              .append(Utilities.getInstanceLinkedRuleKey(instance, rule, true)).append(td)
-              .append("<a title='").append(severityName).append("'>")
-              .append("<i class=\"icon-severity-").append(severityName).append("\"></i></a> ")
-              .append(rule.getTitle()).append("</td>")
-              .append("<td class=\"text-center\">").append(isRuleDefault(rule)?"<a title='Included in Sonar way'><span id=\"checkmark\"></span></a>":"").append(td)
-              .append(Utilities.setToString(tags, true)).append(td)
-              .append(getInActionLink(rule, instance));
-
-      rulesBuilder.append("</td></tr>\n");
+      rulesBuilder.append(getRuleRow(rule, instance, getInActionLink(rule, instance)));
     }
     rulesBuilder.append(" </tbody>\n</table><br/>\n");
 
     return rulesBuilder.toString();
+  }
+
+  protected static String getRuleRow(Rule rule, String instance, String inActionLink) {
+    String td = "</td><td>";
+
+    StringBuilder sb = new StringBuilder();
+
+    Set<String> tags = rule.getTags();
+    tags.remove("bug");
+    tags.remove("security");
+
+    String severityName = rule.getSeverity().getSeverityName();
+
+    sb.append("<tr><td>")
+            .append(Utilities.getInstanceLinkedRuleKey(instance, rule, true)).append(td)
+            .append("<a title='").append(severityName).append("'>")
+            .append("<i class=\"icon-severity-").append(severityName).append("\"></i></a> ")
+            .append(MarkdownConverter.handleEntities(rule.getTitle())).append("</td>")
+            .append("<td class=\"text-center\">").append(isRuleDefault(rule)?"<a title='Included in Sonar way'><span id=\"checkmark\"></span></a>":"").append(td)
+            .append(Utilities.setToString(tags, true)).append(td)
+            .append(inActionLink);
+
+    sb.append("</td></tr>\n");
+
+    return sb.toString();
   }
 
   private static String getInActionLink(Rule rule, String instance) {
