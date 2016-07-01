@@ -9,6 +9,7 @@ import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
+import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
@@ -24,6 +25,10 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
   private static final String TAG = "cwe";
   private static final String REFERENCE_PATTERN = "CWE-\\d+";
   private static final String NAME = "CWE";
+  private static final String TITLE_AND_INTRO = "<h2>SonarAnalyzer for %1$s Coverage of CWE</h2>\n" +
+          "<p>The following table lists the CWE items the SonarAnalyzer for %1$s is able to detect, " +
+          "and for each of them, the rules providing this coverage.</p>";
+
   private Language language = null;
 
   @Override
@@ -110,8 +115,13 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
     }
 
     StringBuilder sb = new StringBuilder();
-    sb.append("<h2>").append(language.getRspec()).append(" coverage of CWE</h2>\n");
-    sb.append("<table>\n");
+
+    sb.append(String.format(ReportService.HEADER_TEMPLATE,getLanguage().getRspec(), NAME))
+            .append(String.format(TITLE_AND_INTRO,getLanguage().getRspec()))
+            .append(ReportService.TABLE_OPEN)
+            .append("<thead><tr><th>CWE ID</th><th>Implementing Rules</th></tr></thead>")
+            .append("<tbody>");
+
 
     List<String> sortedKeys = new ArrayList(getRulesCoverage().keySet());
     Collections.sort(sortedKeys);
@@ -130,7 +140,8 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
         sb.append("</td></tr>\n");
       }
     }
-    sb.append("</table>");
+    sb.append("</table>")
+            .append(ReportService.FOOTER_TEMPLATE);
 
     return sb.toString();
   }

@@ -10,6 +10,7 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
+import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
@@ -26,8 +27,11 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
   private static final Logger LOGGER = Logger.getLogger(OwaspTopTen.class.getName());
 
   private static final String REFERENCE_FIELD_NAME = "OWASP";
-
   private static final String SEE_SECTION_SEARCH = "OWASP Top Ten";
+  private static final String TITLE_AND_INTRO = "<h2>SonarAnalyzer for %1$s Coverage of OWASP Top Ten</h2>\n" +
+          "<p>The following table lists the OWASP Top Ten standard items the SonarAnalyzer for %1$s is able to detect, " +
+          "and for each of them, the rules providing this coverage.</p>";
+
 
   private Language language = Language.JAVA;
 
@@ -64,15 +68,19 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
     }
 
     StringBuilder sb = new StringBuilder();
-    sb.append("<h2>").append(getReportHeader()).append("</h2>\n");
-    sb.append("<table>\n");
+
+    sb.append(String.format(ReportService.HEADER_TEMPLATE, getLanguage().getRspec(), SEE_SECTION_SEARCH))
+            .append(String.format(TITLE_AND_INTRO, getLanguage().getRspec()))
+            .append(ReportService.TABLE_OPEN)
+            .append("<thead><tr><th>OWASP ID</th><th>OWASP Title</th><th>Implementing Rules</th></tr></thead>")
+            .append("<tbody>");
 
     for (Map.Entry<String, CodingStandardRuleCoverage> entry : this.getRulesCoverage().entrySet()) {
       if (!entry.getValue().getImplementedBy().isEmpty()) {
         StandardRule owasp = StandardRule.valueOf(entry.getKey());
         sb.append("<tr><td><a href='").append(owasp.getUrl()).append("' target='_blank'>")
-                .append(owasp.name()).append(" ").append(owasp.getTitle())
-                .append("</a></td>\n<td>");
+                .append(owasp.name()).append("</a></td><td>").append(owasp.getTitle())
+                .append("</td>\n<td>");
 
         for (Rule rule : entry.getValue().getImplementedBy()) {
           sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
@@ -81,7 +89,8 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
         sb.append("</td></tr>\n");
       }
     }
-    sb.append("</table>");
+    sb.append("</table>")
+            .append(ReportService.FOOTER_TEMPLATE);
 
     return sb.toString();
   }

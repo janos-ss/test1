@@ -10,6 +10,7 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
+import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
@@ -22,6 +23,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static org.fest.util.Strings.append;
+
 
 public class SansTop25  extends AbstractMultiLanguageStandard {
 
@@ -31,6 +34,10 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
   private static final String TAG = "sans-top25";
   private static final String REFERENCE_PATTERN = "CWE-\\d+";
   private static final String CWE = "CWE";
+  private static final String TITLE_AND_INTRO = "<h2>SonarAnalyzer for %1$s Coverage of SANS Top 25</h2>\n" +
+          "<p>SANS Top 25 is a sub-set of the Common Weakness Enumeration (CWE). The following table lists the " +
+          "CWE standard items in the SANS Top 25 the SonarAnalyzer for %1$s is able to detect, " +
+          "and for each of them, the rules providing this coverage.</p>";
 
   private Language language = null;
 
@@ -220,7 +227,6 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
         default:
       }
     }
-
   }
 
   private void countRiskyResource(StandardRule sr, CodingStandardRuleCoverage cov) {
@@ -288,14 +294,19 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
 
 
     StringBuilder sb = new StringBuilder();
-    sb.append("<h2>").append(language.getRspec())
-            .append(" coverage of the <a href='http://www.sans.org/top25-software-errors/' target='_blank'>SANS TOP 25</a> Most Dangerous Software Errors </h2>\n");
-    sb.append("<table>\n");
+    sb.append(String.format(ReportService.HEADER_TEMPLATE, getLanguage().getRspec(), NAME + " Most Dangerous Software Errors"))
+            .append(String.format(TITLE_AND_INTRO, getLanguage().getRspec()))
+            .append(ReportService.TABLE_OPEN);
+
 
     for (Map.Entry<Category, Map<StandardRule, List<Rule>>> metaEntry : metaMap.entrySet()) {
-      sb.append("<tr><td colspan='2'><h2><a href='")
+
+      sb.append("<h3><a href='")
               .append(metaEntry.getKey().getUrl()).append("' target='_blank'>").append(metaEntry.getKey().getName())
-              .append("</a></h2></td></tr>");
+              .append("</a></h3>")
+              .append(ReportService.TABLE_OPEN)
+              .append("<thead><tr><th>CWE ID</th><th>Implementing Rules</th></tr></thead>")
+              .append("<tbody>");
 
       for (Map.Entry<StandardRule, List<Rule>> miniEntry : metaEntry.getValue().entrySet()) {
 
@@ -310,9 +321,10 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
 
         sb.append("</td></tr>\n");
       }
+      sb.append("</table>");
     }
 
-    sb.append("</table>");
+    sb.append(ReportService.FOOTER_TEMPLATE);
 
     return sb.toString();
   }

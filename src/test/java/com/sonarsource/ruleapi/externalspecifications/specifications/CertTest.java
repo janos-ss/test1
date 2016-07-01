@@ -84,11 +84,13 @@ public class CertTest {
     Rule rule = new Rule("");
     rule.setKey("ruleKey");
     rule.getCert().add("PRE30-C.");
+    rule.setTitle("Rule for PRE30-C.");
     freshCert.setCodingStandardRuleCoverageImplemented(rule.getCert(), rule);
 
     Rule rule2 = new Rule("");
     rule2.setKey("rule2");
     rule2.getCert().add("MSC01-C.");
+    rule2.setTitle("Rule for MSC01-C.");
     freshCert.setCodingStandardRuleCoverageSpecifiedBy(rule2, rule2.getCert());
 
 
@@ -99,15 +101,7 @@ public class CertTest {
     freshCert.setLanguage(Language.C);
 
     String result = freshCert.getReportBody(RuleManager.SONARQUBE_COM, certRules);
-    assertThat(result).isEqualTo("<h2>C coverage of CERT</h2>\n" +
-            "<h3>Covered</h3><table>\n" +
-            "<tr><td><a href='http://boo.com' target='_blank'>PRE30-C.</a>test title</td>\n" +
-            "<td><a href='https://sonarqube.com/coding_rules#rule_key=null%3AruleKey' target='rule'>ruleKey</a> null<br/>\n" +
-            "</td></tr>\n" +
-            "</table><h3>Uncovered</h3><table>\n" +
-            "<tr><td><a href='http://misc.com' target='_blank'>MSC01-C.</a>Miscellaney</td><td><a href='https://jira.sonarsource.com/browse/rule2'>rule2</a> null<br/>\n" +
-            "</td></tr>\n" +
-            "</table>");
+    assertThat(result).contains(rule.getTitle()).doesNotContain(rule2.getTitle());
   }
 
   @Test

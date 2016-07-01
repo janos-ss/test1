@@ -13,6 +13,7 @@ import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.get.Fetcher;
 import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
@@ -30,18 +31,21 @@ import java.util.logging.Logger;
 
 public class Cert extends AbstractMultiLanguageStandard implements TaggableStandard, CleanupReport {
 
+  public static final String RESULTS = "results";
+
   private static final Logger LOGGER = Logger.getLogger(Cert.class.getName());
 
   private static final String TAG = "cert";
-
   private static final String REFERENCE_NAME = "CERT";
-
   private static final String REFERENCE_PATTERN = "[A-Z]{3}\\d\\d-[A-Za-z]+.";
+  private static final String TITLE_AND_INTRO = "<h2>SonarAnalyzer for %1$s Coverage of CERT %1$s Standard</h2>\n" +
+          "<p>The following table lists the CERT %1$s standard items the SonarAnalyzer for %1$s is able to detect, " +
+          "and for each of them, the rules providing this coverage.</p>";
 
   private static final CertType CPP = new CertType(Language.CPP, new String [] {"146440541", "146440543"});
   private static final CertType C = new CertType(Language.C, new String [] {"158237133", "158237251"});
   private static final CertType JAVA = new CertType(Language.JAVA, new String [] {"158237393","158237397"});
-  public static final String RESULTS = "results";
+
 
   private CertType currentCertLanguage = null;
 
@@ -184,14 +188,13 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
     }
 
     StringBuilder sb = new StringBuilder();
-    sb.append("<h2>").append(currentCertLanguage.language.getRspec()).append(" coverage of ")
-            .append(getStandardName()).append("</h2>\n");
 
-    StringBuilder covered = new StringBuilder();
-    covered.append("<h3>Covered</h3><table>\n");
+    sb.append(String.format(ReportService.HEADER_TEMPLATE, currentCertLanguage.getLanguage().getRspec(), REFERENCE_NAME))
+            .append(String.format(TITLE_AND_INTRO, currentCertLanguage.getLanguage().getRspec()))
+            .append(ReportService.TABLE_OPEN)
+            .append("<thead><tr><th>CERT ID</th><th>CERT Title</th><th>Implementing Rules</th></tr></thead>")
+            .append("<tbody>");
 
-    StringBuilder uncovered = new StringBuilder();
-    uncovered.append("<h3>Uncovered</h3><table>\n");
 
     Map<String, CodingStandardRuleCoverage> map = this.getRulesCoverage();
 
@@ -199,35 +202,25 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
       String certId = certRule.getId();
 
       CodingStandardRuleCoverage csrc = map.get(certId);
-
       List<Rule> implRules = csrc.getImplementedBy();
 
       String title = certRule.getTitle().replaceFirst(certId, "");
 
       if (!implRules.isEmpty()) {
-        covered.append("<tr><td><a href='").append(certRule.getUrl())
-                .append("' target='_blank'>").append(certRule.getId()).append("</a>")
+        sb.append("<tr><td><a href='").append(certRule.getUrl())
+                .append("' target='_blank'>").append(certRule.getId()).append("</a></td><td>")
                 .append(title).append("</td>\n<td>");
         for (Rule rule : implRules) {
-          covered.append(Utilities.getNemoLinkedRuleReference(instance, rule));
+          sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
         }
-        covered.append("</td></tr>\n");
-      } else {
-        uncovered.append("<tr><td><a href='")
-                .append(certRule.getUrl())
-                .append("' target='_blank'>").append(certRule.getId()).append("</a>")
-                .append(title).append("</td><td>");
-        for (Rule rule : csrc.getSpecifiedBy()) {
-          uncovered.append(Utilities.getJiraLinkedRuleReference(rule));
-        }
-        uncovered.append("</td></tr>\n");
+        sb.append("</td></tr>\n");
       }
     }
 
-    covered.append("</table>");
-    uncovered.append("</table>");
+    sb.append("</tbody></table>");
 
-    sb.append(covered).append(uncovered);
+    sb.append(ReportService.FOOTER_TEMPLATE);
+
 
     return sb.toString();
   }
