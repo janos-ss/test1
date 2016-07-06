@@ -209,9 +209,8 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     sb.append(String.format(ReportService.HEADER_TEMPLATE, getLanguage().getRspec(), getStandardName()))
             .append(String.format(TITLE_AND_INTRO, getStandardName()))
             .append(ReportService.TABLE_OPEN)
-            .append("<thead><tr><th>MISRA ID</th><th>Implementing Rules</th></tr></thead>")
+            .append("<thead><tr><th>MISRA ID</th><th>MISRA Name</th><th>Implementing Rules</th></tr></thead>")
             .append("<tbody>");
-
 
     for (CodingStandardRule csr : getCodingStandardRules()) {
       String ruleId = csr.getCodingStandardRuleId();
@@ -219,6 +218,8 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
 
       if (! coverage.getImplementedBy().isEmpty()) {
         sb.append("<tr><td>").append(ruleId)
+                .append("</td><td>")
+                .append(((CodingStandardRequirableRule) csr).getTitle())
                 .append("</td><td>");
 
         for (Rule rule : coverage.getImplementedBy()) {

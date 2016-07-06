@@ -295,8 +295,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
 
     StringBuilder sb = new StringBuilder();
     sb.append(String.format(ReportService.HEADER_TEMPLATE, getLanguage().getRspec(), NAME + " Most Dangerous Software Errors"))
-            .append(String.format(TITLE_AND_INTRO, getLanguage().getRspec()))
-            .append(ReportService.TABLE_OPEN);
+            .append(String.format(TITLE_AND_INTRO, getLanguage().getRspec()));
 
 
     for (Map.Entry<Category, Map<StandardRule, List<Rule>>> metaEntry : metaMap.entrySet()) {
@@ -305,15 +304,19 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
               .append(metaEntry.getKey().getUrl()).append("' target='_blank'>").append(metaEntry.getKey().getName())
               .append("</a></h3>")
               .append(ReportService.TABLE_OPEN)
-              .append("<thead><tr><th>CWE ID</th><th>Implementing Rules</th></tr></thead>")
+              .append("<thead><tr><th>CWE ID</th><th>CWE Name</th><th>Implementing Rules</th></tr></thead>")
               .append("<tbody>");
 
       for (Map.Entry<StandardRule, List<Rule>> miniEntry : metaEntry.getValue().entrySet()) {
 
-        Integer id = Integer.valueOf(miniEntry.getKey().getCodingStandardRuleId().split("-")[1]);
+        String cweId = miniEntry.getKey().getCodingStandardRuleId();
+
+        Integer id = Integer.valueOf(cweId.split("-")[1]);
+        Cwe.CweRule cwe = Cwe.CweRule.fromString(cweId);
 
         sb.append("<tr><td><a href='http://cwe.mitre.org/data/definitions/").append(id)
-                .append("' target='_blank'>").append(id).append("</a></td>\n<td>");
+                .append("' target='_blank'>").append(id).append("</a></td><td>")
+                .append(cwe.getTitle()).append("</td><td>");
 
         for (Rule rule : miniEntry.getValue()) {
           sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));

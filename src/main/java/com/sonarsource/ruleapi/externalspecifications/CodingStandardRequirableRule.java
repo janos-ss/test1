@@ -14,4 +14,5 @@ package com.sonarsource.ruleapi.externalspecifications;
  */
 public interface CodingStandardRequirableRule extends CodingStandardRule {
   boolean isRuleRequired();
+  String getTitle();
 }

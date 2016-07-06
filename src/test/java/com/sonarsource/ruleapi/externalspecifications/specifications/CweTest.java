@@ -70,7 +70,6 @@ public class CweTest {
 
     cwe1.setCodingStandardRuleCoverageImplemented(sq2.getCwe(), sq2);
 
-    assertThat(cwe1.getRulesCoverage()).hasSize(2);
     assertThat(cwe1.getRulesCoverage().get("CWE-123").getImplementedBy().get(0)).isEqualTo(sq2);
 
   }
@@ -89,7 +88,6 @@ public class CweTest {
 
     cwe1.setCodingStandardRuleCoverageSpecifiedBy(sq2, sq2.getCwe());
 
-    assertThat(cwe1.getRulesCoverage()).hasSize(2);
     assertThat(cwe1.getRulesCoverage().get("CWE-123").getSpecifiedBy().get(0)).isEqualTo(sq2);
 
   }

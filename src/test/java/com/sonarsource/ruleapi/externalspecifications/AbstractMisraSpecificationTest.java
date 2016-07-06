@@ -123,7 +123,7 @@ public class AbstractMisraSpecificationTest {
 
     assertThat(m4.getCodingStandardRuleFromId(null)).isNull();
 
-    assertThat(m4.getCodingStandardRuleFromId("1.1")).isEqualTo(MisraC2004.StandardRule.MISRAC2004_1POINT1);
+    assertThat(m4.getCodingStandardRuleFromId("1.1")).isEqualTo(MisraC2004.StandardRule.M04_1_1);
 
   }
 
