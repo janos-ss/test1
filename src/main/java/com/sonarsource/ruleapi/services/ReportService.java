@@ -155,7 +155,7 @@ public class ReportService extends RuleManager {
 
         LOGGER.info("Getting detailed coverage report for " + standard.getStandardName() + " on " + instance);
 
-        writeFile(COVERAGE_DIR.concat(standard.getStandardName()).concat("_coverage.txt").toLowerCase(), standard.getReport(instance));
+        writeFile(COVERAGE_DIR.concat(standard.getStandardName()).concat("_coverage.txt").toLowerCase(Locale.ENGLISH), standard.getReport(instance));
       }
     }
   }
@@ -330,7 +330,8 @@ public class ReportService extends RuleManager {
           "\n" +
           "    <title>%2$s for %1$s</title>\n" +
           "\n" +
-          "    <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" integrity=\"sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7\" crossorigin=\"anonymous\">\n" +
+          "    <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" " +
+          "          integrity=\"sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7\" crossorigin=\"anonymous\">\n" +
           "\n" +
           "    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->\n" +
           "    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->\n" +
@@ -394,7 +395,8 @@ public class ReportService extends RuleManager {
           "  </div><!-- container -->" +
           "\n" +
           "    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js\"></script>\n" +
-          "    <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js\" integrity=\"sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS\" crossorigin=\"anonymous\"></script>\n" +
+          "    <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js\" " +
+          "            integrity=\"sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS\" crossorigin=\"anonymous\"></script>\n" +
           "  </body>\n" +
           "</html>\n";
 
