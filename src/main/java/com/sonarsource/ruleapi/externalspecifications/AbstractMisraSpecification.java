@@ -7,12 +7,15 @@ package com.sonarsource.ruleapi.externalspecifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import static org.fest.util.Strings.append;
 
 /**
  * Specially-formatted reports for the three MISRA standards.
@@ -25,6 +28,9 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   private static final Logger LOGGER = Logger.getLogger(AbstractMisraSpecification.class.getName());
 
   private static final String TAG = "misra";
+  private static final String TITLE_AND_INTRO = "<h2>SonarAnalyzer for C/C++ Coverage of  %1$s Standard</h2>\n" +
+          "<p>The following table lists the %1$s standard items the SonarAnalyzer for C/C++ is able to detect, " +
+          "and for each of them, the rules providing this coverage.</p>";
 
   protected int mandatoryRulesImplemented = 0;
   protected int mandatoryRulesNotImplementable = 0;
@@ -198,94 +204,33 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
 
   private final String generateHtmlReport(String instance) {
 
-    String rowStart = "<tr><td>";
-    String rowEnd = "</td></tr>";
-    String cellEnd = "</td><td>";
-    String numCellEnd = "</td><td class='number'>";
-    String tableEnd = "</table>";
-
     StringBuilder sb = new StringBuilder();
 
-    sb.append("<h2>SonarQube ").append(getLanguage().getRspec()).append(" coverage of ").append(getStandardName()).append("</h2>");
-    sb.append("These are the ").append(getStandardName())
-            .append(" rules covered for ").append(getLanguage().getRspec())
-            .append(" by the <a href='http://sonarsource.com'>SonarSource</a> ")
-            .append("<a href='http://www.sonarsource.com/products/plugins/languages/cpp/'>C/C++ plugin</a>.");
-
-    sb.append("<h3>Summary</h3>")
-            .append("<table><tr><th>&nbsp;</th><th>Optional</th><th>Mandatory</th></tr>");
-    sb.append("<tr><td>Rule count</td><td class='number'>")
-            .append(optionalRulesToCover + optionalRulesNotImplementable)
-            .append(numCellEnd)
-            .append(mandatoryRulesToCover + mandatoryRulesNotImplementable)
-            .append(rowEnd);
-    sb.append("<tr><td><a href='#nc'>Not statically checkable</a></td><td class='number'>")
-            .append(optionalRulesNotImplementable)
-            .append(numCellEnd)
-            .append(mandatoryRulesNotImplementable)
-            .append(rowEnd);
-    sb.append("<tr><td>Statically checkable</td><td class='number'>")
-            .append(optionalRulesToCover)
-            .append(numCellEnd)
-            .append(mandatoryRulesToCover)
-            .append(rowEnd);
-    sb.append("<tr><td><a href='#c'>Covered</a></td><td class='number'>")
-            .append(optionalRulesImplemented)
-            .append(numCellEnd)
-            .append(mandatoryRulesImplemented)
-            .append(rowEnd);
-    sb.append("<tr><td><a href='#p'>Pending</a></td><td class='number'>")
-            .append(optionalRulesToCover - optionalRulesImplemented)
-            .append(numCellEnd)
-            .append(mandatoryRulesToCover - mandatoryRulesImplemented)
-            .append(rowEnd);
-    sb.append(tableEnd);
-
-    StringBuilder nc = new StringBuilder();
-    nc.append("<a name='nc' id='nc'></a><h3>Not Statically Coverable</h3><table>");
-
-    StringBuilder covered = new StringBuilder();
-    covered.append("<a name='c' id='c'></a><h3>Covered</h3><table>");
-
-    StringBuilder pending = new StringBuilder();
-    pending.append("<a name='p' id='p'></a><h3>Pending</h3><table>");
+    sb.append(String.format(ReportService.HEADER_TEMPLATE, getLanguage().getRspec(), getStandardName()))
+            .append(String.format(TITLE_AND_INTRO, getStandardName()))
+            .append(ReportService.TABLE_OPEN)
+            .append("<thead><tr><th>MISRA ID</th><th>MISRA Name</th><th>Implementing Rules</th></tr></thead>")
+            .append("<tbody>");
 
     for (CodingStandardRule csr : getCodingStandardRules()) {
       String ruleId = csr.getCodingStandardRuleId();
       CodingStandardRuleCoverage coverage = getRulesCoverage().get(ruleId);
-      String requirable = ((CodingStandardRequirableRule) csr).isRuleRequired() ? "Required" : "Optional";
 
-      if (Implementability.NOT_IMPLEMENTABLE.equals(csr.getImplementability())) {
-        nc.append(rowStart).append(ruleId)
-                .append(cellEnd)
-                .append(requirable)
-                .append(rowEnd);
-
-      } else if (! coverage.getImplementedBy().isEmpty()) {
-        covered.append(rowStart).append(ruleId)
-                .append(cellEnd)
-                .append(requirable)
-                .append(cellEnd);
+      if (! coverage.getImplementedBy().isEmpty()) {
+        sb.append("<tr><td>").append(ruleId)
+                .append("</td><td>")
+                .append(((CodingStandardRequirableRule) csr).getTitle())
+                .append("</td><td>");
 
         for (Rule rule : coverage.getImplementedBy()) {
-          covered.append(Utilities.getNemoLinkedRuleReference(instance, rule));
+          sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
         }
-        covered.append(rowEnd);
-      } else {
-        pending.append(rowStart).append(ruleId)
-                .append(cellEnd)
-                .append(requirable)
-                .append(cellEnd);
-        for (Rule rule : coverage.getSpecifiedBy()) {
-          pending.append(Utilities.getJiraLinkedRuleReference(rule));
-        }
-        pending.append(rowEnd);
+        sb.append("</td></tr>\n");
       }
     }
 
-    sb.append(covered).append(tableEnd)
-            .append(pending).append(tableEnd)
-            .append(nc).append(tableEnd);
+    sb.append("</table>")
+            .append(ReportService.FOOTER_TEMPLATE);
 
     return sb.toString();
   }

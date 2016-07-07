@@ -18,7 +18,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.sun.corba.se.spi.activation.IIOP_CLEAR_TEXT.value;
 import static org.fest.assertions.Assertions.assertThat;
 
 
