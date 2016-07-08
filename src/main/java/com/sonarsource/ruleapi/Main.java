@@ -97,7 +97,8 @@ public class Main {
         generateReports(settings, rs);
         break;
       case GENERATE:
-        RuleFilesService.create(settings.directory, language).generateRuleFiles(settings.ruleKeys);
+        RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
+            .generateRuleFiles(settings.ruleKeys);
         break;
       case UPDATE:
         RuleFilesService.create(settings.directory, language).updateDescriptions();
@@ -203,6 +204,12 @@ public class Main {
 
     @Parameter(names="-tool")
     private String tool;
+
+    @Parameter(names="-preserve-filenames")
+    private boolean preserveFileNames = false;
+
+    @Parameter(names="-no-language-in-filenames")
+    private boolean noLanguageInFilenames = false;
 
   }
 

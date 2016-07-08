@@ -15,6 +15,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -153,6 +154,42 @@ public class RuleFilesServiceTest {
     assertThat(FileUtils.readFileToString(profile)).contains("S1234").doesNotContain("RSPEC");
     assertThat(systemOutRule.getLog()).contains("Found 2 rule(s) to update");
     assertThat(systemOutRule.getLog()).contains("Output: (4) files");
+  }
+
+  @Test
+  public void testPreserveFileNamesAndNoLanguageInFilenames() throws Exception {
+    File outputDir = testFolder.newFolder();
+    RuleFilesService rfs = RuleFilesService.create(outputDir.toString(), Language.fromString("c"), true, false);
+
+    rfs.generateRuleFiles(Arrays.asList(
+        "S1234",
+        "NamespaceName" // RSPEC-2304
+    ));
+
+    // record checksums
+    File S1234HtmlFile = new File(outputDir.getAbsolutePath() + File.separator + "S1234.html");
+    assertThat(S1234HtmlFile.exists()).isTrue();
+    long S1234HtmlChecksum = org.apache.commons.io.FileUtils.checksumCRC32(S1234HtmlFile);
+    File S1234JsonFile = new File(outputDir.getAbsolutePath() + File.separator + "S1234.json");
+    assertThat(S1234JsonFile.exists()).isTrue();
+    File S2304HtmlFile = new File(outputDir.getAbsolutePath() + File.separator + "NamespaceName.html");
+    assertThat(S2304HtmlFile.exists()).isTrue();
+    File S2304JsonFile = new File(outputDir.getAbsolutePath() + File.separator + "NamespaceName.json");
+    assertThat(S2304JsonFile.exists()).isTrue();
+    long S2304JsonChecksum = org.apache.commons.io.FileUtils.checksumCRC32(S2304JsonFile);
+
+    try (PrintWriter writer = new PrintWriter(S1234HtmlFile)) {
+      writer.print("Lorem ipsum dolor sit amet");
+    }
+    try (PrintWriter writer = new PrintWriter(S2304JsonFile)) {
+      writer.print("{ \"lorem\": \"ipsum\"}");
+    }
+
+    // fire
+    rfs.updateDescriptions();
+
+    assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234HtmlFile)).isEqualTo(S1234HtmlChecksum);
+    assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S2304JsonFile)).isEqualTo(S2304JsonChecksum);
   }
 
   @Test(expected = IllegalArgumentException.class)
