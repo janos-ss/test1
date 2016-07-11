@@ -14,13 +14,15 @@ import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
+import org.apache.commons.io.FilenameUtils;
 
+import javax.annotation.Nullable;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class RuleFilesService {
 
@@ -37,23 +40,31 @@ public class RuleFilesService {
   private static final String JSON_TERMINATION = ".json";
   private static final String PROFILE_TERMINATION = "_profile.json";
   private final String language;
+  private boolean preserveFileNames;
+  private boolean languageInFilenames;
   private final File baseDir;
   private final Pattern descriptionFileBaseNamePattern;
   private int countGeneratedFiles;
 
-  private RuleFilesService(File baseDir, Language language) {
+  private RuleFilesService(File baseDir, Language language, boolean preserveFileNames, boolean languageInFilenames) {
     this.baseDir = baseDir;
     this.language = language.getRspec().toLowerCase(Locale.ENGLISH);
-    // match string like S123456_java., the termination is matched apart
-    descriptionFileBaseNamePattern = Pattern.compile("^S(\\d+)_" + this.language + "\\.");
+    this.preserveFileNames = preserveFileNames;
+    this.languageInFilenames = languageInFilenames;
+    // match string like S123456
+    descriptionFileBaseNamePattern = Pattern.compile("^S(\\d+)$");
   }
 
   public static RuleFilesService create(String baseDir, Language language) {
+    return create(baseDir, language, false, true);
+  }
+
+  public static RuleFilesService create(String baseDir, Language language, boolean preserveFileNames, boolean languageInFilenames) {
     File baseDirFile = assertBaseDir(baseDir);
     if(language == null) {
       throw new IllegalArgumentException("no language found");
     }
-    return new RuleFilesService(baseDirFile, language);
+    return new RuleFilesService(baseDirFile, language, preserveFileNames, languageInFilenames);
   }
 
   public void generateRuleFiles(Iterable<String> ruleKeys) {
@@ -65,7 +76,7 @@ public class RuleFilesService {
         if( rule == null || rule.getKey() == null ) {
           throw new IllegalArgumentException("invalid rule");
         }
-        generateSingleRuleFiles(rule);
+        generateSingleRuleFiles(ruleKey, rule);
         updatedRules.add(rule);
       }
       updateProfiles(updatedRules);
@@ -136,41 +147,63 @@ public class RuleFilesService {
     }
   }
 
-  private void generateSingleRuleFiles(Rule rule) {
+  private void generateSingleRuleFiles(String originalKey, Rule rule) {
     if(rule.getSeverity() == null) {
       System.out.println(String.format("WARNING: missing severity for rule %s", rule.getKey()));
     }
-    writeFile(computePath(rule, HTML_TERMINATION), rule.getHtmlDescription());
-    writeFile(computePath(rule, JSON_TERMINATION), rule.getSquidJson());
+    String fileBaseName = computeBaseFileName(originalKey, rule);
+    writeFile(fileBaseName + HTML_TERMINATION, rule.getHtmlDescription());
+    writeFile(fileBaseName + JSON_TERMINATION, rule.getSquidJson());
   }
 
-  private static String computePath(Rule rule, String fileExtension) {
-    String denormalizedKey = Utilities.denormalizeKey(rule.getKey());
-    return String.format("%s_%s%s", denormalizedKey, rule.getLanguage(), fileExtension);
+  private String computeBaseFileName(String originalKey, Rule rule) {
+    String key = preserveFileNames ? originalKey : Utilities.denormalizeKey(rule.getKey());
+    return languageInFilenames ? String.format("%s_%s", key, rule.getLanguage()) : key;
   }
 
   public void updateDescriptions() {
-    generateRuleFiles(findRulesToUpdate());
+    try {
+      generateRuleFiles(findRulesToUpdate());
+    } catch (IOException e) {
+      throw new RuleException(e);
+    }
   }
 
-  private Set<String> findRulesToUpdate() {
-    final Set<String> rulesToUpdateKeys = new HashSet<>();
-    baseDir.listFiles(file-> {
-      boolean retVal = false;
-      String fileName = file.getName();
-      if(file.isFile() && (fileName.toLowerCase().endsWith(JSON_TERMINATION) || fileName.toLowerCase().endsWith(HTML_TERMINATION))) {
-        Matcher m = descriptionFileBaseNamePattern.matcher(fileName);
-        if (m.find()) {
-          rulesToUpdateKeys.add(m.group(1));
-          retVal = true;
-        }
-      }
-      return retVal;
-    });
+  private Set<String> findRulesToUpdate() throws IOException {
+    final Set<String> rulesToUpdateKeys = Files.list(baseDir.toPath())
+        .filter(Files::isRegularFile)
+        .map(path -> path.getFileName().toString())
+        .filter(RuleFilesService::matchRuleFileExtension)
+        .map(FilenameUtils::removeExtension)
+        .map(this::toRuleKey)
+        .filter(key -> key != null)
+        .collect(Collectors.toSet());
     System.out.println(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
     return rulesToUpdateKeys;
   }
 
+  private static boolean matchRuleFileExtension(String fileName) {
+    String fileNameLowerCase = fileName.toLowerCase();
+    return !fileNameLowerCase.endsWith(PROFILE_TERMINATION) &&
+        (fileNameLowerCase.endsWith(JSON_TERMINATION) || fileNameLowerCase.endsWith(HTML_TERMINATION));
+  }
+
+  @Nullable
+  private String toRuleKey(String baseName) {
+    String ruleKey = baseName;
+    if (languageInFilenames) {
+      String langSuffix = "_" + this.language;
+      if (!ruleKey.endsWith(langSuffix)) {
+        return null;
+      }
+      ruleKey = ruleKey.substring(0, ruleKey.length() - langSuffix.length());
+    }
+    if (preserveFileNames) {
+      return ruleKey;
+    }
+    Matcher m = descriptionFileBaseNamePattern.matcher(ruleKey);
+    return m.find() ? m.group(1) : null;
+  }
 
   private void writeFile(String fileName, String content) {
     String protectedPath = fileName.replaceAll(" ", "_");
