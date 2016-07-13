@@ -313,14 +313,15 @@ public class JiraHelper {
         line = line.trim();
         String label = extractParamLcLabel(line);
 
-        if (isParamLanguageMatch(label, language)) {
-          if (label == null || label.startsWith("key")) {
-            param = new Parameter();
-            param.setKey(extractParamValue(line));
-            list.add(param);
-          } else {
-            fillInParam(param, label, line);
-          }
+        if (! isParamLanguageMatch(label, language)) {
+          continue;
+        }
+        if (label == null || label.startsWith("key")) {
+          param = new Parameter();
+          param.setKey(extractParamValue(line));
+          list.add(param);
+        } else {
+          fillInParam(param, label, line);
         }
       }
     }

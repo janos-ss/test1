@@ -22,6 +22,10 @@ import org.fest.util.Strings;
  */
 public abstract class AbstractReportableStandard implements CodingStandard {
 
+  private Map<String, CodingStandardRuleCoverage> rulesCoverage = null;
+  private String lastInstance = null;
+
+
   public abstract String getReport(String instance);
 
   public abstract String getSummaryReport(String instance);
@@ -31,10 +35,6 @@ public abstract class AbstractReportableStandard implements CodingStandard {
   public abstract CodingStandardRule[] getCodingStandardRules();
 
   public abstract ReportType[] getReportTypes();
-
-
-  private Map<String, CodingStandardRuleCoverage> rulesCoverage = null;
-  private String lastInstance = null;
 
 
   /**

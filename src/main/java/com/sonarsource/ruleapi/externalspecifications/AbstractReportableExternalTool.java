@@ -21,7 +21,7 @@ import java.util.Map;
  * Basic reporting implementation for tracking the reimlementation of
  * other tools' rules.
  */
-public abstract class AbstractReportableExternalTool extends AbstractReportableStandard implements CustomerReport{
+public abstract class AbstractReportableExternalTool extends AbstractReportableStandard implements CustomerReport {
 
   protected int implementable = 0;
   protected int skipped = 0;
@@ -108,11 +108,11 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     initCoverageResults(instance);
 
     return "<h2>SonarQube " + getLanguage().getRspec() + " Plugin coverage/deprecation of " + getStandardName() + "</h2>" +
-            getHtmlSummaryReport(instance) +
+            getHtmlSummaryReport() +
             getHtmlDeprecationByToolKey(instance);
   }
 
-  protected String getHtmlSummaryReport(String instance) {
+  protected String getHtmlSummaryReport() {
     computeCoverage();
 
     int count = getCodingStandardRules().length;

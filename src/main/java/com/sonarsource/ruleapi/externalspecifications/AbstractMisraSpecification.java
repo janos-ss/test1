@@ -44,11 +44,6 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   private Map<String, CodingStandardRule> ruleMap = new HashMap<>();
 
 
-  @Override
-  public ReportType[] getReportTypes() {
-    return reportTypes;
-  }
-
   public AbstractMisraSpecification(CodingStandardRequirableRule [] codingStandardRequirableRules1equirableRules){
     this.codingStandardRequirableRules = codingStandardRequirableRules1equirableRules;
 
@@ -63,6 +58,11 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
         }
       }
     }
+  }
+
+  @Override
+  public ReportType[] getReportTypes() {
+    return reportTypes;
   }
 
 
@@ -135,18 +135,17 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     buff.append(getStandardName()).append(linebreak);
 
     buff.append("Mandatory:");
-    appendSummaryLine(buff, mandatoryRulesToCover, mandatoryRulesImplemented, getPercent(mandatoryRulesImplemented, mandatoryRulesToCover), indent, linebreak);
+    appendSummaryLine(buff, mandatoryRulesToCover, mandatoryRulesImplemented, getPercent(mandatoryRulesImplemented, mandatoryRulesToCover), indent);
 
     buff.append("Optional:");
-    appendSummaryLine(buff, optionalRulesToCover, optionalRulesImplemented, getPercent(optionalRulesImplemented, optionalRulesToCover), indent, linebreak);
+    appendSummaryLine(buff, optionalRulesToCover, optionalRulesImplemented, getPercent(optionalRulesImplemented, optionalRulesToCover), indent);
 
     buff.append("Total:");
     appendSummaryLine(buff, mandatoryRulesToCover + optionalRulesToCover
                             , totalRulesImplemented
                             , getPercent(totalRulesImplemented
                             , mandatoryRulesToCover + optionalRulesToCover)
-                            , indent
-                            , "");
+                            , indent);
 
     return buff.toString();
   }
@@ -198,7 +197,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     return buff.toString();
   }
 
-  private static void appendSummaryLine(StringBuilder buff, int toCover, int covered, String percent, String indent, String linebreak) {
+  private static void appendSummaryLine(StringBuilder buff, int toCover, int covered, String percent, String indent) {
     buff.append(String.format("%sSpecified: %d%sImplemented: %d%s=> %s%n", indent, toCover, indent, covered, indent, percent ));
   }
 
