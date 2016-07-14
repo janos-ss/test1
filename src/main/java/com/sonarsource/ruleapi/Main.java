@@ -101,7 +101,8 @@ public class Main {
             .generateRuleFiles(settings.ruleKeys);
         break;
       case UPDATE:
-        RuleFilesService.create(settings.directory, language).updateDescriptions();
+        RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
+            .updateDescriptions();
         break;
       case DIFF:
         rs.writeOutdatedRulesReport(language, settings.instance);
