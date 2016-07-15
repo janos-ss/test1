@@ -5,8 +5,9 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
-import java.util.LinkedList;
 import org.fest.util.Strings;
+
+import java.util.LinkedList;
 
 /**
  * Converts Jira markdown to HTML
@@ -76,6 +77,7 @@ public class MarkdownConverter {
             lines[i] = handleStriketrhough(lines[i]);
             lines[i] = handleItal(lines[i]);
             lines[i] = handleQuoteTag(lines[i]);
+            lines[i] = handleUnescapeChar(lines[i]);
           }
         }
         handleParagraph(sb, lines[i]);
@@ -146,14 +148,20 @@ public class MarkdownConverter {
     return line.replaceAll(CODE_OPEN,"{{").replaceAll(CODE_CLOSE,"}}");
   }
 
+  /**
+   * Escape html special characters
+   * @param line text to escape
+   * @return escaped text
+   */
   public static String handleEntities(String line) {
 
     if (line == null) {
       return line;
     }
-    String l2 = line.replaceAll("&(?!(gt;|amp;|lt;))", "&amp;");
+    String l2 = line.replaceAll("&(?!(gt;|amp;|lt;|#92;))", "&amp;");
     l2 = l2.replaceAll("<","&lt;");
     l2 = l2.replaceAll(">", "&gt;");
+    l2 = l2.replaceAll("§", "&sect;");
     return l2;
   }
 
@@ -251,6 +259,10 @@ public class MarkdownConverter {
     return line;
   }
 
+  protected String handleUnescapeChar(String arg) {
+    return arg.replaceAll("\\\\([|_*?+{}^~\\-\\[\\]])","$1").replace("&#92;","\\");
+  }
+
   protected String handleDoubleCurly(String arg) {
     String line = arg;
     if (line.contains("{{")) {
@@ -273,33 +285,42 @@ public class MarkdownConverter {
     }
 
     if (line.startsWith("||")) {
-      line = "<tr><th>" + line.substring(2, line.lastIndexOf('|') - 1) + "</th></tr>";
-      line = line.replaceAll("\\|\\|","|");
-      line = line.replace("|", "</th><th>");
+      line = handleTableHeaderLine(line);
       paragraph = false;
-
     } else if (line.startsWith("|")) {
-      int pos = line.lastIndexOf('|');
-      if (pos <= 0) {
-        pos = line.length();
-      }
-      line = "<tr><td>" + line.substring(1, pos) + "</td></tr>";
-
-      pos = line.indexOf('|');
-      while (pos >-1) {
-        if (!isIndicatorInsideCodeTags(line, pos)) {
-          String left = line.substring(0, pos);
-          String right = line.substring(pos + 1);
-
-          line = left + "</td><td>" + right;
-        }
-        pos = line.indexOf('|', pos+1);
-
-      }
-
+      line = handleTableBodyLine(line);
       paragraph = false;
     }
+    return line;
+  }
 
+  protected String handleTableHeaderLine(String arg) {
+    String line = arg;
+    line = "<tr><th>" + line.substring(2, line.lastIndexOf('|') - 1) + "</th></tr>";
+    line = line.replaceAll("([^\\\\])\\|\\|","$1|");
+    line = line.replaceAll("([^\\\\])\\|", "$1</th><th>");
+    return line;
+  }
+
+  protected String handleTableBodyLine(String arg) {
+    String line = arg;
+    int pos = line.lastIndexOf('|');
+    if (pos <= 0) {
+      pos = line.length();
+    }
+    line = "<tr><td>" + line.substring(1, pos) + "</td></tr>";
+
+    pos = line.indexOf('|');
+    while (pos >-1) {
+      if (!isIndicatorInsideCodeTags(line, pos) && line.charAt(pos - 1) != '\\') {
+        String left = line.substring(0, pos);
+        String right = line.substring(pos + 1);
+
+        line = left + "</td><td>" + right;
+      }
+      pos = line.indexOf('|', pos+1);
+
+    }
     return line;
   }
 
@@ -404,8 +425,8 @@ public class MarkdownConverter {
     int pos = line.indexOf(indicator);
 
     while (pos > -1) {
-
-      if (!isIndicatorInsideCodeTags(line, pos)) {
+      boolean escaped = pos > 0 && line.charAt(pos - 1) == '\\';
+      if (!escaped && !isIndicatorInsideCodeTags(line, pos)) {
 
         String left = line.substring(0, pos);
         String right = line.substring(pos + 1);

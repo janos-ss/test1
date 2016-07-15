@@ -7,8 +7,6 @@ package com.sonarsource.ruleapi.utilities;
 
 import org.junit.Test;
 
-import java.io.File;
-
 import static org.fest.assertions.Assertions.assertThat;
 
 
@@ -104,8 +102,8 @@ public class MarkdownConverterTest {
 
   @Test
   public void testEntitiess() throws Exception {
-    String markdown = "<?php & // Noncompliant; file comment missing";
-    String html = "&lt;?php &amp; // Noncompliant; file comment missing";
+    String markdown = "<?php & § // Noncompliant; file comment missing";
+    String html = "&lt;?php &amp; &sect; // Noncompliant; file comment missing";
 
     assertThat(mc.handleEntities(markdown)).isEqualTo(html);
   }
@@ -114,6 +112,22 @@ public class MarkdownConverterTest {
   public void testTable() throws Exception {
     String markdown = "|a|b|c|";
     String html = "<table>\n<tr><td>a</td><td>b</td><td>c</td></tr>\n</table>\n";
+
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
+  }
+
+  @Test
+  public void testTableWithEscapedPipeInHeader() throws Exception {
+    String markdown = "||\\|a||\\|||c\\|||";
+    String html = "<table>\n<tr><th>|a</th><th>|</th><th>c|</th></tr>\n</table>\n";
+
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
+  }
+
+  @Test
+  public void testTableWithEscapedPipeInBody() throws Exception {
+    String markdown = "|\\|a|\\||c\\||";
+    String html = "<table>\n<tr><td>|a</td><td>|</td><td>c|</td></tr>\n</table>\n";
 
     assertThat(mc.transform(markdown, "Java")).isEqualTo(html);
   }
@@ -149,6 +163,38 @@ public class MarkdownConverterTest {
     String html = "<strong>Now</strong> is the time for <strong>all</strong> good people <strong>to come to the aid of their country</strong>";
 
     assertThat(mc.handleBold(markdown)).isEqualTo(html);
+  }
+
+  @Test
+  public void testEscapedChar() throws Exception {
+    String markdown = "|_*?+{}^~-[] &#92; \\|\\_\\*\\?\\+\\{\\}\\^\\~\\-\\[\\]";
+    String html = "|_*?+{}^~-[] \\ |_*?+{}^~-[]";
+
+    assertThat(mc.handleUnescapeChar(markdown)).isEqualTo(html);
+  }
+
+  @Test
+  public void testBoldWithEscapedChar() throws Exception {
+    String markdown = "*Start \\* End* other part";
+    String html = "<strong>Start * End</strong> other part";
+
+    assertThat(mc.handleUnescapeChar(mc.handleBold(markdown))).isEqualTo(html);
+  }
+
+  @Test
+  public void testItalWithEscapedChar() throws Exception {
+    String markdown = "_Start\\_ End_ other part";
+    String html = "<em>Start_ End</em> other part";
+
+    assertThat(mc.handleUnescapeChar(mc.handleItal(markdown))).isEqualTo(html);
+  }
+
+  @Test
+  public void testStriketrhoughWithEscapedChar() throws Exception {
+    String markdown = "-Start\\- End- other part";
+    String html = "<del>Start- End</del> other part";
+
+    assertThat(mc.handleUnescapeChar(mc.handleStriketrhough(markdown))).isEqualTo(html);
   }
 
   @Test
