@@ -8,12 +8,15 @@ package com.sonarsource.ruleapi.services;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.get.RuleMaker;
+import com.sonarsource.ruleapi.utilities.HtmlSanitizer;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
+import net.greypanther.natsort.CaseInsensitiveSimpleNaturalComparator;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nullable;
@@ -143,7 +146,11 @@ public class RuleFilesService {
   private void writeProfiles(Set<RulesProfile> profilesToUpdate) {
     for (RulesProfile rulesProfile : profilesToUpdate) {
       System.out.println(String.format("Updating profile %s", rulesProfile.name));
-      writeFile(rulesProfile.name+PROFILE_TERMINATION, new Gson().toJson(rulesProfile));
+      // can't set a 'Comparator' to a SortedSet de-serialized by gson
+      // that's why RulesProfile.ruleKeys is a List re-ordered before saving
+      rulesProfile.ruleKeys.sort(CaseInsensitiveSimpleNaturalComparator.getInstance());
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+      writeFile(rulesProfile.name+PROFILE_TERMINATION, gson.toJson(rulesProfile));
     }
   }
 
@@ -152,7 +159,8 @@ public class RuleFilesService {
       System.out.println(String.format("WARNING: missing severity for rule %s", rule.getKey()));
     }
     String fileBaseName = computeBaseFileName(originalKey, rule);
-    writeFile(fileBaseName + HTML_TERMINATION, rule.getHtmlDescription());
+    HtmlSanitizer sanitizer = new HtmlSanitizer(2, 150);
+    writeFile(fileBaseName + HTML_TERMINATION, sanitizer.format(rule.getHtmlDescription()));
     writeFile(fileBaseName + JSON_TERMINATION, rule.getSquidJson());
   }
 
