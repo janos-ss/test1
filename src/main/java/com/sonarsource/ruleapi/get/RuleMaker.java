@@ -91,6 +91,7 @@ public class RuleMaker {
   public static Rule getRuleByKey(String key, String language) {
 
     Rule rule = new Rule(language);
+    rule.setLookupKey(key);
     JSONObject jsonRule = JIRA_FETCHER.fetchIssueByKey(key);
     fleshOutRule(JIRA_FETCHER, rule, jsonRule);
 

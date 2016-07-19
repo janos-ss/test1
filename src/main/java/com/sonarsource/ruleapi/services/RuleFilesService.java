@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,7 +80,7 @@ public class RuleFilesService {
         if( rule == null || rule.getKey() == null ) {
           throw new IllegalArgumentException("invalid rule");
         }
-        generateSingleRuleFiles(ruleKey, rule);
+        generateSingleRuleFiles(rule);
         updatedRules.add(rule);
       }
       updateProfiles(updatedRules);
@@ -93,7 +94,7 @@ public class RuleFilesService {
     for (Rule updatedRule : updatedRules) {
       // Add rule to profile if required
       Set<String> ruleProfileNames = new HashSet<>();
-      String ruleKey = Utilities.denormalizeKey(updatedRule.getKey());
+      String ruleKey = getKeyUsedForGeneration(updatedRule);
       for (Profile profile : updatedRule.getDefaultProfiles()) {
         String profileName = profile.getName();
         ruleProfileNames.add(profileName);
@@ -154,19 +155,28 @@ public class RuleFilesService {
     }
   }
 
-  private void generateSingleRuleFiles(String originalKey, Rule rule) {
+  private void generateSingleRuleFiles(Rule rule) {
     if(rule.getSeverity() == null) {
       System.out.println(String.format("WARNING: missing severity for rule %s", rule.getKey()));
     }
-    String fileBaseName = computeBaseFileName(originalKey, rule);
+    String fileBaseName = computeBaseFileName(rule);
     HtmlSanitizer sanitizer = new HtmlSanitizer(2, 150);
     writeFile(fileBaseName + HTML_TERMINATION, sanitizer.format(rule.getHtmlDescription()));
     writeFile(fileBaseName + JSON_TERMINATION, rule.getSquidJson());
   }
 
-  private String computeBaseFileName(String originalKey, Rule rule) {
-    String key = preserveFileNames ? originalKey : Utilities.denormalizeKey(rule.getKey());
+  private String computeBaseFileName(Rule rule) {
+    String key = getKeyUsedForGeneration(rule);
     return languageInFilenames ? String.format("%s_%s", key, rule.getLanguage()) : key;
+  }
+
+  private String getKeyUsedForGeneration(Rule rule) {
+    if (preserveFileNames) {
+      Objects.requireNonNull(rule.getLookupKey(), "Missing LookupKey in 'preserveFileNames' mode.");
+      return rule.getLookupKey();
+    } else {
+      return Utilities.denormalizeKey(rule.getKey());
+    }
   }
 
   public void updateDescriptions() {
