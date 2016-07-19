@@ -4,12 +4,12 @@
   <parent>
     <groupId>com.sonarsource.parent</groupId>
     <artifactId>parent</artifactId>
-    <version>35</version>
+    <version>37</version>
   </parent>
 
   <groupId>com.sonarsource.rule-api</groupId>
   <artifactId>rule-api</artifactId>
-  <version>1.13-SNAPSHOT</version>
+  <version>1.14-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>SonarSource :: Rule API</name>
   <inceptionYear>2014</inceptionYear>
