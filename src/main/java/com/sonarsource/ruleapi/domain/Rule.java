@@ -105,6 +105,7 @@ public class Rule {
 
   private final String language;
   private String key = null;
+  private String lookupKey = null;
   private String repo = null;
   private Status status = null;
   private Type type = Type.CODE_SMELL;
@@ -322,6 +323,14 @@ public class Rule {
 
   public void setKey(String key) {
     this.key = key;
+  }
+
+  public String getLookupKey() {
+    return lookupKey;
+  }
+
+  public void setLookupKey(String lookupKey) {
+    this.lookupKey = lookupKey;
   }
 
   public Status getStatus() {

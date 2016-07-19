@@ -33,6 +33,7 @@ public class RuleMakerTest {
     Rule rule = RuleMaker.getRuleByKey("S1234", "Java");
     assertThat(rule).isNotNull();
     assertThat(rule.getKey()).isEqualTo("RSPEC-1234");
+    assertThat(rule.getLookupKey()).isEqualTo("S1234");
   }
 
 
