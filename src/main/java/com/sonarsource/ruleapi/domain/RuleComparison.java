@@ -442,8 +442,8 @@ public class RuleComparison{
       return Integer.valueOf(aList.size()).compareTo(bList.size());
     }
 
-    java.util.Collections.sort(aList);
-    java.util.Collections.sort(bList);
+    Collections.sort(aList);
+    Collections.sort(bList);
 
     for (int i = 0; i < aList.size(); i++) {
       int result = aList.get(i).compareTo(bList.get(i));
@@ -475,8 +475,8 @@ public class RuleComparison{
       return Integer.valueOf(aList.size()).compareTo(bList.size());
     }
 
-    java.util.Collections.sort(aList);
-    java.util.Collections.sort(bList);
+    Collections.sort(aList);
+    Collections.sort(bList);
 
     for (int i = 0; i < aList.size(); i++) {
       int result = aList.get(i).compareTo(bList.get(i));
@@ -494,8 +494,8 @@ public class RuleComparison{
     List<String> aList = new ArrayList<>(spec.getTags());
     List<String> bList = new ArrayList<>(impl.getTags());
 
-    java.util.Collections.sort(aList);
-    java.util.Collections.sort(bList);
+    Collections.sort(aList);
+    Collections.sort(bList);
 
     List<String> missingFromSpec = new ArrayList<>(aList);
     missingFromSpec.removeAll(bList);
@@ -526,8 +526,8 @@ public class RuleComparison{
       return Integer.valueOf(aList.size()).compareTo(bList.size());
     }
 
-    java.util.Collections.sort(aList);
-    java.util.Collections.sort(bList);
+    Collections.sort(aList);
+    Collections.sort(bList);
 
     for (int i = 0; i < aList.size(); i++) {
       int result = aList.get(i).compareTo(bList.get(i));
