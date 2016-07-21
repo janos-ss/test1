@@ -64,7 +64,8 @@ public class HtmlSanitizerTest {
         "<pre>\n" +
         "one two three four five six seven eight seven eight nine ten\n" +
         "one two three four five six seven eight seven eight nine ten\n" +
-        "</pre>\n")
+        "</pre> " +
+        "<p>one two</p>\n")
     ).isEqualTo("" +
         "<p>one two three <code>four\n" +
         "five</code> six seven eight\n" +
@@ -72,7 +73,8 @@ public class HtmlSanitizerTest {
         "<pre>\n" +
         "one two three four five six seven eight seven eight nine ten\n" +
         "one two three four five six seven eight seven eight nine ten\n" +
-        "</pre>\n");
+        "</pre>\n" +
+        "<p>one two</p>\n");
   }
 
   @Test

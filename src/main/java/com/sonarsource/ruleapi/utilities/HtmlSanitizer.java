@@ -44,6 +44,7 @@ public class HtmlSanitizer {
     String[] lines = html.split("\n");
     boolean inPreTag = false;
     for (String line : lines) {
+      line = trimRight(line);
       if (!isImpactedByPreTagStatus(inPreTag, line)) {
         writeWrapped(out, line);
       } else {
@@ -55,7 +56,7 @@ public class HtmlSanitizer {
   }
 
   private void writeWrapped(StringBuilder out, String line) {
-    String remaining = trimRight(line);
+    String remaining = line;
     if (remaining.length() <= wrapWidth) {
       out.append(remaining).append('\n');
       return;
