@@ -28,7 +28,7 @@ public class JiraFetcherImpl implements JiraFetcher {
 
   private static final String FIELDS = "&fields=*all%2c-comment%2c-assignee%2c-project%2c-reporter%2c-creator%2c-votes%2c-watches%2c-parent";
   private static final String SEARCH = "search?expand=names&maxResults=1000&jql=";
-  private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype = Specification AND ";
+  private static final String BASE_QUERY = "project=RSPEC AND resolution = Unresolved AND issuetype != Language-Specification AND ";
 
   private static final String ENCODING = "UTF-8";
   private static final String ISSUES = "issues";
