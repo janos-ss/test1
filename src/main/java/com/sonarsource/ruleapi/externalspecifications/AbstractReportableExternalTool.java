@@ -65,7 +65,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     initCoverageResults(instance);
     computeCoverage();
 
-    String linebreak = String.format("%n");
+    String linebreak = System.lineSeparator();
 
     int count = getCodingStandardRules().length;
     int unspecified = count - specified - skipped;

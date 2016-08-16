@@ -166,7 +166,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     initCoverageResults(instance);
     computeCoverage();
 
-    String newline = String.format("%n");
+    String newline = System.lineSeparator();
     StringBuilder sb = new StringBuilder();
     sb.append(newline).append(getStandardName()).append(newline);
 

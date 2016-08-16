@@ -118,7 +118,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
 
     language = null;
 
-    String newline = String.format("%n");
+    String newline = System.lineSeparator();
 
     initCoverageResults(instance);
 

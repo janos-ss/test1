@@ -130,7 +130,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
 
     StringBuilder buff = new StringBuilder();
     String indent = "\t";
-    String linebreak = String.format("%n");
+    String linebreak = System.lineSeparator();
 
     buff.append(getStandardName()).append(linebreak);
 
@@ -154,7 +154,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     StringBuilder buff = new StringBuilder();
     String na = "NA\t";
     String indent = "\t";
-    String linebreak = String.format("%n");
+    String linebreak = System.lineSeparator();
 
     for (CodingStandardRule rule : getCodingStandardRules()) {
       String ruleId = rule.getCodingStandardRuleId();
