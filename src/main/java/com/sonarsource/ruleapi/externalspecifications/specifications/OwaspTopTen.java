@@ -108,7 +108,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
     if (language != null) {
       sb.append(" for ").append(getLanguage().getRspec());
     }
-    sb.append(String.format("%n"));
+    sb.append(System.lineSeparator());
 
     return sb.toString();
   }
@@ -152,7 +152,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
 
     language = null;
 
-    String newline = String.format("%n");
+    String newline = System.lineSeparator();
 
     initCoverageResults(instance);
 
