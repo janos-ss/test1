@@ -317,6 +317,7 @@ public class RuleTest {
     // well formatted nice looking JSON with ordered fields
     final String expected1 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"type\": \"CODE_SMELL\",\n" +
             "  \"status\": \"deprecated\",\n" +
             "  \"remediation\": {\n" +
             "    \"func\": \"Constant\\/Issue\",\n" +
@@ -337,6 +338,7 @@ public class RuleTest {
     rule.setSeverity(Rule.Severity.BLOCKER);
     final String expected2 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"type\": \"CODE_SMELL\",\n" +
             "  \"status\": \"ready\",\n" +
             "  \"remediation\": {\n" +
             "    \"func\": \"Linear\",\n" +
@@ -358,6 +360,7 @@ public class RuleTest {
     rule.setSqaleRemediationFunction (null);
     final String expected3 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"type\": \"CODE_SMELL\",\n" +
             "  \"status\": \"beta\",\n" +
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
