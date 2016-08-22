@@ -19,6 +19,7 @@ public class FetcherIntegrationTest {
     // pre-cache fetch
     JSONObject byKeyFromJira = fetcher.fetchIssueByKey("S1234");
     JSONObject byLegacyKeyFromJira = fetcher.fetchIssueByKey("Union");
+    byLegacyKeyFromJira.remove("names");
 
     assertThat(byKeyFromJira.get("key")).isEqualTo("RSPEC-1234");
     assertThat(byLegacyKeyFromJira.get("key")).isEqualTo("RSPEC-953"); // PC-Lint
@@ -28,6 +29,7 @@ public class FetcherIntegrationTest {
 
     JSONObject byKeyFromCache = fetcher.fetchIssueByKey("S1234");
     JSONObject byLegacyKeyFromCache = fetcher.fetchIssueByKey("Union");
+    byLegacyKeyFromCache.remove("names");
 
     // field value differs by retrieval method (/issue vs /search)
     byKeyFromJira.remove("expand");
