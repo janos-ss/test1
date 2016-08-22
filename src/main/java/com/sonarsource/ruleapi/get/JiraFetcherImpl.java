@@ -94,7 +94,7 @@ public class JiraFetcherImpl implements JiraFetcher {
   }
 
   private static boolean isSpecification(JSONObject issue) {
-    return "Specification".equals(JiraHelper.getJsonFieldValue(issue, "issuetype"));
+    return !("Language-Specification".equals(JiraHelper.getJsonFieldValue(issue, "issuetype")));
   }
 
   private static boolean legacyKeyFieldMatches(JSONObject issue, String key) {
