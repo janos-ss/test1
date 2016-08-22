@@ -30,10 +30,10 @@ public class RuleMakerTest {
   @Test
   public void testGetRuleByKey(){
 
-    Rule rule = RuleMaker.getRuleByKey("S1234", "Java");
+    Rule rule = RuleMaker.getRuleByKey("S2210", "Java");
     assertThat(rule).isNotNull();
-    assertThat(rule.getKey()).isEqualTo("RSPEC-1234");
-    assertThat(rule.getLookupKey()).isEqualTo("S1234");
+    assertThat(rule.getKey()).isEqualTo("RSPEC-2210");
+    assertThat(rule.getLookupKey()).isEqualTo("S2210");
   }
 
 

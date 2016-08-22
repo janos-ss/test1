@@ -147,6 +147,7 @@ public class RuleFilesService {
   private void writeProfiles(Set<RulesProfile> profilesToUpdate) {
     for (RulesProfile rulesProfile : profilesToUpdate) {
       System.out.println(String.format("Updating profile %s", rulesProfile.name));
+
       // can't set a 'Comparator' to a SortedSet de-serialized by gson
       // that's why RulesProfile.ruleKeys is a List re-ordered before saving
       rulesProfile.ruleKeys.sort(CaseInsensitiveSimpleNaturalComparator.getInstance());

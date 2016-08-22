@@ -95,7 +95,7 @@ public class Rule {
       }
 
       for (Type type : Type.values()) {
-        if (type.name().equals(value)) {
+        if (type.name().equals(value) || value.startsWith(type.typeName)) {
           return type;
         }
       }
@@ -272,6 +272,7 @@ public class Rule {
 
     LinkedHashMap objOrderedFields = new LinkedHashMap();
     objOrderedFields.put("title", this.title);
+    objOrderedFields.put("type", this.getType().name());
 
     if (this.status != null) {
       objOrderedFields.put("status", this.status.getStatusName());

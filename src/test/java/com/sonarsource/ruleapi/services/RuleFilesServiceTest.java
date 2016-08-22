@@ -162,23 +162,23 @@ public class RuleFilesServiceTest {
     RuleFilesService rfs = RuleFilesService.create(outputDir.toString(), Language.fromString("c"), true, false);
 
     rfs.generateRuleFiles(Arrays.asList(
-        "S1234",
+        "S3646",
         "NamespaceName" // RSPEC-2304
     ));
 
     // record checksums
-    File S1234HtmlFile = new File(outputDir.getAbsolutePath() + File.separator + "S1234.html");
-    assertThat(S1234HtmlFile.exists()).isTrue();
-    long S1234HtmlChecksum = org.apache.commons.io.FileUtils.checksumCRC32(S1234HtmlFile);
-    File S1234JsonFile = new File(outputDir.getAbsolutePath() + File.separator + "S1234.json");
-    assertThat(S1234JsonFile.exists()).isTrue();
+    File S3646HtmlFile = new File(outputDir.getAbsolutePath() + File.separator + "S3646.html");
+    assertThat(S3646HtmlFile.exists()).isTrue();
+    long S3646HtmlChecksum = org.apache.commons.io.FileUtils.checksumCRC32(S3646HtmlFile);
+    File S3646JsonFile = new File(outputDir.getAbsolutePath() + File.separator + "S3646.json");
+    assertThat(S3646JsonFile.exists()).isTrue();
     File S2304HtmlFile = new File(outputDir.getAbsolutePath() + File.separator + "NamespaceName.html");
     assertThat(S2304HtmlFile.exists()).isTrue();
     File S2304JsonFile = new File(outputDir.getAbsolutePath() + File.separator + "NamespaceName.json");
     assertThat(S2304JsonFile.exists()).isTrue();
     long S2304JsonChecksum = org.apache.commons.io.FileUtils.checksumCRC32(S2304JsonFile);
 
-    try (PrintWriter writer = new PrintWriter(S1234HtmlFile)) {
+    try (PrintWriter writer = new PrintWriter(S3646HtmlFile)) {
       writer.print("Lorem ipsum dolor sit amet");
     }
     try (PrintWriter writer = new PrintWriter(S2304JsonFile)) {
@@ -188,7 +188,7 @@ public class RuleFilesServiceTest {
     // fire
     rfs.updateDescriptions();
 
-    assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S1234HtmlFile)).isEqualTo(S1234HtmlChecksum);
+    assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S3646HtmlFile)).isEqualTo(S3646HtmlChecksum);
     assertThat(org.apache.commons.io.FileUtils.checksumCRC32(S2304JsonFile)).isEqualTo(S2304JsonChecksum);
   }
 

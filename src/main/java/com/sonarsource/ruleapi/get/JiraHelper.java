@@ -9,12 +9,11 @@ import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
-import java.util.HashSet;
-import java.util.Set;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +65,8 @@ public class JiraHelper {
 
     rule.setTags(getListFromJsonFieldValue(issue, "labels"));
 
-    setType(rule);
+    rule.setType(Rule.Type.fromString(getJsonFieldValue(issue, "issuetype")));
+
 
     setReferences(rule, issue);
   }
@@ -283,17 +283,6 @@ public class JiraHelper {
       }
     }
     return list;
-  }
-
-  protected static void setType(Rule rule) {
-
-    Set<String> tags = rule.getTags();
-    if (tags.contains("bug")){
-      rule.setType(Rule.Type.BUG);
-    } else if (tags.contains("security")) {
-      rule.setType(Rule.Type.VULNERABILITY);
-    }
-
   }
 
   public static List<Parameter> handleParameterList(String paramString, String language) {
