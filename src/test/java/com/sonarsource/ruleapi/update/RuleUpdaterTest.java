@@ -120,7 +120,6 @@ public class RuleUpdaterTest {
       JSONObject fieldsMeta = (JSONObject) parser.parse(FIELDS_META);
 
       List<Profile> profiles = new ArrayList<>();
-      profiles.add(new Profile("Security Way"));
       profiles.add(new Profile("SonarQube Way"));
 
       Map<String, Object> map = new HashMap<>();
@@ -131,7 +130,7 @@ public class RuleUpdaterTest {
       fail("Unexpected exception thrown");
     }
 
-    Assertions.assertThat(obj.toJSONString()).isEqualTo("{\"fields\":{\"customfield_10830\":[{\"id\":\"10621\"},{\"id\":\"10620\"}]}}");
+    Assertions.assertThat(obj.toJSONString()).isEqualTo("{\"fields\":{\"customfield_10830\":[{\"id\":\"10620\"}]}}");
   }
 
   @Test
