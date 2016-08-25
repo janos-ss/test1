@@ -5,7 +5,6 @@
  */
 package com.sonarsource.ruleapi.domain;
 
-import com.sonarsource.ruleapi.get.RuleMaker;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -233,8 +232,8 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    spec.setSqaleConstantCostOrLinearThreshold("5min");
-    impl.setSqaleConstantCostOrLinearThreshold("5min");
+    spec.setConstantCostOrLinearThreshold("5min");
+    impl.setConstantCostOrLinearThreshold("5min");
 
     assertThat(rc.compare()).isEqualTo(0);
   }
@@ -245,8 +244,8 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    spec.setSqaleConstantCostOrLinearThreshold("5 MN");
-    impl.setSqaleConstantCostOrLinearThreshold("5min");
+    spec.setConstantCostOrLinearThreshold("5 MN");
+    impl.setConstantCostOrLinearThreshold("5min");
 
     assertThat(rc.compare()).isEqualTo(0);
   }
@@ -257,8 +256,8 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    spec.setSqaleConstantCostOrLinearThreshold("1 h");
-    impl.setSqaleConstantCostOrLinearThreshold("5min");
+    spec.setConstantCostOrLinearThreshold("1 h");
+    impl.setConstantCostOrLinearThreshold("5min");
 
     assertThat(rc.compare()).isEqualTo(1);
   }
@@ -269,7 +268,7 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    spec.setSqaleConstantCostOrLinearThreshold("5min");
+    spec.setConstantCostOrLinearThreshold("5min");
 
     assertThat(rc.compare()).isEqualTo(-1);
   }
@@ -429,8 +428,8 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    spec.setSqaleConstantCostOrLinearThreshold("5min");
-    impl.setSqaleConstantCostOrLinearThreshold("5min");
+    spec.setConstantCostOrLinearThreshold("5min");
+    impl.setConstantCostOrLinearThreshold("5min");
 
     assertThat(rc.toString()).hasSize(0);
   }
@@ -441,8 +440,8 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    spec.setSqaleConstantCostOrLinearThreshold("5 MN");
-    impl.setSqaleConstantCostOrLinearThreshold("5min");
+    spec.setConstantCostOrLinearThreshold("5 MN");
+    impl.setConstantCostOrLinearThreshold("5min");
 
     assertThat(rc.toString()).hasSize(0);
   }
@@ -453,8 +452,8 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    spec.setSqaleConstantCostOrLinearThreshold("1 h");
-    impl.setSqaleConstantCostOrLinearThreshold("5min");
+    spec.setConstantCostOrLinearThreshold("1 h");
+    impl.setConstantCostOrLinearThreshold("5min");
 
     assertThat(rc.compare()).isEqualTo(1);
   }
@@ -699,12 +698,12 @@ public class RuleComparisonTest {
   }
 
   @Test
-  public void differentSqaleRemediation() {
+  public void differentRemediation() {
     Rule spec = new Rule(LANG);
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    spec.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
+    spec.setRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
 
     assertThat(rc.compare()).isEqualTo(-1);
   }
@@ -715,7 +714,7 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    spec.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
+    spec.setRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
             "  Remediation function\n" +
@@ -731,7 +730,7 @@ public class RuleComparisonTest {
 
     String str = "this is a test";
 
-    spec.setSqaleLinearArgDesc(str);
+    spec.setLinearArgDesc(str);
 
     assertThat(rc.compare()).isEqualTo(1);
   }
@@ -744,7 +743,7 @@ public class RuleComparisonTest {
 
     String str = "this is a test";
 
-    spec.setSqaleLinearArgDesc(str);
+    spec.setLinearArgDesc(str);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
             "  Linear argument\n" +
@@ -760,7 +759,7 @@ public class RuleComparisonTest {
 
     String str = "this is a test";
 
-    spec.setSqaleLinearFactor(str);
+    spec.setLinearFactor(str);
 
     assertThat(rc.compare()).isEqualTo(-1);
   }
@@ -771,8 +770,8 @@ public class RuleComparisonTest {
     Rule impl = new Rule(LANG);
     RuleComparison rc = new RuleComparison(spec, impl);
 
-    spec.setSqaleLinearFactor("5min");
-    impl.setSqaleLinearFactor("5mn");
+    spec.setLinearFactor("5min");
+    impl.setLinearFactor("5mn");
 
     assertThat(rc.compare()).isEqualTo(0);
   }
@@ -785,7 +784,7 @@ public class RuleComparisonTest {
 
     String str = "this is a test";
 
-    spec.setSqaleLinearFactor(str);
+    spec.setLinearFactor(str);
 
     assertThat(rc.toString()).isEqualTo("null\n" +
             "  Linear factor\n" +

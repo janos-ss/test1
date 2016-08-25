@@ -128,11 +128,11 @@ public class Rule {
   private String references = "";
   private String deprecation = "";
 
-  private RemediationFunction sqaleRemediationFunction = null;
-  private String sqaleConstantCostOrLinearThreshold = null;
-  private String sqaleLinearArgDesc = null;
-  private String sqaleLinearFactor = null;
-  private String sqaleLinearOffset = null;
+  private RemediationFunction remediationFunction = null;
+  private String constantCostOrLinearThreshold = null;
+  private String linearArgDesc = null;
+  private String linearFactor = null;
+  private String linearOffset = null;
 
   private List<Parameter> parameterList = new ArrayList<>();
   private Set<String> tags = new HashSet<>();
@@ -184,7 +184,7 @@ public class Rule {
       this.parameterList = subRule.parameterList;
     }
     mergeDescriptionPieces(subRule);
-    mergeSqalePieces(subRule);
+    mergeRemediationPieces(subRule);
     mergeDefaultProfiles(subRule);
 
     tags.addAll(subRule.getTags());
@@ -204,26 +204,26 @@ public class Rule {
     }
   }
 
-  protected void mergeSqalePieces(Rule subRule) {
+  protected void mergeRemediationPieces(Rule subRule) {
 
-    if (subRule.sqaleRemediationFunction != null) {
-      this.sqaleRemediationFunction = subRule.sqaleRemediationFunction;
+    if (subRule.remediationFunction != null) {
+      this.remediationFunction = subRule.remediationFunction;
     }
 
-    if (!Strings.isNullOrEmpty(subRule.sqaleConstantCostOrLinearThreshold)) {
-      this.sqaleConstantCostOrLinearThreshold = subRule.sqaleConstantCostOrLinearThreshold;
+    if (!Strings.isNullOrEmpty(subRule.constantCostOrLinearThreshold)) {
+      this.constantCostOrLinearThreshold = subRule.constantCostOrLinearThreshold;
     }
 
-    if (!Strings.isNullOrEmpty(subRule.sqaleLinearArgDesc)) {
-      this.sqaleLinearArgDesc = subRule.sqaleLinearArgDesc;
+    if (!Strings.isNullOrEmpty(subRule.linearArgDesc)) {
+      this.linearArgDesc = subRule.linearArgDesc;
     }
 
-    if (!Strings.isNullOrEmpty(subRule.sqaleLinearFactor)) {
-      this.sqaleLinearFactor = subRule.sqaleLinearFactor;
+    if (!Strings.isNullOrEmpty(subRule.linearFactor)) {
+      this.linearFactor = subRule.linearFactor;
     }
 
-    if (!Strings.isNullOrEmpty(subRule.sqaleLinearOffset)) {
-      this.sqaleLinearOffset = subRule.sqaleLinearOffset;
+    if (!Strings.isNullOrEmpty(subRule.linearOffset)) {
+      this.linearOffset = subRule.linearOffset;
     }
   }
 
@@ -278,24 +278,24 @@ public class Rule {
       objOrderedFields.put("status", this.status.getStatusName());
     }
 
-    if (this.sqaleRemediationFunction != null) {
+    if (this.remediationFunction != null) {
       LinkedHashMap remediation = new LinkedHashMap();
-      remediation.put("func", this.sqaleRemediationFunction.getFunctionName());
-      switch (this.sqaleRemediationFunction) {
+      remediation.put("func", this.remediationFunction.getFunctionName());
+      switch (this.remediationFunction) {
         case CONSTANT_ISSUE:
-          remediation.put("constantCost", this.sqaleConstantCostOrLinearThreshold);
+          remediation.put("constantCost", this.constantCostOrLinearThreshold);
           break;
         case LINEAR:
-          remediation.put("linearDesc", this.sqaleLinearArgDesc);
-          remediation.put("linearFactor", this.sqaleLinearFactor);
+          remediation.put("linearDesc", this.linearArgDesc);
+          remediation.put("linearFactor", this.linearFactor);
           break;
         case LINEAR_OFFSET:
-          remediation.put("linearDesc", this.sqaleLinearArgDesc);
-          remediation.put("linearOffset", this.sqaleLinearOffset);
-          remediation.put("linearFactor", this.sqaleLinearFactor);
+          remediation.put("linearDesc", this.linearArgDesc);
+          remediation.put("linearOffset", this.linearOffset);
+          remediation.put("linearFactor", this.linearFactor);
           break;
         default:
-          throw new IllegalStateException("Unknown sqaleRemediationFunction");
+          throw new IllegalStateException("Unknown remediationFunction");
       }
       objOrderedFields.put("remediation", remediation);
     }
@@ -367,20 +367,20 @@ public class Rule {
     this.fullDescription = fullDescription;
   }
 
-  public RemediationFunction getSqaleRemediationFunction() {
-    return sqaleRemediationFunction;
+  public RemediationFunction getRemediationFunction() {
+    return remediationFunction;
   }
 
-  public void setSqaleRemediationFunction(RemediationFunction sqaleRemediationFunction) {
-    this.sqaleRemediationFunction = sqaleRemediationFunction;
+  public void setRemediationFunction(RemediationFunction remediationFunction) {
+    this.remediationFunction = remediationFunction;
   }
 
-  public String getSqaleConstantCostOrLinearThreshold() {
-    return sqaleConstantCostOrLinearThreshold;
+  public String getConstantCostOrLinearThreshold() {
+    return constantCostOrLinearThreshold;
   }
 
-  public void setSqaleConstantCostOrLinearThreshold(String sqaleConstantCostOrLinearThreshold) {
-    this.sqaleConstantCostOrLinearThreshold = sqaleConstantCostOrLinearThreshold;
+  public void setConstantCostOrLinearThreshold(String constantCostOrLinearThreshold) {
+    this.constantCostOrLinearThreshold = constantCostOrLinearThreshold;
   }
 
   public String getTitle() {
@@ -475,34 +475,34 @@ public class Rule {
     return language;
   }
 
-  public String getSqaleLinearArgDesc() {
+  public String getLinearArgDesc() {
 
-    return sqaleLinearArgDesc;
+    return linearArgDesc;
   }
 
-  public void setSqaleLinearArgDesc(String sqaleLinearArgDesc) {
+  public void setLinearArgDesc(String linearArgDesc) {
 
-    this.sqaleLinearArgDesc = sqaleLinearArgDesc;
+    this.linearArgDesc = linearArgDesc;
   }
 
-  public String getSqaleLinearFactor() {
+  public String getLinearFactor() {
 
-    return sqaleLinearFactor;
+    return linearFactor;
   }
 
-  public void setSqaleLinearFactor(String sqaleLinearFactor) {
+  public void setLinearFactor(String linearFactor) {
 
-    this.sqaleLinearFactor = sqaleLinearFactor;
+    this.linearFactor = linearFactor;
   }
 
-  public String getSqaleLinearOffset() {
+  public String getLinearOffset() {
 
-    return sqaleLinearOffset;
+    return linearOffset;
   }
 
-  public void setSqaleLinearOffset(String sqaleLinearOffset) {
+  public void setLinearOffset(String linearOffset) {
 
-    this.sqaleLinearOffset = sqaleLinearOffset;
+    this.linearOffset = linearOffset;
   }
 
   public boolean isTemplate() {

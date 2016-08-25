@@ -47,9 +47,9 @@ public class SonarQubeHelper {
     RuleMaker.setDescription(rule, (String) jsonRule.get("htmlDesc"), false);
 
     RuleMaker.setRemediationFunction(rule, (String) jsonRule.get("defaultDebtRemFnType"));
-    setSqaleConstantValueFromSqInstance(rule, (String) jsonRule.get("defaultRemFnBaseEffort"));
-    rule.setSqaleLinearFactor((String) jsonRule.get("defaultRemFnGapMultiplier"));
-    rule.setSqaleLinearArgDesc((String) jsonRule.get("gapDescription"));
+    setRemediationConstantValueFromSqInstance(rule, (String) jsonRule.get("defaultRemFnBaseEffort"));
+    rule.setLinearFactor((String) jsonRule.get("defaultRemFnGapMultiplier"));
+    rule.setLinearArgDesc((String) jsonRule.get("gapDescription"));
 
     handleTags(jsonRule, rule);
 
@@ -108,21 +108,21 @@ public class SonarQubeHelper {
     }
   }
 
-  protected static void setSqaleConstantValueFromSqInstance(Rule rule, String value) {
+  protected static void setRemediationConstantValueFromSqInstance(Rule rule, String value) {
 
-    rule.setSqaleConstantCostOrLinearThreshold(null);
-    rule.setSqaleLinearOffset(null);
+    rule.setConstantCostOrLinearThreshold(null);
+    rule.setLinearOffset(null);
 
-    Rule.RemediationFunction remFun = rule.getSqaleRemediationFunction();
+    Rule.RemediationFunction remFun = rule.getRemediationFunction();
     if (remFun == null) {
       return;
     }
 
     if (remFun == Rule.RemediationFunction.LINEAR_OFFSET) {
-      rule.setSqaleLinearOffset(value);
+      rule.setLinearOffset(value);
 
     } else if (remFun == Rule.RemediationFunction.CONSTANT_ISSUE) {
-      rule.setSqaleConstantCostOrLinearThreshold(value);
+      rule.setConstantCostOrLinearThreshold(value);
 
     }
   }

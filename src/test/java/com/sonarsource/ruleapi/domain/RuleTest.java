@@ -18,32 +18,32 @@ public class RuleTest {
   private static final String LANG = "Java";
 
   @Test
-  public void testMergeSqale() {
+  public void testMergeRemediation() {
 
     Rule r1 = new Rule("Java");
     Rule r2 = new Rule("Java");
 
-    r2.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
-    r2.setSqaleConstantCostOrLinearThreshold("10min");
+    r2.setRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
+    r2.setConstantCostOrLinearThreshold("10min");
 
-    r1.mergeSqalePieces(r2);
+    r1.mergeRemediationPieces(r2);
 
-    assertThat(r1.getSqaleRemediationFunction()).isEqualTo(r2.getSqaleRemediationFunction());
-    assertThat(r1.getSqaleConstantCostOrLinearThreshold()).isEqualTo(r2.getSqaleConstantCostOrLinearThreshold());
+    assertThat(r1.getRemediationFunction()).isEqualTo(r2.getRemediationFunction());
+    assertThat(r1.getConstantCostOrLinearThreshold()).isEqualTo(r2.getConstantCostOrLinearThreshold());
   }
 
   @Test
-  public void testMergeSqaleNulls() {
+  public void testMergeRemediationNulls() {
     Rule r1 = new Rule("Java");
     Rule r2 = new Rule("Java");
 
-    r1.setSqaleRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
-    r1.setSqaleConstantCostOrLinearThreshold("10min");
+    r1.setRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
+    r1.setConstantCostOrLinearThreshold("10min");
 
-    r1.mergeSqalePieces(r2);
+    r1.mergeRemediationPieces(r2);
 
-    assertThat(r1.getSqaleRemediationFunction()).isEqualTo(Rule.RemediationFunction.CONSTANT_ISSUE);
-    assertThat(r1.getSqaleConstantCostOrLinearThreshold()).isEqualTo("10min");
+    assertThat(r1.getRemediationFunction()).isEqualTo(Rule.RemediationFunction.CONSTANT_ISSUE);
+    assertThat(r1.getConstantCostOrLinearThreshold()).isEqualTo("10min");
 
   }
 
@@ -307,8 +307,8 @@ public class RuleTest {
     HashSet<Profile> defaultProfiles = new HashSet<>();
     defaultProfiles.add(new Profile("bar"));
     rule.setDefaultProfiles(defaultProfiles);
-    rule.setSqaleRemediationFunction (Rule.RemediationFunction.CONSTANT_ISSUE);
-    rule.setSqaleConstantCostOrLinearThreshold("17 seconds");
+    rule.setRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
+    rule.setConstantCostOrLinearThreshold("17 seconds");
     ArrayList<String> tags = new ArrayList<>(1);
     tags.add("qux");
     rule.setTags(tags);
@@ -332,9 +332,9 @@ public class RuleTest {
     assertThat( rule.getSquidJson()).isEqualTo(expected1);
 
     rule.setStatus(Rule.Status.READY);
-    rule.setSqaleRemediationFunction (Rule.RemediationFunction.LINEAR);
-    rule.setSqaleLinearArgDesc("dolor sit amet");
-    rule.setSqaleLinearFactor("666");
+    rule.setRemediationFunction(Rule.RemediationFunction.LINEAR);
+    rule.setLinearArgDesc("dolor sit amet");
+    rule.setLinearFactor("666");
     rule.setSeverity(Rule.Severity.BLOCKER);
     final String expected2 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
@@ -357,7 +357,7 @@ public class RuleTest {
     rule.setStatus(Rule.Status.BETA);
   // without the optional fields
     rule.setSeverity(null);
-    rule.setSqaleRemediationFunction (null);
+    rule.setRemediationFunction(null);
     final String expected3 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
             "  \"type\": \"CODE_SMELL\",\n" +

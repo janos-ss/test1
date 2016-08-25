@@ -142,27 +142,27 @@ public class RuleComparison{
   }
 
   private int compareRemediation() {
-    int result = compareSqaleRemediationFunction();
+    int result = compareRemediationFunction();
     if (result != 0) {
       return result;
     }
 
-    result = compareSqaleConstantCost();
+    result = compareConstantCost();
     if (result != 0) {
       return result;
     }
 
-    result = compareSqaleLinearArg();
+    result = compareLinearArg();
     if (result != 0) {
       return result;
     }
 
-    result = compareSqaleLinearFactor();
+    result = compareLinearFactor();
     if (result != 0) {
       return result;
     }
 
-    result = compareSqaleLinearOffset();
+    result = compareLinearOffset();
     return result;
   }
 
@@ -197,7 +197,7 @@ public class RuleComparison{
 
     sb.append(toStringForDescription());
 
-    sb.append(toStringForSqale());
+    sb.append(toStringForRemediation());
 
     if (compareParameterList() != 0) {
       logDifference(sb, "parameter list",
@@ -249,28 +249,28 @@ public class RuleComparison{
     return sb.toString();
   }
 
-  private String toStringForSqale() {
+  private String toStringForRemediation() {
 
     StringBuilder sb = new StringBuilder();
 
-    if (compareSqaleRemediationFunction() != 0) {
-      logDifference(sb, "Remediation function", spec.getSqaleRemediationFunction(), impl.getSqaleRemediationFunction());
+    if (compareRemediationFunction() != 0) {
+      logDifference(sb, "Remediation function", spec.getRemediationFunction(), impl.getRemediationFunction());
     }
 
-    if (compareSqaleConstantCost() != 0) {
-      logDifference(sb, "Constant cost or linear threshold", spec.getSqaleConstantCostOrLinearThreshold(), impl.getSqaleConstantCostOrLinearThreshold());
+    if (compareConstantCost() != 0) {
+      logDifference(sb, "Constant cost or linear threshold", spec.getConstantCostOrLinearThreshold(), impl.getConstantCostOrLinearThreshold());
     }
 
-    if (compareSqaleLinearArg() != 0) {
-      logDifference(sb, "Linear argument", spec.getSqaleLinearArgDesc(), impl.getSqaleLinearArgDesc());
+    if (compareLinearArg() != 0) {
+      logDifference(sb, "Linear argument", spec.getLinearArgDesc(), impl.getLinearArgDesc());
     }
 
-    if (compareSqaleLinearFactor() != 0) {
-      logDifference(sb, "Linear factor", spec.getSqaleLinearFactor(), impl.getSqaleLinearFactor());
+    if (compareLinearFactor() != 0) {
+      logDifference(sb, "Linear factor", spec.getLinearFactor(), impl.getLinearFactor());
     }
 
-    if (compareSqaleLinearOffset() != 0) {
-      logDifference(sb, "Linear offset", spec.getSqaleLinearOffset(), impl.getSqaleLinearOffset());
+    if (compareLinearOffset() != 0) {
+      logDifference(sb, "Linear offset", spec.getLinearOffset(), impl.getLinearOffset());
     }
     return sb.toString();
   }
@@ -371,31 +371,31 @@ public class RuleComparison{
     return spec.getType().compareTo(impl.getType());
   }
 
-  protected int compareSqaleRemediationFunction() {
-    int result = checkForNulls(spec.getSqaleRemediationFunction(), impl.getSqaleRemediationFunction());
-    if (result != 0 || spec.getSqaleRemediationFunction() == null) {
+  protected int compareRemediationFunction() {
+    int result = checkForNulls(spec.getRemediationFunction(), impl.getRemediationFunction());
+    if (result != 0 || spec.getRemediationFunction() == null) {
       return result;
     }
-    return spec.getSqaleRemediationFunction().compareTo(impl.getSqaleRemediationFunction());
+    return spec.getRemediationFunction().compareTo(impl.getRemediationFunction());
   }
 
-  protected int compareSqaleLinearArg() {
-    return ComparisonUtilities.compareStrings(spec.getSqaleLinearArgDesc(), impl.getSqaleLinearArgDesc());
+  protected int compareLinearArg() {
+    return ComparisonUtilities.compareStrings(spec.getLinearArgDesc(), impl.getLinearArgDesc());
   }
 
-  protected int compareSqaleLinearFactor() {
-    return compareSqaleTimeValue(spec.getSqaleLinearFactor(), impl.getSqaleLinearFactor());
+  protected int compareLinearFactor() {
+    return compareTimeValue(spec.getLinearFactor(), impl.getLinearFactor());
   }
 
-  protected int compareSqaleLinearOffset() {
-    return compareSqaleTimeValue(spec.getSqaleLinearOffset(), impl.getSqaleLinearOffset());
+  protected int compareLinearOffset() {
+    return compareTimeValue(spec.getLinearOffset(), impl.getLinearOffset());
   }
 
-  protected int compareSqaleConstantCost() {
-    return compareSqaleTimeValue(spec.getSqaleConstantCostOrLinearThreshold(), impl.getSqaleConstantCostOrLinearThreshold());
+  protected int compareConstantCost() {
+    return compareTimeValue(spec.getConstantCostOrLinearThreshold(), impl.getConstantCostOrLinearThreshold());
   }
 
-  protected int compareSqaleTimeValue(String a, String b) {
+  protected int compareTimeValue(String a, String b) {
 
     int result = checkForNulls(a, b);
     if (result != 0 || a == null) {

@@ -266,7 +266,7 @@ public class RuleMaker {
     if (! Strings.isNullOrEmpty(candidate)) {
       for (Rule.RemediationFunction fcn: Rule.RemediationFunction.values()) {
         if (fcn.name().equals(candidate) || fcn.getFunctionName().equals(candidate)) {
-          rule.setSqaleRemediationFunction(fcn);
+          rule.setRemediationFunction(fcn);
           return;
         }
       }
