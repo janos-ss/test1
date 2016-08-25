@@ -42,6 +42,18 @@ public class RuleSpec implements CustomerReport {
 
     StringBuilder sb = new StringBuilder();
 
+    sb.append("<style>\n" +
+            "td {\n" +
+            "  padding-top: 10px;\n" +
+            "  border-bottom:1pt solid black;\n" +
+            "  border-spacing: 10px;\n" +
+            "  border-collapse: separate;\n" +
+            "}\n" +
+            "\n" +
+            ".small { font-size: 75%;}\n" +
+            "\n" +
+            "</style>");
+
     sb.append("<h2>Backlog of Most Relevant Missing Rules</h2>\n")
             .append("<table><tr><th colspan='3'>By Language</th></tr>" +
                     "<tr><th class='left'>Stronly typed</th><th class='left'>Weakly typed</th><th class='left'>Legacy</th><th></th></tr>");
@@ -82,8 +94,9 @@ public class RuleSpec implements CustomerReport {
               .append(getMissing(Language.LOOSLY_TYPE_LANGUAGES, weak)).append(td)
               .append(getMissing(Language.LEGACY_LANGUAGES, legacy)).append(td)
               .append(Utilities.getJiraLinkedRuleReference(rule))
+              .append("<span class='small'>")
               .append(Utilities.setToString(rule.getCoveredLanguages(), true))
-              .append("</td></tr>");
+              .append("</span></td></tr>");
     }
 
     return sb.toString();
