@@ -252,11 +252,10 @@ public class RuleTest {
     Rule subRule = new Rule("");
     subRule.setTitle("Java");
     subRule.getDefaultProfiles().add(new Profile("Drupal"));
-    subRule.getDefaultProfiles().add(new Profile("Security Way"));
 
     rule.merge(subRule);
 
-    assertThat(rule.getDefaultProfiles()).hasSize(2);
+    assertThat(rule.getDefaultProfiles()).hasSize(1);
     assertThat(rule.getDefaultProfiles()).isNotSameAs(subRule.getDefaultProfiles());
   }
 

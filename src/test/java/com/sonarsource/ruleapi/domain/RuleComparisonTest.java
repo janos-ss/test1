@@ -873,7 +873,6 @@ public class RuleComparisonTest {
 
     Rule rule1 = new Rule("Java");
     rule1.getDefaultProfiles().add(new Profile("Sonar way"));
-    rule1.getDefaultProfiles().add(new Profile("Security Way"));
 
     Rule rule2 = new Rule("");
 
@@ -882,7 +881,7 @@ public class RuleComparisonTest {
 
     String expectedText = "null\n" +
             "  profile list\n" +
-            "    spec: Security Way, Sonar way, \n" +
+            "    spec: Sonar way, \n" +
             "    impl: \n";
     assertThat(rc.toString()).isEqualTo(expectedText);
 
@@ -895,7 +894,6 @@ public class RuleComparisonTest {
 
     Rule rule3 = new Rule("C#");
     rule3.getDefaultProfiles().add(new Profile("Sonar C# way"));
-    rule3.getDefaultProfiles().add(new Profile("Security Way"));
 
     rc = new RuleComparison(rule1, rule3);
     assertThat(rc.compare()).isEqualTo(0);
@@ -906,7 +904,7 @@ public class RuleComparisonTest {
     rc = new RuleComparison(rule1, rule4);
     expectedText = "null\n" +
             "  profile list\n" +
-            "    spec: Security Way, Sonar way, \n" +
+            "    spec: Sonar way, \n" +
             "    impl: Warrior's Way, \n";
     assertThat(rc.compare()).isEqualTo(-4);
     assertThat(rc.toString()).isEqualTo(expectedText);

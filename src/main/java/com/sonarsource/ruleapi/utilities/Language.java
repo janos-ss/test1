@@ -5,38 +5,38 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
+import org.fest.util.Strings;
+
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
-import org.fest.util.Strings;
 
 
 public enum Language {
-  //     SonarQube      RSpec          common repo  securityProfile
-  ABAP  ("abap",        "ABAP",        "common-abap",  false),
-  C     ("c",           "C",           "common-c",     false),
-  COBOL ("cobol",       "Cobol",       "common-cobol", false),
-  CPP   ("cpp",         "C++",         "common-cpp",   false),
-  CSH   ("csharpsquid", "C#",          "common-cs",    false),
-  FLEX  ("flex",        "Flex",        "common-flex",  false),
-  JAVA  ("squid",       "Java",        "common-java",  false),
-  JS    ("javascript",  "JavaScript",  "common-js",    false),
-  OBJC  ("objc",        "Objective-C", "common-objc",  false),
-  PHP   ("php",         "PHP",         "common-php",   false),
-  PLI   ("pli",         "PL/I",        "common-pli",   false),
-  PLSQL ("plsql",       "PL/SQL",      "common-plsql", false),
-  PY    ("python",      "Python",      "common-py",    false),
-  RPG   ("rpg",         "RPG",         "common-rpg",   false),
-  SWIFT ("swift",       "Swift",       "common-swift", false),
-  VB    ("vb",          "VB6",         "common-vb",    false),
-  VBNET ("vbnet",       "VB.Net",      "common-vbnet", false),
-  WEB   ("Web",         "Web",         "",             false),
-  XML   ("xml",         "XML",         "",             false);
+  //     SonarQube      RSpec          common repo  
+  ABAP  ("abap",        "ABAP",        "common-abap"),
+  C     ("c",           "C",           "common-c"),
+  COBOL ("cobol",       "Cobol",       "common-cobol"),
+  CPP   ("cpp",         "C++",         "common-cpp"),
+  CSH   ("csharpsquid", "C#",          "common-cs"),
+  FLEX  ("flex",        "Flex",        "common-flex"),
+  JAVA  ("squid",       "Java",        "common-java"),
+  JS    ("javascript",  "JavaScript",  "common-js"),
+  OBJC  ("objc",        "Objective-C", "common-objc"),
+  PHP   ("php",         "PHP",         "common-php"),
+  PLI   ("pli",         "PL/I",        "common-pli"),
+  PLSQL ("plsql",       "PL/SQL",      "common-plsql"),
+  PY    ("python",      "Python",      "common-py"),
+  RPG   ("rpg",         "RPG",         "common-rpg"),
+  SWIFT ("swift",       "Swift",       "common-swift"),
+  VB    ("vb",          "VB6",         "common-vb"),
+  VBNET ("vbnet",       "VB.Net",      "common-vbnet"),
+  WEB   ("Web",         "Web",         ""),
+  XML   ("xml",         "XML",         "");
 
   protected final String sq;
   protected final String rspec;
   protected final String sqCommon;
-  protected final boolean securityProfile;
 
   public static final Set<Language> LEGACY_LANGUAGES = Collections.unmodifiableSet(EnumSet.of(
           Language.ABAP,
@@ -62,11 +62,10 @@ public enum Language {
           Language.PY
   ));
 
-  Language(String sq, String rspec, String sqCommon, boolean securityProfile) {
+  Language(String sq, String rspec, String sqCommon) {
     this.sq = sq;
     this.rspec = rspec;
     this.sqCommon = sqCommon;
-    this.securityProfile = securityProfile;
   }
 
   public String getSq() {
@@ -80,11 +79,6 @@ public enum Language {
   public String getSqCommon() {
 
     return sqCommon;
-  }
-
-  public boolean hasSecurityProfile() {
-
-    return securityProfile;
   }
 
   public static Language fromString(String value) {
