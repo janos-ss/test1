@@ -48,6 +48,7 @@ public class IntegrityEnforcementService extends RuleManager {
   public void enforceIntegrity() {
     enforceTagReferenceIntegrity();
     cleanUpDeprecatedRules();
+    cleanUpSupersededRules();
     dropTargetedForIrrelevant();
     checkUrls();
   }
@@ -94,6 +95,44 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
+  protected void cleanUpSupersededRules() {
+    List<Rule> rules = RuleMaker.getRulesByJql(" issueFunction in hasLinks(\"is superceded by\") OR status = SUPERSEDED", "");
+    for (Rule rule : rules) {
+
+      Map<Rule,Map<String,Object>> replacingRules = getReplacingRules(rule);
+
+      getSupersederUpdates(rule, replacingRules);
+
+      processReplacementRuleUpdates(replacingRules);
+
+      if (!Rule.Status.SUPERSEDED.equals(rule.getStatus())) {
+        LOGGER.info("Setting status to SUPERSEDED for " + rule.getKey());
+        ruleUpdater.updateRuleStatus(rule.getKey(), Rule.Status.SUPERSEDED);
+      }
+    }
+  }
+
+  protected Map<Rule, Map<String, Object>> getSupersederUpdates(Rule oldRule, Map<Rule,Map<String,Object>> replacingRules) {
+
+    if (! replacingRules.isEmpty()) {
+      for (SupportedStandard scs : SupportedStandard.values()) {
+
+        Standard cs = scs.getStandard();
+        if (cs instanceof CodingStandard) {
+          copyReferencesToReplacingRules(oldRule, replacingRules, (CodingStandard) cs);
+        }
+      }
+
+      copyLanguagesToReplacingRules(oldRule, replacingRules);
+      copyTagsToReplacingRules(oldRule, replacingRules);
+      copyProfilesToReplacingRules(oldRule, replacingRules);
+
+      dropEmptyMapEntries(replacingRules);
+    }
+    return replacingRules;
+  }
+
+
   private void cleanUpDeprecatedRules() {
 
     List<Rule> rules = RuleMaker.getRulesByJql(" issueFunction in hasLinks(\"is deprecated by\") OR status = DEPRECATED", "");
@@ -101,13 +140,10 @@ public class IntegrityEnforcementService extends RuleManager {
 
       Map<String, Object> updates = new HashMap<>();
 
-      Map<Rule, Map<String, Object>> deprecatingRulesNeedingUpdate = getDeprecationUpdates(rule, updates);
+      Map<Rule,Map<String,Object>> deprecatingRulesNeedingUpdate = getReplacingRules(rule);
 
-      for (Map.Entry<Rule, Map<String,Object>> entry : deprecatingRulesNeedingUpdate.entrySet()) {
-        String newRuleKey = entry.getKey().getKey();
-        LOGGER.info("Submitting updates to replacement rule: " + newRuleKey);
-        ruleUpdater.updateRule(newRuleKey, entry.getValue());
-      }
+      getDeprecationUpdates(rule, updates, deprecatingRulesNeedingUpdate);
+      processReplacementRuleUpdates(deprecatingRulesNeedingUpdate);
 
       if (!Rule.Status.DEPRECATED.equals(rule.getStatus())) {
         LOGGER.info("Setting status to DEPRECATED for " + rule.getKey());
@@ -121,22 +157,23 @@ public class IntegrityEnforcementService extends RuleManager {
   }
 
   @VisibleForTesting
-  protected Map<Rule, Map<String, Object>> getDeprecationUpdates(Rule oldRule, Map<String, Object> oldRuleUpdates) {
+  protected Map<Rule, Map<String, Object>> getDeprecationUpdates(Rule oldRule, Map<String, Object> oldRuleUpdates,
+                                                                 Map<Rule,Map<String,Object>> newRules) {
 
-    Map<Rule,Map<String,Object>> newRules = new HashMap<>();
     for (SupportedStandard scs : SupportedStandard.values()) {
 
       Standard cs = scs.getStandard();
       if (cs instanceof CodingStandard) {
-        moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, (CodingStandard)cs);
+        moveReferencesToReplacingRules(oldRule, oldRuleUpdates, newRules, (CodingStandard) cs);
       }
     }
 
-    moveLanguagesToNewRules(oldRule, oldRuleUpdates, newRules);
-    moveTagsToNewRules(oldRule, oldRuleUpdates, newRules);
-    moveProfilesToNewRules(oldRule, oldRuleUpdates, newRules);
+    moveLanguagesToReplacingRules(oldRule, oldRuleUpdates, newRules);
+    moveTagsToReplacingRules(oldRule, oldRuleUpdates, newRules);
+    moveProfilesToReplacingRules(oldRule, oldRuleUpdates, newRules);
 
     dropEmptyMapEntries(newRules);
+
     return newRules;
   }
 
@@ -152,9 +189,18 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
+  private Map<Rule, Map<String, Object>> getReplacingRules(Rule oldRule) {
+    Map<Rule, Map<String, Object>> newRules = new HashMap<>();
+
+    for (Rule rule : RuleMaker.getReplacingRules(oldRule)){
+      newRules.put(rule, new HashMap<>());
+    }
+    return newRules;
+  }
+
   @VisibleForTesting
-  protected void moveProfilesToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
-                                         Map<Rule, Map<String, Object>> newRules) {
+  protected void moveProfilesToReplacingRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
+                                              Map<Rule, Map<String, Object>> newRules) {
 
     if (oldRule.getDefaultProfiles().isEmpty()) {
       return;
@@ -174,9 +220,38 @@ public class IntegrityEnforcementService extends RuleManager {
     oldRuleUpdates.put("Default Quality Profiles", oldRule.getDefaultProfiles());
   }
 
+  protected void copyProfilesToReplacingRules(Rule oldRule, Map<Rule, Map<String, Object>> newRules) {
+    if (oldRule.getDefaultProfiles().isEmpty()) {
+      return;
+    }
+    for (Map.Entry<Rule, Map<String, Object>> entry : newRules.entrySet()) {
+
+      Rule newRule = entry.getKey();
+      int startLen = newRule.getDefaultProfiles().size();
+      newRule.getDefaultProfiles().addAll(oldRule.getDefaultProfiles());
+      if (startLen != newRule.getDefaultProfiles().size()) {
+        entry.getValue().put("Default Quality Profiles", newRule.getDefaultProfiles());
+      }
+    }
+
+    LOGGER.info("Copying default profiles from old rule: " + oldRule.getKey());
+  }
+
   @VisibleForTesting
-  protected void moveLanguagesToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
-                                         Map<Rule, Map<String, Object>> newRules) {
+  protected void moveLanguagesToReplacingRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
+                                               Map<Rule, Map<String, Object>> newRules) {
+
+    if (oldRule.getTargetedLanguages().isEmpty()) {
+      return;
+    }
+
+    copyLanguagesToReplacingRules(oldRule, newRules);
+
+    oldRule.getTargetedLanguages().clear();
+    oldRuleUpdates.put(TARGETED_LANGUAGES, oldRule.getTargetedLanguages());
+  }
+
+  protected void copyLanguagesToReplacingRules(Rule oldRule, Map<Rule, Map<String, Object>> newRules) {
 
     if (oldRule.getTargetedLanguages().isEmpty()) {
       return;
@@ -196,14 +271,24 @@ public class IntegrityEnforcementService extends RuleManager {
         entry.getValue().put(TARGETED_LANGUAGES, newRule.getTargetedLanguages());
       }
     }
-    LOGGER.info("Moving targeted languages from deprecated rule: " + oldRule.getKey());
-    oldRule.getTargetedLanguages().clear();
-    oldRuleUpdates.put(TARGETED_LANGUAGES, oldRule.getTargetedLanguages());
+    LOGGER.info("Copying targeted languages from old rule: " + oldRule.getKey());
   }
 
   @VisibleForTesting
-  protected void moveTagsToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
+  protected void moveTagsToReplacingRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
                                           Map<Rule, Map<String, Object>> newRules) {
+
+    if (oldRule.getTags().isEmpty()) {
+      return;
+    }
+
+    copyTagsToReplacingRules(oldRule, newRules);
+
+    oldRule.getTags().clear();
+    oldRuleUpdates.put(LABELS, oldRule.getTags());
+  }
+
+  protected void copyTagsToReplacingRules(Rule oldRule, Map<Rule, Map<String, Object>> newRules) {
 
     if (oldRule.getTags().isEmpty()) {
       return;
@@ -217,32 +302,43 @@ public class IntegrityEnforcementService extends RuleManager {
         entry.getValue().put(LABELS, newRule.getTags());
       }
     }
-    LOGGER.info("Moving tags from deprecated rule " + oldRule.getKey());
-    oldRule.getTags().clear();
-    oldRuleUpdates.put(LABELS, oldRule.getTags());
+    LOGGER.info("Copying tags from old rule " + oldRule.getKey());
   }
 
   @VisibleForTesting
-  protected void moveReferencesToNewRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
-                                        Map<Rule, Map<String, Object>> newRules,CodingStandard cs) {
+  protected void moveReferencesToReplacingRules(Rule oldRule, Map<String, Object> oldRuleUpdates,
+                                                Map<Rule, Map<String, Object>> newRules, CodingStandard cs) {
 
     List<String> oldReferences = cs.getRspecReferenceFieldValues(oldRule);
 
     if (!oldReferences.isEmpty()) {
-      if (newRules.isEmpty()) {
-        for (String link : oldRule.getDeprecationLinks()) {
-          newRules.put(RuleMaker.getRuleByKey(link, ""), new HashMap<String, Object>());
-        }
-      }
+
+      copyReferencesToReplacingRules(oldRule, newRules, cs);
+
+      oldReferences.clear();
+      oldRuleUpdates.put(cs.getRSpecReferenceFieldName(), oldReferences);
+    }
+  }
+
+  protected void copyReferencesToReplacingRules(Rule oldRule, Map<Rule, Map<String, Object>> newRules, CodingStandard cs) {
+    List<String> oldReferences = cs.getRspecReferenceFieldValues(oldRule);
+
+    if (!oldReferences.isEmpty()) {
 
       for (Map.Entry<Rule, Map<String, Object>> entry : newRules.entrySet()) {
         copyUniqueReferences(cs, oldReferences, entry);
       }
 
-      LOGGER.info("Moving " + cs.getStandardName() + " references from deprecated rule: " + oldRule.getKey());
+      LOGGER.info("Copying " + cs.getStandardName() + " references from old rule: " + oldRule.getKey());
+    }
+  }
 
-      oldReferences.clear();
-      oldRuleUpdates.put(cs.getRSpecReferenceFieldName(), oldReferences);
+  private void processReplacementRuleUpdates(Map<Rule, Map<String, Object>> updateMap) {
+
+    for (Map.Entry<Rule, Map<String,Object>> entry : updateMap.entrySet()) {
+      String newRuleKey = entry.getKey().getKey();
+      LOGGER.info("Submitting updates to replacement rule: " + newRuleKey);
+      ruleUpdater.updateRule(newRuleKey, entry.getValue());
     }
   }
 

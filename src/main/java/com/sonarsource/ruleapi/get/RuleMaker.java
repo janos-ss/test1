@@ -214,10 +214,6 @@ public class RuleMaker {
    * correct choices among language-specific {code} blocks based
    * on the rule's language property.</p>
    *
-   * <p>NOTE that this method cannot distinguish among language-specific
-   * word choices, e.g. [Function|Method|Procedure], so the full set of
-   * choices will remain intact in the resulting text.</p>
-   *
    * @param rule the rule to be populated
    * @param fullDescription the text from which to populate it.
    */
@@ -226,28 +222,6 @@ public class RuleMaker {
     String fullDesc = fullDescription;
     String markdownH2Match = "h2\\.";
     String htmlH2 = "<h2>";
-
-    if (Rule.Status.DEPRECATED.equals(rule.getStatus())) {
-      StringBuilder sb = new StringBuilder();
-
-      for (String key : rule.getDeprecationLinks()) {
-        if (sb.length() > 0) {
-          sb.append(", ");
-        }
-        sb.append(Utilities.denormalizeKey(key));
-      }
-
-      if (! rule.getDeprecationLinks().isEmpty()) {
-        sb.insert(0, "\r\n\r\nh2. Deprecated\r\nThis rule is deprecated, use ");
-        sb.append(" instead.");
-      } else {
-        sb.append("\r\n\r\nh2. Deprecated\r\nThis rule is deprecated, and will eventually be removed.");
-      }
-
-      sb.insert(0, fullDesc);
-
-      fullDesc = sb.toString();
-    }
 
     rule.setFullDescription(fullDesc);
     if (fullDesc != null && fullDesc.length() > 0) {
@@ -272,4 +246,14 @@ public class RuleMaker {
       }
     }
   }
+
+  public static List<Rule> getReplacingRules(Rule oldRule) {
+    List<Rule> newRules = new ArrayList<>();
+    for (String link : oldRule.getReplacementLinks()) {
+      newRules.add(RuleMaker.getRuleByKey(link, ""));
+    }
+
+    return newRules;
+  }
+
 }
