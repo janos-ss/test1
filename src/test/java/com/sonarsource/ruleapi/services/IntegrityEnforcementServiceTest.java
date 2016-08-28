@@ -487,10 +487,10 @@ public class IntegrityEnforcementServiceTest {
     // superseding rule should have updates
     Map<String, Object> updatesToNewRule = newRules.get(newRule);
     assertThat(updatesToNewRule).hasSize(4);
-    assertThat(updatesToNewRule.containsKey("Targeted languages"));
-    assertThat(updatesToNewRule.containsKey("Default Quality Profiles"));
-    assertThat(updatesToNewRule.containsKey("Labels"));
-    assertThat(updatesToNewRule.containsKey("CWE"));
+    assertThat(updatesToNewRule.containsKey("Targeted languages")).isTrue();
+    assertThat(updatesToNewRule.containsKey("Default Quality Profiles")).isTrue();
+    assertThat(updatesToNewRule.containsKey("Labels")).isTrue();
+    assertThat(updatesToNewRule.containsKey("CWE")).isTrue();
 
   }
 

@@ -37,6 +37,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
   private static final String TARGETED_LANGUAGES = "Targeted languages";
   private static final String LABELS = "Labels";
+  public static final String DEFAULT_QUALITY_PROFILES = "Default Quality Profiles";
   private final RuleUpdater ruleUpdater;
 
   public IntegrityEnforcementService(String login, String password) {
@@ -189,7 +190,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  private Map<Rule, Map<String, Object>> getReplacingRules(Rule oldRule) {
+  private static Map<Rule, Map<String, Object>> getReplacingRules(Rule oldRule) {
     Map<Rule, Map<String, Object>> newRules = new HashMap<>();
 
     for (Rule rule : RuleMaker.getReplacingRules(oldRule)){
@@ -211,13 +212,13 @@ public class IntegrityEnforcementService extends RuleManager {
       int startLen = newRule.getDefaultProfiles().size();
       newRule.getDefaultProfiles().addAll(oldRule.getDefaultProfiles());
       if (startLen != newRule.getDefaultProfiles().size()) {
-        entry.getValue().put("Default Quality Profiles", newRule.getDefaultProfiles());
+        entry.getValue().put(DEFAULT_QUALITY_PROFILES, newRule.getDefaultProfiles());
       }
     }
 
     LOGGER.info("Moving default profiles from deprecated rule: " + oldRule.getKey());
     oldRule.getDefaultProfiles().clear();
-    oldRuleUpdates.put("Default Quality Profiles", oldRule.getDefaultProfiles());
+    oldRuleUpdates.put(DEFAULT_QUALITY_PROFILES, oldRule.getDefaultProfiles());
   }
 
   protected void copyProfilesToReplacingRules(Rule oldRule, Map<Rule, Map<String, Object>> newRules) {
@@ -230,7 +231,7 @@ public class IntegrityEnforcementService extends RuleManager {
       int startLen = newRule.getDefaultProfiles().size();
       newRule.getDefaultProfiles().addAll(oldRule.getDefaultProfiles());
       if (startLen != newRule.getDefaultProfiles().size()) {
-        entry.getValue().put("Default Quality Profiles", newRule.getDefaultProfiles());
+        entry.getValue().put(DEFAULT_QUALITY_PROFILES, newRule.getDefaultProfiles());
       }
     }
 
