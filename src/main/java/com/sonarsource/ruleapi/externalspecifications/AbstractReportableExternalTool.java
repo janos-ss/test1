@@ -65,6 +65,11 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     initCoverageResults(instance);
     computeCoverage();
 
+    return generateSummaryReport();
+  }
+
+  protected String generateSummaryReport(){
+
     String linebreak = System.lineSeparator();
 
     int count = getCodingStandardRules().length;

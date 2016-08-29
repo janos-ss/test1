@@ -517,6 +517,28 @@ public class IntegrityEnforcementServiceTest {
 
     enforcer.moveTagsToReplacingRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(4);
+  }
+
+  @Test
+  public void testMoveNullDataToNewRules(){
+    Rule oldRule = new Rule("Java");
+    Map<String, Object> oldRuleUpdates = new HashMap<>();
+    Rule newRule = new Rule("");
+    Map<Rule,Map<String,Object>> newRules = new HashMap<>();
+    newRules.put(newRule, new HashMap<String, Object>());
+
+    enforcer.moveLanguagesToReplacingRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(0);
+
+    enforcer.moveProfilesToReplacingRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(0);
+
+    enforcer.moveReferencesToReplacingRules(oldRule, oldRuleUpdates, newRules, (CodingStandard) SupportedStandard.CWE.getStandard());
+    assertThat(newRules.get(newRule)).hasSize(0);
+
+    enforcer.moveTagsToReplacingRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(0);
+
 
   }
 
