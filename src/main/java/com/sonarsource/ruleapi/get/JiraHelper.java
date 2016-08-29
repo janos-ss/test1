@@ -116,10 +116,10 @@ public class JiraHelper {
       }
 
       if (! implementedReplacements.isEmpty() ) {
-        sb.insert(0, "\r\n\r\nh2. Deprecated\r\nThis rule is deprecated; use ");
-        sb.append(" instead.");
+        sb.insert(0, "\r\n\r\n<h2>Deprecated</h2>\r\n<p>This rule is deprecated; use ");
+        sb.append(" instead.</p>");
       } else {
-        sb.append("\r\n\r\nh2. Deprecated\r\nThis rule is deprecated, and will eventually be removed.");
+        sb.append("\r\n\r\n<h2>Deprecated</h2>\r\n<p>This rule is deprecated, and will eventually be removed.</p>");
       }
 
       rule.setDeprecation(sb.toString());
