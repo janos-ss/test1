@@ -8,15 +8,17 @@ package com.sonarsource.ruleapi.get;
 import com.sonarsource.ruleapi.domain.Parameter;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
+import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
-import java.util.HashSet;
-import java.util.Set;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -38,7 +40,7 @@ public class JiraHelper {
   protected static void populateFields(Rule rule, JSONObject issue) {
     rule.setKey(issue.get("key").toString());
     setStatus(rule, issue);
-    setDeprecationLinks(rule, issue);
+    setReplacementLinks(rule, issue);
 
     String tmp = getCustomFieldValue(issue, "Default Severity");
     if (tmp != null) {
@@ -69,6 +71,59 @@ public class JiraHelper {
     setType(rule);
 
     setReferences(rule, issue);
+
+    validateRuleDeprecation(rule);
+  }
+
+  /**
+   * Update status and deprecation notice based on whether or not
+   * deprecating/superseding rules have actually been implemented yet.
+   *
+   * Based on rule status and deprecationLinks, so those need to have
+   * been set before this is invoked.
+   *
+   * @param rule
+   */
+  static void validateRuleDeprecation(Rule rule) {
+
+    List<String> implementedReplacements = new ArrayList<>();
+
+    if (Rule.Status.SUPERSEDED == rule.getStatus() || Rule.Status.DEPRECATED == rule.getStatus()) {
+
+      rule.setStatus(Rule.Status.READY);
+
+      List<Rule> replacingRules = RuleMaker.getReplacingRules(rule);
+      for (Rule replacement : replacingRules) {
+        if (replacement.getCoveredLanguages().contains(Language.fromString(rule.getLanguage()).getRspec())) {
+          rule.setStatus(Rule.Status.DEPRECATED);
+          implementedReplacements.add(replacement.getKey());
+        }
+      }
+    }
+
+    setDeprecationMessage(rule, implementedReplacements);
+  }
+
+  static void setDeprecationMessage(Rule rule, List<String> implementedReplacements){
+    if (Rule.Status.DEPRECATED == rule.getStatus()) {
+      StringBuilder sb = new StringBuilder();
+
+      for (String key : implementedReplacements) {
+        if (sb.length() > 0) {
+          sb.append(", ");
+        }
+        sb.append(Utilities.denormalizeKey(key));
+      }
+
+      if (! implementedReplacements.isEmpty() ) {
+        sb.insert(0, "\r\n\r\nh2. Deprecated\r\nThis rule is deprecated; use ");
+        sb.append(" instead.");
+      } else {
+        sb.append("\r\n\r\nh2. Deprecated\r\nThis rule is deprecated, and will eventually be removed.");
+      }
+
+      rule.setDeprecation(sb.toString());
+    }
   }
 
   static void handleMarkdown(Rule rule, String[] pieces) {
@@ -202,7 +257,7 @@ public class JiraHelper {
     rule.setStatus(Rule.Status.fromString(getJsonFieldValue(issue, "status")));
   }
 
-  protected static void setDeprecationLinks(Rule rule, JSONObject issue) {
+  protected static void setReplacementLinks(Rule rule, JSONObject issue) {
 
     JSONArray links = getJsonArrayField(issue, "issuelinks");
     if (links != null) {
@@ -212,8 +267,9 @@ public class JiraHelper {
         JSONObject linkType = (JSONObject) linkObj.get("type");
         JSONObject inwardIssue = (JSONObject) linkObj.get("inwardIssue");
 
-        if ("Deprecate".equals(linkType.get("name")) && inwardIssue != null) {
-          rule.getDeprecationLinks().add((String)inwardIssue.get("key"));
+        if (inwardIssue != null &&
+                ("Deprecate".equals(linkType.get("name")) || "Supercedes".equals(linkType.get("name")))) {
+          rule.getReplacementLinks().add((String)inwardIssue.get("key"));
         }
       }
     }
