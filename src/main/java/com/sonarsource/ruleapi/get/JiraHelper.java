@@ -105,7 +105,7 @@ public class JiraHelper {
   }
 
   static void setDeprecationMessage(Rule rule, List<String> implementedReplacements){
-    if (Rule.Status.DEPRECATED.equals(rule.getStatus())) {
+    if (Rule.Status.DEPRECATED == rule.getStatus()) {
       StringBuilder sb = new StringBuilder();
 
       for (String key : implementedReplacements) {
