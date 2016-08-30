@@ -86,6 +86,11 @@ public class JiraHelper {
    */
   static void validateRuleDeprecation(Rule rule) {
 
+    Language lang = Language.fromString(rule.getLanguage());
+    if (lang == null) {
+      return;
+    }
+
     List<String> implementedReplacements = new ArrayList<>();
 
     if (Rule.Status.SUPERSEDED == rule.getStatus() || Rule.Status.DEPRECATED == rule.getStatus()) {
@@ -94,7 +99,7 @@ public class JiraHelper {
 
       List<Rule> replacingRules = RuleMaker.getReplacingRules(rule);
       for (Rule replacement : replacingRules) {
-        if (replacement.getCoveredLanguages().contains(Language.fromString(rule.getLanguage()).getRspec())) {
+        if (replacement.getCoveredLanguages().contains(lang.getRspec())) {
           rule.setStatus(Rule.Status.DEPRECATED);
           implementedReplacements.add(replacement.getKey());
         }
@@ -116,13 +121,14 @@ public class JiraHelper {
       }
 
       if (! implementedReplacements.isEmpty() ) {
-        sb.insert(0, "\r\n\r\n<h2>Deprecated</h2>\r\n<p>This rule is deprecated; use ");
-        sb.append(" instead.</p>");
+        sb.insert(0, "h2. Deprecated\r\nThis rule is deprecated; use ");
+        sb.append(" instead.");
       } else {
-        sb.append("\r\n\r\n<h2>Deprecated</h2>\r\n<p>This rule is deprecated, and will eventually be removed.</p>");
+        sb.append("h2. Deprecated\r\nThis rule is deprecated, and will eventually be removed.");
       }
 
-      rule.setDeprecation(sb.toString());
+      MarkdownConverter markdownConverter = new MarkdownConverter();
+      rule.setDeprecation(markdownConverter.transform(sb.toString(), rule.getLanguage()));
     }
   }
 

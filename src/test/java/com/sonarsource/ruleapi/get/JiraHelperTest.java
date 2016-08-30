@@ -364,5 +364,27 @@ public class JiraHelperTest {
 
   }
 
+  @Test
+  public void testDeprecationMessage(){
+    Rule rule = new Rule("Java");
+    rule.setStatus(Rule.Status.DEPRECATED);
+    List<String> implementedReplacements = new ArrayList<>();
+
+    JiraHelper.setDeprecationMessage(rule, implementedReplacements);
+
+    assertThat(rule.getDeprecation()).isEqualTo("\n" +
+            "<h2>Deprecated</h2>\n" +
+            "<p>This rule is deprecated, and will eventually be removed.</p>\n");
+
+    implementedReplacements.add("S123");
+    implementedReplacements.add("S234");
+
+    JiraHelper.setDeprecationMessage(rule, implementedReplacements);
+
+    assertThat(rule.getDeprecation()).isEqualTo("\n" +
+            "<h2>Deprecated</h2>\n" +
+            "<p>This rule is deprecated; use {rule:squid:S123}, {rule:squid:S234} instead.</p>\n");
+  }
+
 
 }

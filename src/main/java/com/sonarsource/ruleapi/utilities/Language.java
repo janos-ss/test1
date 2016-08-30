@@ -88,7 +88,7 @@ public enum Language {
     }
 
     for (Language language : Language.values()) {
-      if (language.name().equalsIgnoreCase(value) || language.rspec.equalsIgnoreCase(value)) {
+      if (language.name().equalsIgnoreCase(value) || language.rspec.equalsIgnoreCase(value) || language.sq.equalsIgnoreCase(value)) {
         return language;
       }
     }
