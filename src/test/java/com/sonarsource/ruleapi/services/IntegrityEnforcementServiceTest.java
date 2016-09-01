@@ -14,10 +14,15 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.Cert;
 import com.sonarsource.ruleapi.externalspecifications.specifications.Cwe;
 import com.sonarsource.ruleapi.externalspecifications.specifications.OwaspTopTen;
 import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
-
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -89,7 +94,7 @@ public class IntegrityEnforcementServiceTest {
     assertThat(oldRule.getCwe()).hasSize(1);
     assertThat(oldRule.getFindbugs()).hasSize(1);
 
-    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
+    enforcer.moveReferencesToReplacingRules(oldRule, oldRuleUpdates, newRules,
             (CodingStandard) SupportedStandard.FINDBUGS.getStandard());
 
     assertThat(newRule.getCwe()).hasSize(1);
@@ -98,7 +103,7 @@ public class IntegrityEnforcementServiceTest {
     assertThat(oldRule.getFindbugs()).hasSize(0);
 
 
-    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
+    enforcer.moveReferencesToReplacingRules(oldRule, oldRuleUpdates, newRules,
             (CodingStandard) SupportedStandard.CWE.getStandard());
 
     assertThat(newRule.getCwe()).hasSize(2);
@@ -110,7 +115,7 @@ public class IntegrityEnforcementServiceTest {
     assertThat(oldRule.getCert()).hasSize(0);
     assertThat(newRule.getCert()).hasSize(0);
 
-    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
+    enforcer.moveReferencesToReplacingRules(oldRule, oldRuleUpdates, newRules,
             (CodingStandard) SupportedStandard.CERT.getStandard());
 
     assertThat(oldRule.getCert()).hasSize(0);
@@ -119,7 +124,7 @@ public class IntegrityEnforcementServiceTest {
     assertThat(oldRule.getMisraC04()).hasSize(3);
     assertThat(newRule.getMisraC04()).hasSize(1);
 
-    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules,
+    enforcer.moveReferencesToReplacingRules(oldRule, oldRuleUpdates, newRules,
             (CodingStandard) SupportedStandard.MISRA_C_2004.getStandard());
 
     assertThat(oldRule.getMisraC04()).hasSize(0);
@@ -233,6 +238,7 @@ public class IntegrityEnforcementServiceTest {
 
   @Test
   public void testGetCweUpdates1() {
+
 
     Rule rule = new Rule("");
     String refs = "<li><a href='http://blah.com'>MITRE, CWE-123</a> - blah</li>\n" +
@@ -445,13 +451,47 @@ public class IntegrityEnforcementServiceTest {
     Rule oldRule = setUpDeprecatedRule();
     Map<String, Object> oldRuleUpdates = new HashMap<>();
 
-    enforcer.getDeprecationUpdates(oldRule, oldRuleUpdates);
+    Map<Rule,Map<String,Object>> newRules = new HashMap<>();
+    Rule newRule = new Rule("Java");
+    newRule.setKey("RSPEC-4899");
+    newRules.put(newRule, new HashMap<String, Object>());
+
+    enforcer.getDeprecationUpdates(oldRule, oldRuleUpdates, newRules);
 
     assertThat(oldRuleUpdates).hasSize(4);
     assertThat(oldRule.getTargetedLanguages()).isEmpty();
     assertThat(oldRule.getDefaultProfiles()).isEmpty();
     assertThat(oldRule.getTags()).isEmpty();
     assertThat(oldRule.getCwe()).isEmpty();
+    assertThat(newRules.get(newRule)).hasSize(4);
+  }
+
+  @Test
+  public void testGetSuperSederUpdates(){
+    Rule oldRule = setUpDeprecatedRule();
+    oldRule.setStatus(Rule.Status.SUPERSEDED);
+
+    Map<Rule,Map<String,Object>> newRules = new HashMap<>();
+    Rule newRule = new Rule("Java");
+    newRule.setKey("RSPEC-4899");
+    newRules.put(newRule, new HashMap<String, Object>());
+
+    enforcer.getSupersederUpdates(oldRule, newRules);
+
+    // since we're looking at a Superseding rule, oldRule should be unaltered
+    assertThat(oldRule.getTargetedLanguages()).isNotEmpty();
+    assertThat(oldRule.getDefaultProfiles()).isNotEmpty();
+    assertThat(oldRule.getTags()).isNotEmpty();
+    assertThat(oldRule.getCwe()).isNotEmpty();
+
+    // superseding rule should have updates
+    Map<String, Object> updatesToNewRule = newRules.get(newRule);
+    assertThat(updatesToNewRule).hasSize(4);
+    assertThat(updatesToNewRule.containsKey("Targeted languages")).isTrue();
+    assertThat(updatesToNewRule.containsKey("Default Quality Profiles")).isTrue();
+    assertThat(updatesToNewRule.containsKey("Labels")).isTrue();
+    assertThat(updatesToNewRule.containsKey("CWE")).isTrue();
+
   }
 
   @Test
@@ -466,17 +506,39 @@ public class IntegrityEnforcementServiceTest {
     Map<Rule,Map<String,Object>> newRules = new HashMap<>();
     newRules.put(newRule, new HashMap<String, Object>());
 
-    enforcer.moveLanguagesToNewRules(oldRule, oldRuleUpdates, newRules);
+    enforcer.moveLanguagesToReplacingRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(1);
 
-    enforcer.moveProfilesToNewRules(oldRule, oldRuleUpdates, newRules);
+    enforcer.moveProfilesToReplacingRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(2);
 
-    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, (CodingStandard) SupportedStandard.CWE.getStandard());
+    enforcer.moveReferencesToReplacingRules(oldRule, oldRuleUpdates, newRules, (CodingStandard) SupportedStandard.CWE.getStandard());
     assertThat(newRules.get(newRule)).hasSize(3);
 
-    enforcer.moveTagsToNewRules(oldRule, oldRuleUpdates, newRules);
+    enforcer.moveTagsToReplacingRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(4);
+  }
+
+  @Test
+  public void testMoveNullDataToNewRules(){
+    Rule oldRule = new Rule("Java");
+    Map<String, Object> oldRuleUpdates = new HashMap<>();
+    Rule newRule = new Rule("");
+    Map<Rule,Map<String,Object>> newRules = new HashMap<>();
+    newRules.put(newRule, new HashMap<String, Object>());
+
+    enforcer.moveLanguagesToReplacingRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(0);
+
+    enforcer.moveProfilesToReplacingRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(0);
+
+    enforcer.moveReferencesToReplacingRules(oldRule, oldRuleUpdates, newRules, (CodingStandard) SupportedStandard.CWE.getStandard());
+    assertThat(newRules.get(newRule)).hasSize(0);
+
+    enforcer.moveTagsToReplacingRules(oldRule, oldRuleUpdates, newRules);
+    assertThat(newRules.get(newRule)).hasSize(0);
+
 
   }
 
@@ -488,16 +550,16 @@ public class IntegrityEnforcementServiceTest {
     Map<Rule,Map<String,Object>> newRules = new HashMap<>();
     newRules.put(newRule, new HashMap<String, Object>());
 
-    enforcer.moveLanguagesToNewRules(oldRule, oldRuleUpdates, newRules);
+    enforcer.moveLanguagesToReplacingRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(0);
 
-    enforcer.moveProfilesToNewRules(oldRule, oldRuleUpdates, newRules);
+    enforcer.moveProfilesToReplacingRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(0);
 
-    enforcer.moveReferencesToNewRules(oldRule, oldRuleUpdates, newRules, (CodingStandard) SupportedStandard.CWE.getStandard());
+    enforcer.moveReferencesToReplacingRules(oldRule, oldRuleUpdates, newRules, (CodingStandard) SupportedStandard.CWE.getStandard());
     assertThat(newRules.get(newRule)).hasSize(0);
 
-    enforcer.moveTagsToNewRules(oldRule, oldRuleUpdates, newRules);
+    enforcer.moveTagsToReplacingRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(0);
 
 

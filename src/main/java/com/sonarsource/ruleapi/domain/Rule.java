@@ -21,7 +21,7 @@ import java.util.Set;
 public class Rule {
 
   public enum Status {
-    BETA("beta"), READY("ready"), DEPRECATED("deprecated");
+    BETA("beta"), READY("ready"), DEPRECATED("deprecated"), SUPERSEDED("superseded");
 
     protected final String statusName;
 
@@ -103,6 +103,7 @@ public class Rule {
     }
   }
 
+
   private final String language;
   private String key = null;
   private String lookupKey = null;
@@ -110,7 +111,7 @@ public class Rule {
   private Status status = null;
   private Type type = Type.CODE_SMELL;
 
-  private List<String> deprecationLinks = new ArrayList<>();
+  private List<String> replacementLinks = new ArrayList<>();
 
   private Severity severity = null;
   private boolean template = false;
@@ -660,14 +661,14 @@ public class Rule {
     this.irrelevantLanguages = irrelevantLanguages;
   }
 
-  public List<String> getDeprecationLinks() {
+  public List<String> getReplacementLinks() {
 
-    return deprecationLinks;
+    return replacementLinks;
   }
 
-  public void setDeprecationLinks(List<String> deprecationLinks) {
+  public void setReplacementLinks(List<String> replacementLinks) {
 
-    this.deprecationLinks = deprecationLinks;
+    this.replacementLinks = replacementLinks;
   }
 
   public List<String> getPylint() {

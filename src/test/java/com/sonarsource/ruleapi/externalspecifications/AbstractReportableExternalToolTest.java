@@ -90,6 +90,20 @@ public class AbstractReportableExternalToolTest {
 
 
   @Test
+  public void testGenerateSummaryReport(){
+
+    FindBugs fb = new FindBugs();
+    fb.populateRulesCoverageMap();
+    fb.computeCoverage();
+
+    String report = fb.generateSummaryReport();
+
+    assertThat(report).contains("Rule count:");
+    assertThat(report).contains("Of Implementable rules:");
+  }
+
+
+  @Test
   public void testGetHtmlDeprecationByToolKey(){
 
     Checkstyle cs = new Checkstyle();
