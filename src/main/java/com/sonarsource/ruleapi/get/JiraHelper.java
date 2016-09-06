@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -68,7 +67,8 @@ public class JiraHelper {
 
     rule.setTags(getListFromJsonFieldValue(issue, "labels"));
 
-    setType(rule);
+    rule.setType(Rule.Type.fromString(getJsonFieldValue(issue, "issuetype")));
+
 
     setReferences(rule, issue);
 
@@ -345,17 +345,6 @@ public class JiraHelper {
       }
     }
     return list;
-  }
-
-  protected static void setType(Rule rule) {
-
-    Set<String> tags = rule.getTags();
-    if (tags.contains("bug")){
-      rule.setType(Rule.Type.BUG);
-    } else if (tags.contains("security")) {
-      rule.setType(Rule.Type.VULNERABILITY);
-    }
-
   }
 
   public static List<Parameter> handleParameterList(String paramString, String language) {
