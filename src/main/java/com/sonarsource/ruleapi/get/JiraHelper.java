@@ -285,6 +285,7 @@ public class JiraHelper {
 
     rule.setCwe(getCustomFieldValueAsList(issue, "CWE"));
     rule.setCert(getCustomFieldValueAsList(issue, "CERT"));
+    rule.setEsLint(getCustomFieldValueAsList(issue, "ESLint"));
     rule.setMisraC04(getCustomFieldValueAsList(issue, "MISRA C 2004"));
     rule.setMisraC12(getCustomFieldValueAsList(issue, "MISRA C 2012"));
     rule.setMisraCpp(getCustomFieldValueAsList(issue, "MISRA C++ 2008"));

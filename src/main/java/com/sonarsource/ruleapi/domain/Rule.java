@@ -144,6 +144,7 @@ public class Rule {
 
   private List<String> cwe = new ArrayList<>();
   private List<String> cert = new ArrayList<>();
+  private List<String> esLint = new ArrayList<>();
   private List<String> cppCheck = new ArrayList<>();
   private List<String> misraC12 = new ArrayList<>();
   private List<String> misraC04 = new ArrayList<>();
@@ -768,4 +769,13 @@ public class Rule {
 
     this.msftRoslyn = msftRoslyn;
   }
+
+  public List<String> getEsLint() {
+    return esLint;
+  }
+
+  public void setEsLint(List<String> esLint) {
+    this.esLint = esLint;
+  }
+
 }

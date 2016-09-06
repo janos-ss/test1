@@ -16,6 +16,7 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.RulesInLang
 import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
 import com.sonarsource.ruleapi.externalspecifications.tools.Checkstyle;
 import com.sonarsource.ruleapi.externalspecifications.tools.Cppcheck;
+import com.sonarsource.ruleapi.externalspecifications.tools.EsLint;
 import com.sonarsource.ruleapi.externalspecifications.tools.FindBugs;
 import com.sonarsource.ruleapi.externalspecifications.tools.FxCop;
 import com.sonarsource.ruleapi.externalspecifications.tools.PcLintC;
@@ -51,6 +52,7 @@ public enum SupportedStandard {
   FXCOP(new FxCop()),
   PC_LINT_C(new PcLintC()),
   PC_LINT_CPP(new PcLintCpp()),
+  ESLINT(new EsLint()),
 
   // TaggableStandards
   CWE(new Cwe()),
