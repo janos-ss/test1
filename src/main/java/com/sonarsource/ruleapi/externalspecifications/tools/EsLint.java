@@ -16,18 +16,18 @@ import java.util.List;
 
 public class EsLint extends AbstractReportableExternalTool{
 
-  private final static String standarName = "ESLint";
-  private final static Language language = Language.JS;
+  private static final String STANDARD_NAME = "ESLint";
+  private static final Language LANGUAGE = Language.JS;
 
 
   @Override
   public String getStandardName() {
-    return standarName;
+    return STANDARD_NAME;
   }
 
   @Override
   public String getRSpecReferenceFieldName() {
-    return standarName;
+    return STANDARD_NAME;
   }
 
   @Override
@@ -42,7 +42,7 @@ public class EsLint extends AbstractReportableExternalTool{
 
   @Override
   public Language getLanguage() {
-    return language;
+    return LANGUAGE;
   }
 
   @Override
