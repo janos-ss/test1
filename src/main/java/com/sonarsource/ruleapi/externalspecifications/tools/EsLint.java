@@ -16,8 +16,8 @@ import java.util.List;
 
 public class EsLint extends AbstractReportableExternalTool{
 
-  private final String standarName = "ESLint";
-  private final Language language = Language.JS;
+  private final static String standarName = "ESLint";
+  private final static Language language = Language.JS;
 
 
   @Override
