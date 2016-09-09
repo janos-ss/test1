@@ -9,7 +9,7 @@
 
   <groupId>com.sonarsource.rule-api</groupId>
   <artifactId>rule-api</artifactId>
-  <version>1.16-SNAPSHOT</version>
+  <version>1.15</version>
   <packaging>jar</packaging>
   <name>SonarSource :: Rule API</name>
   <inceptionYear>2014</inceptionYear>
