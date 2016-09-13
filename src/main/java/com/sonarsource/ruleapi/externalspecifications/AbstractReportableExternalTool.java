@@ -68,6 +68,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     return generateSummaryReport();
   }
 
+  @Override
   public String getNameIfStandardApplies(Rule rule) {
     return null;
   }
