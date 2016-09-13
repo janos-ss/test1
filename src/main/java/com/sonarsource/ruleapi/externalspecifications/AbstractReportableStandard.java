@@ -37,10 +37,7 @@ public abstract class AbstractReportableStandard implements CodingStandard {
 
   public abstract ReportType[] getReportTypes();
 
-
-  public String getNameIfStandardApplies(Rule rule) {
-    return null;
-  }
+  public abstract String getNameIfStandardApplies(Rule rule);
 
   /**
    * Retrieve RSpec rules for which the the relevant field on the References

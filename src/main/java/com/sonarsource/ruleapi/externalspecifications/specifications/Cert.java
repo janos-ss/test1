@@ -66,7 +66,8 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
       }
 
       for (String id : getRspecReferenceFieldValues(rule)) {
-        id = id.replace(".", "");  // strip trailing '.'
+        // strip trailing '.'
+        id = id.replace(".", "");
         if (id.endsWith(suffix)) {
           return getStandardName();
         }

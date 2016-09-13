@@ -68,6 +68,10 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     return generateSummaryReport();
   }
 
+  public String getNameIfStandardApplies(Rule rule) {
+    return null;
+  }
+
   protected String generateSummaryReport(){
 
     String linebreak = System.lineSeparator();

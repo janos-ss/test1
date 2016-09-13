@@ -59,6 +59,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     }
   }
 
+  @Override
   public String getNameIfStandardApplies(Rule rule) {
     Language ruleLang = Language.fromString(rule.getLanguage());
     if (ruleLang == this.getLanguage() && ! this.getRspecReferenceFieldValues(rule).isEmpty()){
