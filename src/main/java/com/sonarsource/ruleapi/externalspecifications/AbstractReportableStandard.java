@@ -10,11 +10,12 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
+import org.fest.util.Strings;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.fest.util.Strings;
 
 
 /**
@@ -36,6 +37,10 @@ public abstract class AbstractReportableStandard implements CodingStandard {
 
   public abstract ReportType[] getReportTypes();
 
+
+  public String getNameIfStandardApplies(Rule rule) {
+    return null;
+  }
 
   /**
    * Retrieve RSpec rules for which the the relevant field on the References

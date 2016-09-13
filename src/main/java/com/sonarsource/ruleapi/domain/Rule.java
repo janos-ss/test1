@@ -6,15 +6,9 @@
 package com.sonarsource.ruleapi.domain;
 
 import com.google.common.base.Strings;
-import com.sonarsource.ruleapi.utilities.JSONWriter;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -267,56 +261,6 @@ public class Rule {
 
   public String getHtmlDescription() {
     return description + nonCompliant + compliant + exceptions + references + deprecation;
-  }
-
-  public String getSquidJson() {
-
-    LinkedHashMap objOrderedFields = new LinkedHashMap();
-    objOrderedFields.put("title", this.title);
-    objOrderedFields.put("type", this.getType().name());
-
-    if (this.status != null) {
-      objOrderedFields.put("status", this.status.getStatusName());
-    }
-
-    if (this.remediationFunction != null) {
-      LinkedHashMap remediation = new LinkedHashMap();
-      remediation.put("func", this.remediationFunction.getFunctionName());
-      switch (this.remediationFunction) {
-        case CONSTANT_ISSUE:
-          remediation.put("constantCost", this.constantCostOrLinearThreshold);
-          break;
-        case LINEAR:
-          remediation.put("linearDesc", this.linearArgDesc);
-          remediation.put("linearFactor", this.linearFactor);
-          break;
-        case LINEAR_OFFSET:
-          remediation.put("linearDesc", this.linearArgDesc);
-          remediation.put("linearOffset", this.linearOffset);
-          remediation.put("linearFactor", this.linearFactor);
-          break;
-        default:
-          throw new IllegalStateException("Unknown remediationFunction");
-      }
-      objOrderedFields.put("remediation", remediation);
-    }
-
-    JSONArray tagsJSON = new JSONArray();
-    for (String tag : this.tags) {
-      tagsJSON.add(tag);
-    }
-    objOrderedFields.put("tags", tagsJSON);
-
-    if (this.severity != null) {
-      objOrderedFields.put("defaultSeverity", this.severity.getSeverityName());
-    }
-
-    try (Writer writer = new JSONWriter();) {
-      JSONValue.writeJSONString(objOrderedFields, writer);
-      return writer.toString();
-    } catch (IOException e) {
-      throw new RuleException(e);
-    }
   }
 
   public String getKey() {

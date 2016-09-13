@@ -8,14 +8,13 @@ package com.sonarsource.ruleapi.externalspecifications;
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.services.ReportService;
+import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static org.fest.util.Strings.append;
 
 /**
  * Specially-formatted reports for the three MISRA standards.
@@ -59,6 +58,15 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
       }
     }
   }
+
+  public String getNameIfStandardApplies(Rule rule) {
+    Language ruleLang = Language.fromString(rule.getLanguage());
+    if (ruleLang == this.getLanguage() && ! this.getRspecReferenceFieldValues(rule).isEmpty()){
+      return this.getStandardName();
+    }
+    return null;
+  }
+
 
   @Override
   public ReportType[] getReportTypes() {

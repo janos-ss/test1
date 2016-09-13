@@ -8,7 +8,6 @@ package com.sonarsource.ruleapi.domain;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -294,79 +293,6 @@ public class RuleTest {
 
     assertThat(rule.getTags().size()).isEqualTo(3);
     assertThat(rule.getTags()).contains("blue");
-
-  }
-
-  @Test
-  public void testGetSquidJson( ) {
-
-    Rule rule = new Rule("foo");
-    rule.setStatus(Rule.Status.DEPRECATED);
-    rule.setTitle("Lorem Ipsum");
-    HashSet<Profile> defaultProfiles = new HashSet<>();
-    defaultProfiles.add(new Profile("bar"));
-    rule.setDefaultProfiles(defaultProfiles);
-    rule.setRemediationFunction(Rule.RemediationFunction.CONSTANT_ISSUE);
-    rule.setConstantCostOrLinearThreshold("17 seconds");
-    ArrayList<String> tags = new ArrayList<>(1);
-    tags.add("qux");
-    rule.setTags(tags);
-    rule.setSeverity(Rule.Severity.MINOR);
-
-    // well formatted nice looking JSON with ordered fields
-    final String expected1 = "{\n" +
-            "  \"title\": \"Lorem Ipsum\",\n" +
-            "  \"type\": \"CODE_SMELL\",\n" +
-            "  \"status\": \"deprecated\",\n" +
-            "  \"remediation\": {\n" +
-            "    \"func\": \"Constant\\/Issue\",\n" +
-            "    \"constantCost\": \"17 seconds\"\n" +
-            "  },\n" +
-            "  \"tags\": [\n" +
-            "    \"qux\"\n" +
-            "  ],\n" +
-            "  \"defaultSeverity\": \"Minor\"\n" +
-            "}";
-
-    assertThat( rule.getSquidJson()).isEqualTo(expected1);
-
-    rule.setStatus(Rule.Status.READY);
-    rule.setRemediationFunction(Rule.RemediationFunction.LINEAR);
-    rule.setLinearArgDesc("dolor sit amet");
-    rule.setLinearFactor("666");
-    rule.setSeverity(Rule.Severity.BLOCKER);
-    final String expected2 = "{\n" +
-            "  \"title\": \"Lorem Ipsum\",\n" +
-            "  \"type\": \"CODE_SMELL\",\n" +
-            "  \"status\": \"ready\",\n" +
-            "  \"remediation\": {\n" +
-            "    \"func\": \"Linear\",\n" +
-            "    \"linearDesc\": \"dolor sit amet\",\n" +
-            "    \"linearFactor\": \"666\"\n" +
-            "  },\n" +
-              "  \"tags\": [\n" +
-            "    \"qux\"\n" +
-            "  ],\n" +
-            "  \"defaultSeverity\": \"Blocker\"\n" +
-            "}";
-
-    assertThat( rule.getSquidJson()).isEqualTo(expected2);
-
-
-    rule.setStatus(Rule.Status.BETA);
-  // without the optional fields
-    rule.setSeverity(null);
-    rule.setRemediationFunction(null);
-    final String expected3 = "{\n" +
-            "  \"title\": \"Lorem Ipsum\",\n" +
-            "  \"type\": \"CODE_SMELL\",\n" +
-            "  \"status\": \"beta\",\n" +
-            "  \"tags\": [\n" +
-            "    \"qux\"\n" +
-            "  ]\n" +
-            "}";
-
-    assertThat( rule.getSquidJson()).isEqualTo(expected3);
 
   }
 

@@ -197,4 +197,31 @@ public class CertTest {
 
   }
 
+  @Test
+  public void testGetNameIfStandardApplies(){
+    Cert cert = new Cert();
+
+    Rule rule = new Rule("PHP");
+    rule.getCert().add("MEM11-CPP.");
+    rule.getCert().add("MEM31-C.");
+    rule.getCert().add("MEM12-CPP.");
+
+    assertThat(cert.getNameIfStandardApplies(rule)).isNull();
+
+    rule = new Rule("Java");
+    rule.getCert().add("MEM11-CPP.");
+    rule.getCert().add("MEM31-C.");
+    rule.getCert().add("MEM12-CPP.");
+
+    assertThat(cert.getNameIfStandardApplies(rule)).isNull();
+
+    rule = new Rule("C");
+    rule.getCert().add("MEM11-CPP.");
+    rule.getCert().add("MEM31-C.");
+    rule.getCert().add("MEM12-CPP.");
+
+    assertThat(cert.getNameIfStandardApplies(rule)).isEqualTo(cert.getStandardName());
+
+  }
+
 }

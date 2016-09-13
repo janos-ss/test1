@@ -7,11 +7,14 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
-import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -276,6 +279,19 @@ public class SansTop25Test {
     assertThat(report).contains("http://cwe.mitre.org/data/definitions/120");
     assertThat(report).contains("http://www.sans.org/top25-software-errors/#cat2");
 
+  }
+
+  @Test
+  public void testGetNameIfStandardApplies(){
+    Rule rule = new Rule("Java");
+
+    SansTop25 sansTop25 = new SansTop25();
+
+    rule.getCwe().add("CWE-1");
+    assertThat(sansTop25.getNameIfStandardApplies(rule)).isNull();
+
+    rule.getCwe().add("CWE-89");
+    assertThat(sansTop25.getNameIfStandardApplies(rule)).isEqualTo(sansTop25.getStandardName());
   }
 
 }

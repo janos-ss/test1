@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import static org.fest.util.Strings.append;
-
 
 public class SansTop25  extends AbstractMultiLanguageStandard {
 
@@ -330,6 +328,20 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     sb.append(ReportService.FOOTER_TEMPLATE);
 
     return sb.toString();
+  }
+
+  @Override
+  public String getNameIfStandardApplies(Rule rule) {
+
+    for (String id : rule.getCwe()) {
+      try {
+        StandardRule.valueOf(id.replace('-', '_'));
+        return getStandardName();
+      } catch (IllegalArgumentException e) {
+        // id not in the list
+      }
+    }
+    return null;
   }
 
   @Override
