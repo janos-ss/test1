@@ -82,6 +82,9 @@ public class RuleFilesService {
         }
         generateSingleRuleFiles(rule);
         updatedRules.add(rule);
+        if (countGeneratedFiles % 20 == 0) {
+          System.out.println(String.format("%4d rules processed",countGeneratedFiles/2));
+        }
       }
       updateProfiles(updatedRules);
     }
