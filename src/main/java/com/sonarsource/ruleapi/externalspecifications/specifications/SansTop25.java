@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.google.common.base.Enums;
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
@@ -334,11 +335,8 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
   public String getNameIfStandardApplies(Rule rule) {
 
     for (String id : rule.getCwe()) {
-      try {
-        StandardRule.valueOf(id.replace('-', '_'));
+      if (Enums.getIfPresent(StandardRule.class, id.replace('-', '_') ).isPresent()) {
         return getStandardName();
-      } catch (IllegalArgumentException e) {
-        // id not in the list
       }
     }
     return null;
