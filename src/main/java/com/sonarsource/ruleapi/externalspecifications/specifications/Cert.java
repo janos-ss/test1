@@ -49,6 +49,36 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
 
   private CertType currentCertLanguage = null;
 
+
+  @Override
+  protected List<Language> getAllLanguages(){
+    return Arrays.asList(Language.C, Language.CPP, Language.JAVA);
+  }
+
+  @Override
+  public String getNameIfStandardApplies(Rule rule) {
+    Language ruleLang = Language.fromString(rule.getLanguage());
+    if (getAllLanguages().contains(ruleLang)) {
+
+      String suffix = ruleLang.name();
+      if (ruleLang == Language.JAVA) {
+        suffix = "J";
+      }
+
+      for (String id : getRspecReferenceFieldValues(rule)) {
+        // strip trailing '.'
+        id = id.replace(".", "");
+        if (id.endsWith(suffix)) {
+          return getStandardName();
+        }
+      }
+    }
+
+    return null;
+  }
+
+
+
   @Override
   public boolean isTagShared() {
 

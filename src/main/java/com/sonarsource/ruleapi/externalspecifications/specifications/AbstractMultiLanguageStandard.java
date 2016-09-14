@@ -7,13 +7,17 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.ReportAndBadge;
+import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.externalspecifications.BadgableMultiLanguage;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
-import java.util.Map;
 import org.fest.util.Strings;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -26,6 +30,20 @@ public abstract class AbstractMultiLanguageStandard extends AbstractReportableSt
   private static final ReportType[] reportTypes = {ReportType.INTERNAL_COVERAGE, ReportType.INTERNAL_COVERAGE_SUMMARY, ReportType.HTML};
 
   protected abstract String generateReport(String instance);
+
+
+  @Override
+  public String getNameIfStandardApplies(Rule rule) {
+    if (getAllLanguages().contains(Language.fromString(rule.getLanguage()))
+            && !getRspecReferenceFieldValues(rule).isEmpty()) {
+      return getStandardName();
+    }
+    return null;
+  }
+
+  protected List<Language> getAllLanguages(){
+    return Arrays.asList(Language.values());
+  }
 
 
   @Override

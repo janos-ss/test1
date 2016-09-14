@@ -12,12 +12,19 @@ import com.google.gson.GsonBuilder;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleException;
+import com.sonarsource.ruleapi.externalspecifications.AbstractReportableExternalTool;
+import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
+import com.sonarsource.ruleapi.externalspecifications.Standard;
+import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.utilities.HtmlSanitizer;
+import com.sonarsource.ruleapi.utilities.JSONWriter;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 import net.greypanther.natsort.CaseInsensitiveSimpleNaturalComparator;
 import org.apache.commons.io.FilenameUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -25,10 +32,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -169,7 +178,7 @@ public class RuleFilesService {
     String fileBaseName = computeBaseFileName(rule);
     HtmlSanitizer sanitizer = new HtmlSanitizer(2, 150);
     writeFile(fileBaseName + HTML_TERMINATION, sanitizer.format(rule.getHtmlDescription()));
-    writeFile(fileBaseName + JSON_TERMINATION, rule.getSquidJson());
+    writeFile(fileBaseName + JSON_TERMINATION, getSquidJson(rule));
   }
 
   private String computeBaseFileName(Rule rule) {
@@ -256,5 +265,75 @@ public class RuleFilesService {
   private static class RulesProfile {
     String name;
     List<String> ruleKeys;
+  }
+
+  public String getSquidJson(Rule rule) {
+
+    LinkedHashMap objOrderedFields = new LinkedHashMap();
+    objOrderedFields.put("title", rule.getTitle());
+    objOrderedFields.put("type", rule.getType().name());
+
+    if (rule.getStatus()!= null) {
+      objOrderedFields.put("status", rule.getStatus().getStatusName());
+    }
+
+    if (rule.getRemediationFunction()!= null) {
+      LinkedHashMap remediation = new LinkedHashMap();
+      remediation.put("func", rule.getRemediationFunction().getFunctionName());
+      switch (rule.getRemediationFunction()) {
+        case CONSTANT_ISSUE:
+          remediation.put("constantCost", rule.getConstantCostOrLinearThreshold());
+          break;
+        case LINEAR:
+          remediation.put("linearDesc", rule.getLinearArgDesc());
+          remediation.put("linearFactor", rule.getLinearFactor());
+          break;
+        case LINEAR_OFFSET:
+          remediation.put("linearDesc", rule.getLinearArgDesc());
+          remediation.put("linearOffset", rule.getLinearOffset());
+          remediation.put("linearFactor", rule.getLinearFactor());
+          break;
+        default:
+          throw new IllegalStateException("Unknown remediationFunction");
+      }
+      objOrderedFields.put("remediation", remediation);
+    }
+
+    JSONArray tagsJSON = new JSONArray();
+    for (String tag : rule.getTags()) {
+      tagsJSON.add(tag);
+    }
+    objOrderedFields.put("tags", tagsJSON);
+
+    JSONArray standards = getStandards(rule);
+    if (!standards.isEmpty()) {
+      objOrderedFields.put("standards", standards);
+    }
+
+    if (rule.getSeverity() != null) {
+      objOrderedFields.put("defaultSeverity", rule.getSeverity().getSeverityName());
+    }
+
+    try (Writer writer = new JSONWriter();) {
+      JSONValue.writeJSONString(objOrderedFields, writer);
+      return writer.toString();
+    } catch (IOException e) {
+      throw new RuleException(e);
+    }
+  }
+
+  protected static JSONArray getStandards(Rule rule) {
+    JSONArray standards = new JSONArray();
+    for (SupportedStandard supportedStandard : SupportedStandard.values()) {
+      Standard standard = supportedStandard.getStandard();
+      if (standard instanceof AbstractReportableStandard && !(standard instanceof AbstractReportableExternalTool)) {
+        AbstractReportableStandard ars = (AbstractReportableStandard) standard;
+        String standardName = ars.getNameIfStandardApplies(rule);
+        if (standardName != null) {
+          standards.add(standardName);
+        }
+      }
+    }
+    return standards;
   }
 }

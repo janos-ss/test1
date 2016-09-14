@@ -7,6 +7,8 @@ package com.sonarsource.ruleapi.externalspecifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
+import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2012;
+import com.sonarsource.ruleapi.externalspecifications.misra.MisraCPP2008;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -145,6 +147,47 @@ public class AbstractMisraSpecificationTest {
   public void testGetReportTypes(){
     MisraC2004 mc = new MisraC2004();
     assertThat(mc.getReportTypes()).isNotEmpty();
+  }
+
+  @Test
+  public void getNameIfStandardApplies(){
+
+    MisraC2004 misraC2004 = new MisraC2004();
+    MisraC2012 misraC2012 = new MisraC2012();
+    MisraCPP2008 misraCPP2008 = new MisraCPP2008();
+
+
+    Rule rule = new Rule("C");
+
+    assertThat(misraC2004.getNameIfStandardApplies(rule)).isNull();
+    assertThat(misraC2012.getNameIfStandardApplies(rule)).isNull();
+    assertThat(misraCPP2008.getNameIfStandardApplies(rule)).isNull();
+
+    rule.getMisraC04().add("foo");
+    assertThat(misraC2004.getNameIfStandardApplies(rule)).isEqualTo(misraC2004.getStandardName());
+    assertThat(misraC2012.getNameIfStandardApplies(rule)).isNull();
+    assertThat(misraCPP2008.getNameIfStandardApplies(rule)).isNull();
+
+    rule.getMisraC12().add("foo");
+    assertThat(misraC2004.getNameIfStandardApplies(rule)).isEqualTo(misraC2004.getStandardName());
+    assertThat(misraC2012.getNameIfStandardApplies(rule)).isEqualTo(misraC2012.getStandardName());
+    assertThat(misraCPP2008.getNameIfStandardApplies(rule)).isNull();
+
+    rule.getMisraCpp().add("foo");
+    assertThat(misraC2004.getNameIfStandardApplies(rule)).isEqualTo(misraC2004.getStandardName());
+    assertThat(misraC2012.getNameIfStandardApplies(rule)).isEqualTo(misraC2012.getStandardName());
+    assertThat(misraCPP2008.getNameIfStandardApplies(rule)).isNull();
+
+
+    rule = new Rule("CPP");
+    rule.getMisraC04().add("foo");
+    rule.getMisraC12().add("foo");
+    rule.getMisraCpp().add("foo");
+
+    assertThat(misraC2004.getNameIfStandardApplies(rule)).isNull();
+    assertThat(misraC2012.getNameIfStandardApplies(rule)).isNull();
+    assertThat(misraCPP2008.getNameIfStandardApplies(rule)).isEqualTo(misraCPP2008.getStandardName());
+
   }
 
 }

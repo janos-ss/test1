@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.ReportAndBadge;
+import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
 import junit.framework.TestCase;
@@ -65,4 +66,17 @@ public class AbstractMultiLanguageStandardTest extends TestCase {
     cwe.setLanguage(Language.JAVA);
     assertThat(cwe.getLanguage()).isEqualTo(Language.JAVA);
   }
+
+  @Test
+  public void testGetNameIfStandardApplies(){
+    Cwe cwe = new Cwe();
+
+    Rule rule = new Rule("Java");
+
+    assertThat(cwe.getNameIfStandardApplies(rule)).isNull();
+
+    rule.getCwe().add("CWE-123");
+    assertThat(cwe.getNameIfStandardApplies(rule)).isEqualTo(cwe.getStandardName());
+  }
+
 }

@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.utilities.Language;
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -206,5 +208,97 @@ public class RuleFilesServiceTest {
   public void testUpdateDescriptionsBadLanguage() throws Exception {
     File outputDir = testFolder.newFolder();
     RuleFilesService.create(outputDir.toString(), Language.fromString("cheatTheRegExp|*"));
+  }
+
+  @Test
+  public void testGetStandards(){
+    com.sonarsource.ruleapi.domain.Rule rule = new com.sonarsource.ruleapi.domain.Rule("PHP");
+
+    rule.getCert().add("Foo");
+    rule.getMisraC04().add("misraC");
+
+    List<String> standards = RuleFilesService.getStandards(rule);
+    assertThat(standards.size()).isEqualTo(0);
+
+    rule.getCwe().add("CWE-999");
+    standards = RuleFilesService.getStandards(rule);
+    assertThat(standards.size()).isEqualTo(1);
+
+  }
+
+  @Test
+  public void testGetSquidJson( ) throws Exception{
+    File outputDir = testFolder.newFolder();
+    RuleFilesService rfs = RuleFilesService.create(outputDir.toString(), Language.fromString("c"), true, false);
+
+
+    com.sonarsource.ruleapi.domain.Rule rule = new com.sonarsource.ruleapi.domain.Rule("foo");
+    rule.setStatus(com.sonarsource.ruleapi.domain.Rule.Status.DEPRECATED);
+    rule.setTitle("Lorem Ipsum");
+    HashSet<Profile> defaultProfiles = new HashSet<>();
+    defaultProfiles.add(new Profile("bar"));
+    rule.setDefaultProfiles(defaultProfiles);
+    rule.setRemediationFunction(com.sonarsource.ruleapi.domain.Rule.RemediationFunction.CONSTANT_ISSUE);
+    rule.setConstantCostOrLinearThreshold("17 seconds");
+    ArrayList<String> tags = new ArrayList<>(1);
+    tags.add("qux");
+    rule.setTags(tags);
+    rule.setSeverity(com.sonarsource.ruleapi.domain.Rule.Severity.MINOR);
+
+    // well formatted nice looking JSON with ordered fields
+    final String expected1 = "{\n" +
+            "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"type\": \"CODE_SMELL\",\n" +
+            "  \"status\": \"deprecated\",\n" +
+            "  \"remediation\": {\n" +
+            "    \"func\": \"Constant\\/Issue\",\n" +
+            "    \"constantCost\": \"17 seconds\"\n" +
+            "  },\n" +
+            "  \"tags\": [\n" +
+            "    \"qux\"\n" +
+            "  ],\n" +
+            "  \"defaultSeverity\": \"Minor\"\n" +
+            "}";
+
+    assertThat( rfs.getSquidJson(rule)).isEqualTo(expected1);
+
+    rule.setStatus(com.sonarsource.ruleapi.domain.Rule.Status.READY);
+    rule.setRemediationFunction(com.sonarsource.ruleapi.domain.Rule.RemediationFunction.LINEAR);
+    rule.setLinearArgDesc("dolor sit amet");
+    rule.setLinearFactor("666");
+    rule.setSeverity(com.sonarsource.ruleapi.domain.Rule.Severity.BLOCKER);
+    final String expected2 = "{\n" +
+            "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"type\": \"CODE_SMELL\",\n" +
+            "  \"status\": \"ready\",\n" +
+            "  \"remediation\": {\n" +
+            "    \"func\": \"Linear\",\n" +
+            "    \"linearDesc\": \"dolor sit amet\",\n" +
+            "    \"linearFactor\": \"666\"\n" +
+            "  },\n" +
+            "  \"tags\": [\n" +
+            "    \"qux\"\n" +
+            "  ],\n" +
+            "  \"defaultSeverity\": \"Blocker\"\n" +
+            "}";
+
+    assertThat( rfs.getSquidJson(rule)).isEqualTo(expected2);
+
+
+    rule.setStatus(com.sonarsource.ruleapi.domain.Rule.Status.BETA);
+    // without the optional fields
+    rule.setSeverity(null);
+    rule.setRemediationFunction(null);
+    final String expected3 = "{\n" +
+            "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"type\": \"CODE_SMELL\",\n" +
+            "  \"status\": \"beta\",\n" +
+            "  \"tags\": [\n" +
+            "    \"qux\"\n" +
+            "  ]\n" +
+            "}";
+
+    assertThat( rfs.getSquidJson(rule)).isEqualTo(expected3);
+
   }
 }
