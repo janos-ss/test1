@@ -73,6 +73,7 @@ public class RuleFilesService {
 
   public void generateRuleFiles(Iterable<String> ruleKeys) {
     countGeneratedFiles = 0;
+    int countRulesProcessed = 0;
     if (ruleKeys != null) {
       List<Rule> updatedRules = new ArrayList<>();
       for (String ruleKey : ruleKeys) {
@@ -82,8 +83,10 @@ public class RuleFilesService {
         }
         generateSingleRuleFiles(rule);
         updatedRules.add(rule);
-        if (countGeneratedFiles % 20 == 0) {
-          System.out.println(String.format("%4d rules processed",countGeneratedFiles/2));
+
+        countRulesProcessed++;
+        if (countRulesProcessed % 10 == 0) {
+          System.out.println(String.format("%4d rules processed",countRulesProcessed ));
         }
       }
       updateProfiles(updatedRules);
