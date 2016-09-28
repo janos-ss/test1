@@ -328,7 +328,7 @@ public class MarkdownConverter {
 
     // Java vs Javascript...?
     String line = arg;
-    if (line.contains("{code")) {
+    if (line.matches("^\\{code.*")) {
       if (codeOpen) {
         line = line.replaceFirst("\\{code\\}", "</pre>");
         codeOpen = false;
