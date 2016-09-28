@@ -909,4 +909,20 @@ public class MarkdownConverterTest {
     assertThat(mc.hasCloseIndicator(line, 5, '^')).isTrue();
   }
 
+  @Test
+  public void testCodeAsCodeValue(){
+    String markdown =
+            "||Element||Remediation Action||\n" +
+            "|{{strike}}|use {{del}} or {{s}}|\n" +
+            "|{{xmp}}|use {{pre}} or {{code}}, and escape \"<\" and \"&\" characters|";
+
+    String expectedHtml = "<table>\n" +
+            "<tr><th>Element</th><th>Remediation Action</th></tr>\n" +
+            "<tr><td><code>strike</code></td><td>use <code>del</code> or <code>s</code></td></tr>\n" +
+            "<tr><td><code>xmp</code></td><td>use <code>pre</code> or <code>code</code>, and escape \"&lt;\" and \"&amp;\" characters</td></tr>\n" +
+            "</table>\n";
+
+    assertThat(mc.transform(markdown, "Web")).isEqualTo(expectedHtml);
+  }
+
 }
