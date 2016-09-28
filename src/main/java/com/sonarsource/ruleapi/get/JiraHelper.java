@@ -72,19 +72,21 @@ public class JiraHelper {
 
     setReferences(rule, issue);
 
-    validateRuleDeprecation(rule);
+    validateRuleDeprecation(rule, RuleMaker.getReplacingRules(rule));
   }
 
   /**
    * Update status and deprecation notice based on whether or not
    * deprecating/superseding rules have actually been implemented yet.
+   * If no replacements, leave status at Deprecated.
    *
    * Based on rule status and deprecationLinks, so those need to have
    * been set before this is invoked.
    *
+   * @param replacingRules list of replacement rule links
    * @param rule
    */
-  static void validateRuleDeprecation(Rule rule) {
+  static void validateRuleDeprecation(Rule rule, List<Rule> replacingRules) {
 
     Language lang = Language.fromString(rule.getLanguage());
     if (lang == null) {
@@ -95,9 +97,10 @@ public class JiraHelper {
 
     if (Rule.Status.SUPERSEDED == rule.getStatus() || Rule.Status.DEPRECATED == rule.getStatus()) {
 
-      rule.setStatus(Rule.Status.READY);
+      if (! replacingRules.isEmpty()) {
+        rule.setStatus(Rule.Status.READY);
+      }
 
-      List<Rule> replacingRules = RuleMaker.getReplacingRules(rule);
       for (Rule replacement : replacingRules) {
         if (replacement.getCoveredLanguages().contains(lang.getRspec())) {
           rule.setStatus(Rule.Status.DEPRECATED);
