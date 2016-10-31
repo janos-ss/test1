@@ -210,7 +210,7 @@ public class RuleFilesService {
         .filter(RuleFilesService::matchRuleFileExtension)
         .map(FilenameUtils::removeExtension)
         .map(this::toRuleKey)
-        .filter(key -> key != null)
+        .filter(Objects::nonNull)
         .collect(Collectors.toSet());
     System.out.println(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
     return rulesToUpdateKeys;
@@ -314,7 +314,7 @@ public class RuleFilesService {
       objOrderedFields.put("defaultSeverity", rule.getSeverity().getSeverityName());
     }
 
-    try (Writer writer = new JSONWriter();) {
+    try (Writer writer = new JSONWriter()) {
       JSONValue.writeJSONString(objOrderedFields, writer);
       return writer.toString();
     } catch (IOException e) {
