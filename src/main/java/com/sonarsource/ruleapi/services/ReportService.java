@@ -12,9 +12,9 @@ import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableExternalTool;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.externalspecifications.Badgable;
+import com.sonarsource.ruleapi.externalspecifications.BadgableMultiLanguage;
 import com.sonarsource.ruleapi.externalspecifications.CleanupReport;
 import com.sonarsource.ruleapi.externalspecifications.CustomerReport;
-import com.sonarsource.ruleapi.externalspecifications.BadgableMultiLanguage;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
 import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
@@ -22,7 +22,6 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMul
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
-import java.util.Locale;
 import org.fest.util.Strings;
 import org.json.simple.JSONArray;
 
@@ -32,6 +31,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -381,7 +381,7 @@ public class ReportService extends RuleManager {
           "  <body><a name='top' id='top'></a>\n" +
           "\n" +
           "<div style=\"background-color: rgb(25, 25, 25);height:66px;padding-left:6px\">\n" +
-          "  <img src=\"http://www.sonarsource.com/wp-content/themes/sonarsource/images/logo.png\"/>\n" +
+          "  <img src=\"http://dist.sonarsource.com/reports/sonarsource_white_256px.png\" width='256'/>\n" +
           "</div>\n" +
           "\n" +
           "<div class=\"container\">\n";
