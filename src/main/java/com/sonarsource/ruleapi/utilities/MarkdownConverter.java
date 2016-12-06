@@ -158,7 +158,7 @@ public class MarkdownConverter {
     if (line == null) {
       return line;
     }
-    String l2 = line.replaceAll("&(?!(gt;|amp;|lt;|#92;))", "&amp;");
+    String l2 = line.replaceAll("&(?!(gt;|amp;|lt;|#[\\d]+;))", "&amp;");
     l2 = l2.replaceAll("<","&lt;");
     l2 = l2.replaceAll(">", "&gt;");
     l2 = l2.replaceAll("§", "&sect;");
