@@ -925,4 +925,19 @@ public class MarkdownConverterTest {
     assertThat(mc.transform(markdown, "Web")).isEqualTo(expectedHtml);
   }
 
+  @Test
+  public void testUtf8Characters(){
+    String markdown = "&#123; &#125;";
+    String expectedHtml = "<p>&#123; &#125;</p>\n";
+    assertThat(mc.transform(markdown, "Web")).isEqualTo(expectedHtml);
+
+    markdown = "{{&#123; &#125;}}";
+    expectedHtml = "<p><code>&#123; &#125;</code></p>\n";
+    assertThat(mc.transform(markdown, "Web")).isEqualTo(expectedHtml);
+
+    markdown = "{code}\n&#123; &#125;\n{code}";
+    expectedHtml = "<pre>\n&#123; &#125;\n</pre>\n"; // This is not how JIRA renders it. In JIRA & is escaped to &amp; inside code blocks
+    assertThat(mc.transform(markdown, "Web")).isEqualTo(expectedHtml);
+  }
+
 }
