@@ -38,8 +38,9 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
   private static final String TAG = "cert";
   private static final String REFERENCE_NAME = "CERT";
   private static final String REFERENCE_PATTERN = "[A-Z]{3}\\d\\d-[A-Za-z]+.";
-  private static final String TITLE_AND_INTRO = "<h2>SonarAnalyzer for %1$s Coverage of CERT %1$s Standard</h2>\n" +
-          "<p>The following table lists the CERT %1$s standard items the SonarAnalyzer for %1$s is able to detect, " +
+  private static final String TITLE_AND_INTRO = "<h2>Sonar%1$s Coverage of CERT %1$s Standard</h2>\n" +
+          "<p>The following table lists the CERT %1$s standard items Sonar%1$s is able to detect, " +
+          "<p>The following table lists the CERT %1$s standard items Sonar%1$s is able to detect, " +
           "and for each of them, the rules providing this coverage.</p>";
 
   private static final CertType CPP = new CertType(Language.CPP, new String [] {"146440541", "146440543"});

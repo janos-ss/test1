@@ -16,6 +16,9 @@ import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import com.sonarsource.ruleapi.utilities.Utilities;
+import org.fest.util.Strings;
+import org.json.simple.JSONObject;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,22 +29,20 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import org.fest.util.Strings;
-import org.json.simple.JSONObject;
 
 
 public class RulesInLanguage implements BadgableMultiLanguage {
 
   private static final Logger LOGGER = Logger.getLogger(RulesInLanguage.class.getName());
 
-  private static final String TITLE_AND_INTRO = "<h2>SonarAnalyzer for %1$s</h2>\n" +
+  private static final String TITLE_AND_INTRO = "<h2>Sonar%1$s</h2>\n" +
           "<h3>%2$d Rules</h3>\n" +
-          "<p>Offering a set of powerful rules, the SonarAnalyzer for %1$s's is all you need for finding bugs, vulnerabilities, and code smells in your code. " +
-          "With the SonarAnalyzer for %1$s, monitoring your code quality is no longer a daunting task.</p>\n" +
+          "<p>Offering a set of powerful rules, Sonar%1$s is all you need for finding bugs, vulnerabilities, and code smells in your code. " +
+          "With Sonar%1$s, monitoring your code quality is no longer a daunting task.</p>\n" +
           "\n" +
           "<br>";
 
-  private static final String SPEC = "SonarAnalyzer";
+  private static final String SPEC = "Sonar";
   private static final NumberFormat NUMBER_FORMAT = NumberFormat.getNumberInstance(Locale.US);
 
   private Language language = null;

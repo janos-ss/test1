@@ -33,9 +33,9 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
   private static final String TAG = "sans-top25";
   private static final String REFERENCE_PATTERN = "CWE-\\d+";
   private static final String CWE = "CWE";
-  private static final String TITLE_AND_INTRO = "<h2>SonarAnalyzer for %1$s Coverage of SANS Top 25</h2>\n" +
+  private static final String TITLE_AND_INTRO = "<h2>Sonar%1$s Coverage of SANS Top 25</h2>\n" +
           "<p>SANS Top 25 is a sub-set of the Common Weakness Enumeration (CWE). The following table lists the " +
-          "CWE standard items in the SANS Top 25 the SonarAnalyzer for %1$s is able to detect, " +
+          "CWE standard items in the SANS Top 25 Sonar%1$s is able to detect, " +
           "and for each of them, the rules providing this coverage.</p>";
 
   private Language language = null;

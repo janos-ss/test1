@@ -27,8 +27,8 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   private static final Logger LOGGER = Logger.getLogger(AbstractMisraSpecification.class.getName());
 
   private static final String TAG = "misra";
-  private static final String TITLE_AND_INTRO = "<h2>SonarAnalyzer for C/C++ Coverage of  %1$s Standard</h2>\n" +
-          "<p>The following table lists the %1$s standard items the SonarAnalyzer for C/C++ is able to detect, " +
+  private static final String TITLE_AND_INTRO = "<h2>SonarC++ Coverage of  %1$s Standard</h2>\n" +
+          "<p>The following table lists the %1$s standard items the SonarC++ is able to detect, " +
           "and for each of them, the rules providing this coverage.</p>";
 
   protected int mandatoryRulesImplemented = 0;

@@ -25,8 +25,8 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
   private static final String TAG = "cwe";
   private static final String REFERENCE_PATTERN = "CWE-\\d+";
   private static final String NAME = "CWE";
-  private static final String TITLE_AND_INTRO = "<h2>SonarAnalyzer for %1$s Coverage of CWE</h2>\n" +
-          "<p>The following table lists the CWE items the SonarAnalyzer for %1$s is able to detect, " +
+  private static final String TITLE_AND_INTRO = "<h2>Sonar%1$s Coverage of CWE</h2>\n" +
+          "<p>The following table lists the CWE items Sonar%1$s is able to detect, " +
           "and for each of them, the rules providing this coverage.</p>";
 
   private Language language = null;
