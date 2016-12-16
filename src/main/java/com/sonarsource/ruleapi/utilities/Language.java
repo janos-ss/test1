@@ -13,30 +13,31 @@ import java.util.Set;
 
 
 public enum Language {
-  //     SonarQube      RSpec          common repo  
-  ABAP  ("abap",        "ABAP",        "common-abap"),
-  C     ("c",           "C",           "common-c"),
-  COBOL ("cobol",       "Cobol",       "common-cobol"),
-  CPP   ("cpp",         "C++",         "common-cpp"),
-  CSH   ("csharpsquid", "C#",          "common-cs"),
-  FLEX  ("flex",        "Flex",        "common-flex"),
-  JAVA  ("squid",       "Java",        "common-java"),
-  JS    ("javascript",  "JavaScript",  "common-js"),
-  OBJC  ("objc",        "Objective-C", "common-objc"),
-  PHP   ("php",         "PHP",         "common-php"),
-  PLI   ("pli",         "PL/I",        "common-pli"),
-  PLSQL ("plsql",       "PL/SQL",      "common-plsql"),
-  PY    ("python",      "Python",      "common-py"),
-  RPG   ("rpg",         "RPG",         "common-rpg"),
-  SWIFT ("swift",       "Swift",       "common-swift"),
-  VB    ("vb",          "VB6",         "common-vb"),
-  VBNET ("vbnet",       "VB.Net",      "common-vbnet"),
-  WEB   ("Web",         "Web",         ""),
-  XML   ("xml",         "XML",         "");
+  //     SonarQube      RSpec          common repo      reportName
+  ABAP  ("abap",        "ABAP",        "common-abap",    "SonarABAP"),
+  C     ("c",           "C",           "common-c",       "SonarC++ for C"),
+  COBOL ("cobol",       "Cobol",       "common-cobol",   "SonarCOBOL"),
+  CPP   ("cpp",         "C++",         "common-cpp",     "SonarC++"),
+  CSH   ("csharpsquid", "C#",          "common-cs",      "SonarC#"),
+  FLEX  ("flex",        "Flex",        "common-flex",    "SonarFlex"),
+  JAVA  ("squid",       "Java",        "common-java",    "SonarJava"),
+  JS    ("javascript",  "JavaScript",  "common-js",      "SonarJS"),
+  OBJC  ("objc",        "Objective-C", "common-objc",    "SonarC++ for Objective-C"),
+  PHP   ("php",         "PHP",         "common-php",     "SonarPHP"),
+  PLI   ("pli",         "PL/I",        "common-pli",     "SonarPL/I"),
+  PLSQL ("plsql",       "PL/SQL",      "common-plsql",   "SonarPLSQL"),
+  PY    ("python",      "Python",      "common-py",      "SonarPython"),
+  RPG   ("rpg",         "RPG",         "common-rpg",     "SonarRPG"),
+  SWIFT ("swift",       "Swift",       "common-swift",   "SonarSwift"),
+  VB    ("vb",          "VB6",         "common-vb",      "SonarVB6"),
+  VBNET ("vbnet",       "VB.Net",      "common-vbnet",   "SonarVB.NET"),
+  WEB   ("Web",         "Web",         "",               "SonarWeb"),
+  XML   ("xml",         "XML",         "",               "SonarXML");
 
   protected final String sq;
   protected final String rspec;
   protected final String sqCommon;
+  protected final String reportName;
 
   public static final Set<Language> LEGACY_LANGUAGES = Collections.unmodifiableSet(EnumSet.of(
           Language.ABAP,
@@ -62,10 +63,11 @@ public enum Language {
           Language.PY
   ));
 
-  Language(String sq, String rspec, String sqCommon) {
+  Language(String sq, String rspec, String sqCommon, String reportName) {
     this.sq = sq;
     this.rspec = rspec;
     this.sqCommon = sqCommon;
+    this.reportName = reportName;
   }
 
   public String getSq() {
@@ -79,6 +81,10 @@ public enum Language {
   public String getSqCommon() {
 
     return sqCommon;
+  }
+
+  public String getReportName() {
+    return reportName;
   }
 
   public static Language fromString(String value) {

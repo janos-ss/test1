@@ -328,7 +328,7 @@ public class ReportService extends RuleManager {
           "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
           "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
           "\n" +
-          "    <title>%2$s%1$s</title>\n" +
+          "    <title>%1$s %2$s</title>\n" +
           "\n" +
           "    <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" " +
           "          integrity=\"sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7\" crossorigin=\"anonymous\">\n" +

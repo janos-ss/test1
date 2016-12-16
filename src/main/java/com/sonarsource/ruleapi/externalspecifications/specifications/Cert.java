@@ -38,9 +38,8 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
   private static final String TAG = "cert";
   private static final String REFERENCE_NAME = "CERT";
   private static final String REFERENCE_PATTERN = "[A-Z]{3}\\d\\d-[A-Za-z]+.";
-  private static final String TITLE_AND_INTRO = "<h2>Sonar%1$s Coverage of CERT %1$s Standard</h2>\n" +
-          "<p>The following table lists the CERT %1$s standard items Sonar%1$s is able to detect, " +
-          "<p>The following table lists the CERT %1$s standard items Sonar%1$s is able to detect, " +
+  private static final String TITLE_AND_INTRO = "<h2>%1$s Coverage of CERT %2$s Standard</h2>\n" +
+          "<p>The following table lists the CERT %2$s standard items %1$s is able to detect, " +
           "and for each of them, the rules providing this coverage.</p>";
 
   private static final CertType CPP = new CertType(Language.CPP, new String [] {"146440541", "146440543"});
@@ -220,8 +219,8 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append(String.format(ReportService.HEADER_TEMPLATE, currentCertLanguage.getLanguage().getRspec(), REFERENCE_NAME))
-            .append(String.format(TITLE_AND_INTRO, currentCertLanguage.getLanguage().getRspec()))
+    sb.append(String.format(ReportService.HEADER_TEMPLATE, currentCertLanguage.getLanguage().getReportName(), REFERENCE_NAME))
+            .append(String.format(TITLE_AND_INTRO, currentCertLanguage.getLanguage().getReportName(), currentCertLanguage.getLanguage().getRspec()))
             .append(ReportService.TABLE_OPEN)
             .append("<thead><tr><th>CERT ID</th><th>CERT Title</th><th>Implementing Rules</th></tr></thead>")
             .append("<tbody>");

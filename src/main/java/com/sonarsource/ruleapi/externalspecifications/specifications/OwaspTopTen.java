@@ -28,8 +28,8 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
 
   private static final String REFERENCE_FIELD_NAME = "OWASP";
   private static final String SEE_SECTION_SEARCH = "OWASP Top Ten";
-  private static final String TITLE_AND_INTRO = "<h2>Sonar%1$s Coverage of OWASP Top Ten</h2>\n" +
-          "<p>The following table lists the OWASP Top Ten standard items Sonar%1$s is able to detect, " +
+  private static final String TITLE_AND_INTRO = "<h2>%1$s Coverage of OWASP Top Ten</h2>\n" +
+          "<p>The following table lists the OWASP Top Ten standard items %1$s is able to detect, " +
           "and for each of them, the rules providing this coverage.</p>";
 
 
@@ -69,8 +69,8 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append(String.format(ReportService.HEADER_TEMPLATE, getLanguage().getRspec(), SEE_SECTION_SEARCH))
-            .append(String.format(TITLE_AND_INTRO, getLanguage().getRspec()))
+    sb.append(String.format(ReportService.HEADER_TEMPLATE, getLanguage().getReportName(), SEE_SECTION_SEARCH))
+            .append(String.format(TITLE_AND_INTRO, getLanguage().getReportName()))
             .append(ReportService.TABLE_OPEN)
             .append("<thead><tr><th>OWASP ID</th><th>OWASP Title</th><th>Implementing Rules</th></tr></thead>")
             .append("<tbody>");

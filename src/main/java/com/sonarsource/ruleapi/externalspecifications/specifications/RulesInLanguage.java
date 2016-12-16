@@ -35,10 +35,10 @@ public class RulesInLanguage implements BadgableMultiLanguage {
 
   private static final Logger LOGGER = Logger.getLogger(RulesInLanguage.class.getName());
 
-  private static final String TITLE_AND_INTRO = "<h2>Sonar%1$s</h2>\n" +
-          "<h3>%2$d Rules</h3>\n" +
-          "<p>Offering a set of powerful rules, Sonar%1$s is all you need for finding bugs, vulnerabilities, and code smells in your code. " +
-          "With Sonar%1$s, monitoring your code quality is no longer a daunting task.</p>\n" +
+  private static final String TITLE_AND_INTRO = "<h2>%1$s</h2>\n" +
+          "<h3>%3$d Rules</h3>\n" +
+          "<p>Offering a set of powerful rules, %1$s is all you need for finding bugs, vulnerabilities, and code smells in your $2$s code. " +
+          "With %1$s, monitoring your code quality is no longer a daunting task.</p>\n" +
           "\n" +
           "<br>";
 
@@ -110,8 +110,8 @@ public class RulesInLanguage implements BadgableMultiLanguage {
     StringBuilder sb = new StringBuilder();
     StringBuilder rulesBuilder = new StringBuilder();
 
-    sb.append(String.format(Locale.ENGLISH, ReportService.HEADER_TEMPLATE, language.getRspec(), SPEC));
-    sb.append(String.format(Locale.ENGLISH, TITLE_AND_INTRO, language.getRspec(), rules.size()));
+    sb.append(String.format(Locale.ENGLISH, ReportService.HEADER_TEMPLATE, language.getReportName(), SPEC));
+    sb.append(String.format(Locale.ENGLISH, TITLE_AND_INTRO, language.getReportName(), language.getRspec(), rules.size()));
 
     sb.append("<div class=\"row\">");
     for (Rule.Type type : Rule.Type.values()) {

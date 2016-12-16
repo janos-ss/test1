@@ -25,8 +25,8 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
   private static final String TAG = "cwe";
   private static final String REFERENCE_PATTERN = "CWE-\\d+";
   private static final String NAME = "CWE";
-  private static final String TITLE_AND_INTRO = "<h2>Sonar%1$s Coverage of CWE</h2>\n" +
-          "<p>The following table lists the CWE items Sonar%1$s is able to detect, " +
+  private static final String TITLE_AND_INTRO = "<h2>%1$s Coverage of CWE</h2>\n" +
+          "<p>The following table lists the CWE items %1$s is able to detect, " +
           "and for each of them, the rules providing this coverage.</p>";
 
   private Language language = null;
@@ -116,8 +116,8 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append(String.format(ReportService.HEADER_TEMPLATE,getLanguage().getRspec(), NAME))
-            .append(String.format(TITLE_AND_INTRO,getLanguage().getRspec()))
+    sb.append(String.format(ReportService.HEADER_TEMPLATE,getLanguage().getReportName(), NAME))
+            .append(String.format(TITLE_AND_INTRO,getLanguage().getReportName()))
             .append(ReportService.TABLE_OPEN)
             .append("<thead><tr><th>CWE ID</th><th>CWE Name</th><th>Implementing Rules</th></tr></thead>")
             .append("<tbody>");

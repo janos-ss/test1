@@ -27,8 +27,8 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   private static final Logger LOGGER = Logger.getLogger(AbstractMisraSpecification.class.getName());
 
   private static final String TAG = "misra";
-  private static final String TITLE_AND_INTRO = "<h2>SonarC++ Coverage of  %1$s Standard</h2>\n" +
-          "<p>The following table lists the %1$s standard items the SonarC++ is able to detect, " +
+  private static final String TITLE_AND_INTRO = "<h2>%1$s Coverage of %2$s Standard</h2>\n" +
+          "<p>The following table lists the %2$s standard items %1$s is able to detect, " +
           "and for each of them, the rules providing this coverage.</p>";
 
   protected int mandatoryRulesImplemented = 0;
@@ -214,8 +214,8 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append(String.format(ReportService.HEADER_TEMPLATE, getLanguage().getRspec(), getStandardName()))
-            .append(String.format(TITLE_AND_INTRO, getStandardName()))
+    sb.append(String.format(ReportService.HEADER_TEMPLATE, getLanguage().getReportName(), getStandardName()))
+            .append(String.format(TITLE_AND_INTRO, getLanguage().getReportName(), getStandardName()))
             .append(ReportService.TABLE_OPEN)
             .append("<thead><tr><th>MISRA ID</th><th>MISRA Name</th><th>Implementing Rules</th></tr></thead>")
             .append("<tbody>");
