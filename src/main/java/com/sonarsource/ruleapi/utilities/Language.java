@@ -24,7 +24,7 @@ public enum Language {
   JS    ("javascript",  "JavaScript",  "common-js",      "SonarJS"),
   OBJC  ("objc",        "Objective-C", "common-objc",    "SonarC++ for Objective-C"),
   PHP   ("php",         "PHP",         "common-php",     "SonarPHP"),
-  PLI   ("pli",         "PL/I",        "common-pli",     "SonarPL/I"),
+  PLI   ("pli",         "PL/I",        "common-pli",     "SonarPLI"),
   PLSQL ("plsql",       "PL/SQL",      "common-plsql",   "SonarPLSQL"),
   PY    ("python",      "Python",      "common-py",      "SonarPython"),
   RPG   ("rpg",         "RPG",         "common-rpg",     "SonarRPG"),
