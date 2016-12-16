@@ -37,7 +37,7 @@ public class RulesInLanguage implements BadgableMultiLanguage {
 
   private static final String TITLE_AND_INTRO = "<h2>%1$s</h2>\n" +
           "<h3>%3$d Rules</h3>\n" +
-          "<p>Offering a set of powerful rules, %1$s is all you need for finding bugs, vulnerabilities, and code smells in your $2$s code. " +
+          "<p>Offering a set of powerful rules, %1$s is all you need to find bugs, vulnerabilities, and code smells in your %2$s code. " +
           "With %1$s, monitoring your code quality is no longer a daunting task.</p>\n" +
           "\n" +
           "<br>";
