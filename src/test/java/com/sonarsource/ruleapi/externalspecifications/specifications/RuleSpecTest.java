@@ -56,15 +56,17 @@ public class RuleSpecTest {
     List<Language> weak = new ArrayList<>();
     List<Language> legacy = new ArrayList<>();
 
-    RuleSpec.populateLanguageLists(rule, strong, weak, legacy);
+    List<Language> irrelevant = new ArrayList<>();
 
-    assertThat(RuleSpec.getMissing(Language.LOOSLY_TYPE_LANGUAGES, weak)).contains(Language.PHP.getRspec())
+    RuleSpec.populateCoveredLanguageLists(rule, strong, weak, legacy);
+
+    assertThat(RuleSpec.getMissing(Language.LOOSLY_TYPE_LANGUAGES, weak, irrelevant)).contains(Language.PHP.getRspec())
             .contains(Language.PY.getRspec()).doesNotContain(Language.JS.getRspec());
 
     weak.clear();
-    assertThat(RuleSpec.getMissing(Language.LOOSLY_TYPE_LANGUAGES, weak)).isEmpty();
+    assertThat(RuleSpec.getMissing(Language.LOOSLY_TYPE_LANGUAGES, weak, irrelevant)).isEmpty();
 
-    assertThat(RuleSpec.getMissing(Language.STRONGLY_TYPED_LANGUAGES, strong)).contains(",");
+    assertThat(RuleSpec.getMissing(Language.STRONGLY_TYPED_LANGUAGES, strong, irrelevant)).contains(",");
 
   }
 
@@ -86,7 +88,7 @@ public class RuleSpecTest {
     List<Language> weak = new ArrayList<>();
     List<Language> legacy = new ArrayList<>();
 
-    RuleSpec.populateLanguageLists(rule, strong, weak, legacy);
+    RuleSpec.populateCoveredLanguageLists(rule, strong, weak, legacy);
 
     assertThat(strong).hasSize(2).contains(Language.JAVA).contains(Language.CSH);
     assertThat(weak).hasSize(1).contains(Language.JS);
@@ -98,7 +100,7 @@ public class RuleSpecTest {
     weak.clear();
     legacy.clear();
 
-    RuleSpec.populateLanguageLists(rule, strong, weak, legacy);
+    RuleSpec.populateCoveredLanguageLists(rule, strong, weak, legacy);
 
     assertThat(strong).isEmpty();
     assertThat(weak).isEmpty();
@@ -124,6 +126,8 @@ public class RuleSpecTest {
   public void buildRuleRow(){
 
     Rule rule = new Rule("");
+    rule.setKey("S1212");
+    rule.setTitle("This is my rule");
     Set<String> covered = rule.getCoveredLanguages();
 
     // rules with only one covered language suppressed
@@ -134,11 +138,11 @@ public class RuleSpecTest {
     for (Language language : Language.values()) {
       covered.add(language.getRspec());
     }
+    covered.remove("XML");
+    covered.remove("Web");
     assertThat(RuleSpec.buildRuleRow(rule)).isEmpty();
 
     // rules with only irrelevant rules left uncovered suppressed
-    covered.remove("XML");
-    covered.remove("Web");
     covered.remove("JavaScript");
     rule.getIrrelevantLanguages().add("JavaScript");
     assertThat(RuleSpec.buildRuleRow(rule)).isEmpty();

@@ -80,19 +80,18 @@ public class RuleSpec implements CustomerReport {
     List<Language> strong = new ArrayList<>();
     List<Language> weak = new ArrayList<>();
     List<Language> legacy = new ArrayList<>();
-
-    populateLanguageLists(rule, strong, weak, legacy);
+    populateCoveredLanguageLists(rule, strong, weak, legacy);
 
     List<Language> irrelevant = getIrrelevantLanguageList(rule);
 
-    strong.removeAll(irrelevant);
-    weak.removeAll(irrelevant);
-    legacy.removeAll(irrelevant);
+    String missingStrong = getMissing(Language.STRONGLY_TYPED_LANGUAGES, strong, irrelevant);
+    String missingWeak = getMissing(Language.LOOSLY_TYPE_LANGUAGES, weak, irrelevant);
+    String missingLegacy = getMissing(Language.LEGACY_LANGUAGES, legacy, irrelevant);
 
-    if (!strong.isEmpty() || !weak.isEmpty() || !legacy.isEmpty()) {
-      sb.append("<tr><td>").append(getMissing(Language.STRONGLY_TYPED_LANGUAGES, strong)).append(td)
-              .append(getMissing(Language.LOOSLY_TYPE_LANGUAGES, weak)).append(td)
-              .append(getMissing(Language.LEGACY_LANGUAGES, legacy)).append(td)
+    if (!missingLegacy.isEmpty() || !missingWeak.isEmpty() || !missingStrong.isEmpty()) {
+      sb.append("<tr><td>").append(missingStrong).append(td)
+              .append(missingWeak).append(td)
+              .append(missingLegacy).append(td)
               .append(Utilities.getJiraLinkedRuleReference(rule))
               .append("<span class='small'>")
               .append(Utilities.setToString(rule.getCoveredLanguages(), true))
@@ -111,7 +110,7 @@ public class RuleSpec implements CustomerReport {
     return irrelevant;
   }
 
-  protected static void populateLanguageLists(Rule rule, List<Language> strong, List<Language> weak, List<Language> legacy) {
+  protected static void populateCoveredLanguageLists(Rule rule, List<Language> strong, List<Language> weak, List<Language> legacy) {
 
     for (String lang : rule.getCoveredLanguages()) {
       Language language = Language.fromString(lang);
@@ -127,7 +126,7 @@ public class RuleSpec implements CustomerReport {
     }
   }
 
-  protected static String getMissing(Collection<Language> languageListByType, List<Language> covered) {
+  protected static String getMissing(Collection<Language> languageListByType, List<Language> covered, List<Language> irrelevant) {
 
     int coveredCount = 0;
 
@@ -136,7 +135,7 @@ public class RuleSpec implements CustomerReport {
     for (Language lang : languageListByType) {
       if (covered.contains(lang)) {
         coveredCount++;
-      } else {
+      } else if (!irrelevant.contains(lang)) {
         if (sb.length() > 0) {
           sb.append(", ");
         }
