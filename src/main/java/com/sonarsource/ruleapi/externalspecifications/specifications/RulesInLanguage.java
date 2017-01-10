@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 public class RulesInLanguage implements BadgableMultiLanguage {
@@ -78,13 +79,7 @@ public class RulesInLanguage implements BadgableMultiLanguage {
     if (language != null && ! Strings.isNullOrEmpty(instance) && rules == null) {
       rules = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
 
-      List<Rule> templateInstances = new ArrayList<>();
-      for (Rule rule : rules) {
-        if (rule.getKeyOfTemplate() != null) {
-          templateInstances.add(rule);
-        }
-      }
-      rules.removeAll(templateInstances);
+      rules.removeIf(rule -> rule.getKeyOfTemplate() != null );
     }
   }
 

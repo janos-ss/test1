@@ -8,7 +8,6 @@ package com.sonarsource.ruleapi.get;
 import com.sonarsource.ruleapi.domain.Rule;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;
