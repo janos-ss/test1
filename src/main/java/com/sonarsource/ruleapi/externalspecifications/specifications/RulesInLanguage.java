@@ -77,6 +77,8 @@ public class RulesInLanguage implements BadgableMultiLanguage {
   private void fetchRules(String instance) {
     if (language != null && ! Strings.isNullOrEmpty(instance) && rules == null) {
       rules = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
+
+      rules.removeIf(rule -> rule.getKeyOfTemplate() != null );
     }
   }
 

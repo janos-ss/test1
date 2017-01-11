@@ -51,6 +51,9 @@ public class SonarQubeHelper {
     rule.setLinearFactor((String) jsonRule.get("defaultRemFnGapMultiplier"));
     rule.setLinearArgDesc((String) jsonRule.get("gapDescription"));
 
+    rule.setTemplate((Boolean) jsonRule.get("isTemplate"));
+    rule.setKeyOfTemplate((String) jsonRule.get("templateKey"));
+
     handleTags(jsonRule, rule);
 
     rule.setTemplate((Boolean) jsonRule.get("isTemplate"));

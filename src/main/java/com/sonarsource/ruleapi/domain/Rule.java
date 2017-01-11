@@ -109,6 +109,7 @@ public class Rule {
 
   private Severity severity = null;
   private boolean template = false;
+  private String keyOfTemplate = null;
   private List<String> legacyKeys = new ArrayList<>();
 
   private Set<Profile> defaultProfiles = new HashSet<>();
@@ -720,6 +721,14 @@ public class Rule {
 
   public void setEsLint(List<String> esLint) {
     this.esLint = esLint;
+  }
+
+  public String getKeyOfTemplate() {
+    return keyOfTemplate;
+  }
+
+  public void setKeyOfTemplate(String keyOfTemplate) {
+    this.keyOfTemplate = keyOfTemplate;
   }
 
 }
