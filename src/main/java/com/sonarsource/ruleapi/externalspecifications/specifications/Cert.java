@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -130,7 +131,8 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
   @Override
   public boolean doesReferenceNeedUpdating(String reference, List<String> replacements, String ruleKey) {
     if (!reference.matches(REFERENCE_PATTERN)) {
-      LOGGER.info("Unrecognized CERT reference pattern " + reference + " in " + ruleKey);
+      LOGGER.log(Level.INFO, "Unrecognized CERT reference pattern {0} in {1}",
+              new Object[]{reference, ruleKey});
     }
 
     replacements.add(reference);

@@ -22,6 +22,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -450,7 +451,8 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     public void checkReferencesInSeeSection(Rule rule) {
 
       if (! isSansCategoryRule(rule, null) && rule.getReferences().contains(NAME)) {
-        LOGGER.warning(NAME + " found erroneously in See section for " + rule.getKey());
+        LOGGER.log(Level.WARNING,"{0} found erroneously in See section for {1}",
+                new Object[]{NAME , rule.getKey()});
         return;
       }
 
@@ -461,7 +463,8 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
         if (sr != null) {
           String expectedReference = NAME + " - " + sr.category.getName();
           if (!seeSection.contains(expectedReference)) {
-            LOGGER.info("Expected reference not found in " + rule.getKey() + ": " + expectedReference);
+            LOGGER.log(Level.INFO, "Expected reference not found in {0}: {1}",
+                    new Object[]{rule.getKey(), expectedReference});
           }
         }
       }

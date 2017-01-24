@@ -15,6 +15,7 @@ import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -87,7 +88,8 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
       return true;
     } else {
       if (!reference.matches(REFERENCE_PATTERN)) {
-        LOGGER.info("Unrecognized CWE reference pattern " + reference + " in " + ruleKey);
+        LOGGER.log(Level.INFO, "Unrecognized CWE reference pattern {0} in {1}",
+                new Object[] {reference, ruleKey});
       }
 
       replacements.add(reference);

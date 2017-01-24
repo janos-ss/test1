@@ -14,6 +14,7 @@ import com.sonarsource.ruleapi.utilities.Utilities;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -104,7 +105,8 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   public boolean doesReferenceNeedUpdating(String ref, List<String> updates, String ruleKey) {
 
     if (getCodingStandardRuleFromId(ref) == null) {
-      LOGGER.info("Unrecognized " + getRSpecReferenceFieldName() + " value, " + ref + ", in " + ruleKey);
+      LOGGER.log(Level.INFO, "Unrecognized {0} value {1}, in {2}",
+              new Object[] {getRSpecReferenceFieldName(), ref, ruleKey});
     }
 
     return false;

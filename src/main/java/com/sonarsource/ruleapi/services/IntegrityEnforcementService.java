@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -73,7 +74,8 @@ public class IntegrityEnforcementService extends RuleManager {
       String link = line.replaceAll(".*\"(https?://[^'\"]+)\".*", "$1");
       try {
         if (!Strings.isNullOrEmpty(link) && !isUrlGood(link)) {
-          LOGGER.warning("Bad url in " + ruleKey + ": " + link);
+          LOGGER.log(Level.WARNING, "Bad url in {0}: {1}",
+                  new Object[]{ruleKey, link});
         }
       } catch (RuleException e) {
         LOGGER.warning("Bad url in " + ruleKey + ": " + link + "\n" + e.getMessage());
@@ -338,7 +340,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
     for (Map.Entry<Rule, Map<String,Object>> entry : updateMap.entrySet()) {
       String newRuleKey = entry.getKey().getKey();
-      LOGGER.info("Submitting updates to replacement rule: " + newRuleKey);
+      LOGGER.log(Level.INFO, "Submitting updates to replacement rule: {0}", newRuleKey);
       ruleUpdater.updateRule(newRuleKey, entry.getValue());
     }
   }
@@ -459,7 +461,8 @@ public class IntegrityEnforcementService extends RuleManager {
       rspecRule.getCoveredLanguages().remove(rspecLanguage);
 
       rspecRule.getTargetedLanguages().add(rspecLanguage);
-      LOGGER.info(rspecLanguage + " " + rspecRule.getKey() + " moving from covered to targeted");
+      LOGGER.log(Level.INFO, "{0} {1} moving from covered to targeted",
+              new Object[]{ rspecLanguage, rspecRule.getKey()});
 
       needsUpdating.put(rspecRule.getKey(), rspecRule);
     }
@@ -471,11 +474,13 @@ public class IntegrityEnforcementService extends RuleManager {
     if (! rspecRule.getCoveredLanguages().contains(rspecLanguage)) {
       rspecRule.getCoveredLanguages().add(rspecLanguage);
       needsUpdating.put(rspecRule.getKey(), rspecRule);
-      LOGGER.info(rspecLanguage + " " + rspecRule.getKey() + " adding covered");
+      LOGGER.log(Level.INFO, "{0} {1} adding covered",
+              new Object[] {rspecLanguage, rspecRule.getKey()});
     }
     if (rspecRule.getTargetedLanguages().remove(rspecLanguage) && ! needsUpdating.containsKey(rspecRule.getKey())) {
       needsUpdating.put(rspecRule.getKey(), rspecRule);
-      LOGGER.info(rspecLanguage + " " + rspecRule.getKey() + " removing targeted");
+      LOGGER.log(Level.INFO, "{0} {1} removing targeted",
+              new Object[] {rspecLanguage, rspecRule.getKey()});
     }
   }
 
@@ -550,7 +555,8 @@ public class IntegrityEnforcementService extends RuleManager {
 
     for (String reference : referenceField) {
       if (!sees.contains(reference)) {
-        LOGGER.warning(rule.getKey() + " - " + reference + " missing from See section ");
+        LOGGER.log(Level.WARNING,  "{0} - {1} missing from See section ",
+                new Object[]{rule.getKey(), reference});
       }
     }
   }
@@ -575,7 +581,8 @@ public class IntegrityEnforcementService extends RuleManager {
     }
 
     Set<String> tags = rule.getTags();
-    LOGGER.info("Adding missing tag '" + tag + "' to " + rule.getKey());
+    LOGGER.log(Level.INFO, "Adding missing tag '{0}' to {1}",
+            new Object[]{tag, rule.getKey()});
     if (!tags.contains(tag)) {
       tags.add(tag);
       updates.put(LABELS, tags);

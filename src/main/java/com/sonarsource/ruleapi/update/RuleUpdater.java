@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RuleUpdater {
@@ -46,14 +47,16 @@ public class RuleUpdater {
     JSONObject jobj = Fetcher.getJsonFromUrl(ISSUE_BASE_URL + ruleKey + "/editmeta", login, password);
     JSONObject fieldsMeta = (JSONObject)jobj.get("fields");
     JSONObject request = prepareRequest(fieldValuesToUpdate, fieldsMeta);
-    LOGGER.fine("Update " + ruleKey + " : " + request.toJSONString());
+    LOGGER.log(Level.FINE, "Update {0} : {1}",
+            new Object[]{ruleKey, request.toJSONString()});
     return putIssueUpdate(ruleKey, request);
   }
 
   public boolean updateRuleStatus(String ruleKey, Rule.Status status) {
     JSONObject jobj = Fetcher.getJsonFromUrl(ISSUE_BASE_URL + ruleKey + "/transitions?expand=transitions.fields", login, password);
     JSONObject request = prepareTransitionRequest(status, jobj);
-    LOGGER.fine("Update " + ruleKey + " : " + request.toJSONString());
+    LOGGER.log(Level.FINE, "Update {0} : {1}",
+            new Object[]{ruleKey, request.toJSONString()});
     return postIssueUpdate(ruleKey + "/transitions", request);
   }
 

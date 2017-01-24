@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -71,7 +72,7 @@ public class ReportService extends RuleManager {
       if (standard instanceof BadgableMultiLanguage) {
         BadgableMultiLanguage multiLanguageStandard = (BadgableMultiLanguage) standard;
 
-        LOGGER.info("Getting user-facing report for " + standardName);
+        LOGGER.log(Level.INFO, "Getting user-facing report for {0}", standardName);
 
         Map<Language, ReportAndBadge> reports = multiLanguageStandard.getHtmlLanguageReports(RuleManager.SONARQUBE_COM);
         for (Map.Entry<Language, ReportAndBadge> entry : reports.entrySet()) {
@@ -82,7 +83,7 @@ public class ReportService extends RuleManager {
 
         CustomerReport customerReport = (CustomerReport) standard;
 
-        LOGGER.info("Getting user-facing report for " + standardName);
+        LOGGER.log(Level.INFO, "Getting user-facing report for {0}", standardName);
 
         writeCustomerReport(standardName, customerReport.getHtmlReport(RuleManager.SONARQUBE_COM));
 
@@ -127,7 +128,7 @@ public class ReportService extends RuleManager {
 
   public void writeSummaryCoverageReports(String instance) {
 
-    LOGGER.info("Getting summary coverage report  on " + instance);
+    LOGGER.log(Level.INFO, "Getting summary coverage report  on {0}", instance);
 
 
     StringBuilder sb = new StringBuilder();
@@ -153,7 +154,8 @@ public class ReportService extends RuleManager {
 
         AbstractReportableStandard standard = (AbstractReportableStandard) supportedStandard.getStandard();
 
-        LOGGER.info("Getting detailed coverage report for " + standard.getStandardName() + " on " + instance);
+        LOGGER.log(Level.INFO, "Getting detailed coverage report for {0} on {1}",
+                new Object[]{standard.getStandardName(), instance});
 
         writeFile(COVERAGE_DIR.concat(standard.getStandardName()).concat("_coverage.txt").toLowerCase(Locale.ENGLISH), standard.getReport(instance));
       }
@@ -173,7 +175,7 @@ public class ReportService extends RuleManager {
 
       writer.println(content);
 
-      LOGGER.info("Output: " + path);
+      LOGGER.log(Level.INFO, "Output: {0}", path);
 
     } catch (FileNotFoundException|UnsupportedEncodingException e) {
       throw new RuleException(e);
@@ -198,13 +200,14 @@ public class ReportService extends RuleManager {
       if (supportedStandard.getStandard() instanceof AbstractReportableExternalTool) {
         AbstractReportableExternalTool externalTool = (AbstractReportableExternalTool) supportedStandard.getStandard();
 
-        LOGGER.info("Getting deprecated, unspecified ids for " + externalTool.getStandardName() + " on " + instance);
+        LOGGER.log(Level.INFO, "Getting deprecated, unspecified ids for {0} on {1}",
+                new Object[] {externalTool.getStandardName(), instance});
 
         String report = externalTool.getDeprecationReport(instance);
-        writeFile("deprecated_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
+        writeFile("deprecated_" + externalTool.getStandardName().toLowerCase(Locale.ENGLISH) + "_ids.txt", report);
 
         report = externalTool.getUnspecifiedReport();
-        writeFile("unspecified_" + externalTool.getStandardName().toLowerCase() + "_ids.txt", report);
+        writeFile("unspecified_" + externalTool.getStandardName().toLowerCase(Locale.ENGLISH) + "_ids.txt", report);
       }
     }
   }
@@ -238,7 +241,8 @@ public class ReportService extends RuleManager {
               language + " " + instance);
     }
 
-    LOGGER.info("Getting outdated rules report for " + language.getRspec() + " on " + instance);
+    LOGGER.log(Level.INFO, "Getting outdated rules report for {0} on {1}",
+            new Object[]{language.getRspec(), instance});
 
     String fileName = "outdated/".concat(language.getSq()).concat("_outdated_rules.txt").toLowerCase();
 

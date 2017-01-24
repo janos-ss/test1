@@ -113,17 +113,17 @@ public class Utilities {
 
     int maxAbbreviatedKeyLength = 8;
     String ruleKey = getDeployedKey(rule);
-    String dispalyKey = ruleKey;
+    String displayKey = ruleKey;
 
-    if (abbreviateLongKeys && dispalyKey.length() + 1 > maxAbbreviatedKeyLength) {
-      dispalyKey = dispalyKey.substring(0, maxAbbreviatedKeyLength) + ".";
+    if (abbreviateLongKeys && displayKey != null && displayKey.length() + 1 > maxAbbreviatedKeyLength) {
+      displayKey = displayKey.substring(0, maxAbbreviatedKeyLength) + ".";
     }
 
     StringBuilder sb = new StringBuilder();
     // https://sonarqube.com/coding_rules#rule_key=squid%3AS2066
     sb.append("<a href='").append(instance).append("/coding_rules#rule_key=")
             .append(rule.getRepo()).append("%3A").append(ruleKey).append("' target='rule'>")
-            .append(dispalyKey).append("</a>");
+            .append(displayKey).append("</a>");
     return sb.toString();
   }
 

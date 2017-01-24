@@ -17,6 +17,7 @@ import com.sonarsource.ruleapi.utilities.Utilities;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.sonarsource.ruleapi.externalspecifications.Implementability.IMPLEMENTABLE;
@@ -236,9 +237,11 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
       boolean seeSectionHasReference = references.matches(regex);
 
       if (owasp.contains(name()) && !seeSectionHasReference) {
-        LOGGER.info("Expected reference not found in " + rule.getKey() + ": " + name());
+        LOGGER.log(Level.INFO, "Expected reference not found in {0}: {1}",
+                new Object[] {rule.getKey(), name()});
       } else if (!owasp.contains(name()) && seeSectionHasReference) {
-        LOGGER.warning(name() + " found erroneously in See section for " + rule.getKey());
+        LOGGER.log(Level.WARNING, "{0} found erroneously in See section for {1}",
+                new Object[] {name(), rule.getKey()});
       }
     }
 
@@ -297,7 +300,8 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
         return true;
       } else {
         if (!ref.matches(REFERENCE_PATTERN)) {
-          LOGGER.info("Unrecognized OWASP reference pattern " + ref + " in " + ruleKey);
+          LOGGER.log(Level.INFO,"Unrecognized OWASP reference pattern {0} in {1}",
+                  new Object[] {ref, ruleKey});
         }
 
         replacements.add(ref);

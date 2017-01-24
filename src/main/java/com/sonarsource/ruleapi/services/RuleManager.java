@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RuleManager {
@@ -40,7 +41,8 @@ public class RuleManager {
       Rule freshFetch = RuleMaker.getRuleByKey(legacyKey, language.getRspec());
       key = freshFetch.getKey();
       if (key == null) {
-        LOGGER.warning("Legacy key not found for " + language.getRspec() + "/" + language.getSq() + ": " + legacyKey);
+        LOGGER.log(Level.WARNING, "Legacy key not found for {0}/{1}: {2}",
+                new Object[]{language.getRspec(), language.getSq(), legacyKey});
       }
     }
     return key;
