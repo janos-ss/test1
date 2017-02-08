@@ -9,10 +9,12 @@ import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -49,6 +51,23 @@ public class RulesInLanguageTest {
     rule.getDefaultProfiles().add(new Profile("Sonar way"));
     assertThat(ril.isRuleDefault(rule)).isTrue();
 
+  }
+
+  @Test
+  public void generateReport(){
+    ril.setLanguage(Language.JAVA);
+
+    List<Rule> rules = new ArrayList<>();
+    Rule rule = new Rule("Java");
+    rule.setTitle("Rule1");
+    rule.setType(Rule.Type.BUG);
+    rule.setKey("S123");
+    rule.setSeverity(Rule.Severity.MAJOR);
+    rules.add(rule);
+
+    String report = ril.generateReport(RuleManager.SONARQUBE_COM, rules);
+    assertThat(report).contains(rule.getTitle());
+    assertThat(report).contains(Utilities.getFormattedDateString());
   }
 
   @Test

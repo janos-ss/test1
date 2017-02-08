@@ -9,6 +9,7 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2004;
 import com.sonarsource.ruleapi.externalspecifications.misra.MisraC2012;
 import com.sonarsource.ruleapi.externalspecifications.misra.MisraCPP2008;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -101,6 +102,7 @@ public class AbstractMisraSpecificationTest {
     String report = misraC2004.getHtmlReport("");
 
     assertThat(report).contains(rule.getTitle());
+    assertThat(report).contains(Utilities.getFormattedDateString());
   }
 
   @Test

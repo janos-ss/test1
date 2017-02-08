@@ -7,6 +7,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -118,8 +119,9 @@ public class RuleSpecTest {
     Rule rule = getRuleWithEachLanguageType();
     rules.add(rule);
     ruleSpec = new RuleSpec();
-    assertThat(ruleSpec.getRuleTable(rules)).contains("<h2>").contains("</h2>").contains("<table>").contains("</table>").contains(rule.getTitle());
-
+    String table = ruleSpec.getRuleTable(rules);
+    assertThat(table).contains("<h2>").contains("</h2>").contains("<table>").contains("</table>").contains(rule.getTitle());
+    assertThat(table).endsWith(Utilities.getFormattedDateString());
   }
 
   @Test

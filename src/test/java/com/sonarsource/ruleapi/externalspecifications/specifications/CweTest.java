@@ -8,12 +8,13 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
-import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -134,7 +135,9 @@ public class CweTest {
 
     cwe1.setLanguage(Language.ABAP);
 
-    assertThat(cwe1.generateReport(instance)).contains(sq2.getTitle());
+    String report = cwe1.generateReport(instance);
+    assertThat(report).contains(sq2.getTitle());
+    assertThat(report).contains(Utilities.getFormattedDateString());
 
   }
 
