@@ -88,7 +88,9 @@ public class Fetcher {
           // No verification for the time being there, however we should check the server certificate
         }
         @Override
-        public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+        public X509Certificate[] getAcceptedIssuers() {
+          return new X509Certificate[0];
+        }
 
       }}, new java.security.SecureRandom());
 
