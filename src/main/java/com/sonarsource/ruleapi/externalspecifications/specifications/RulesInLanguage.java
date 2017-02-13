@@ -86,9 +86,10 @@ public class RulesInLanguage implements BadgableMultiLanguage {
   public ReportAndBadge getHtmlLanguageReport(String instance, Language language) {
 
     setLanguage(language);
+    fetchRules(instance);
 
     ReportAndBadge reportAndBadge = new ReportAndBadge();
-    reportAndBadge.setReport(generateReport(instance));
+    reportAndBadge.setReport(generateReport(instance, rules));
 
     if (rules != null) {
       BadgeGenerator badger = new BadgeGenerator();
@@ -98,22 +99,21 @@ public class RulesInLanguage implements BadgableMultiLanguage {
     return reportAndBadge;
   }
 
-  protected String generateReport(String instance) {
+  protected String generateReport(String instance, List<Rule> ruleList) {
 
-    fetchRules(instance);
-    if (rules == null || rules.isEmpty()) {
+    if (ruleList == null || ruleList.isEmpty()) {
       return "";
     }
 
     LOGGER.info("Getting Rules in Language report for " + language.getRspec());
 
-    Map<Rule.Type, List<Rule>> typeMap = groupRulesByType(rules);
+    Map<Rule.Type, List<Rule>> typeMap = groupRulesByType(ruleList);
 
     StringBuilder sb = new StringBuilder();
     StringBuilder rulesBuilder = new StringBuilder();
 
     sb.append(String.format(Locale.ENGLISH, ReportService.HEADER_TEMPLATE, language.getReportName(), SPEC));
-    sb.append(String.format(Locale.ENGLISH, TITLE_AND_INTRO, language.getReportName(), language.getRspec(), rules.size()));
+    sb.append(String.format(Locale.ENGLISH, TITLE_AND_INTRO, language.getReportName(), language.getRspec(), ruleList.size()));
 
     sb.append("<div class=\"row\">");
     for (Rule.Type type : Rule.Type.values()) {
@@ -132,7 +132,7 @@ public class RulesInLanguage implements BadgableMultiLanguage {
     sb.append("</div>");
 
     sb.append(rulesBuilder.toString());
-    sb.append(ReportService.FOOTER_TEMPLATE);
+    sb.append(String.format(ReportService.FOOTER_TEMPLATE,Utilities.getFormattedDateString()));
 
     return sb.toString();
   }

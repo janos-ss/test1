@@ -251,7 +251,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
 
     sb.append("</tbody></table>");
 
-    sb.append(ReportService.FOOTER_TEMPLATE);
+    sb.append(String.format(ReportService.FOOTER_TEMPLATE,Utilities.getFormattedDateString()));
 
 
     return sb.toString();

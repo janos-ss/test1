@@ -9,6 +9,7 @@ import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.junit.Test;
 
 import java.util.*;
@@ -193,6 +194,7 @@ public class OwaspTest {
 
     assertThat(report).isNotNull();
     assertThat(report).contains("https://www.owasp.org/index.php/Top_10_2013-A1-Injection");
+    assertThat(report).contains(Utilities.getFormattedDateString());
 
   }
 

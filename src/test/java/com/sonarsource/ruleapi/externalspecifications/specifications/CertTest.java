@@ -9,6 +9,7 @@ import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -102,6 +103,7 @@ public class CertTest {
 
     String result = freshCert.getReportBody(RuleManager.SONARQUBE_COM, certRules);
     assertThat(result).contains(rule.getTitle()).doesNotContain(rule2.getTitle());
+    assertThat(result).contains(Utilities.getFormattedDateString());
   }
 
   @Test

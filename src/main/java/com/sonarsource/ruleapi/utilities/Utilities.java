@@ -7,6 +7,8 @@ package com.sonarsource.ruleapi.utilities;
 
 import com.sonarsource.ruleapi.domain.Rule;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -133,5 +135,10 @@ public class Utilities {
       ruleKey = rule.getLegacyKeys().get(0);
     }
     return ruleKey;
+  }
+
+  public static String getFormattedDateString(){
+    LocalDateTime currentTime = LocalDateTime.now();
+    return currentTime.format(DateTimeFormatter.ISO_LOCAL_DATE);
   }
 }

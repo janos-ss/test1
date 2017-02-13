@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications.specifications;
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -278,7 +279,7 @@ public class SansTop25Test {
     assertThat(report).contains("http://www.sans.org/top25-software-errors/");
     assertThat(report).contains("http://cwe.mitre.org/data/definitions/120");
     assertThat(report).contains("http://www.sans.org/top25-software-errors/#cat2");
-
+    assertThat(report).contains(Utilities.getFormattedDateString());
   }
 
   @Test

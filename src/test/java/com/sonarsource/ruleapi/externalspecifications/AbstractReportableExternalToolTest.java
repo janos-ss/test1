@@ -10,6 +10,7 @@ import com.sonarsource.ruleapi.externalspecifications.tools.Checkstyle;
 import com.sonarsource.ruleapi.externalspecifications.tools.FindBugs;
 import com.sonarsource.ruleapi.externalspecifications.tools.ReSharper;
 import com.sonarsource.ruleapi.services.RuleManager;
+import com.sonarsource.ruleapi.utilities.Utilities;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -42,6 +43,17 @@ public class AbstractReportableExternalToolTest {
 
     findBugsTestInstance.setCodingStandardRuleCoverageImplemented(list, rule);
     findBugsTestInstance.setCodingStandardRuleCoverageSpecifiedBy(rule, list);
+  }
+
+  @Test
+  public void getNameIfStandardApplies(){
+    Checkstyle checkstyle = new Checkstyle();
+
+    Rule rule = new Rule("Java");
+    rule.setKey("S123");
+    rule.setTitle("Foo");
+
+    assertThat(checkstyle.getNameIfStandardApplies(rule)).isNull();
   }
 
   @Test
@@ -226,6 +238,7 @@ public class AbstractReportableExternalToolTest {
     assertThat(report).isNotNull();
     assertThat(report).isNotEmpty();
     assertThat(report).contains("Plugin coverage/deprecation of");
+    assertThat(report).contains(Utilities.getFormattedDateString());
   }
 
 }

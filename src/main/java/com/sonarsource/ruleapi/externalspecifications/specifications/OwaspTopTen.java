@@ -91,7 +91,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
       }
     }
     sb.append("</table>")
-            .append(ReportService.FOOTER_TEMPLATE);
+            .append(String.format(ReportService.FOOTER_TEMPLATE,Utilities.getFormattedDateString()));
 
     return sb.toString();
   }

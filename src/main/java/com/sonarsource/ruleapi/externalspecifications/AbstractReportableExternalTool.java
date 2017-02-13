@@ -143,6 +143,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
             .append(formatLine("&nbsp;&nbsp;<a href='#standard_implemented'>implemented</a>:", implemented, ((double) implemented / implementable) * 100));
 
     sb.append(TABLE_CLOSE);
+    sb.append(Utilities.getFormattedDateString());
 
     isHtml = false;
 

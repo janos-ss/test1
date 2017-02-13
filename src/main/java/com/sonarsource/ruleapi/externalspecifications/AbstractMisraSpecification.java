@@ -240,7 +240,7 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
     }
 
     sb.append("</table>")
-            .append(ReportService.FOOTER_TEMPLATE);
+            .append(String.format(ReportService.FOOTER_TEMPLATE,Utilities.getFormattedDateString()));
 
     return sb.toString();
   }

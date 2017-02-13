@@ -65,6 +65,7 @@ public class RuleSpec implements CustomerReport {
     }
 
     sb.append("</table>");
+    sb.append(Utilities.getFormattedDateString());
     return sb.toString();
   }
 

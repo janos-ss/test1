@@ -141,7 +141,7 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
       }
     }
     sb.append("</table>")
-            .append(ReportService.FOOTER_TEMPLATE);
+            .append(String.format(ReportService.FOOTER_TEMPLATE,Utilities.getFormattedDateString()));
 
     return sb.toString();
   }

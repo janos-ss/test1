@@ -327,7 +327,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
       sb.append("</table>");
     }
 
-    sb.append(ReportService.FOOTER_TEMPLATE);
+    sb.append(String.format(ReportService.FOOTER_TEMPLATE,Utilities.getFormattedDateString()));
 
     return sb.toString();
   }

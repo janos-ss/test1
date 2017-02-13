@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.utilities;
 import com.sonarsource.ruleapi.domain.Rule;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,16 @@ import static org.fest.assertions.Assertions.assertThat;
 
 
 public class UtilitiesTest {
+
+  @Test
+  public void getFormattedDateString(){
+    LocalDateTime ldt = LocalDateTime.now();
+    String dateString = Utilities.getFormattedDateString();
+
+    assertThat(dateString).contains(String.valueOf(ldt.getDayOfMonth()));
+    assertThat(dateString).contains(String.valueOf(ldt.getMonthValue()));
+    assertThat(dateString).contains(String.valueOf(ldt.getYear()));
+  }
 
   @Test
   public void testNormalizeKey() {
