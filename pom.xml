@@ -209,7 +209,7 @@
       <id>IT</id>
       <activation>
         <property>
-          <name>env.TRAVIS_BRANCH</name>
+          <name>env.SONARSOURCE_QA</name>
         </property>
       </activation>
       <build>
