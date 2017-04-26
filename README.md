@@ -7,7 +7,7 @@ As an API, it can be used to:
  1. retrive rules from a running SonarQube instance
  1. compare two rules
  3. update RSpecs
- 3. perform any of funcations available via the CLI
+ 3. perform any of the functions available via the CLI
 
 As a CLI, it can be used with the following parameters:
 
