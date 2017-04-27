@@ -54,9 +54,7 @@ public class SonarQubeHelper {
     rule.setTemplate((Boolean) jsonRule.get("isTemplate"));
     rule.setKeyOfTemplate((String) jsonRule.get("templateKey"));
 
-    handleTags(jsonRule, rule);
-
-    rule.setTemplate((Boolean) jsonRule.get("isTemplate"));
+    rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
 
     JSONArray jsonParams = (JSONArray) jsonRule.get("params");
     for (JSONObject obj : (List<JSONObject>)jsonParams) {
@@ -74,17 +72,6 @@ public class SonarQubeHelper {
 
     return rule;
   }
-
-  private static void handleTags(JSONObject jsonRule, Rule rule) {
-
-    rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
-    if (rule.getType().equals(Rule.Type.BUG)) {
-      rule.getTags().add("bug");
-    } else if (rule.getType().equals(Rule.Type.VULNERABILITY)) {
-      rule.getTags().add("security");
-    }
-  }
-
 
   static void handleHtml(Rule rule, String[] pieces) {
 
