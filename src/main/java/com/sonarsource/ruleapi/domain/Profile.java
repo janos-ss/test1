@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Profile implements Comparable<Profile> {
 
-  private static List<String> synonyms = Arrays.asList(new String[]{"sonar way", "sonarqube way", "sonar c# way"});
+  private static List<String> synonyms = Arrays.asList("sonar way", "sonarqube way", "sonar c# way");
 
   private String key;
   private String name;
