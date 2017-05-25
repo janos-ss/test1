@@ -113,19 +113,18 @@ public class RuleFilesService {
       for (Profile profile : updatedRule.getDefaultProfiles()) {
         String profileName = profile.getName();
         ruleProfileNames.add(profileName);
-        if(profiles.containsKey(profileName)) {
-          RulesProfile rp = profiles.get(profileName);
-          if(!rp.ruleKeys.contains(ruleKey)) {
-            rp.ruleKeys.add(ruleKey);
-            profilesToUpdate.add(rp);
-          }
-        } else {
+
+        RulesProfile rp = profiles.get(profileName);
+        if(rp == null) {
           // profile file not found, creating the profile
           RulesProfile newRP = new RulesProfile();
           newRP.name = profileName;
           newRP.ruleKeys = Lists.newArrayList(ruleKey);
           profilesToUpdate.add(newRP);
           profiles.put(profileName, newRP);
+        } else if(!rp.ruleKeys.contains(ruleKey)) {
+          rp.ruleKeys.add(ruleKey);
+          profilesToUpdate.add(rp);
         }
       }
       // Remove rule from profile
@@ -217,7 +216,7 @@ public class RuleFilesService {
   }
 
   private static boolean matchRuleFileExtension(String fileName) {
-    String fileNameLowerCase = fileName.toLowerCase();
+    String fileNameLowerCase = fileName.toLowerCase(Locale.ENGLISH);
     return !fileNameLowerCase.endsWith(PROFILE_TERMINATION) &&
         (fileNameLowerCase.endsWith(JSON_TERMINATION) || fileNameLowerCase.endsWith(HTML_TERMINATION));
   }
