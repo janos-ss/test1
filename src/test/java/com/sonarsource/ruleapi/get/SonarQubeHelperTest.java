@@ -32,16 +32,12 @@ public class SonarQubeHelperTest {
 
     rule = SonarQubeHelper.populateFields((JSONObject) parser.parse(bugJson));
     assertThat(rule.getType()).isEqualTo(Rule.Type.BUG);
-    assertThat(rule.getTags()).contains("bug");
 
     rule = SonarQubeHelper.populateFields((JSONObject) parser.parse(vulnJson));
     assertThat(rule.getType()).isEqualTo(Rule.Type.VULNERABILITY);
-    assertThat(rule.getTags()).contains("security");
 
     rule = SonarQubeHelper.populateFields((JSONObject) parser.parse(smellJson));
     assertThat(rule.getType()).isEqualTo(Rule.Type.CODE_SMELL);
-    assertThat(rule.getTags()).excludes("bug");
-    assertThat(rule.getTags()).excludes("security");
   }
 
   @Test
