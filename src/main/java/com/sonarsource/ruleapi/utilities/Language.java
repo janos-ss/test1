@@ -29,6 +29,8 @@ public enum Language {
   PY    ("python",      "Python",      "common-py",      "SonarPython"),
   RPG   ("rpg",         "RPG",         "common-rpg",     "SonarRPG"),
   SWIFT ("swift",       "Swift",       "common-swift",   "SonarSwift"),
+  TSQL  ("tsql",        "T-SQL",       "",               "SonarT-SQL"),
+  TS    ("typescript",  "TypeScript",  "",               "SonarTS"),
   VB    ("vb",          "VB6",         "common-vb",      "SonarVB6"),
   VBNET ("vbnet",       "VB.Net",      "common-vbnet",   "SonarVB.NET"),
   WEB   ("Web",         "Web",         "",               "SonarWeb"),
@@ -44,7 +46,8 @@ public enum Language {
           Language.COBOL,
           Language.PLI,
           Language.PLSQL,
-          Language.RPG
+          Language.RPG,
+          Language.TSQL
   ));
   public static final Set<Language> STRONGLY_TYPED_LANGUAGES = Collections.unmodifiableSet(EnumSet.of(
           Language.C,
@@ -54,6 +57,7 @@ public enum Language {
           Language.JAVA,
           Language.OBJC,
           Language.SWIFT,
+          Language.TS,
           Language.VB,
           Language.VBNET
   ));
