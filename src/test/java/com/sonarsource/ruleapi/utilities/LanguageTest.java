@@ -5,10 +5,10 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -18,7 +18,7 @@ public class LanguageTest {
   @Test
   public void testLanguagesEnum() {
 
-    assertThat(Language.values().length).isEqualTo(19);
+    assertThat(Language.values().length).isEqualTo(21);
     assertThat(Language.ABAP.sq).isEqualTo("abap");
     assertThat(Language.ABAP.rspec).isEqualTo("ABAP");
     assertThat(Language.ABAP.getSqCommon()).isEqualTo("common-abap");
