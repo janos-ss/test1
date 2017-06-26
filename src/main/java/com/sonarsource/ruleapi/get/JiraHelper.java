@@ -375,7 +375,7 @@ public class JiraHelper {
           param = new Parameter();
           param.setKey(extractParamValue(line));
           list.add(param);
-        } else {
+        } else if (param != null) {
           fillInParam(param, label, line);
         }
       }
