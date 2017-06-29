@@ -61,7 +61,7 @@ public class FxCop extends AbstractReportableExternalTool {
     APTCAMETHODSSHOULDONLYCALLAPTCAMETHODS("AptcaMethodsShouldOnlyCallAptcaMethods", Implementability.IMPLEMENTABLE),
     APTCATYPESSHOULDONLYEXTENDAPTCABASETYPES("AptcaTypesShouldOnlyExtendAptcaBaseTypes", Implementability.IMPLEMENTABLE),
     ARRAYFIELDSSHOULDNOTBEREADONLY("ArrayFieldsShouldNotBeReadOnly", Implementability.IMPLEMENTABLE),
-    ASSEMBLIESSHOULDHAVEVALIDSTRONGNAMES("AssembliesShouldHaveValidStrongNames", Implementability.IMPLEMENTABLE),
+    ASSEMBLIESSHOULDHAVEVALIDSTRONGNAMES("AssembliesShouldHaveValidStrongNames", Implementability.REJECTED),
     ATTRIBUTESTRINGLITERALSSHOULDPARSECORRECTLY("AttributeStringLiteralsShouldParseCorrectly", Implementability.IMPLEMENTABLE),
     AUTOLAYOUTTYPESSHOULDNOTBECOMVISIBLE("AutoLayoutTypesShouldNotBeComVisible", Implementability.IMPLEMENTABLE),
     AVOIDCALLINGPROBLEMATICMETHODS("AvoidCallingProblematicMethods", Implementability.IMPLEMENTABLE),
