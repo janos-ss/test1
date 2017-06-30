@@ -23,7 +23,7 @@ These options require -login and -password parameters.
   * `integrity`: RSpec internal integrity check. Requires -login and -password parameters.
 
 **Language plugin file generation**
-These options require `-langauge` and `-directory` parameters. Files will be named for the canonical keys of their rules; legacy keys are not supported.
+These options require `-language` and `-directory` parameters. Files will be named for the canonical keys of their rules; legacy keys are not supported.
   * `generate`: Generates html description and json metadata files specified by `-rule` and `-language` parameters at directory specified by `-directory`
   * `update`: Update html and json description files specified by `-language` found at directory specified by `-directory`
 

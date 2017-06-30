@@ -137,7 +137,7 @@ public class FxCop extends AbstractReportableExternalTool {
     DONOTRAISEEXCEPTIONSINEXCEPTIONCLAUSES("DoNotRaiseExceptionsInExceptionClauses", Implementability.IMPLEMENTABLE),
     DONOTRAISEEXCEPTIONSINUNEXPECTEDLOCATIONS("DoNotRaiseExceptionsInUnexpectedLocations", Implementability.IMPLEMENTABLE),
     DONOTRAISERESERVEDEXCEPTIONTYPES("DoNotRaiseReservedExceptionTypes", Implementability.IMPLEMENTABLE),
-    DONOTSHIPUNRELEASEDRESOURCEFORMATS("DoNotShipUnreleasedResourceFormats", Implementability.IMPLEMENTABLE),
+    DONOTSHIPUNRELEASEDRESOURCEFORMATS("DoNotShipUnreleasedResourceFormats", Implementability.REJECTED),
     DONOTTREATFIBERSASTHREADS("DoNotTreatFibersAsThreads", Implementability.IMPLEMENTABLE),
     DONOTUSEAUTODUALCLASSINTERFACETYPE("DoNotUseAutoDualClassInterfaceType", Implementability.IMPLEMENTABLE),
     DONOTUSEIDLEPROCESSPRIORITY("DoNotUseIdleProcessPriority", Implementability.IMPLEMENTABLE),
