@@ -17,11 +17,10 @@ import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.services.RuleFilesService;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.utilities.Language;
-import org.fest.util.Strings;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.fest.util.Strings;
 
 
 public class Main {
@@ -77,6 +76,10 @@ public class Main {
     for (Option option : Option.values()) {
       sb.append("  ").append(option.name().toLowerCase()).append(": ").append(option.description).append("\n");
     }
+    sb.append("\n");
+    sb.append("Additional parameters can be used with 'generate' and 'update':\n");
+    sb.append("  -preserve-filenames : Use the rule keys provided by \"-rule\" to construct the name of output files, this allow to use legacy keys.\n");
+    sb.append("  -no-language-in-filenames : Remove language from file name format (ex: \"S123.json\" instead of \"S123_java.json\"\n");
     System.out.println(sb.toString());
   }
 

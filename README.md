@@ -26,4 +26,6 @@ These options require -login and -password parameters.
 These options require `-language` and `-directory` parameters. Files will be named for the canonical keys of their rules; legacy keys are not supported.
   * `generate`: Generates html description and json metadata files specified by `-rule` and `-language` parameters at directory specified by `-directory`
   * `update`: Update html and json description files specified by `-language` found at directory specified by `-directory`
-
+Additional options:
+  * -preserve-filenames : Use the rule keys provided by "-rule" to construct the name of output files, this allow to use legacy keys.
+  * -no-language-in-filenames : Remove language from file name format (ex: "S123.json" instead of "S123_java.json")
