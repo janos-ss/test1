@@ -11,6 +11,7 @@ public class App {
    * @param name
    */
   public App(String name) {
+    // TODO do something useful
   }
 
   /**
