@@ -156,6 +156,7 @@ public class Rule {
   private List<String> fxCop = new ArrayList<>();
   private List<String> pcLint = new ArrayList<>();
   private List<String> msftRoslyn = new ArrayList<>();
+  private List<String> swiftLint = new ArrayList<>();
 
   public Rule(String language) {
     this.language = language;
@@ -721,6 +722,14 @@ public class Rule {
 
   public void setEsLint(List<String> esLint) {
     this.esLint = esLint;
+  }
+
+  public List<String> getSwiftLint() {
+    return swiftLint;
+  }
+
+  public void setSwiftLint(List<String> swiftLint) {
+    this.swiftLint = swiftLint;
   }
 
   public String getKeyOfTemplate() {
