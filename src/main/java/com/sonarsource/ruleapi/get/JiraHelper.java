@@ -305,6 +305,7 @@ public class JiraHelper {
     rule.setFxCop(getCustomFieldValueAsList(issue, "FxCop"));
     rule.setPcLint(getCustomFieldValueAsList(issue, "PC-Lint"));
     rule.setMsftRoslyn(getCustomFieldValueAsList(issue, "MSFT Roslyn"));
+    rule.setSwiftLint(getCustomFieldValueAsList(issue, "SwiftLint"));
   }
 
   protected static void setRemediation(Rule rule, JSONObject issue) {

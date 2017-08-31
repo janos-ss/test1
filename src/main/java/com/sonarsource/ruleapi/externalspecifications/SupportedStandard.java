@@ -27,6 +27,7 @@ import com.sonarsource.ruleapi.externalspecifications.tools.ReSharper;
 import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperJavaScript;
 import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperVbNet;
 import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperWarnings;
+import com.sonarsource.ruleapi.externalspecifications.tools.SwiftLint;
 
 
 public enum SupportedStandard {
@@ -53,6 +54,7 @@ public enum SupportedStandard {
   PC_LINT_C(new PcLintC()),
   PC_LINT_CPP(new PcLintCpp()),
   ESLINT(new EsLint()),
+  SWIFTLINT(new SwiftLint()),
 
   // TaggableStandards
   CWE(new Cwe()),
