@@ -1,0 +1,38 @@
+{
+  "id": "http://www.sonarsource.org/rule-schema-v1",
+  "title": "Rule",
+  "type": "Object",
+  "required": ["title","type","status","tags","standards","defaultSeverity"],
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["CODE_SMELL","BUG","VULNERABILITY"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["beta","ready","deprecated","superseded"]
+    },
+    "remediation": {
+      "type": "Object"
+    },
+    "tags": {
+      "type": "array",
+      "minItems": 0,
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "standards": {
+      "type": "array",
+      "minItems": 0,
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "defaultSeverity": {
+      "type": "string",
+      "enum": ["Info","Minor","Major","Critical","Blocker"]
+    }
+  }
+}
