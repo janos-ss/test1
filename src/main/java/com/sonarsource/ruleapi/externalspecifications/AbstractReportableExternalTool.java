@@ -238,23 +238,6 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     return sb.toString();
   }
 
-  public String getDeprecationReport(String instance) {
-
-    initCoverageResults(instance);
-    StringBuilder sb = new StringBuilder();
-
-    for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
-      if (!cov.getImplementedBy().isEmpty()) {
-        sb.append(cov.getCodingStandardRuleId())
-                .append("\t")
-                .append(cov.getImplementedByKeysAsCommaList())
-                .append("\n");
-      }
-    }
-
-    return sb.toString();
-  }
-
   public void computeCoverage() {
 
     if (implementable == 0) {
