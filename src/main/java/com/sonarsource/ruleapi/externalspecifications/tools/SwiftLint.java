@@ -13,10 +13,7 @@ import com.sonarsource.ruleapi.utilities.Language;
 
 import java.util.List;
 
-/**
- *
- * @author jeanchristophecollet
- */
+
 public class SwiftLint extends AbstractReportableExternalTool {
 
   private static final String STANDARD_NAME = "SwiftLint";
