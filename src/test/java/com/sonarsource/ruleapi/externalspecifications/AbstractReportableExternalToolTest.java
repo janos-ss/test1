@@ -87,15 +87,6 @@ public class AbstractReportableExternalToolTest {
     assertThat(findBugsTestInstance.ruleKeyComparator.compare(r1, r2)).isEqualTo(-1);
   }
 
-  @Test
-  public void testDeprecationReport(){
-    String expectedReport = "BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS\tS1234\n" +
-            "AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION\tS1234\n";
-
-    assertThat(findBugsTestInstance.getDeprecationReport("")).isEqualTo(expectedReport);
-
-  }
-
   private static String FB_ID = "BC_IMPOSSIBLE_CAST";
   private static String FB_ID2 = "AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION";
   private static String REJECTED_FB_ID = "AM_CREATES_EMPTY_JAR_FILE_ENTRY";

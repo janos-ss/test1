@@ -38,7 +38,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
   private static final ReportType[] reportTypes = {
           ReportType.INTERNAL_COVERAGE, ReportType.INTERNAL_COVERAGE_SUMMARY,
-          ReportType.HTML, ReportType.DEPRECATION, ReportType.UNSPECIFIED};
+          ReportType.HTML, ReportType.UNSPECIFIED};
 
   protected Comparator<Rule> ruleKeyComparator = new RuleKeyComparator();
   private static class RuleKeyComparator implements Comparator<Rule> {

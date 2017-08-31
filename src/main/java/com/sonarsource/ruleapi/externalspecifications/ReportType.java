@@ -14,7 +14,6 @@ public enum ReportType {
   INTERNAL_COVERAGE(true),
   INTERNAL_COVERAGE_SUMMARY(true),
   HTML(false),
-  DEPRECATION(true),
   UNSPECIFIED(true);
 
   private boolean internal = true;
