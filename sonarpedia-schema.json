@@ -1,0 +1,20 @@
+{
+  "id": "http://www.sonarsource.org/sonarpedia-schema-v1.0",
+  "title": "Analyzer configuration for sonarpedia",
+  "type": "Object",
+  "description": "sonarpedia files must be named 'sonarpedia-<analyzer name>.json' and must be placed at the project root",
+  "required": ["rules-metadata-path"],
+  "properties": {
+    "rules-metadata-path": {
+      "type": "string"
+    },
+    "profiles-path": {
+      "type": "string",
+      "description": "if absent, default is rules-metadata-path"
+    },
+    "default-profile-name": {
+      "type": "string",
+      "description": "if absent, default is 'Sonar_way_profile.json'"
+    }
+  }
+}
