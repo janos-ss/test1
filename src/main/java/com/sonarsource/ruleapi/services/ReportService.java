@@ -200,13 +200,10 @@ public class ReportService extends RuleManager {
       if (supportedStandard.getStandard() instanceof AbstractReportableExternalTool) {
         AbstractReportableExternalTool externalTool = (AbstractReportableExternalTool) supportedStandard.getStandard();
 
-        LOGGER.log(Level.INFO, "Getting deprecated, unspecified ids for {0} on {1}",
+        LOGGER.log(Level.INFO, "Getting unspecified ids for {0} on {1}",
                 new Object[] {externalTool.getStandardName(), instance});
 
-        String report = externalTool.getDeprecationReport(instance);
-        writeFile("deprecated_" + externalTool.getStandardName().toLowerCase(Locale.ENGLISH) + "_ids.txt", report);
-
-        report = externalTool.getUnspecifiedReport();
+        String report = externalTool.getUnspecifiedReport();
         writeFile("unspecified_" + externalTool.getStandardName().toLowerCase(Locale.ENGLISH) + "_ids.txt", report);
       }
     }
@@ -307,9 +304,6 @@ public class ReportService extends RuleManager {
         } else {
           writeFile(reportName,((AbstractMultiLanguageStandard)standard).getHtmlLanguageReport(instance, language).getReport());
         }
-        break;
-      case DEPRECATION:
-        writeFile(reportName, ((AbstractReportableExternalTool)standard).getDeprecationReport(instance));
         break;
       case UNSPECIFIED:
         writeFile(reportName, ((AbstractReportableExternalTool)standard).getUnspecifiedReport());

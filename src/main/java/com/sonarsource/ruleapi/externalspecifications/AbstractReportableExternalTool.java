@@ -38,7 +38,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
   private static final ReportType[] reportTypes = {
           ReportType.INTERNAL_COVERAGE, ReportType.INTERNAL_COVERAGE_SUMMARY,
-          ReportType.HTML, ReportType.DEPRECATION, ReportType.UNSPECIFIED};
+          ReportType.HTML, ReportType.UNSPECIFIED};
 
   protected Comparator<Rule> ruleKeyComparator = new RuleKeyComparator();
   private static class RuleKeyComparator implements Comparator<Rule> {
@@ -234,23 +234,6 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
     sb.append(pending);
     sb.append(rejected);
-
-    return sb.toString();
-  }
-
-  public String getDeprecationReport(String instance) {
-
-    initCoverageResults(instance);
-    StringBuilder sb = new StringBuilder();
-
-    for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
-      if (!cov.getImplementedBy().isEmpty()) {
-        sb.append(cov.getCodingStandardRuleId())
-                .append("\t")
-                .append(cov.getImplementedByKeysAsCommaList())
-                .append("\n");
-      }
-    }
 
     return sb.toString();
   }
