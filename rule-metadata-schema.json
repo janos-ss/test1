@@ -2,7 +2,8 @@
   "id": "http://www.sonarsource.org/rule-schema-v1.1",
   "title": "Rule Implementation",
   "type": "Object",
-  "required": ["title","type","status","tags","standards","defaultSeverity","ruleSpecification","repository","sqKey","compatibleLanguages","template"],
+  "required": ["title","type","status","tags","standards","defaultSeverity","ruleSpecification","repository","sqKey","compatibleLanguages"],
+  "description": "we must have one of these files for each implemented rule",
   "properties": {
     "title": {
       "type": "string"
@@ -38,10 +39,6 @@
     "ruleSpecification": {
       "type": "string",
       "description": "id of the RSPEC, in the form 'RSPEC-XXXX'"
-    },
-    "repository": {
-      "type": "string",
-      "description": "the key repository"
     },
     "sqKey": {
       "type": "string",
