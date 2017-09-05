@@ -101,7 +101,7 @@ public class SwiftLint extends AbstractReportableExternalTool {
     LEGACY_NSGEOMETRY_FUNCTIONS("legacy_nsgeometry_functions", Implementability.IMPLEMENTABLE),
     LET_VAR_WHITESPACE("let_var_whitespace", Implementability.IMPLEMENTABLE),
     LINE_LENGTH("line_length", Implementability.IMPLEMENTABLE),
-    MARK("mark", Implementability.IMPLEMENTABLE),
+    MARK("mark", Implementability.REJECTED),
     MULTILINE_PARAMETERS("multiline_parameters", Implementability.IMPLEMENTABLE),
     MULTIPLE_CLOSURES_WITH_TRAILING_CLOSURE("multiple_closures_with_trailing_closure", Implementability.IMPLEMENTABLE),
     NESTING("nesting", Implementability.IMPLEMENTABLE),
