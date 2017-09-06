@@ -40,10 +40,12 @@ public class IntegrityEnforcementService extends RuleManager {
   private static final String LABELS = "Labels";
   public static final String DEFAULT_QUALITY_PROFILES = "Default Quality Profiles";
   private final RuleUpdater ruleUpdater;
+  private final String instance;
 
-  public IntegrityEnforcementService(String login, String password) {
+  public IntegrityEnforcementService(String login, String password, String instance) {
     super();
     ruleUpdater = new RuleUpdater(login, password);
+    this.instance = instance;
   }
 
 
@@ -427,7 +429,7 @@ public class IntegrityEnforcementService extends RuleManager {
 
     Map<String, Rule> rspecRules = getCoveredRulesForLanguage(language);
 
-    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeForLanguage(language, RuleManager.SONARQUBE_COM);
+    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeForLanguage(language, instance);
     List<Rule> specNotFound = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);
 
     for (Rule sqRule : sqCovered) {
