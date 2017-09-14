@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -267,8 +268,8 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   protected String formatLine(String label, int count, double percentage) {
 
     if (isHtml) {
-      return String.format("<tr><td>%s</td><td>%3d</td><td>%.2f%%</td></tr>", label, count, percentage);
+      return String.format(Locale.US, "<tr><td>%s</td><td>%3d</td><td>%.2f%%</td></tr>", label, count, percentage);
     }
-    return String.format("  %-15s %3d  %6.2f%%%n", label, count, percentage);
+    return String.format(Locale.US, "  %-15s %3d  %6.2f%%%n", label, count, percentage);
   }
 }
