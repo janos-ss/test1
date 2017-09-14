@@ -34,6 +34,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,6 +47,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RuleFilesService {
 
@@ -203,16 +205,18 @@ public class RuleFilesService {
   }
 
   private Set<String> findRulesToUpdate() throws IOException {
-    final Set<String> rulesToUpdateKeys = Files.list(baseDir.toPath())
-        .filter(Files::isRegularFile)
-        .map(path -> path.getFileName().toString())
-        .filter(RuleFilesService::matchRuleFileExtension)
-        .map(FilenameUtils::removeExtension)
-        .map(this::toRuleKey)
-        .filter(Objects::nonNull)
-        .collect(Collectors.toSet());
-    System.out.println(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
-    return rulesToUpdateKeys;
+    try(Stream<Path> pathStream = Files.list(baseDir.toPath())) {
+      final Set<String> rulesToUpdateKeys = pathStream
+              .filter(Files::isRegularFile)
+              .map(path -> path.getFileName().toString())
+              .filter(RuleFilesService::matchRuleFileExtension)
+              .map(FilenameUtils::removeExtension)
+              .map(this::toRuleKey)
+              .filter(Objects::nonNull)
+              .collect(Collectors.toSet());
+      System.out.println(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
+      return rulesToUpdateKeys;
+    }
   }
 
   private static boolean matchRuleFileExtension(String fileName) {
