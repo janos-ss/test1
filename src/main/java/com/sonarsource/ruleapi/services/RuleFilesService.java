@@ -272,7 +272,7 @@ public class RuleFilesService {
 
   public String getSquidJson(Rule rule) {
 
-    LinkedHashMap objOrderedFields = new LinkedHashMap();
+    LinkedHashMap<String, Object> objOrderedFields = new LinkedHashMap<>();
     objOrderedFields.put("title", rule.getTitle());
     objOrderedFields.put("type", rule.getType().name());
 
@@ -281,7 +281,7 @@ public class RuleFilesService {
     }
 
     if (rule.getRemediationFunction()!= null) {
-      LinkedHashMap remediation = new LinkedHashMap();
+      LinkedHashMap<String, String> remediation = new LinkedHashMap<>();
       remediation.put("func", rule.getRemediationFunction().getFunctionName());
       switch (rule.getRemediationFunction()) {
         case CONSTANT_ISSUE:
@@ -316,6 +316,8 @@ public class RuleFilesService {
     if (rule.getSeverity() != null) {
       objOrderedFields.put("defaultSeverity", rule.getSeverity().getSeverityName());
     }
+
+    objOrderedFields.put("ruleSpecification", rule.getKey());
 
     try (Writer writer = new JSONWriter()) {
       JSONValue.writeJSONString(objOrderedFields, writer);
