@@ -91,10 +91,10 @@ public class Main {
 
     switch (option) {
       case OUTDATED :
-        new IntegrityEnforcementService(settings.login, settings.password).setCoveredLanguages();
+        new IntegrityEnforcementService(settings.login, settings.password, settings.instance).setCoveredLanguages();
         break;
       case INTEGRITY :
-        new IntegrityEnforcementService(settings.login, settings.password).enforceIntegrity();
+        new IntegrityEnforcementService(settings.login, settings.password, settings.instance).enforceIntegrity();
         break;
       case REPORTS:
         generateReports(settings, rs);
