@@ -304,5 +304,27 @@ public class RuleFilesServiceTest {
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected3);
 
+    rule.setRemediationFunction(com.sonarsource.ruleapi.domain.Rule.RemediationFunction.LINEAR_OFFSET);
+    rule.setLinearArgDesc("dolor sit amet");
+    rule.setLinearOffset("42");
+    rule.setLinearFactor("666");
+    final String expected4 = "{\n" +
+      "  \"title\": \"Lorem Ipsum\",\n" +
+      "  \"type\": \"CODE_SMELL\",\n" +
+      "  \"status\": \"beta\",\n" +
+      "  \"remediation\": {\n" +
+      "    \"func\": \"Linear with offset\",\n" +
+      "    \"linearDesc\": \"dolor sit amet\",\n" +
+      "    \"linearOffset\": \"42\",\n" +
+      "    \"linearFactor\": \"666\"\n" +
+      "  },\n" +
+      "  \"tags\": [\n" +
+      "    \"qux\"\n" +
+      "  ],\n" +
+      "  \"ruleSpecification\": \"RSPEC-1234\"\n" +
+      "}";
+
+    assertThat( rfs.getSquidJson(rule)).isEqualTo(expected4);
+
   }
 }

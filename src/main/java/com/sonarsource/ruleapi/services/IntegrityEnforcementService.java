@@ -583,7 +583,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
 
     Set<String> tags = rule.getTags();
-    LOGGER.log(Level.INFO, "Adding missing tag '{0}' to {1}",
+    LOGGER.log(Level.INFO, "Adding missing tag {0} to {1}",
             new Object[]{tag, rule.getKey()});
     if (!tags.contains(tag)) {
       tags.add(tag);
