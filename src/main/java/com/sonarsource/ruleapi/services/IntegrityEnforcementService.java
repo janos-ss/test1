@@ -69,7 +69,8 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  private static void checkUrlInReferenceLine(String ruleKey, String line) {
+  @VisibleForTesting
+  static void checkUrlInReferenceLine(String ruleKey, String line) {
 
     if (line.contains("http")) {
 

@@ -5,6 +5,7 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.ReportAndBadge;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleComparison;
@@ -22,7 +23,6 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMul
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
-import org.fest.util.Strings;
 import org.json.simple.JSONArray;
 
 import java.io.File;

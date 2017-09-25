@@ -7,6 +7,7 @@ package com.sonarsource.ruleapi;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
@@ -20,7 +21,6 @@ import com.sonarsource.ruleapi.utilities.Language;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.fest.util.Strings;
 
 
 public class Main {

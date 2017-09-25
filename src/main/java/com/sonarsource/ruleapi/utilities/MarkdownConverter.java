@@ -5,7 +5,7 @@
  */
 package com.sonarsource.ruleapi.utilities;
 
-import org.fest.util.Strings;
+import com.google.common.base.Strings;
 
 import java.util.LinkedList;
 
