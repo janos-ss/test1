@@ -13,7 +13,9 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -326,5 +328,23 @@ public class RuleFilesServiceTest {
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected4);
 
+  }
+
+  @Test
+  public void shouldPrintProgressEveryNthRule() throws Exception {
+    ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+    PrintStream stream = new PrintStream(outputBuffer);
+
+    RuleFilesService.printProgressIfNeeded(9, stream);
+    RuleFilesService.printProgressIfNeeded(10, stream);
+    RuleFilesService.printProgressIfNeeded(11, stream);
+    RuleFilesService.printProgressIfNeeded(999, stream);
+    RuleFilesService.printProgressIfNeeded(1000, stream);
+    RuleFilesService.printProgressIfNeeded(1001, stream);
+
+    assertThat(outputBuffer.toString("US-ASCII")).isEqualTo(
+      "  10 rules processed\n" +
+              "1000 rules processed\n"
+    );
   }
 }
