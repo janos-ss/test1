@@ -17,11 +17,12 @@ import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.services.RuleFilesService;
 import com.sonarsource.ruleapi.services.RuleManager;
+import com.sonarsource.ruleapi.services.SonarPediaFileService;
+import com.sonarsource.ruleapi.services.SonarPediaJsonFile;
 import com.sonarsource.ruleapi.utilities.Language;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 
 public class Main {
 
@@ -29,7 +30,7 @@ public class Main {
     // utility class private constructor
   }
 
-  public static void main(String [] args) {
+  public static void main(String[] args) {
 
     if (args.length == 0) {
       printHelpMessage();
@@ -57,7 +58,7 @@ public class Main {
         return;
       }
 
-      if (! options.contains(option)) {
+      if (!options.contains(option)) {
         options.add(option);
       }
     }
@@ -85,27 +86,42 @@ public class Main {
 
   protected static void doRequestedOption(Option option, Settings settings) {
 
-
     ReportService rs = new ReportService();
     Language language = Language.fromString(settings.language);
 
     switch (option) {
-      case OUTDATED :
+      case OUTDATED:
         new IntegrityEnforcementService(settings.login, settings.password, settings.instance).setCoveredLanguages();
         break;
-      case INTEGRITY :
+      case INTEGRITY:
         new IntegrityEnforcementService(settings.login, settings.password, settings.instance).enforceIntegrity();
         break;
       case REPORTS:
         generateReports(settings, rs);
         break;
+      case INIT:
+        SonarPediaFileService.init(settings.directory, language);
+        break;
       case GENERATE:
-        RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
+        if (settings.directory != null) {
+          System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended");
+          RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
             .generateRuleFiles(settings.ruleKeys);
+        } else {
+          SonarPediaFileService sonarPediaFileService = SonarPediaFileService.create(settings.preserveFileNames,
+            settings.noLanguageInFilenames);
+          sonarPediaFileService.generateRuleFiles(settings.ruleKeys);
+        }
         break;
       case UPDATE:
-        RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
+        if (settings.directory != null) {
+          System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended");
+          RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
             .updateDescriptions();
+        } else {
+          SonarPediaFileService.create(settings.preserveFileNames, !settings.noLanguageInFilenames)
+            .updateDescriptions();
+        }
         break;
       case DIFF:
         rs.writeOutdatedRulesReport(language, settings.instance);
@@ -136,7 +152,7 @@ public class Main {
 
     ReportType rt = ReportType.fromString(settings.report);
     SupportedStandard std = SupportedStandard.fromString(settings.tool);
-    if (std == null || ! (std.getStandard() instanceof AbstractReportableStandard)) {
+    if (std == null || !(std.getStandard() instanceof AbstractReportableStandard)) {
 
       StringBuilder sb = new StringBuilder();
       sb.append("A recognized -tool must be provided: ");
@@ -152,7 +168,7 @@ public class Main {
 
     AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
     List<ReportType> reportTypes = Arrays.asList(ars.getReportTypes());
-    if (! reportTypes.contains(rt)) {
+    if (!reportTypes.contains(rt)) {
       StringBuilder sb = new StringBuilder();
       sb.append("Recognized report types for ").append(settings.tool).append(": ");
       for (ReportType type : reportTypes) {
@@ -163,7 +179,6 @@ public class Main {
 
   }
 
-
   private static void generateReports(Settings settings, ReportService rs) {
 
     rs.writeInternalReports(settings.instance);
@@ -172,12 +187,10 @@ public class Main {
   }
 
   protected static boolean credentialsProvided(Settings settings) {
-
     return !(Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password));
   }
 
-
-  public static class Settings{
+  public static class Settings {
 
     @Parameter(names = "--help", help = true)
     private boolean help;
@@ -194,36 +207,37 @@ public class Main {
     @Parameter(names = "-password")
     private String password;
 
-    @Parameter(names="-rule", variableArity = true)
+    @Parameter(names = "-rule", variableArity = true)
     public List<String> ruleKeys = new ArrayList<>();
 
-    @Parameter(names="-language")
+    @Parameter(names = "-language")
     private String language;
 
-    @Parameter(names="-report")
+    @Parameter(names = "-report")
     private String report;
 
-    @Parameter(names="-directory")
+    @Parameter(names = "-directory")
     private String directory;
 
-    @Parameter(names="-tool")
+    @Parameter(names = "-tool")
     private String tool;
 
-    @Parameter(names="-preserve-filenames")
+    @Parameter(names = "-preserve-filenames")
     private boolean preserveFileNames = false;
 
-    @Parameter(names="-no-language-in-filenames")
+    @Parameter(names = "-no-language-in-filenames")
     private boolean noLanguageInFilenames = false;
 
   }
 
   public enum Option {
-    REPORTS(false,  "Generates all reports based on Nemo (default) or a particular -instance http:..."),
+    REPORTS(false, "Generates all reports based on Nemo (default) or a particular -instance http:..."),
     SINGLE_REPORT(false, "Generate a single -report against -instance (defaults to Nemo), -language, and -tool."),
-    OUTDATED(true,  "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
+    OUTDATED(true, "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
     INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
+    INIT(false, "Initiate a sonarpedia.json file with its rules directory"),
     GENERATE(false, "Generates html description and json metadata files specified by -rule and -language parameters at directory specified by -directory"),
-    UPDATE(false, "Update html and json description files specified by -language found at directory specified by -directory"),
+    UPDATE(false, "Update html and json description files."),
     DIFF(false, "Generates a diff report for the specified -language and -instance");
 
     private String description;
@@ -236,8 +250,8 @@ public class Main {
 
     public static Option fromString(String input) {
 
-      for(Option output : Option.values()) {
-        if(output.toString().equalsIgnoreCase(input)) {
+      for (Option output : Option.values()) {
+        if (output.toString().equalsIgnoreCase(input)) {
           return output;
         }
       }

@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.utilities.JsonUtil;
+import com.sonarsource.ruleapi.utilities.Language;
 import java.io.BufferedWriter;
 import java.io.File;
 import com.google.gson.annotations.SerializedName;
@@ -24,8 +25,32 @@ public class SonarPediaJsonFile {
   File file;
   SonarPediaFileData data;
 
+  private static String sonarpediaFileName = "sonarpedia.json";
+
   private SonarPediaJsonFile() {
     // NOP
+  }
+
+  public static SonarPediaJsonFile create(File baseDir, File rulesDir) {
+      File sonarPediaFile = new File(baseDir, sonarpediaFileName);
+
+    SonarPediaJsonFile returned = new SonarPediaJsonFile();
+    returned.file = sonarPediaFile;
+    returned.data = new SonarPediaFileData();
+    returned.data.ruleMetadataPath = baseDir.toPath().resolve(rulesDir.toPath()).toString();
+
+    try (BufferedWriter out = new BufferedWriter(new FileWriter(sonarPediaFile))) {
+      out.write(JsonUtil.toJson(returned.data));
+    } catch (IOException exception) {
+      throw new IllegalStateException(exception);
+    }
+
+    return returned;
+  }
+
+  public static SonarPediaJsonFile findSonarPediaFile(File baseDir) throws FileNotFoundException {
+    File sonarPediaFile = new File(baseDir, sonarpediaFileName);
+    return deserialize(sonarPediaFile);
   }
 
   public static SonarPediaJsonFile deserialize(File file) throws FileNotFoundException {
@@ -40,8 +65,8 @@ public class SonarPediaJsonFile {
 
   public void writeToItsFile() {
     try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
-      out.write(JsonUtil.toJson(this.data)); 
-    } catch( IOException exception ) {
+      out.write(JsonUtil.toJson(this.data));
+    } catch (IOException exception) {
       throw new IllegalStateException(exception);
     }
   }
@@ -56,13 +81,22 @@ public class SonarPediaJsonFile {
     return this;
   }
 
+  public Instant getUpdateTimeStamp() {
+    return data.latestUpdate;
+  }
+
   public final String getFileName() {
     return this.file.getName();
+  }
+
+  public final Language getLanguage() {
+    return this.data.language;
   }
 
   private static class SonarPediaFileData {
     @SerializedName("rules-metadata-path")
     String ruleMetadataPath;
+    Language language;
     @SerializedName("default-profile-name")
     String defaultProfileName;
     @SerializedName("latest-update")
@@ -70,7 +104,6 @@ public class SonarPediaJsonFile {
   }
 
   public static FilenameFilter getSonarPediaJsonFileFilter() {
-    return (dir, name) -> name.startsWith("sonarpedia-")
-      && name.endsWith(".json");
+    return (dir, name) -> sonarpediaFileName.equals(name);
   }
 }
