@@ -38,6 +38,7 @@ public class JiraHelper {
 
   protected static void populateFields(Rule rule, JSONObject issue) {
     rule.setKey(issue.get("key").toString());
+    rule.setSqKey(Utilities.denormalizeKey(rule.getKey()));
     setStatus(rule, issue);
     setReplacementLinks(rule, issue);
 

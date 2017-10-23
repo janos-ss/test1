@@ -32,6 +32,7 @@ public class RuleMakerTest {
     Rule rule = RuleMaker.getRuleByKey("S2210", "Java");
     assertThat(rule).isNotNull();
     assertThat(rule.getKey()).isEqualTo("RSPEC-2210");
+    assertThat(rule.getSqKey()).isEqualTo("S2210");
     assertThat(rule.getLookupKey()).isEqualTo("S2210");
   }
 
