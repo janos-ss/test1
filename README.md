@@ -26,11 +26,10 @@ These options require -login and -password parameters.
 The generation and update of rules html description and metadata uses the `sonarpedia.json` file options require `-language` and `-directory` parameters. Files will be named for the canonical keys of their rules; legacy keys are not supported.
   * `init`:  as `init -language foo -rulesDir (rules)`. In the current directory, generate a `sonarpedia.json` file pointing on a `rules` directory. This `rules` directory is to be populated with html description and json metadata files.
   * `generate`: as  `generate -rule S1234`. Read the `sonarpedia.json` file in the current directory, generate html and json files for designed rules.
-  * `update`: Read the `sonarpedia.json` file, update athe html description and rules found
-   Read the `sonarpedia.json` file in the current directory, read the 
+  * `update`: Read the `sonarpedia.json` file in the current directory, update the html description and rules found
   * Deprecated features, they are based on the `-directory` option 
-   * `generate`:  Generates html description and json metadata files specified by `-rule` and `-language` parameters at directory specified by `-directory`
-   * `update`: Update html and json description files specified by `-language` found at directory specified by `-directory`
+    * `generate`:  Generates html description and json metadata files specified by `-rule` and `-language` parameters at directory specified by `-directory`
+    * `update`: Update html and json description files specified by `-language` found at directory specified by `-directory`
 Additional options:
   * -preserve-filenames : Use the rule keys provided by "-rule" to construct the name of output files, this allow to use legacy keys.
   * -no-language-in-filenames : Remove language from file name format (ex: "S123.json" instead of "S123_java.json")
