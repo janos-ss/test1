@@ -299,6 +299,7 @@ public class JiraHelperTest {
     }
 
     assertThat(rule.getType()).isEqualTo(Rule.Type.VULNERABILITY);
+    assertThat(rule.getSqKey()).isEqualTo("S3649");
   }
 
   @Test
@@ -311,6 +312,7 @@ public class JiraHelperTest {
     }
 
     assertThat(rule.getType()).isEqualTo(Rule.Type.CODE_SMELL);
+    assertThat(rule.getSqKey()).isEqualTo("ArchitecturalConstraint");
   }
 
   @Test
