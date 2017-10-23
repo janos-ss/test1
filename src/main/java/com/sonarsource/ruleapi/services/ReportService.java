@@ -288,7 +288,7 @@ public class ReportService extends RuleManager {
     String reportName = standard.getStandardName() + "_"
             + (language == null ? "" : (language.name() + "_"))
             + reportType.name()
-            + (reportType.isInternal() ? ".txt" : ".html");
+            + (reportType.isInternal() ? ".txt" : HTML);
 
     if (language == null) {
       LOGGER.info("null language found. Language may be required for the requested report");

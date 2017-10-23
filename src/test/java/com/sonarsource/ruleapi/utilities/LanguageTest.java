@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class LanguageTest {
@@ -40,18 +40,18 @@ public class LanguageTest {
   public void languageTypeMembership(){
 
     for (Language lang : Language.LEGACY_LANGUAGES) {
-      assertThat(Language.LOOSLY_TYPE_LANGUAGES).excludes(lang);
-      assertThat(Language.STRONGLY_TYPED_LANGUAGES).excludes(lang);
+      assertThat(Language.LOOSLY_TYPE_LANGUAGES).doesNotContain(lang);
+      assertThat(Language.STRONGLY_TYPED_LANGUAGES).doesNotContain(lang);
     }
 
     for (Language lang : Language.STRONGLY_TYPED_LANGUAGES) {
-      assertThat(Language.LOOSLY_TYPE_LANGUAGES).excludes(lang);
-      assertThat(Language.LEGACY_LANGUAGES).excludes(lang);
+      assertThat(Language.LOOSLY_TYPE_LANGUAGES).doesNotContain(lang);
+      assertThat(Language.LEGACY_LANGUAGES).doesNotContain(lang);
     }
 
     for (Language lang : Language.LOOSLY_TYPE_LANGUAGES) {
-      assertThat(Language.LEGACY_LANGUAGES).excludes(lang);
-      assertThat(Language.STRONGLY_TYPED_LANGUAGES).excludes(lang);
+      assertThat(Language.LEGACY_LANGUAGES).doesNotContain(lang);
+      assertThat(Language.STRONGLY_TYPED_LANGUAGES).doesNotContain(lang);
     }
 
     List<Language> langs = new ArrayList<>(Language.values().length);
@@ -59,8 +59,8 @@ public class LanguageTest {
     langs.addAll(Language.LOOSLY_TYPE_LANGUAGES);
     langs.addAll(Language.STRONGLY_TYPED_LANGUAGES);
 
-    assertThat(langs).excludes(Language.XML);
-    assertThat(langs).excludes(Language.WEB);
+    assertThat(langs).doesNotContain(Language.XML);
+    assertThat(langs).doesNotContain(Language.WEB);
     assertThat(langs.size()).isEqualTo(Language.values().length - 2);
 
   }

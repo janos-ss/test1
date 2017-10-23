@@ -206,7 +206,7 @@ public class JiraHelper {
         List<JSONObject> value = (List<JSONObject>) obj;
 
         for (JSONObject aValue : value) {
-          list.add((String) aValue.get("value"));
+          list.add((String) aValue.get(VALUE));
         }
       }
     }

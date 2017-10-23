@@ -159,12 +159,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
       String csrId = cov.getCodingStandardRuleId();
 
       for (Rule rule : cov.getImplementedBy()) {
-        List<String> csrIds = map.get(rule);
-        if (csrIds == null) {
-          csrIds = new ArrayList<>();
-          map.put(rule, csrIds);
-        }
-        csrIds.add(csrId);
+        map.computeIfAbsent(rule, r -> new ArrayList<>()).add(csrId);
       }
     }
 

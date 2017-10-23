@@ -954,7 +954,7 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
 
     public static CweRule fromString(String id) {
       String test = id;
-      if (id.matches("CWE-\\d+")) {
+      if (id.matches(REFERENCE_PATTERN)) {
         test = test.replace('-','_');
       }
       if (test.matches("CWE_\\d+")) {

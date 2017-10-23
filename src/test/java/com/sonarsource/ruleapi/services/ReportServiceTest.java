@@ -18,7 +18,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class ReportServiceTest {
