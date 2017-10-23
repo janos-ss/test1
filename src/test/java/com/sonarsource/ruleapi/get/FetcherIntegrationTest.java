@@ -8,7 +8,7 @@ package com.sonarsource.ruleapi.get;
 import org.json.simple.JSONObject;
 import org.junit.Test;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FetcherIntegrationTest {
 

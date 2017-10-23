@@ -8,7 +8,6 @@ package com.sonarsource.ruleapi.get;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
-import org.fest.assertions.api.Assertions;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -20,8 +19,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class RuleMakerTest {
 
@@ -207,7 +206,7 @@ public class RuleMakerTest {
     try {
       List<Profile> profiles = RuleMaker.getProfiles(Language.JAVA, (List<JSONObject>) parser.parse(json));
 
-      Assertions.assertThat(profiles).hasSize(3);
+      assertThat(profiles).hasSize(3);
     } catch (ParseException e) {
       fail("Unexpected exception thrown");
     }
