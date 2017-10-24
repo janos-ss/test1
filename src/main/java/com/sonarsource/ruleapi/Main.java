@@ -37,7 +37,7 @@ public class Main {
     }
 
     Settings settings = new Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     if (settings.help || settings.option.isEmpty()) {
       printHelpMessage();
