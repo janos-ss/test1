@@ -6,7 +6,6 @@
 package com.sonarsource.ruleapi.services;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -14,7 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SonarPediaJsonFileTest {
 
@@ -23,7 +22,6 @@ public class SonarPediaJsonFileTest {
 
   @Test
   public void shouldRunFullCycleOfUpdate() throws Exception {
-
 
     Path rulesDirPath = testFolder.getRoot().toPath().resolve("intermediate/rules");
     File rulesDir = Files.createDirectories(rulesDirPath).toFile();

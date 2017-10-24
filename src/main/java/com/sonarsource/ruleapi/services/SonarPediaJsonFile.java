@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import static com.sonarsource.ruleapi.utilities.JsonUtil.fromJson;
@@ -31,13 +33,14 @@ public class SonarPediaJsonFile {
     // NOP
   }
 
-  public static SonarPediaJsonFile create(File baseDir, File rulesDir) {
+  public static SonarPediaJsonFile create(File baseDir, File rulesDir, List<Language> languages) {
       File sonarPediaFile = new File(baseDir, sonarpediaFileName);
 
     SonarPediaJsonFile returned = new SonarPediaJsonFile();
     returned.file = sonarPediaFile;
     returned.data = new SonarPediaFileData();
-    returned.data.ruleMetadataPath = baseDir.toPath().resolve(rulesDir.toPath()).toString();
+    returned.data.ruleMetadataPath = baseDir.toPath().resolve(rulesDir.toPath().normalize()).toString();
+    returned.data.languages = languages;
 
     try (BufferedWriter out = new BufferedWriter(new FileWriter(sonarPediaFile))) {
       out.write(JsonUtil.toJson(returned.data));
@@ -48,6 +51,8 @@ public class SonarPediaJsonFile {
     return returned;
   }
 
+
+
   public static SonarPediaJsonFile findSonarPediaFile(File baseDir) throws FileNotFoundException {
     File sonarPediaFile = new File(baseDir, sonarpediaFileName);
     return deserialize(sonarPediaFile);
@@ -55,6 +60,7 @@ public class SonarPediaJsonFile {
 
   public static SonarPediaJsonFile deserialize(File file) throws FileNotFoundException {
     final String content = new Scanner(file).useDelimiter("\\Z").next();
+    // TODO validate incoming content against JSON schema
     SonarPediaFileData data = fromJson(content, SonarPediaFileData.class);
     SonarPediaJsonFile returned = new SonarPediaJsonFile();
     returned.file = file;
@@ -85,18 +91,18 @@ public class SonarPediaJsonFile {
     return data.latestUpdate;
   }
 
-  public final String getFileName() {
-    return this.file.getName();
+  public final File getFile() {
+    return this.file;
   }
 
-  public final Language getLanguage() {
-    return this.data.language;
+  public final List<Language> getLanguages() {
+    return this.data.languages;
   }
 
   private static class SonarPediaFileData {
     @SerializedName("rules-metadata-path")
     String ruleMetadataPath;
-    Language language;
+    List<Language> languages;
     @SerializedName("default-profile-name")
     String defaultProfileName;
     @SerializedName("latest-update")

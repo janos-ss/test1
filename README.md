@@ -25,7 +25,7 @@ These options require -login and -password parameters.
 **Language plugin file generation**
 The generation and update of rules html description and metadata uses the `sonarpedia.json` file options require `-language` and `-directory` parameters. Files will be named for the canonical keys of their rules; legacy keys are not supported.
   * `init`:  as `init -language foo -rulesDir (rules)`. In the current directory, generate a `sonarpedia.json` file pointing on a `rules` directory. This `rules` directory is to be populated with html description and json metadata files.
-  * `generate`: as  `generate -rule S1234`. Read the `sonarpedia.json` file in the current directory, generate html and json files for designed rules.
+  * `generate`: as  `generate -rule S1234`. Read the `sonarpedia.json` file in the current directory, generate html and json files for designated rules.
   * `update`: Read the `sonarpedia.json` file in the current directory, update the html description and rules found
   * Deprecated features, they are based on the `-directory` option 
     * `generate`:  Generates html description and json metadata files specified by `-rule` and `-language` parameters at directory specified by `-directory`

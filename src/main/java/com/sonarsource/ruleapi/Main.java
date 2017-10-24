@@ -18,11 +18,11 @@ import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.services.RuleFilesService;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.services.SonarPediaFileService;
-import com.sonarsource.ruleapi.services.SonarPediaJsonFile;
 import com.sonarsource.ruleapi.utilities.Language;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -88,6 +88,7 @@ public class Main {
 
     ReportService rs = new ReportService();
     Language language = Language.fromString(settings.language);
+    List<Language> languages =  settings.languages.stream().map(Language::fromString).collect(Collectors.toList());
 
     switch (option) {
       case OUTDATED:
@@ -100,16 +101,24 @@ public class Main {
         generateReports(settings, rs);
         break;
       case INIT:
-        SonarPediaFileService.init(settings.directory, language);
+        List<Language> languagesForInit;
+        if( languages.isEmpty() ) {
+          languagesForInit = new ArrayList<>(1);
+          languagesForInit.add(language);
+        } else {
+          languagesForInit = languages;
+        }
+        SonarPediaFileService.init(languagesForInit);
         break;
       case GENERATE:
+        // TODO noLanguageInFileName is not compabtible with multiple language
         if (settings.directory != null) {
           System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended");
           RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
             .generateRuleFiles(settings.ruleKeys);
         } else {
           SonarPediaFileService sonarPediaFileService = SonarPediaFileService.create(settings.preserveFileNames,
-            settings.noLanguageInFilenames);
+            !settings.noLanguageInFilenames);
           sonarPediaFileService.generateRuleFiles(settings.ruleKeys);
         }
         break;
@@ -212,6 +221,9 @@ public class Main {
 
     @Parameter(names = "-language")
     private String language;
+
+    @Parameter(names = "-languages", variableArity = true)
+    private List<String> languages = new ArrayList<>();
 
     @Parameter(names = "-report")
     private String report;
