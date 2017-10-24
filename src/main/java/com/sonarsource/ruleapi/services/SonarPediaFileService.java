@@ -54,15 +54,18 @@ public class SonarPediaFileService {
       throw new IllegalStateException("can't find sonarpedia.json file", exception);
     }
 
-    returned.ruleFilesServices =
-        returned.sonarPediaJsonFile.getLanguages()
-        .stream()
-        .map( language -> RuleFilesService.create(
-            returned.sonarPediaJsonFile.getRulesMetadataFilesDir().getAbsolutePath(),
-            language,
-            preserveFileNames,
-            languageInFilenames))
-        .collect(Collectors.toList());
+    if (!languageInFilenames && returned.sonarPediaJsonFile.getLanguages().size() > 1) {
+      throw new IllegalStateException("Multiple languages requires language in filenames");
+    }
+
+    returned.ruleFilesServices = returned.sonarPediaJsonFile.getLanguages()
+      .stream()
+      .map(language -> RuleFilesService.create(
+        returned.sonarPediaJsonFile.getRulesMetadataFilesDir().getAbsolutePath(),
+        language,
+        preserveFileNames,
+        languageInFilenames))
+      .collect(Collectors.toList());
 
     return returned;
   }
@@ -73,7 +76,7 @@ public class SonarPediaFileService {
       .forEach(ruleFilesService -> ruleFilesService.generateRuleFiles(ruleKeys));
   }
 
-  public void updateDescriptions( ) {
+  public void updateDescriptions() {
     ruleFilesServices
       .stream()
       .forEach(RuleFilesService::updateDescriptions);

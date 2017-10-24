@@ -5,10 +5,13 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.sonarsource.ruleapi.utilities.Language;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -26,9 +29,13 @@ public class SonarPediaJsonFileTest {
     Path rulesDirPath = testFolder.getRoot().toPath().resolve("intermediate/rules");
     File rulesDir = Files.createDirectories(rulesDirPath).toFile();
 
-    SonarPediaJsonFile sonarPediaJsonFile = SonarPediaJsonFile.create(testFolder.getRoot(), rulesDir);
+    // create a file
+    SonarPediaJsonFile sonarPediaJsonFile = SonarPediaJsonFile.create(
+      testFolder.getRoot(),
+        rulesDir, Arrays.asList(Language.C, Language.JAVA));
 
-    SonarPediaJsonFile underTest = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot() );
+    // find the file
+    SonarPediaJsonFile underTest = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot());
     assertThat(underTest.getRulesMetadataFilesDir()).isEqualTo(rulesDirPath.toFile());
     assertThat(underTest.getUpdateTimeStamp()).isNull();
 
@@ -37,16 +44,16 @@ public class SonarPediaJsonFileTest {
     underTest.updateTimeStamp();
     underTest.writeToItsFile();
 
-    SonarPediaJsonFile afterFirstWrite = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot() );
+    SonarPediaJsonFile afterFirstWrite = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot());
     assertThat(afterFirstWrite.getUpdateTimeStamp().toEpochMilli()).isGreaterThanOrEqualTo(now.toEpochMilli());
 
     // update a second time data
     underTest.updateTimeStamp();
     underTest.writeToItsFile();
 
-    SonarPediaJsonFile afterSecondWrite = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot() );
+    SonarPediaJsonFile afterSecondWrite = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot());
     assertThat(afterSecondWrite.getUpdateTimeStamp().toEpochMilli())
-        .isGreaterThan(afterFirstWrite.getUpdateTimeStamp().toEpochMilli());
+      .isGreaterThan(afterFirstWrite.getUpdateTimeStamp().toEpochMilli());
 
   }
 }

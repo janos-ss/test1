@@ -111,7 +111,6 @@ public class Main {
         SonarPediaFileService.init(languagesForInit);
         break;
       case GENERATE:
-        // TODO noLanguageInFileName is not compabtible with multiple language
         if (settings.directory != null) {
           System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended");
           RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
