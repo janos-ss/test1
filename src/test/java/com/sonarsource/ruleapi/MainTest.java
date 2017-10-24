@@ -29,7 +29,7 @@ public class MainTest {
     String[] args = {"single_report", "-report", "html", "-tool", "findbugs"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     try {
       Main.checkSingleReportInputs(settings);
@@ -44,7 +44,7 @@ public class MainTest {
     String[] args = {"single_report", "-report", "red"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     Main.checkSingleReportInputs(settings);
 
@@ -56,7 +56,7 @@ public class MainTest {
     String[] args = {"single_report", "-report", "html"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     Main.checkSingleReportInputs(settings);
 
@@ -68,7 +68,7 @@ public class MainTest {
     String[] args = {"single_report", "-tool", "red"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     Main.checkSingleReportInputs(settings);
 
@@ -80,7 +80,7 @@ public class MainTest {
     String[] args = {"single_report", "-tool", "findbugs"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     Main.checkSingleReportInputs(settings);
   }
@@ -90,7 +90,7 @@ public class MainTest {
     String[] args = {"single_report", "-tool", "findbugs"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     assertThat(Main.credentialsProvided(settings)).isFalse();
   }
@@ -100,7 +100,7 @@ public class MainTest {
     String[] args = {"single_report", "-login", "foo", "-password", "bar"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     assertThat(Main.credentialsProvided(settings)).isTrue();
   }
@@ -110,7 +110,7 @@ public class MainTest {
     String[] args = {"single_report", "-login", "foo"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     assertThat(Main.credentialsProvided(settings)).isFalse();
   }
@@ -137,9 +137,20 @@ public class MainTest {
     String[] args = {"single_report", "-password", "bar"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     assertThat(Main.credentialsProvided(settings)).isFalse();
+  }
+
+  @Test(expected = RuleException.class)
+  public void testCheckGenerateInputNoRule() {
+
+    String[] args = {"single_report", "-report", "red"};
+
+    Main.Settings settings = new Main.Settings();
+    new JCommander(settings, null, args);
+
+    Main.checkGenerateInput(settings);
   }
 
   @Test

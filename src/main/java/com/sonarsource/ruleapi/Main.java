@@ -68,7 +68,7 @@ public class Main {
     }
   }
 
-  protected static void printHelpMessage() {
+  static void printHelpMessage() {
 
     StringBuilder sb = new StringBuilder();
     sb.append("\nUSAGE: option [-parameter paramValue]\n\n");
@@ -83,8 +83,7 @@ public class Main {
     System.out.println(sb.toString());
   }
 
-  protected static void doRequestedOption(Option option, Settings settings) {
-
+  private static void doRequestedOption(Option option, Settings settings) {
 
     ReportService rs = new ReportService();
     Language language = Language.fromString(settings.language);
@@ -100,6 +99,7 @@ public class Main {
         generateReports(settings, rs);
         break;
       case GENERATE:
+        checkGenerateInput(settings);
         RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
             .generateRuleFiles(settings.ruleKeys);
         break;
@@ -120,19 +120,25 @@ public class Main {
     }
   }
 
+  static void checkGenerateInput(Settings settings) {
+    if (settings.ruleKeys.isEmpty()) {
+      throw new RuleException("At least one -rule must be provided to generate");
+    }
+  }
+
   private static void handleSingleReport(Settings settings, ReportService rs) {
 
     checkSingleReportInputs(settings);
 
     SupportedStandard std = SupportedStandard.fromString(settings.tool);
-    if (std.getStandard() instanceof AbstractReportableStandard) {
+    if (std != null && std.getStandard() instanceof AbstractReportableStandard) {
       AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
 
       rs.writeSingleReport(Language.fromString(settings.language), settings.instance, ars, ReportType.fromString(settings.report));
     }
   }
 
-  protected static void checkSingleReportInputs(Settings settings) {
+  static void checkSingleReportInputs(Settings settings) {
 
     ReportType rt = ReportType.fromString(settings.report);
     SupportedStandard std = SupportedStandard.fromString(settings.tool);
@@ -171,18 +177,18 @@ public class Main {
 
   }
 
-  protected static boolean credentialsProvided(Settings settings) {
+  static boolean credentialsProvided(Settings settings) {
 
     return !(Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password));
   }
 
 
-  public static class Settings{
+  static class Settings{
 
     @Parameter(names = "--help", help = true)
     private boolean help;
 
-    @Parameter(required = true)
+    @Parameter(description = "option", required = true)
     private List<String> option = new ArrayList<>();
 
     @Parameter(names = "-instance")
@@ -195,7 +201,7 @@ public class Main {
     private String password;
 
     @Parameter(names="-rule", variableArity = true)
-    public List<String> ruleKeys = new ArrayList<>();
+    private List<String> ruleKeys = new ArrayList<>();
 
     @Parameter(names="-language")
     private String language;
