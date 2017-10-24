@@ -38,6 +38,7 @@ public class SonarPediaJsonFileTest {
     SonarPediaJsonFile underTest = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot());
     assertThat(underTest.getRulesMetadataFilesDir()).isEqualTo(rulesDirPath.toFile());
     assertThat(underTest.getUpdateTimeStamp()).isNull();
+    assertThat(underTest.getLanguages()).containsExactlyInAnyOrder(Language.C, Language.JAVA);
 
     // update the data
     Instant now = Instant.now();

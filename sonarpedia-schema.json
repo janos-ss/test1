@@ -9,7 +9,6 @@
     "rules-metadata-path": {
       "type": "string",
       "description": "Timestamp of rules data update"
-
     },
     "languages" : {
       "type": "array",
