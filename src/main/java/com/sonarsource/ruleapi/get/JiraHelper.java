@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -25,6 +27,8 @@ import java.util.Map;
  * into the fields of a Rule
  */
 public class JiraHelper {
+
+  private static final Logger LOGGER = Logger.getAnonymousLogger();
 
   private static final String MARKDOWN_H2 = "h2.";
   private static final String FIELDS = "fields";
@@ -152,20 +156,26 @@ public class JiraHelper {
     for (int i = 1; i < pieces.length; i++) {
 
       String piece = pieces[i];
+      String pieceContent = markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage());
       if (piece.contains("Noncompliant Code Example")) {
-        rule.setNonCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
+        rule.setNonCompliant(pieceContent);
 
       } else if (piece.contains("Compliant Solution")) {
-        rule.setCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
+        rule.setCompliant(pieceContent);
 
       } else if (piece.contains("Exceptions")) {
-        rule.setExceptions(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
+        rule.setExceptions(pieceContent);
 
       } else if (piece.contains("See")) {
-        rule.setReferences(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
+        rule.setReferences(pieceContent);
 
       } else if (piece.contains("Deprecated")) {
-        rule.setDeprecation(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
+        rule.setDeprecation(pieceContent);
+
+      } else {
+        if (LOGGER.isLoggable(Level.WARNING)) {
+          LOGGER.warning(String.format("Unknown section %s in rule %s", pieceContent, rule.getKey()));
+        }
       }
     }
   }
