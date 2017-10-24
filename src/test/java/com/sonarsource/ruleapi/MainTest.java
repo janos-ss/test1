@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +24,9 @@ public class MainTest {
 
   @Rule
   public TemporaryFolder testFolder = new TemporaryFolder();
+
+  @Rule
+  public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
 
   @Test
   public void testHappyPath(){
@@ -116,22 +120,6 @@ public class MainTest {
   }
 
 
-
-  @Test
-  public void testGenerationDescriptionFile() throws Exception{
-
-    File outputDir = testFolder.newFolder();
-
-    String[] args = { "generate"
-            , "-rule", "S1543"
-            , "-language", "java"
-            , "-directory", outputDir.getAbsolutePath()
-    };
-    Main.main(args);
-
-    assertThat(outputDir.listFiles().length).isGreaterThan(0);
-  }
-
   @Test
   public void testCredentialsProvidedPasswdProvided(){
     String[] args = {"single_report", "-password", "bar"};
@@ -140,6 +128,32 @@ public class MainTest {
     new JCommander(settings, args);
 
     assertThat(Main.credentialsProvided(settings)).isFalse();
+  }
+
+
+  @Test
+  public void testDeprecatedGenerationAndUpdateOfDescriptionFile() throws Exception{
+
+    File outputDir = testFolder.newFolder();
+
+    String[] argsGenerate = { "generate"
+        , "-rule", "S1543"
+        , "-language", "java"
+        , "-directory", outputDir.getAbsolutePath()
+    };
+    Main.main(argsGenerate);
+
+    assertThat(outputDir.listFiles().length).isGreaterThan(0);
+    assertThat(systemOutRule.getLog() ).contains("deprecated");
+
+    String[] argsUpdate = { "update"
+        , "-language", "java"
+        , "-directory", outputDir.getAbsolutePath()
+    };
+    Main.main(argsUpdate);
+    // the "update" makes appear a second occurence of deprecated
+    assertThat(systemOutRule.getLog().indexOf("deprecated"))
+        .isNotEqualTo(systemOutRule.getLog().lastIndexOf("deprecated"));
   }
 
   @Test

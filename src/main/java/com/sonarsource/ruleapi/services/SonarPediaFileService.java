@@ -5,8 +5,8 @@
  */
 package com.sonarsource.ruleapi.services;
 
+import com.sonarsource.ruleapi.domain.SonarPediaJsonFile;
 import com.sonarsource.ruleapi.utilities.Language;
-import com.sonarsource.ruleapi.utilities.Utilities;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -24,15 +24,17 @@ public class SonarPediaFileService {
     sonarPediaJsonFile = null;
   }
 
-  // factory for creating a new file
+  // initialize SonarPedia file and directory
   public static SonarPediaJsonFile init(List<Language> languages) {
 
     final File currentDir = new File(".");
 
     // create a rules directory
     File rulesDir = new File(currentDir, "rules");
-    if (!rulesDir.exists()) {
-      System.out.println("Creating " + rulesDir.toString());
+    if (rulesDir.exists()) {
+      System.out.println("Will use " + rulesDir.toString() + " to store metadata");
+    } else {
+      System.out.println("Creating directory " + rulesDir.toString() + " to store the metadata");
       rulesDir.mkdir();
     }
 

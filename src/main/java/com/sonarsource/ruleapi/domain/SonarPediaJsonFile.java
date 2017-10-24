@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.services;
+package com.sonarsource.ruleapi.domain;
 
 import com.sonarsource.ruleapi.utilities.JsonUtil;
 import com.sonarsource.ruleapi.utilities.Language;
@@ -14,10 +14,8 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 

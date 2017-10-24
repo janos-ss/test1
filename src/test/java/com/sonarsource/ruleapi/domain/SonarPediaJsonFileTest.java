@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
-package com.sonarsource.ruleapi.services;
+package com.sonarsource.ruleapi.domain;
 
 import com.sonarsource.ruleapi.utilities.Language;
 import java.io.File;
@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -30,7 +29,7 @@ public class SonarPediaJsonFileTest {
     File rulesDir = Files.createDirectories(rulesDirPath).toFile();
 
     // create a file
-    SonarPediaJsonFile sonarPediaJsonFile = SonarPediaJsonFile.create(
+    SonarPediaJsonFile.create(
       testFolder.getRoot(),
         rulesDir, Arrays.asList(Language.C, Language.JAVA));
 

@@ -112,7 +112,7 @@ public class Main {
         break;
       case GENERATE:
         if (settings.directory != null) {
-          System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended");
+          System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended instead" );
           RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
             .generateRuleFiles(settings.ruleKeys);
         } else {
@@ -123,7 +123,7 @@ public class Main {
         break;
       case UPDATE:
         if (settings.directory != null) {
-          System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended");
+          System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended  instead");
           RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
             .updateDescriptions();
         } else {
