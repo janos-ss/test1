@@ -26,24 +26,25 @@ public class SonarPediaFileServiceTest {
   @Test
   public void shoulCreateASonarPediaFileAndEmptyDirectory() throws Exception {
 
-    System.setProperty("user.dir", testFolder.getRoot().getAbsolutePath());
-
-    SonarPediaJsonFile underTest = SonarPediaFileService.init(Arrays.asList(Language.COBOL, Language.JS));
-    assertThat(underTest.getRulesMetadataFilesDir()).exists();
-    assertThat(underTest.getRulesMetadataFilesDir().list().length).isEqualTo(0);
-    assertThat(underTest.getFile()).exists();
+    SonarPediaJsonFile sonarPediaJsonFile = SonarPediaFileService.init(
+        testFolder.getRoot(),
+        Arrays.asList(Language.COBOL, Language.JS));
+    assertThat(sonarPediaJsonFile.getRulesMetadataFilesDir()).exists();
+    assertThat(sonarPediaJsonFile.getRulesMetadataFilesDir().list().length).isEqualTo(0);
+    assertThat(sonarPediaJsonFile.getFile()).exists();
     assertThat(systemOutRule.getLog()).contains("Creating ");
     assertThat(systemOutRule.getLog()).contains("SonarPedia file created at ");
 
     // delete the SonarPedia file, keep the directory
-    underTest.getFile().delete();
+    sonarPediaJsonFile.getFile().delete();
 
     // create again a sonarpedia file, must reuse the existing directory
     systemOutRule.clearLog();
-    SonarPediaFileService.init(Arrays.asList(Language.COBOL, Language.JS));
-    assertThat(underTest.getRulesMetadataFilesDir()).exists();
-    assertThat(underTest.getRulesMetadataFilesDir().list().length).isEqualTo(0);
-    assertThat(underTest.getFile()).exists();
+    SonarPediaFileService.init(
+        testFolder.getRoot(),Arrays.asList(Language.COBOL, Language.JS));
+    assertThat(sonarPediaJsonFile.getRulesMetadataFilesDir()).exists();
+    assertThat(sonarPediaJsonFile.getRulesMetadataFilesDir().list().length).isEqualTo(0);
+    assertThat(sonarPediaJsonFile.getFile()).exists();
     assertThat(systemOutRule.getLog()).doesNotContain("Creating ");
     assertThat(systemOutRule.getLog()).contains("Will use ");
     assertThat(systemOutRule.getLog()).contains("SonarPedia file created at ");
@@ -51,19 +52,14 @@ public class SonarPediaFileServiceTest {
 
   @Test( expected = IllegalStateException.class)
   public void shoulNotAllowMultipleLanguageWoLanguageIntoFileName() throws Exception {
-
-    System.setProperty("user.dir", testFolder.getRoot().getAbsolutePath());
-
-    SonarPediaFileService.init(Arrays.asList(Language.CSH, Language.FLEX));
-    SonarPediaFileService.create(false, false);
+    SonarPediaFileService.init(testFolder.getRoot(), Arrays.asList(Language.CSH, Language.FLEX));
+    SonarPediaFileService.create(testFolder.getRoot(), false, false);
   }
 
   @Test( expected = IllegalStateException.class)
   public void shouldGoBadIfNoSonarPedia() throws Exception {
-    System.setProperty("user.dir", testFolder.getRoot().getAbsolutePath());
-
     // no sonarpedia file
-    SonarPediaFileService.create(false, false);
+    SonarPediaFileService.create(testFolder.getRoot(), false, false);
   }
 
 }

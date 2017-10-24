@@ -19,6 +19,7 @@ import com.sonarsource.ruleapi.services.RuleFilesService;
 import com.sonarsource.ruleapi.services.RuleManager;
 import com.sonarsource.ruleapi.services.SonarPediaFileService;
 import com.sonarsource.ruleapi.utilities.Language;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -86,9 +87,10 @@ public class Main {
 
   protected static void doRequestedOption(Option option, Settings settings) {
 
+    final File baseDir = new File(".");
     ReportService rs = new ReportService();
     Language language = Language.fromString(settings.language);
-    List<Language> languages =  settings.languages.stream().map(Language::fromString).collect(Collectors.toList());
+    List<Language> languages = settings.languages.stream().map(Language::fromString).collect(Collectors.toList());
 
     switch (option) {
       case OUTDATED:
@@ -102,23 +104,22 @@ public class Main {
         break;
       case INIT:
         List<Language> languagesForInit;
-        if( languages.isEmpty() ) {
+        if (languages.isEmpty()) {
           languagesForInit = new ArrayList<>(1);
           languagesForInit.add(language);
         } else {
           languagesForInit = languages;
         }
-        SonarPediaFileService.init(languagesForInit);
+        SonarPediaFileService.init(baseDir, languagesForInit);
         break;
       case GENERATE:
         if (settings.directory != null) {
-          System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended instead" );
+          System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended instead");
           RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
             .generateRuleFiles(settings.ruleKeys);
         } else {
-          SonarPediaFileService sonarPediaFileService = SonarPediaFileService.create(settings.preserveFileNames,
-            !settings.noLanguageInFilenames);
-          sonarPediaFileService.generateRuleFiles(settings.ruleKeys);
+          SonarPediaFileService.create(baseDir, settings.preserveFileNames, !settings.noLanguageInFilenames)
+            .generateRuleFiles(settings.ruleKeys);
         }
         break;
       case UPDATE:
@@ -127,7 +128,7 @@ public class Main {
           RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
             .updateDescriptions();
         } else {
-          SonarPediaFileService.create(settings.preserveFileNames, !settings.noLanguageInFilenames)
+          SonarPediaFileService.create(baseDir, settings.preserveFileNames, !settings.noLanguageInFilenames)
             .updateDescriptions();
         }
         break;

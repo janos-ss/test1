@@ -14,23 +14,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SonarPediaFileService {
-
   List<RuleFilesService> ruleFilesServices;
   SonarPediaJsonFile sonarPediaJsonFile;
 
-  SonarPediaFileService() {
-    // NOP
+  public SonarPediaFileService() {
     ruleFilesServices = new ArrayList<>(0);
     sonarPediaJsonFile = null;
   }
 
   // initialize SonarPedia file and directory
-  public static SonarPediaJsonFile init(List<Language> languages) {
-
-    final File currentDir = new File(".");
+  public static SonarPediaJsonFile init(File baseDir, List<Language> languages) {
 
     // create a rules directory
-    File rulesDir = new File(currentDir, "rules");
+    File rulesDir = new File(baseDir, "rules");
     if (rulesDir.exists()) {
       System.out.println("Will use " + rulesDir.toString() + " to store metadata");
     } else {
@@ -38,7 +34,7 @@ public class SonarPediaFileService {
       rulesDir.mkdir();
     }
 
-    SonarPediaJsonFile sonarPediaJsonFile = SonarPediaJsonFile.create(currentDir, rulesDir, languages);
+    SonarPediaJsonFile sonarPediaJsonFile = SonarPediaJsonFile.create(baseDir, rulesDir, languages);
     sonarPediaJsonFile.writeToItsFile();
     System.out.println("SonarPedia file created at ./" + sonarPediaJsonFile.getFile().getName());
 
@@ -46,12 +42,10 @@ public class SonarPediaFileService {
   }
 
   // factory for file existing in current directory
-  public static SonarPediaFileService create(boolean preserveFileNames, boolean languageInFilenames) {
+  public static SonarPediaFileService create(File baseDir, boolean preserveFileNames, boolean languageInFilenames) {
     SonarPediaFileService returned = new SonarPediaFileService();
-    final File currentDir = new File(".");
-
     try {
-      returned.sonarPediaJsonFile = SonarPediaJsonFile.findSonarPediaFile(currentDir);
+      returned.sonarPediaJsonFile = SonarPediaJsonFile.findSonarPediaFile(baseDir);
     } catch (FileNotFoundException exception) {
       throw new IllegalStateException("can't find sonarpedia.json file", exception);
     }
