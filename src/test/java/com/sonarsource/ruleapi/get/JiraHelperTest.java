@@ -289,28 +289,33 @@ public class JiraHelperTest {
   }
 
   @Test
-  public void testPopulateFieldsSecurityType() {
+  public void testPopulateFieldsSecurityType() throws Exception {
 
     Rule rule = new Rule("");
-    try {
       JiraHelper.populateFields(rule, (JSONObject) parser.parse(FULL_VULN_DEFAULT_PROFILE_JSON));
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
 
     assertThat(rule.getType()).isEqualTo(Rule.Type.VULNERABILITY);
   }
 
   @Test
-  public void testPopulateFieldsCodeSmellType() {
+  public void testPopulateFieldsCodeSmellType() throws Exception {
     Rule rule = new Rule("");
-    try {
-      JiraHelper.populateFields(rule, (JSONObject) parser.parse(FULL_CODE_SMELL_TEMPLATE_JSON));
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
+    JiraHelper.populateFields(rule, (JSONObject) parser.parse(FULL_CODE_SMELL_TEMPLATE_JSON));
 
     assertThat(rule.getType()).isEqualTo(Rule.Type.CODE_SMELL);
+  }
+
+  @Test
+  public void testSqkeys() throws Exception {
+
+    Rule ruleWLegacyKey = new Rule("");
+    JiraHelper.populateFields(ruleWLegacyKey, (JSONObject) parser.parse(FULL_CODE_SMELL_TEMPLATE_JSON));
+    assertThat(ruleWLegacyKey.getSqKey()).isEqualTo("ArchitecturalConstraint");
+
+
+    Rule ruleWSKey = new Rule("");
+    JiraHelper.populateFields(ruleWSKey, (JSONObject) parser.parse(FULL_VULN_DEFAULT_PROFILE_JSON));
+    assertThat(ruleWSKey.getSqKey()).isEqualTo("S3649");
   }
 
   @Test

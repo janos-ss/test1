@@ -73,6 +73,8 @@ public class JiraHelper {
     setReferences(rule, issue);
 
     validateRuleDeprecation(rule, RuleMaker.getReplacingRules(rule));
+
+    initializeLegacyKey(rule);
   }
 
   /**
@@ -110,6 +112,13 @@ public class JiraHelper {
     }
 
     setDeprecationMessage(rule, implementedReplacements);
+  }
+
+  private static void initializeLegacyKey(Rule rule) {
+    rule.setSqKey(Utilities.denormalizeKey(rule.getKey()));
+    if (rule.getCoveredLanguages().size() == 1 && rule.getLegacyKeys().size() == 1) {
+      rule.setSqKey(rule.getLegacyKeys().get(0));
+    }
   }
 
   static void setDeprecationMessage(Rule rule, List<String> implementedReplacements){
