@@ -63,7 +63,7 @@ public class Main {
           &&
           ( ! languageIsProvided(settings)
               ||
-              option.requiresExactlyOneLanguage  && settings.language.size() > 1
+              ( option.requiresExactlyOneLanguage  && settings.language.size() > 1 )
           )
         ) {
         printHelpMessage();
@@ -230,7 +230,7 @@ public class Main {
   }
 
   protected static boolean languageIsProvided(Settings settings) {
-    return  ( settings.language != null ) && ( settings.language.size() > 0 );
+    return  settings.language != null  && !settings.language.isEmpty();
   }
 
 

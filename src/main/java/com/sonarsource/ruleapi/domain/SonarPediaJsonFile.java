@@ -11,8 +11,11 @@ import com.sonarsource.ruleapi.utilities.Language;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
@@ -31,7 +34,7 @@ public class SonarPediaJsonFile {
   }
 
   public static SonarPediaJsonFile create(File baseDir, File rulesDir, List<Language> languages) {
-      File sonarPediaFile = new File(baseDir, sonarpediaFileName);
+    File sonarPediaFile = new File(baseDir, sonarpediaFileName);
 
     SonarPediaJsonFile returned = new SonarPediaJsonFile();
     returned.file = sonarPediaFile;
@@ -39,16 +42,18 @@ public class SonarPediaJsonFile {
     returned.data.ruleMetadataPath = baseDir.toPath().resolve(rulesDir.toPath().normalize()).toString();
     returned.data.languages = languages;
 
-    try (BufferedWriter out = new BufferedWriter(new FileWriter(sonarPediaFile))) {
-      out.write(JsonUtil.toJson(returned.data));
+    try {
+      try(FileOutputStream fop = new FileOutputStream(sonarPediaFile);
+          OutputStreamWriter osw = new OutputStreamWriter(fop,StandardCharsets.UTF_8);
+          BufferedWriter out = new BufferedWriter( osw ) ) {
+        out.write(JsonUtil.toJson(returned.data));
+      }
     } catch (IOException exception) {
       throw new IllegalStateException(exception);
     }
 
     return returned;
   }
-
-
 
   public static SonarPediaJsonFile findSonarPediaFile(File baseDir) throws FileNotFoundException {
     File sonarPediaFile = new File(baseDir, sonarpediaFileName);
@@ -57,7 +62,7 @@ public class SonarPediaJsonFile {
 
   public static SonarPediaJsonFile deserialize(File file) throws FileNotFoundException {
 
-    try ( Scanner scanner = new Scanner(file )) {
+    try (Scanner scanner = new Scanner(file)) {
       final String content = scanner.useDelimiter("\\Z").next();
       // TODO validate incoming content against JSON schema
       SonarPediaFileData data = fromJson(content, SonarPediaFileData.class);
