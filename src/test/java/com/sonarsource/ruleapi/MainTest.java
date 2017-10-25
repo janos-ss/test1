@@ -242,18 +242,21 @@ public class MainTest {
     assertThat(spjf.getUpdateTimeStamp()).isNotNull();
   }
 
-  @Test(expected=RuleException.class)
-  public void testMissingLanguageOnSingleReport() throws Exception {
+  public void testRequiredLanguage() throws Exception {
     String[] arguments = {"single_report", "-tool", "CHECKSTYLE", "-report", "INTERNAL_COVERAGE"};
 
     Main.main(arguments );
+
+    assertThat(systemOutRule.getLog()).contains("USAGE:");
   }
 
-  @Test(expected=RuleException.class)
-  public void testTooManyLanguageOnSingleReport() throws Exception {
+  @Test
+  public void testTooManyLanguage() throws Exception {
     String[] arguments = {"single_report", "-language", "JAVA", "JAVASCRIPT", "-tool", "CHECKSTYLE", "-report", "INTERNAL_COVERAGE"};
 
     Main.main(arguments );
+
+    assertThat(systemOutRule.getLog()).contains("USAGE:");
   }
 
   @Test(expected = RuleException.class)
@@ -291,17 +294,9 @@ public class MainTest {
 
   @Test
   public void testPrintHelpMessage() {
-
-    PrintStream original = System.out;
-
-    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-
-    System.setOut(new PrintStream(outContent));
-
     Main.printHelpMessage();
-    assertThat(outContent.toString()).contains("USAGE");
 
-    System.setOut(original);
+    assertThat(systemOutRule.getLog()).contains("USAGE");
   }
 
   @Test(expected = NullPointerException.class)

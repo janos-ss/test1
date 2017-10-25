@@ -59,6 +59,16 @@ public class Main {
         return;
       }
 
+      if (option.requiresLanguage && ! languageIsProvided(settings)) {
+        printHelpMessage();
+        return;
+      } else if (option.requiresExactlyOneLanguage  && settings.language.size() > 1 ) {
+        printHelpMessage();
+        return;
+
+      }
+
+
       if (!options.contains(option)) {
         options.add(option);
       }
@@ -111,11 +121,7 @@ public class Main {
         handleUpdate( settings );
         break;
       case DIFF:
-        if( settings.language.size() != 1 ) {
-          throw new RuleException("One and only one language must be provided through the -language option for running diff report" );
-        } else {
-          rs.writeOutdatedRulesReport(Language.fromString(settings.language.get(0)), settings.instance);
-        }
+        rs.writeOutdatedRulesReport(Language.fromString(settings.language.get(0)), settings.instance);
         break;
       case SINGLE_REPORT:
         handleSingleReport(settings, rs);
@@ -207,9 +213,6 @@ public class Main {
       throw new RuleException(sb.toString());
     }
 
-    if (settings.language == null || settings.language.size() != 1) {
-      throw new RuleException("One and only one language must be provided through the -language option");
-    }
     return std;
   }
 
@@ -223,6 +226,11 @@ public class Main {
   protected static boolean credentialsProvided(Settings settings) {
     return !(Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password));
   }
+
+  protected static boolean languageIsProvided(Settings settings) {
+    return  ( settings.language != null ) && ( settings.language.size() > 0 );
+  }
+
 
   public static class Settings {
 
@@ -269,20 +277,24 @@ public class Main {
   }
 
   public enum Option {
-    REPORTS(false, "Generates all reports based on Nemo (default) or a particular -instance http:..."),
-    SINGLE_REPORT(false, "Generate a single -report against -instance (defaults to Nemo), -language, and -tool."),
-    OUTDATED(true, "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
-    INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
-    INIT(false, "Create a sonarpedia.json file with its rules directory, language must be specifed by the -language parameter. "),
-    GENERATE(false, "Generates html description and json metadata files specified by -rule parameter"),
-    UPDATE(false, "Update html and json description files."),
-    DIFF(false, "Generates a diff report for the specified -language and -instance");
+    REPORTS(false, false, false, "Generates all reports based on Next (default) or a particular -instance http:..."),
+    SINGLE_REPORT(false, true, true, "Generate a single -report against -instance (defaults to Next), -language, and -tool."),
+    OUTDATED(true, false, false, "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
+    INTEGRITY(true, false, false, "RSpec internal integrity check. Requires -login and -password parameters."),
+    INIT(false, true, false, "Create a sonarpedia.json file with its rules directory, the -language parameter specifies the languages, there can be more than one. "),
+    GENERATE(false, false, false, "Generates html description and json metadata files specified by -rule parameter"),
+    UPDATE(false, false, false, "Update html and json description files."),
+    DIFF(false, true, true, "Generates a diff report for the specified -language and -instance");
 
     private String description;
     private boolean requiresCredentials;
+    private boolean requiresLanguage;
+    private boolean requiresExactlyOneLanguage;
 
-    Option(boolean requiresCredentials, String description) {
+    Option(boolean requiresCredentials, boolean requiresLanguage, boolean requiresExactlyOneLanguage, String description) {
       this.requiresCredentials = requiresCredentials;
+      this.requiresLanguage = requiresLanguage;
+      this.requiresExactlyOneLanguage = requiresExactlyOneLanguage;
       this.description = description;
     }
 
