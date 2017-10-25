@@ -23,7 +23,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -46,39 +48,32 @@ public class Main {
       return;
     }
 
-    List<Option> options = new ArrayList<>();
-    for (String str : settings.option) {
+    List<Option> options = settings.option
+      .stream()
+      .distinct()
+      .map(Option::fromString)
+      .filter(Objects::nonNull)
+      .collect(Collectors.toList());
 
-      Option option = Option.fromString(str);
-      if (option == null) {
-        continue;
-      }
+    long countValidOptions = options
+      .stream()
+      .filter(option ->
+        !option.requiresCredentials || credentialsProvided(settings))
+      .filter(option ->
+          !option.requiresLanguage
+          ||
+          ( languageIsProvided(settings)
+            &&
+            ( ! option.requiresExactlyOneLanguage || settings.language.size() == 1)))
+        .count();
 
-      if (option.requiresCredentials && !credentialsProvided(settings)) {
-        printHelpMessage();
-        return;
-      }
-
-      if (option.requiresLanguage
-          &&
-          ( ! languageIsProvided(settings)
-              ||
-              ( option.requiresExactlyOneLanguage  && settings.language.size() > 1 )
-          )
-        ) {
-        printHelpMessage();
-        return;
-      }
-
-
-      if (!options.contains(option)) {
-        options.add(option);
-      }
+    if( countValidOptions != options.size() ) {
+      printHelpMessage();
+      return;
     }
 
     for (Option option : options) {
       doRequestedOption(option, settings);
-
     }
   }
 
@@ -117,10 +112,10 @@ public class Main {
         SonarPediaFileService.init(baseDir, languages);
         break;
       case GENERATE:
-        handleGenerate( settings );
+        handleGenerate(settings);
         break;
       case UPDATE:
-        handleUpdate( settings );
+        handleUpdate(settings);
         break;
       case DIFF:
         rs.writeOutdatedRulesReport(Language.fromString(settings.language.get(0)), settings.instance);
@@ -230,9 +225,8 @@ public class Main {
   }
 
   protected static boolean languageIsProvided(Settings settings) {
-    return  settings.language != null  && !settings.language.isEmpty();
+    return settings.language != null && !settings.language.isEmpty();
   }
-
 
   public static class Settings {
 
