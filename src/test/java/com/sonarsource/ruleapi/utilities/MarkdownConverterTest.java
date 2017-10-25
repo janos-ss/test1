@@ -940,4 +940,18 @@ public class MarkdownConverterTest {
     assertThat(mc.transform(markdown, "Web")).isEqualTo(expectedHtml);
   }
 
+  @Test
+  public void shouldUnescapeBracesInCode() throws Exception {
+    String markdown = "Something {{} }} something";
+    String expectedHtml = "<p>Something <code>} </code> something</p>\n";
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+
+    markdown = "Something {{\\}}} something";
+    expectedHtml = "<p>Something <code>}</code> something</p>\n";
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+
+    markdown = "Something {{}}}}}}}}}} something";
+    expectedHtml = "<p>Something <code>}}}}}}}}</code> something</p>\n";
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+  }
 }

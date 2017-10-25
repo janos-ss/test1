@@ -269,7 +269,8 @@ public class MarkdownConverter {
       line = line.replaceAll("\\{\\{", CODE_OPEN);
     }
     if (line.contains("}}")) {
-      line = line.replaceAll("}}", CODE_CLOSE);
+      // Replacement regexp is convoluted to match last pair of braces or end of line
+      line = line.replaceAll("}}([^}]|$)", CODE_CLOSE + "$1");
     }
     return line;
   }
