@@ -128,17 +128,14 @@ public class Main {
 
   private static void handleSingleReport(Settings settings, ReportService rs) {
 
-    checkSingleReportInputs(settings);
+    SupportedStandard std = checkSingleReportInputs(settings);
 
-    SupportedStandard std = SupportedStandard.fromString(settings.tool);
-    if (std != null && std.getStandard() instanceof AbstractReportableStandard) {
-      AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
+    AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
 
-      rs.writeSingleReport(Language.fromString(settings.language), settings.instance, ars, ReportType.fromString(settings.report));
-    }
+    rs.writeSingleReport(Language.fromString(settings.language), settings.instance, ars, ReportType.fromString(settings.report));
   }
 
-  static void checkSingleReportInputs(Settings settings) {
+  static SupportedStandard checkSingleReportInputs(Settings settings) {
 
     ReportType rt = ReportType.fromString(settings.report);
     SupportedStandard std = SupportedStandard.fromString(settings.tool);
@@ -167,6 +164,7 @@ public class Main {
       throw new RuleException(sb.toString());
     }
 
+    return std;
   }
 
 

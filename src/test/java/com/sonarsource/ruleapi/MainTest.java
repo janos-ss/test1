@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 
+import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,6 +37,30 @@ public class MainTest {
     } catch (Exception e) {
       Assert.fail();
     }
+  }
+
+  @Test
+  public void testCheckSingleReportInputsNominal() {
+
+    String[] args = {"single_report", "-report", "html", "-tool", "cwe"};
+
+    Main.Settings settings = new Main.Settings();
+    new JCommander(settings, null, args);
+
+    assertThat(Main.checkSingleReportInputs(settings)).isEqualTo(SupportedStandard.CWE);
+
+  }
+
+  @Test(expected = RuleException.class)
+  public void testCheckSingleReportNonReportableTool() {
+
+    String[] args = {"single_report", "-tool", "rules_in_language"};
+
+    Main.Settings settings = new Main.Settings();
+    new JCommander(settings, null, args);
+
+    Main.checkSingleReportInputs(settings);
+
   }
 
   @Test(expected = RuleException.class)
@@ -189,4 +214,13 @@ public class MainTest {
     System.setOut(original);
   }
 
+  @Test(expected = NullPointerException.class)
+  public void shouldFailToGenerateCweReportForUnknownLanguage() throws Exception {
+    Main.main(new String[] { "single_report", "-tool", "cwe", "-report", "html", "-language", "polop" });
+  }
+
+  @Test
+  public void shouldDoNothingOnUnrecognizedOption() throws Exception {
+    Main.main(new String[] { "polop" });
+  }
 }
