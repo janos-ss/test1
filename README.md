@@ -24,12 +24,13 @@ These options require -login and -password parameters.
 
 **Language plugin file generation**
 To create and maintain html and metadata rules files.
-It relies on the `sonarpedia.json` a rules directory designated by the `sonarpedia.json` file. This `sonarpedia.json` is typically at the root directory of the language plugin and the following command are run from that directory.  
+It relies on the `sonarpedia.json` and a rules directory designated by the `sonarpedia.json` file. This `sonarpedia.json` is typically at the root directory of the language plugin and the following command are run from that directory.  
   * `init`:  as `init -language foo -rulesDir (rules)`. In the current directory, generate a `sonarpedia.json` file pointing on a `rules` directory. This `rules` directory is to be populated with html description and json metadata files.
-  * `generate`: as  `generate -rule S1234 S3456`. Read the `sonarpedia.json` file in the current directory, generate html and json files for designated rules.
-  * `update`: Read the `sonarpedia.json` file in the current directory, find the rules and update their html description. Update `sonarpedia.json` timestamps.  
-The format of `sonarpedia.json` is described in  [Sonarpedia-schema.json|file https://github.com/SonarSource/sonar-rule-api/blob/master/sonarpedia-schema.json] file.
-It supports more than one language in a plugin.
+  * `generate`: as  `generate -rule S1234 S3456`. Read the `sonarpedia.json` file in the current directory, generate html and json files for designated rules in the `rules` directory. 
+  * `update`: Read the `sonarpedia.json` file in the current directory, find the rules and update their html description. Update `sonarpedia.json` timestamps.
+    
+The format of `sonarpedia.json` is described in the [Sonarpedia-schema.json file](https://github.com/SonarSource/sonar-rule-api/blob/master/sonarpedia-schema.json).
+It permits to have more than one language.
 
 ***Additional options:***
   * -preserve-filenames : Use the rule keys provided by "-rule" to construct the name of output files, this allow to use legacy keys.
