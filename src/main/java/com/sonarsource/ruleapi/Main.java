@@ -39,7 +39,7 @@ public class Main {
     }
 
     Settings settings = new Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     if (settings.help || settings.option.isEmpty()) {
       printHelpMessage();
@@ -70,7 +70,7 @@ public class Main {
     }
   }
 
-  protected static void printHelpMessage() {
+  static void printHelpMessage() {
 
     StringBuilder sb = new StringBuilder();
     sb.append("\nUSAGE: option [-parameter paramValue]\n\n");
@@ -127,59 +127,58 @@ public class Main {
     }
   }
 
-  private static void handleGenerate( Settings settings ) {
+  private static void handleGenerate(Settings settings) {
 
     if (settings.directory != null) {
       System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended instead");
-      if(settings.language == null  ) {
+      if (settings.language == null) {
         throw new RuleException("-language argument is required");
-      } else if( settings.language.size() > 1) {
-        System.out.println("Warning: this legacy mode supports only one language at a time, only " + settings.language.get(0) + " will be run");
-      }
-      RuleFilesService.create(settings.directory
-          , Language.fromString(settings.language.get(0))
-          , settings.preserveFileNames
-          , !settings.noLanguageInFilenames)
-        .generateRuleFiles(settings.ruleKeys);
-    } else {
-      SonarPediaFileService.create(new File(settings.baseDir), settings.preserveFileNames, !settings.noLanguageInFilenames)
-        .generateRuleFiles(settings.ruleKeys);
-    }
-
-  }
-
-  private static void handleUpdate( Settings settings ) {
-
-    if (settings.directory != null) {
-      System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended  instead");
-      if(settings.language == null  ) {
-        throw new RuleException("-language argument is required");
-      } else if( settings.language.size() > 1) {
+      } else if (settings.language.size() > 1) {
         System.out.println("Warning: this legacy mode supports only one language at a time, only " + settings.language.get(0) + " will be run");
       }
       RuleFilesService.create(settings.directory, Language.fromString(settings.language.get(0)), settings.preserveFileNames, !settings.noLanguageInFilenames)
-          .updateDescriptions();
+        .generateRuleFiles(settings.ruleKeys);
     } else {
       SonarPediaFileService.create(new File(settings.baseDir), settings.preserveFileNames, !settings.noLanguageInFilenames)
-          .updateDescriptions();
+        .generateRuleFiles(settings.ruleKeys);
     }
 
   }
 
+  private static void handleUpdate(Settings settings) {
+
+    if (settings.directory != null) {
+      System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended  instead");
+      if (settings.language == null) {
+        throw new RuleException("-language argument is required");
+      } else if (settings.language.size() > 1) {
+        System.out.println("Warning: this legacy mode supports only one language at a time, only " + settings.language.get(0) + " will be run");
+      }
+      RuleFilesService.create(settings.directory, Language.fromString(settings.language.get(0)), settings.preserveFileNames, !settings.noLanguageInFilenames)
+        .updateDescriptions();
+    } else {
+      SonarPediaFileService.create(new File(settings.baseDir), settings.preserveFileNames, !settings.noLanguageInFilenames)
+        .updateDescriptions();
+    }
+
+  }
+
+  static void checkGenerateInput(Settings settings) {
+    if (settings.ruleKeys.isEmpty()) {
+      throw new RuleException("At least one -rule must be provided to generate");
+    }
+  }
 
   private static void handleSingleReport(Settings settings, ReportService rs) {
 
-    checkSingleReportInputs(settings);
+    SupportedStandard std = checkSingleReportInputs(settings);
 
-    SupportedStandard std = SupportedStandard.fromString(settings.tool);
-    if (std.getStandard() instanceof AbstractReportableStandard) {
-      AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
+    AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
 
-      rs.writeSingleReport(Language.fromString(settings.language.get(0)), settings.instance, ars, ReportType.fromString(settings.report));
-    }
+    rs.writeSingleReport(Language.fromString(settings.language.get(0)), settings.instance, ars, ReportType.fromString(settings.report));
   }
 
-  protected static void checkSingleReportInputs(Settings settings) {
+  static SupportedStandard checkSingleReportInputs(Settings settings) {
 
     ReportType rt = ReportType.fromString(settings.report);
     SupportedStandard std = SupportedStandard.fromString(settings.tool);
@@ -208,9 +207,10 @@ public class Main {
       throw new RuleException(sb.toString());
     }
 
-    if( settings.language == null || settings.language.size() != 1 ) {
+    if (settings.language == null || settings.language.size() != 1) {
       throw new RuleException("One and only one language must be provided through the -language option");
     }
+    return std;
   }
 
   private static void generateReports(Settings settings, ReportService rs) {
@@ -229,7 +229,7 @@ public class Main {
     @Parameter(names = "--help", help = true)
     private boolean help;
 
-    @Parameter(required = true)
+    @Parameter(description = "option", required = true)
     private List<String> option = new ArrayList<>();
 
     @Parameter(names = "-instance")
@@ -244,7 +244,7 @@ public class Main {
     @Parameter(names = "-rule", variableArity = true)
     public List<String> ruleKeys = new ArrayList<>();
 
-    @Parameter(names = "-language" , variableArity = true)
+    @Parameter(names = "-language", variableArity = true)
     private List<String> language;
 
     @Parameter(names = "-report")

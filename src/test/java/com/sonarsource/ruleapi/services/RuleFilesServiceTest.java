@@ -247,6 +247,7 @@ public class RuleFilesServiceTest {
     rule.setTags(tags);
     rule.setSeverity(com.sonarsource.ruleapi.domain.Rule.Severity.MINOR);
     rule.setKey("RSPEC-1234");
+    rule.setSqKey("S1234");
 
     // well formatted nice looking JSON with ordered fields
     final String expected1 = "{\n" +
@@ -261,7 +262,8 @@ public class RuleFilesServiceTest {
             "    \"qux\"\n" +
             "  ],\n" +
             "  \"defaultSeverity\": \"Minor\",\n" +
-            "  \"ruleSpecification\": \"RSPEC-1234\"\n" +
+            "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
+            "  \"sqKey\": \"S1234\"\n" +
             "}";
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected1);
@@ -284,7 +286,8 @@ public class RuleFilesServiceTest {
             "    \"qux\"\n" +
             "  ],\n" +
             "  \"defaultSeverity\": \"Blocker\",\n" +
-            "  \"ruleSpecification\": \"RSPEC-1234\"\n" +
+            "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
+            "  \"sqKey\": \"S1234\"\n" +
             "}";
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected2);
@@ -301,7 +304,8 @@ public class RuleFilesServiceTest {
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ],\n" +
-            "  \"ruleSpecification\": \"RSPEC-1234\"\n" +
+            "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
+            "  \"sqKey\": \"S1234\"\n" +
             "}";
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected3);
@@ -323,7 +327,8 @@ public class RuleFilesServiceTest {
       "  \"tags\": [\n" +
       "    \"qux\"\n" +
       "  ],\n" +
-      "  \"ruleSpecification\": \"RSPEC-1234\"\n" +
+      "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
+      "  \"sqKey\": \"S1234\"\n" +
       "}";
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected4);

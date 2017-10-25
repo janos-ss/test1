@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.domain;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -296,4 +297,17 @@ public class RuleTest {
 
   }
 
+  @Test
+  public void testMergeSqKey() {
+    Rule rule = new Rule("");
+    Rule subRule = new Rule("");
+    subRule.setTitle("Java");
+
+    rule.setSqKey("S1234");
+    subRule.setLegacyKeys(Collections.singletonList("SomeLegacyKey"));
+
+    rule.merge(subRule);
+
+    assertThat(rule.getSqKey()).isEqualTo("SomeLegacyKey");
+  }
 }

@@ -42,41 +42,25 @@ public class JiraHelperTest {
 
 
   @Test
-  public void testCustomFieldValueSadPath() {
-
-    try {
-      assertThat(JiraHelper.getCustomFieldValue((JSONObject) parser.parse("{}"), "foo")).isNull();
-      assertThat(JiraHelper.getCustomFieldValue((JSONObject) parser.parse(FULL_JSON), null)).isNull();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
+  public void testCustomFieldValueSadPath() throws Exception {
+    assertThat(JiraHelper.getCustomFieldValue((JSONObject) parser.parse("{}"), "foo")).isNull();
+    assertThat(JiraHelper.getCustomFieldValue((JSONObject) parser.parse(FULL_JSON), null)).isNull();
   }
 
   @Test
-  public void testListFromJsonFieldValueNull() {
-
-    try {
-      assertThat(JiraHelper.getListFromJsonFieldValue((JSONObject) parser.parse("{}"), "foo")).isEmpty();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
+  public void testListFromJsonFieldValueNull() throws Exception {
+    assertThat(JiraHelper.getListFromJsonFieldValue((JSONObject) parser.parse("{}"), "foo")).isEmpty();
   }
 
   @Test
-  public void testGetJsonFieldValueNulls() {
-
-    try {
-      assertThat(JiraHelper.getJsonFieldValue((JSONObject) parser.parse("{}"), "foo")).isNull();
-      assertThat(JiraHelper.getJsonFieldValue((JSONObject) parser.parse(FULL_JSON), null)).isNull();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
+  public void testGetJsonFieldValueNulls() throws Exception {
+    assertThat(JiraHelper.getJsonFieldValue((JSONObject) parser.parse("{}"), "foo")).isNull();
+    assertThat(JiraHelper.getJsonFieldValue((JSONObject) parser.parse(FULL_JSON), null)).isNull();
   }
 
   @Test
   public void testHandleParameterListNullString() throws Exception {
-    List<Parameter> empty = new ArrayList<>();
-    assertThat(JiraHelper.handleParameterList(null, "Java")).hasSize(0);
+    assertThat(JiraHelper.handleParameterList(null, "Java")).isEmpty();
   }
 
   @Test
@@ -89,7 +73,7 @@ public class JiraHelperTest {
   @Test
   public void testHandleParameterListEmptyString() throws Exception {
     List<Parameter> paramList = JiraHelper.handleParameterList("", "Java");
-    assertThat(paramList).hasSize(0);
+    assertThat(paramList).isEmpty();
   }
 
   @Test
@@ -289,28 +273,33 @@ public class JiraHelperTest {
   }
 
   @Test
-  public void testPopulateFieldsSecurityType() {
+  public void testPopulateFieldsSecurityType() throws Exception {
 
     Rule rule = new Rule("");
-    try {
       JiraHelper.populateFields(rule, (JSONObject) parser.parse(FULL_VULN_DEFAULT_PROFILE_JSON));
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
 
     assertThat(rule.getType()).isEqualTo(Rule.Type.VULNERABILITY);
   }
 
   @Test
-  public void testPopulateFieldsCodeSmellType() {
+  public void testPopulateFieldsCodeSmellType() throws Exception {
     Rule rule = new Rule("");
-    try {
-      JiraHelper.populateFields(rule, (JSONObject) parser.parse(FULL_CODE_SMELL_TEMPLATE_JSON));
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
+    JiraHelper.populateFields(rule, (JSONObject) parser.parse(FULL_CODE_SMELL_TEMPLATE_JSON));
 
     assertThat(rule.getType()).isEqualTo(Rule.Type.CODE_SMELL);
+  }
+
+  @Test
+  public void testSqkeys() throws Exception {
+
+    Rule ruleWLegacyKey = new Rule("");
+    JiraHelper.populateFields(ruleWLegacyKey, (JSONObject) parser.parse(FULL_CODE_SMELL_TEMPLATE_JSON));
+    assertThat(ruleWLegacyKey.getSqKey()).isEqualTo("ArchitecturalConstraint");
+
+
+    Rule ruleWSKey = new Rule("");
+    JiraHelper.populateFields(ruleWSKey, (JSONObject) parser.parse(FULL_VULN_DEFAULT_PROFILE_JSON));
+    assertThat(ruleWSKey.getSqKey()).isEqualTo("S3649");
   }
 
   @Test
@@ -395,5 +384,15 @@ public class JiraHelperTest {
             "<p>This rule is deprecated; use {rule:squid:S123}, {rule:squid:S234} instead.</p>\n");
   }
 
+  @Test
+  public void shouldAddExtraSectionsAndLogIfUnknown() throws Exception {
+    String json = "{\"id\": \"19078\",\"names\": {\"summary\": \"Summary\",\"issuetype\": \"Issue Type\",\"customfield_10243\": \"issueFunction\",\"customfield_10232\": \"Completeness\",\"customfield_10244\": \"FindBugs\",\"customfield_10245\": \"PMD\",\"customfield_10246\": \"Checkstyle\",\"customfield_10242\": \"Template Rule\",\"reporter\": \"Reporter\",\"customfield_10330\": \"Implementation details\",\"updated\": \"Updated\",\"created\": \"Created\",\"description\": \"Description\",\"customfield_10001\": \"Targeted languages\",\"issuelinks\": \"Linked Issues\",\"customfield_10004\": \"Covered Languages\",\"subtasks\": \"Sub-Tasks\",\"status\": \"Status\",\"customfield_10007\": \"Default Severity\",\"labels\": \"Labels\",\"customfield_10005\": \"List of parameters\",\"customfield_10256\": \"Linear Argument\",\"workratio\": \"Work Ratio\",\"customfield_10257\": \"FindSecBugs\",\"customfield_10255\": \"CERT\",\"customfield_10253\": \"OWASP\",\"customfield_10250\": \"PHP-FIG\",\"customfield_10251\": \"CWE\",\"project\": \"Project\",\"customfield_10249\": \"MISRA C++ 2008\",\"customfield_10248\": \"MISRA C 2004\",\"customfield_10014\": \"Linear Offset\",\"lastViewed\": \"Last Viewed\",\"customfield_10015\": \"Legacy Key\",\"customfield_10012\": \"Constant Cost\",\"customfield_10013\": \"Linear Factor\",\"comment\": \"Comment\",\"customfield_10010\": \"Characteristic\",\"customfield_10011\": \"Remediation Function\",\"votes\": \"Votes\",\"resolution\": \"Resolution\",\"resolutiondate\": \"Resolved\",\"creator\": \"Creator\",\"customfield_10258\": \"MISRA C 2012\",\"customfield_10021\": \"Activated by default\",\"watches\": \"Watchers\",\"assignee\": \"Assignee\",\"customfield_10131\": \"Applicability\",\"customfield_10130\": \"Outdated Languages\",\"customfield_10030\": \"Message\"},\"key\": \"RSPEC-2210\",\"fields\": {\"summary\": \"Anntest dummy rule asdf\",\"customfield_10010\": {  \"child\": {    \"id\": \"10050\",    \"value\": \"Compiler related portability\",    \"self\": \"http://jira.sonarsource.com/rest/api/2/customFieldOption/10050\"  },  \"id\": \"10049\",  \"value\": \"Portability\",  \"self\": \"http://jira.sonarsource.com/rest/api/2/customFieldOption/10049\"},\"customfield_10011\": {  \"id\": \"10086\",  \"value\": \"Constant/Issue\",  \"self\": \"http://jira.sonarsource.com/rest/api/2/customFieldOption/10086\"},\"description\": \"This is a nice rule.\\r\\n\\r\\nh2. Exceptions\\r\\nDoes not apply on code that was written by a baboon.\\r\\n\\r\\nh2. Deprecated\\r\\nThis rule should be deprecated.\\r\\n\\r\\nh2. Cross\\r\\nWell that went a bit too far.\",\"customfield_10012\": \"2d\",\"customfield_10256\": null,\"customfield_10013\": null,\"customfield_10014\": null,\"customfield_10015\": null}}";
+
+    Rule rule = new Rule("");
+    JiraHelper.populateFields(rule, (JSONObject) parser.parse(json));
+
+    assertThat(rule.getExceptions()).isEqualTo("\n<h2>Exceptions</h2>\n<p>Does not apply on code that was written by a baboon.</p>\n");
+    assertThat(rule.getDeprecation()).isEqualTo("\n<h2>Deprecated</h2>\n<p>This rule should be deprecated.</p>\n");
+  }
 
 }

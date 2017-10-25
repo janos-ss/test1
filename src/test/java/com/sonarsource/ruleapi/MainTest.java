@@ -11,10 +11,9 @@ import com.sonarsource.ruleapi.domain.SonarPediaJsonFile;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
-
-import java.time.Instant;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,7 +36,7 @@ public class MainTest {
     String[] args = {"single_report", "-report", "html", "-tool", "findbugs", "-language", "java" };
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     try {
       Main.checkSingleReportInputs(settings);
@@ -46,13 +45,37 @@ public class MainTest {
     }
   }
 
+  @Test
+  public void testCheckSingleReportInputsNominal() {
+
+    String[] args = {"single_report", "-report", "html", "-tool", "cwe", "-language", "C"};
+
+    Main.Settings settings = new Main.Settings();
+    new JCommander(settings, null, args);
+
+    assertThat(Main.checkSingleReportInputs(settings)).isEqualTo(SupportedStandard.CWE);
+
+  }
+
+  @Test(expected = RuleException.class)
+  public void testCheckSingleReportNonReportableTool() {
+
+    String[] args = {"single_report", "-tool", "rules_in_language"};
+
+    Main.Settings settings = new Main.Settings();
+    new JCommander(settings, null, args);
+
+    Main.checkSingleReportInputs(settings);
+
+  }
+
   @Test(expected = RuleException.class)
   public void testCheckSingleReportInputsBadReport() {
 
     String[] args = {"single_report", "-report", "red"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     Main.checkSingleReportInputs(settings);
 
@@ -64,7 +87,7 @@ public class MainTest {
     String[] args = {"single_report", "-report", "html"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     Main.checkSingleReportInputs(settings);
 
@@ -76,7 +99,7 @@ public class MainTest {
     String[] args = {"single_report", "-tool", "red"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     Main.checkSingleReportInputs(settings);
 
@@ -88,7 +111,7 @@ public class MainTest {
     String[] args = {"single_report", "-tool", "findbugs"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     Main.checkSingleReportInputs(settings);
   }
@@ -98,7 +121,7 @@ public class MainTest {
     String[] args = {"single_report", "-tool", "findbugs"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     assertThat(Main.credentialsProvided(settings)).isFalse();
   }
@@ -108,7 +131,7 @@ public class MainTest {
     String[] args = {"single_report", "-login", "foo", "-password", "bar"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     assertThat(Main.credentialsProvided(settings)).isTrue();
   }
@@ -118,7 +141,7 @@ public class MainTest {
     String[] args = {"single_report", "-login", "foo"};
 
     Main.Settings settings = new Main.Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     assertThat(Main.credentialsProvided(settings)).isFalse();
   }
@@ -141,8 +164,8 @@ public class MainTest {
   }
 
   @Test(expected = RuleException.class)
-  public void testDeprecatedUpdateWithOutLanguage() {
-    String[] argsGenerate = { "udpate", "-directory", "." };
+  public void testUpdateWithOutLanguageShouldFail() {
+    String[] argsGenerate = { "update", "-directory", "." };
     Main.main(argsGenerate);
   }
 
@@ -225,11 +248,23 @@ public class MainTest {
 
     Main.main(arguments );
   }
+
   @Test(expected=RuleException.class)
   public void testTooManyLanguageOnSingleReport() throws Exception {
     String[] arguments = {"single_report", "-language", "JAVA", "JAVASCRIPT", "-tool", "CHECKSTYLE", "-report", "INTERNAL_COVERAGE"};
 
     Main.main(arguments );
+  }
+
+  @Test(expected = RuleException.class)
+  public void testCheckGenerateInputNoRule() {
+
+    String[] args = {"single_report", "-report", "red"};
+
+    Main.Settings settings = new Main.Settings();
+    new JCommander(settings, null, args);
+
+    Main.checkGenerateInput(settings);
   }
 
   @Test
@@ -269,4 +304,13 @@ public class MainTest {
     System.setOut(original);
   }
 
+  @Test(expected = NullPointerException.class)
+  public void shouldFailToGenerateCweReportForUnknownLanguage() throws Exception {
+    Main.main(new String[] { "single_report", "-tool", "cwe", "-report", "html", "-language", "polop" });
+  }
+
+  @Test
+  public void shouldDoNothingOnUnrecognizedOption() throws Exception {
+    Main.main(new String[] { "polop" });
+  }
 }

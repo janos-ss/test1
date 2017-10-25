@@ -111,6 +111,7 @@ public class Rule {
   private boolean template = false;
   private String keyOfTemplate = null;
   private List<String> legacyKeys = new ArrayList<>();
+  private String sqKey = null;
 
   private Set<Profile> defaultProfiles = new HashSet<>();
 
@@ -180,6 +181,9 @@ public class Rule {
     }
     if (subRule.parameterList != null && !subRule.parameterList.isEmpty()) {
       this.parameterList = subRule.parameterList;
+    }
+    if (! subRule.legacyKeys.isEmpty()) {
+      this.setSqKey(subRule.legacyKeys.get(0));
     }
     mergeDescriptionPieces(subRule);
     mergeRemediationPieces(subRule);
@@ -377,6 +381,15 @@ public class Rule {
 
   public void setLegacyKeys(List<String> legacyKeys) {
     this.legacyKeys = legacyKeys;
+  }
+
+
+  public String getSqKey() {
+    return sqKey;
+  }
+
+  public void setSqKey(String sqKey) {
+    this.sqKey = sqKey;
   }
 
   public String getDescription() {

@@ -311,6 +311,7 @@ public class RuleFilesService {
     }
 
     objOrderedFields.put("ruleSpecification", rule.getKey());
+    objOrderedFields.put("sqKey", rule.getSqKey());
 
     try (Writer writer = new JSONWriter()) {
       JSONValue.writeJSONString(objOrderedFields, writer);
