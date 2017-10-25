@@ -57,14 +57,16 @@ public class SonarPediaJsonFile {
   }
 
   public static SonarPediaJsonFile deserialize(File file) throws FileNotFoundException {
-    final String content = new Scanner(file).useDelimiter("\\Z").next();
-    // TODO validate incoming content against JSON schema
-    SonarPediaFileData data = fromJson(content, SonarPediaFileData.class);
-    SonarPediaJsonFile returned = new SonarPediaJsonFile();
-    returned.file = file;
-    returned.data = data;
 
-    return returned;
+    try ( Scanner scanner = new Scanner(file )) {
+      final String content = scanner.useDelimiter("\\Z").next();
+      // TODO validate incoming content against JSON schema
+      SonarPediaFileData data = fromJson(content, SonarPediaFileData.class);
+      SonarPediaJsonFile returned = new SonarPediaJsonFile();
+      returned.file = file;
+      returned.data = data;
+      return returned;
+    }
   }
 
   public void writeToItsFile() {
@@ -105,9 +107,5 @@ public class SonarPediaJsonFile {
     String defaultProfileName;
     @SerializedName("latest-update")
     Instant latestUpdate;
-  }
-
-  public static FilenameFilter getSonarPediaJsonFileFilter() {
-    return (dir, name) -> sonarpediaFileName.equals(name);
   }
 }
