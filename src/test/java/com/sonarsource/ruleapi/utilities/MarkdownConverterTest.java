@@ -950,8 +950,40 @@ public class MarkdownConverterTest {
     expectedHtml = "<p>Something <code>}</code> something</p>\n";
     assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
 
+    markdown = "Something {{\\!}} something";
+    expectedHtml = "<p>Something <code>!</code> something</p>\n";
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+
     markdown = "Something {{}}}}}}}}}} something";
     expectedHtml = "<p>Something <code>}}}}}}}}</code> something</p>\n";
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+  }
+
+  @Test
+  public void shouldUnescapeInlineCode() throws Exception {
+    // Excerpt from RSPEC-2757
+    String markdown = "The use of operators pairs ( {{=\\+}}, {{=\\-}} or {{=\\!}} ) where the reversed, " +
+      "single operator was meant ({{+=}}, {{-=}} or {{\\!=}}) will compile and run, " +
+      "but not produce the expected results.";
+    String expectedHtml = "<p>The use of operators pairs ( <code>=+</code>, <code>=-</code> or <code>=!</code> ) where the reversed, " +
+      "single operator was meant (<code>+=</code>, <code>-=</code> or <code>!=</code>) will compile and run, " +
+      "but not produce the expected results.</p>\n";
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+  }
+
+  @Test
+  public void shouldPreserveEscapedDotInRegexp() throws Exception {
+    // Excerpt from RSPEC-2410 (Java subtask of RSPEC-120)
+    String markdown = "With the default regular expression {{^[a-z]+(\\.[a-z][a-z0-9]*)*$}}:";
+    String expectedHtml = "<p>With the default regular expression <code>^[a-z]+(\\.[a-z][a-z0-9]*)*$</code>:</p>\n";
+    assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
+  }
+
+  @Test
+  public void shouldPreserveOctalEscape() throws Exception {
+    // Excerpt from RSPEC-1314
+    String markdown = "Octal constants (other than zero) and octal escape sequences (other than \"\\0\") shall not be used";
+    String expectedHtml = "<p>Octal constants (other than zero) and octal escape sequences (other than \"\\0\") shall not be used</p>\n";
     assertThat(mc.transform(markdown, "Java")).isEqualTo(expectedHtml);
   }
 }
