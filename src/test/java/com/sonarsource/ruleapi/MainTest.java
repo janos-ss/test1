@@ -245,15 +245,6 @@ public class MainTest {
     assertThat(systemOutRule.getLog()).contains("USAGE:");
   }
 
-  @Test
-  public void testEmptyLanguage() throws Exception {
-    String[] arguments = {"single_report", "-tool", "CHECKSTYLE", "-report", "INTERNAL_COVERAGE", "-language"};
-
-    Main.main(arguments);
-
-    assertThat(systemOutRule.getLog()).contains("USAGE:");
-  }
-
   @Test(expected = RuleException.class)
   public void testCheckGenerateInputNoRule() {
 

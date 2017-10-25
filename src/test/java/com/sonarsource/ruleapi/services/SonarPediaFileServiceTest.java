@@ -91,8 +91,8 @@ public class SonarPediaFileServiceTest {
     SonarPediaJsonFile afterUpdate = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot());
     assertThat(afterUpdate.getUpdateTimeStamp().toEpochMilli()).isGreaterThan(sonarpediaDateBeforeUpdate);
     // check modification date of rule files
-    final long maxDateAfterUpdate = Stream.of(newFile.getRulesMetadataFilesDir().list())
-        .map( fileName -> new File(rulesDir, fileName ))
+    final long maxDateAfterUpdate = Stream.of(afterUpdate.getRulesMetadataFilesDir().list())
+        .map( fileName -> new File(afterUpdate.getRulesMetadataFilesDir(), fileName ))
         .map(File::lastModified)
         .max(Long::compareTo)
         .get();

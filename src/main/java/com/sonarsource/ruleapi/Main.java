@@ -63,7 +63,7 @@ public class Main {
           &&
           ( ! languageIsProvided(settings)
               ||
-              option.requiresExactlyOneLanguage  && settings.language.size() > 2
+              option.requiresExactlyOneLanguage  && settings.language.size() > 1
           )
         ) {
         printHelpMessage();
@@ -97,7 +97,7 @@ public class Main {
     System.out.println(sb.toString());
   }
 
-  protected static void doRequestedOption(Option option, Settings settings) {
+  private static void doRequestedOption(Option option, Settings settings) {
 
     final File baseDir = new File(settings.baseDir);
     ReportService rs = new ReportService();
