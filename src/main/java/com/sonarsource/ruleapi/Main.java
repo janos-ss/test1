@@ -59,13 +59,15 @@ public class Main {
         return;
       }
 
-      if (option.requiresLanguage && ! languageIsProvided(settings)) {
+      if (option.requiresLanguage
+          &&
+          ( ! languageIsProvided(settings)
+              ||
+              option.requiresExactlyOneLanguage  && settings.language.size() > 2
+          )
+        ) {
         printHelpMessage();
         return;
-      } else if (option.requiresExactlyOneLanguage  && settings.language.size() > 1 ) {
-        printHelpMessage();
-        return;
-
       }
 
 
