@@ -7,10 +7,14 @@ package com.sonarsource.ruleapi;
 
 import com.beust.jcommander.JCommander;
 import com.sonarsource.ruleapi.domain.RuleException;
+import com.sonarsource.ruleapi.domain.SonarPediaJsonFile;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 
+import java.time.Instant;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,7 +34,7 @@ public class MainTest {
 
   @Test
   public void testHappyPath(){
-    String[] args = {"single_report", "-report", "html", "-tool", "findbugs"};
+    String[] args = {"single_report", "-report", "html", "-tool", "findbugs", "-language", "java" };
 
     Main.Settings settings = new Main.Settings();
     new JCommander(settings, args);
@@ -157,6 +161,56 @@ public class MainTest {
   }
 
   @Test
+  public void testDeprecatedGenerationAndUpdateOfDescriptionFileWithMultipleLanguage() throws Exception{
+
+    File outputDir = testFolder.newFolder();
+
+    String[] argsGenerate = { "generate"
+        , "-rule", "S1543"
+        , "-language", "java", "cobol"
+        , "-directory", outputDir.getAbsolutePath()
+    };
+    Main.main(argsGenerate);
+
+    assertThat(outputDir.listFiles().length).isGreaterThan(0);
+    assertThat(systemOutRule.getLog() ).contains("Warning");
+
+    String[] argsUpdate = { "update"
+        , "-language", "java", "cobol"
+        , "-directory", outputDir.getAbsolutePath()
+    };
+    Main.main(argsUpdate);
+    // the "update" makes appear a second occurence of deprecated
+    assertThat(systemOutRule.getLog().indexOf("Warning"))
+        .isNotEqualTo(systemOutRule.getLog().lastIndexOf("Warning"));
+  }
+
+  @Test
+  public void testInitGenerationAndUpdateOfDescriptionFile() throws Exception{
+
+    String[] initArguments = { "init", "-language", "java", "-baseDir", testFolder.getRoot().getAbsolutePath() };
+    Main.main(initArguments );
+    assertThat( testFolder.getRoot().list().length ).isEqualTo(2);
+
+    File rulesDir = Stream.of(testFolder.getRoot().list())
+        .map( name -> new File(testFolder.getRoot(), name) )
+        .filter(File::isDirectory)
+        .collect(Collectors.toList())
+        .get(0);
+
+    String[] generateArguments = { "generate", "-rule", "RSPEC-4242", "-baseDir", testFolder.getRoot().getAbsolutePath() };
+    Main.main(generateArguments);
+    assertThat( rulesDir.list().length ).isEqualTo(2);
+
+    String[] updateArguments = { "update", "-baseDir", testFolder.getRoot().getAbsolutePath()  };
+    Main.main(updateArguments);
+    SonarPediaJsonFile spjf = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot());
+    assertThat(spjf.getUpdateTimeStamp()).isNotNull();
+  }
+
+
+
+    @Test
   public void testNoOption() {
 
     PrintStream original = System.out;

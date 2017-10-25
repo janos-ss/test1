@@ -87,10 +87,8 @@ public class Main {
 
   protected static void doRequestedOption(Option option, Settings settings) {
 
-    final File baseDir = new File(".");
+    final File baseDir = new File(settings.baseDir);
     ReportService rs = new ReportService();
-    Language language = Language.fromString(settings.language);
-    List<Language> languages = settings.languages.stream().map(Language::fromString).collect(Collectors.toList());
 
     switch (option) {
       case OUTDATED:
@@ -103,37 +101,21 @@ public class Main {
         generateReports(settings, rs);
         break;
       case INIT:
-        List<Language> languagesForInit;
-        if (languages.isEmpty()) {
-          languagesForInit = new ArrayList<>(1);
-          languagesForInit.add(language);
-        } else {
-          languagesForInit = languages;
-        }
-        SonarPediaFileService.init(baseDir, languagesForInit);
+        List<Language> languages = settings.language.stream().map(Language::fromString).collect(Collectors.toList());
+        SonarPediaFileService.init(baseDir, languages);
         break;
       case GENERATE:
-        if (settings.directory != null) {
-          System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended instead");
-          RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
-            .generateRuleFiles(settings.ruleKeys);
-        } else {
-          SonarPediaFileService.create(baseDir, settings.preserveFileNames, !settings.noLanguageInFilenames)
-            .generateRuleFiles(settings.ruleKeys);
-        }
+        handleGenerate( settings );
         break;
       case UPDATE:
-        if (settings.directory != null) {
-          System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended  instead");
-          RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
-            .updateDescriptions();
-        } else {
-          SonarPediaFileService.create(baseDir, settings.preserveFileNames, !settings.noLanguageInFilenames)
-            .updateDescriptions();
-        }
+        handleUpdate( settings );
         break;
       case DIFF:
-        rs.writeOutdatedRulesReport(language, settings.instance);
+        if( settings.language.size() != 1 ) {
+          throw new RuleException("One and only one language must be provided through the -language option for running diff report" );
+        } else {
+          rs.writeOutdatedRulesReport(Language.fromString(settings.language.get(0)), settings.instance);
+        }
         break;
       case SINGLE_REPORT:
         handleSingleReport(settings, rs);
@@ -145,6 +127,46 @@ public class Main {
     }
   }
 
+  private static void handleGenerate( Settings settings ) {
+
+    if (settings.directory != null) {
+      System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended instead");
+      if(settings.language == null  ) {
+        throw new RuleException("-language argument is required");
+      } else if( settings.language.size() > 1) {
+        System.out.println("Warning: this legacy mode supports only one language at a time, only " + settings.language.get(0) + " will be run");
+      }
+      RuleFilesService.create(settings.directory
+          , Language.fromString(settings.language.get(0))
+          , settings.preserveFileNames
+          , !settings.noLanguageInFilenames)
+        .generateRuleFiles(settings.ruleKeys);
+    } else {
+      SonarPediaFileService.create(new File(settings.baseDir), settings.preserveFileNames, !settings.noLanguageInFilenames)
+        .generateRuleFiles(settings.ruleKeys);
+    }
+
+  }
+
+  private static void handleUpdate( Settings settings ) {
+
+    if (settings.directory != null) {
+      System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended  instead");
+      if(settings.language == null  ) {
+        throw new RuleException("-language argument is required");
+      } else if( settings.language.size() > 1) {
+        System.out.println("Warning: this legacy mode supports only one language at a time, only " + settings.language.get(0) + " will be run");
+      }
+      RuleFilesService.create(settings.directory, Language.fromString(settings.language.get(0)), settings.preserveFileNames, !settings.noLanguageInFilenames)
+          .updateDescriptions();
+    } else {
+      SonarPediaFileService.create(new File(settings.baseDir), settings.preserveFileNames, !settings.noLanguageInFilenames)
+          .updateDescriptions();
+    }
+
+  }
+
+
   private static void handleSingleReport(Settings settings, ReportService rs) {
 
     checkSingleReportInputs(settings);
@@ -153,7 +175,7 @@ public class Main {
     if (std.getStandard() instanceof AbstractReportableStandard) {
       AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
 
-      rs.writeSingleReport(Language.fromString(settings.language), settings.instance, ars, ReportType.fromString(settings.report));
+      rs.writeSingleReport(Language.fromString(settings.language.get(0)), settings.instance, ars, ReportType.fromString(settings.report));
     }
   }
 
@@ -186,6 +208,9 @@ public class Main {
       throw new RuleException(sb.toString());
     }
 
+    if( settings.language.size() != 1 ) {
+      throw new RuleException("One and only one language must be provided through the -language option");
+    }
   }
 
   private static void generateReports(Settings settings, ReportService rs) {
@@ -219,11 +244,8 @@ public class Main {
     @Parameter(names = "-rule", variableArity = true)
     public List<String> ruleKeys = new ArrayList<>();
 
-    @Parameter(names = "-language")
-    private String language;
-
-    @Parameter(names = "-languages", variableArity = true)
-    private List<String> languages = new ArrayList<>();
+    @Parameter(names = "-language" , variableArity = true)
+    private List<String> language;
 
     @Parameter(names = "-report")
     private String report;
@@ -240,6 +262,10 @@ public class Main {
     @Parameter(names = "-no-language-in-filenames")
     private boolean noLanguageInFilenames = false;
 
+    // for the purpose of testing
+    @Parameter(names = "-baseDir", hidden = true)
+    private String baseDir = ".";
+
   }
 
   public enum Option {
@@ -247,8 +273,8 @@ public class Main {
     SINGLE_REPORT(false, "Generate a single -report against -instance (defaults to Nemo), -language, and -tool."),
     OUTDATED(true, "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
     INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
-    INIT(false, "Initiate a sonarpedia.json file with its rules directory"),
-    GENERATE(false, "Generates html description and json metadata files specified by -rule and -language parameters at directory specified by -directory"),
+    INIT(false, "Create a sonarpedia.json file with its rules directory, language must be specifed by the -language parameter. "),
+    GENERATE(false, "Generates html description and json metadata files specified by -rule parameter"),
     UPDATE(false, "Update html and json description files."),
     DIFF(false, "Generates a diff report for the specified -language and -instance");
 
