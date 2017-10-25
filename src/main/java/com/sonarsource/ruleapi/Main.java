@@ -208,7 +208,7 @@ public class Main {
       throw new RuleException(sb.toString());
     }
 
-    if( settings.language.size() != 1 ) {
+    if( settings.language == null || settings.language.size() != 1 ) {
       throw new RuleException("One and only one language must be provided through the -language option");
     }
   }

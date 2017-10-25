@@ -134,6 +134,17 @@ public class MainTest {
     assertThat(Main.credentialsProvided(settings)).isFalse();
   }
 
+  @Test(expected = RuleException.class)
+  public void testDeprecatedGenerationWithOutLanguage() {
+    String[] argsGenerate = { "generate", "-directory", "." };
+    Main.main(argsGenerate);
+  }
+
+  @Test(expected = RuleException.class)
+  public void testDeprecatedUpdateWithOutLanguage() {
+    String[] argsGenerate = { "udpate", "-directory", "." };
+    Main.main(argsGenerate);
+  }
 
   @Test
   public void testDeprecatedGenerationAndUpdateOfDescriptionFile() throws Exception{
@@ -208,9 +219,15 @@ public class MainTest {
     assertThat(spjf.getUpdateTimeStamp()).isNotNull();
   }
 
+  @Test(expected=RuleException.class)
+  public void testMissingLanguageOnSingleReport() throws Exception {
+    String[] arguments = {"single_report", "-tool", "CHECKSTYLE", "-report", "INTERNAL_COVERAGE"};
+
+    Main.main(arguments );
+  }
 
 
-    @Test
+  @Test
   public void testNoOption() {
 
     PrintStream original = System.out;
@@ -225,6 +242,7 @@ public class MainTest {
 
     System.setOut(original);
   }
+
 
   @Test
   public void testOption() {

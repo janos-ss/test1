@@ -5,14 +5,13 @@
  */
 package com.sonarsource.ruleapi.domain;
 
+import com.google.gson.annotations.SerializedName;
 import com.sonarsource.ruleapi.utilities.JsonUtil;
 import com.sonarsource.ruleapi.utilities.Language;
 import java.io.BufferedWriter;
 import java.io.File;
-import com.google.gson.annotations.SerializedName;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
