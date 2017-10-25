@@ -225,7 +225,12 @@ public class MainTest {
 
     Main.main(arguments );
   }
+  @Test(expected=RuleException.class)
+  public void testTooManyLanguageOnSingleReport() throws Exception {
+    String[] arguments = {"single_report", "-language", "JAVA", "JAVASCRIPT", "-tool", "CHECKSTYLE", "-report", "INTERNAL_COVERAGE"};
 
+    Main.main(arguments );
+  }
 
   @Test
   public void testNoOption() {
