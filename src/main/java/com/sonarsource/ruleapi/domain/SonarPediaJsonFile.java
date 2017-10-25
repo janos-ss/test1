@@ -12,7 +12,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
@@ -42,12 +41,12 @@ public class SonarPediaJsonFile {
     returned.data.ruleMetadataPath = baseDir.toPath().resolve(rulesDir.toPath().normalize()).toString();
     returned.data.languages = languages;
 
-    try {
-      try(FileOutputStream fop = new FileOutputStream(sonarPediaFile);
-          OutputStreamWriter osw = new OutputStreamWriter(fop,StandardCharsets.UTF_8);
-          BufferedWriter out = new BufferedWriter( osw ) ) {
-        out.write(JsonUtil.toJson(returned.data));
-      }
+    try (FileOutputStream fop = new FileOutputStream(sonarPediaFile);
+      OutputStreamWriter osw = new OutputStreamWriter(fop, StandardCharsets.UTF_8);
+      BufferedWriter out = new BufferedWriter(osw)) {
+
+      out.write(JsonUtil.toJson(returned.data));
+
     } catch (IOException exception) {
       throw new IllegalStateException(exception);
     }
@@ -62,7 +61,7 @@ public class SonarPediaJsonFile {
 
   public static SonarPediaJsonFile deserialize(File file) throws FileNotFoundException {
 
-    try (Scanner scanner = new Scanner(file)) {
+    try (Scanner scanner = new Scanner(file, "UTF-8")) {
       final String content = scanner.useDelimiter("\\Z").next();
       // TODO validate incoming content against JSON schema
       SonarPediaFileData data = fromJson(content, SonarPediaFileData.class);
@@ -74,8 +73,12 @@ public class SonarPediaJsonFile {
   }
 
   public void writeToItsFile() {
-    try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
+    try (FileOutputStream fop = new FileOutputStream(this.file);
+      OutputStreamWriter osw = new OutputStreamWriter(fop, StandardCharsets.UTF_8);
+      BufferedWriter out = new BufferedWriter(osw)) {
+
       out.write(JsonUtil.toJson(this.data));
+
     } catch (IOException exception) {
       throw new IllegalStateException(exception);
     }
