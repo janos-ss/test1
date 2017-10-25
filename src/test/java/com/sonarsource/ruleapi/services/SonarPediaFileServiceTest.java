@@ -77,11 +77,6 @@ public class SonarPediaFileServiceTest {
     assertThat(rulesDir.list().length).isEqualTo(0);
     spfs.generateRuleFiles(rulesSet);
     assertThat(rulesDir.list().length).isEqualTo(rulesSet.size() * 2 * 2 + 1);
-    final long maxDateBeforeUpdate = Stream.of(newFile.getRulesMetadataFilesDir().list())
-        .map( fileName -> new File(rulesDir, fileName ))
-        .map(File::lastModified)
-        .max(Long::compareTo)
-        .get();
     final long sonarpediaDateBeforeUpdate = newFile.getFile().lastModified();
     spfs.updateDescriptions();
     assertThat(systemOutRule.getLog()).contains(String.format("Found %d rule(s) to update", rulesSet.size()));
@@ -90,13 +85,6 @@ public class SonarPediaFileServiceTest {
     // read back sonarpedia to check the update
     SonarPediaJsonFile afterUpdate = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot());
     assertThat(afterUpdate.getUpdateTimeStamp().toEpochMilli()).isGreaterThan(sonarpediaDateBeforeUpdate);
-    // check modification date of rule files
-    final long maxDateAfterUpdate = Stream.of(afterUpdate.getRulesMetadataFilesDir().list())
-        .map( fileName -> new File(afterUpdate.getRulesMetadataFilesDir(), fileName ))
-        .map(File::lastModified)
-        .max(Long::compareTo)
-        .get();
-    assertThat(maxDateAfterUpdate).isGreaterThan(maxDateBeforeUpdate);
   }
 
 }
