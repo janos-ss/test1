@@ -213,10 +213,6 @@ public class Main {
     return !(Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password));
   }
 
-  protected static boolean languageIsProvided(Settings settings) {
-    return settings.language != null && !settings.language.isEmpty();
-  }
-
   public static class Settings {
 
     @Parameter(names = "--help", help = true)
