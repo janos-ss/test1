@@ -322,7 +322,7 @@ public class Main {
           case ONE_AND_ONLY_ONE_LANGUAGE:
             return languages != null && languages.size() == 1;
           case ONE_OR_MORE_LANGUAGE:
-            return languages != null && languages.size() >= 1;
+            return languages != null && ! languages.isEmpty();
           case ZERO_OR_ONE_LANGUAGE:
             return languages == null || languages.isEmpty() || languages.size() == 1;
           default:
