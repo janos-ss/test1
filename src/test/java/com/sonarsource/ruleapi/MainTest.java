@@ -186,26 +186,6 @@ public class MainTest {
   }
 
   @Test
-  public void testDeprecatedGenerationAndUpdateOfDescriptionFileWithMultipleLanguage() throws Exception {
-
-    File outputDir = testFolder.newFolder();
-
-    String[] argsGenerate = {"generate", "-rule", "S1543", "-language", "java", "cobol", "-directory", outputDir.getAbsolutePath()
-    };
-    Main.main(argsGenerate);
-
-    assertThat(outputDir.listFiles().length).isGreaterThan(0);
-    assertThat(systemOutRule.getLog()).contains("Warning");
-
-    String[] argsUpdate = {"update", "-language", "java", "cobol", "-directory", outputDir.getAbsolutePath()
-    };
-    Main.main(argsUpdate);
-    // the "update" makes appear a second occurence of deprecated
-    assertThat(systemOutRule.getLog().indexOf("Warning"))
-      .isNotEqualTo(systemOutRule.getLog().lastIndexOf("Warning"));
-  }
-
-  @Test
   public void testInitGenerationAndUpdateOfDescriptionFile() throws Exception {
 
     String[] initArguments = {"init", "-language", "java", "-baseDir", testFolder.getRoot().getAbsolutePath()};

@@ -56,15 +56,9 @@ public class Main {
 
     long countValidOptions = options
       .stream()
-      .filter(option ->
-        !option.requiresCredentials || credentialsProvided(settings))
-      .filter(option ->
-          !option.requiresLanguage
-          ||
-          ( languageIsProvided(settings)
-            &&
-            ( ! option.requiresExactlyOneLanguage || settings.language.size() == 1)))
-        .count();
+      .filter(option -> !option.requiresCredentials || credentialsProvided(settings))
+      .filter(option -> option.languageRequirement.isCompliant(settings.language))
+      .count();
 
     if( countValidOptions != options.size() ) {
       printHelpMessage();
@@ -133,10 +127,8 @@ public class Main {
 
     if (settings.directory != null) {
       System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended instead");
-      if (settings.language == null) {
-        throw new RuleException("-language argument is required");
-      } else if (settings.language.size() > 1) {
-        System.out.println("Warning: this legacy mode supports only one language at a time, only " + settings.language.get(0) + " will be run");
+      if (settings.language == null || settings.language.isEmpty() || settings.language.size() > 1 ) {
+        throw new RuleException("-language required with exactly one language");
       }
       RuleFilesService.create(settings.directory, Language.fromString(settings.language.get(0)), settings.preserveFileNames, !settings.noLanguageInFilenames)
         .generateRuleFiles(settings.ruleKeys);
@@ -151,10 +143,8 @@ public class Main {
 
     if (settings.directory != null) {
       System.out.println("Legacy mode: -directory is a deprecated option. The use of a sonarpedia.json file is recommended  instead");
-      if (settings.language == null) {
-        throw new RuleException("-language argument is required");
-      } else if (settings.language.size() > 1) {
-        System.out.println("Warning: this legacy mode supports only one language at a time, only " + settings.language.get(0) + " will be run");
+      if (settings.language == null || settings.language.isEmpty() || settings.language.size() > 1 ) {
+        throw new RuleException("-language required with exactly one language");
       }
       RuleFilesService.create(settings.directory, Language.fromString(settings.language.get(0)), settings.preserveFileNames, !settings.noLanguageInFilenames)
         .updateDescriptions();
@@ -271,25 +261,24 @@ public class Main {
 
   }
 
+
   public enum Option {
-    REPORTS(false, false, false, "Generates all reports based on Next (default) or a particular -instance http:..."),
-    SINGLE_REPORT(false, true, true, "Generate a single -report against -instance (defaults to Next), -language, and -tool."),
-    OUTDATED(true, false, false, "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
-    INTEGRITY(true, false, false, "RSpec internal integrity check. Requires -login and -password parameters."),
-    INIT(false, true, false, "Create a sonarpedia.json file with its rules directory, the -language parameter specifies the languages, there can be more than one. "),
-    GENERATE(false, false, false, "Generates html description and json metadata files specified by -rule parameter"),
-    UPDATE(false, false, false, "Update html and json description files."),
-    DIFF(false, true, true, "Generates a diff report for the specified -language and -instance");
+    REPORTS(false, LanguageRequirement.noLanguage, "Generates all reports based on Next (default) or a particular -instance http:..."),
+    SINGLE_REPORT(false, LanguageRequirement.oneAndOnlyOneLanguage, "Generate a single -report against -instance (defaults to Next), -language, and -tool."),
+    OUTDATED(true, LanguageRequirement.noLanguage, "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
+    INTEGRITY(true, LanguageRequirement.noLanguage, "RSpec internal integrity check. Requires -login and -password parameters."),
+    INIT(false, LanguageRequirement.oneOrMoreLanguage, "Create a sonarpedia.json file with its rules directory, the -language parameter specifies the languages, there can be more than one. "),
+    GENERATE(false, LanguageRequirement.zeroOrOneLanguage, "Generates html description and json metadata files specified by -rule parameter"),
+    UPDATE(false, LanguageRequirement.zeroOrOneLanguage, "Update html and json description files."),
+    DIFF(false, LanguageRequirement.oneAndOnlyOneLanguage, "Generates a diff report for the specified -language and -instance");
 
     private String description;
     private boolean requiresCredentials;
-    private boolean requiresLanguage;
-    private boolean requiresExactlyOneLanguage;
+    private LanguageRequirement languageRequirement;
 
-    Option(boolean requiresCredentials, boolean requiresLanguage, boolean requiresExactlyOneLanguage, String description) {
+    Option(boolean requiresCredentials, LanguageRequirement languageRequirement, String description) {
       this.requiresCredentials = requiresCredentials;
-      this.requiresLanguage = requiresLanguage;
-      this.requiresExactlyOneLanguage = requiresExactlyOneLanguage;
+      this.languageRequirement = languageRequirement;
       this.description = description;
     }
 
@@ -304,6 +293,26 @@ public class Main {
       return null;
     }
 
-  }
+    public enum LanguageRequirement {
+      noLanguage,
+      zeroOrOneLanguage,
+      oneAndOnlyOneLanguage,
+      oneOrMoreLanguage;
 
+      public boolean isCompliant( List<String> languages ) {
+        switch( this ) {
+          case noLanguage:
+            return  languages == null || languages.isEmpty();
+          case oneAndOnlyOneLanguage:
+            return languages != null && languages.size() == 1;
+          case oneOrMoreLanguage:
+            return languages != null && languages.size() >= 1;
+          case zeroOrOneLanguage:
+            return languages == null || languages.isEmpty() || languages.size() == 1;
+          default:
+            throw new IllegalStateException();
+        }
+      }
+    }
+  }
 }

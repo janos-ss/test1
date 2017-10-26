@@ -18,7 +18,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class JsonUtil {
 
-  private JsonUtil() { /* keep this constructor secret */
+  private JsonUtil() {
+    /* keep this constructor secret */
   }
 
   public static String toJson(Object object) {
