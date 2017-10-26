@@ -263,14 +263,30 @@ public class Main {
 
 
   public enum Option {
-    REPORTS(false, LanguageRequirement.noLanguage, "Generates all reports based on Next (default) or a particular -instance http:..."),
-    SINGLE_REPORT(false, LanguageRequirement.oneAndOnlyOneLanguage, "Generate a single -report against -instance (defaults to Next), -language, and -tool."),
-    OUTDATED(true, LanguageRequirement.noLanguage, "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
-    INTEGRITY(true, LanguageRequirement.noLanguage, "RSpec internal integrity check. Requires -login and -password parameters."),
-    INIT(false, LanguageRequirement.oneOrMoreLanguage, "Create a sonarpedia.json file with its rules directory, the -language parameter specifies the languages, there can be more than one. "),
-    GENERATE(false, LanguageRequirement.zeroOrOneLanguage, "Generates html description and json metadata files specified by -rule parameter"),
-    UPDATE(false, LanguageRequirement.zeroOrOneLanguage, "Update html and json description files."),
-    DIFF(false, LanguageRequirement.oneAndOnlyOneLanguage, "Generates a diff report for the specified -language and -instance");
+    REPORTS(false
+        , LanguageRequirement.NO_LANGUAGE
+        , "Generates all reports based on Next (default) or a particular -instance http:..."),
+    SINGLE_REPORT(false
+        , LanguageRequirement.ONE_AND_ONLY_ONE_LANGUAGE
+        , "Generate a single -report against -instance (defaults to Next), -language, and -tool."),
+    OUTDATED(true
+        , LanguageRequirement.NO_LANGUAGE
+        , "Marks RSpec rules outdated based on Next or instance specified with -instance parameter. Requires -login and -password parameters."),
+    INTEGRITY(true
+        , LanguageRequirement.NO_LANGUAGE
+        , "RSpec internal integrity check. Requires -login and -password parameters."),
+    INIT(false
+        , LanguageRequirement.ONE_OR_MORE_LANGUAGE
+        , "Create a sonarpedia.json file with its rules directory, the -language parameter specifies the languages, there can be more than one. "),
+    GENERATE(false
+        , LanguageRequirement.ZERO_OR_ONE_LANGUAGE
+        , "Generates html description and json metadata files specified by -rule parameter"),
+    UPDATE(false
+        , LanguageRequirement.ZERO_OR_ONE_LANGUAGE
+        , "Update html and json description files."),
+    DIFF(false
+        , LanguageRequirement.ONE_AND_ONLY_ONE_LANGUAGE
+        , "Generates a diff report for the specified -language and -instance");
 
     private String description;
     private boolean requiresCredentials;
@@ -294,20 +310,20 @@ public class Main {
     }
 
     public enum LanguageRequirement {
-      noLanguage,
-      zeroOrOneLanguage,
-      oneAndOnlyOneLanguage,
-      oneOrMoreLanguage;
+      NO_LANGUAGE,
+      ZERO_OR_ONE_LANGUAGE,
+      ONE_AND_ONLY_ONE_LANGUAGE,
+      ONE_OR_MORE_LANGUAGE;
 
       public boolean isCompliant( List<String> languages ) {
         switch( this ) {
-          case noLanguage:
+          case NO_LANGUAGE:
             return  languages == null || languages.isEmpty();
-          case oneAndOnlyOneLanguage:
+          case ONE_AND_ONLY_ONE_LANGUAGE:
             return languages != null && languages.size() == 1;
-          case oneOrMoreLanguage:
+          case ONE_OR_MORE_LANGUAGE:
             return languages != null && languages.size() >= 1;
-          case zeroOrOneLanguage:
+          case ZERO_OR_ONE_LANGUAGE:
             return languages == null || languages.isEmpty() || languages.size() == 1;
           default:
             throw new IllegalStateException();
