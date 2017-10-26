@@ -9,6 +9,7 @@ import com.beust.jcommander.JCommander;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.domain.SonarPediaJsonFile;
 import java.io.File;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
@@ -250,9 +251,34 @@ public class MainTest {
     assertThat(Main.Option.fromString("single_report")).isEqualTo(Main.Option.SINGLE_REPORT);
   }
 
+
+  @Test
+  public void testOptionLanguageRequirement() {
+    assertThat(Main.Option.LanguageRequirement.NO_LANGUAGE.isCompliant(null)).isTrue();
+    assertThat(Main.Option.LanguageRequirement.NO_LANGUAGE.isCompliant(Arrays.asList())).isTrue();
+    assertThat(Main.Option.LanguageRequirement.NO_LANGUAGE.isCompliant(Arrays.asList("foo"))).isFalse();
+
+    assertThat(Main.Option.LanguageRequirement.ZERO_OR_ONE_LANGUAGE.isCompliant(null)).isTrue();
+    assertThat(Main.Option.LanguageRequirement.ZERO_OR_ONE_LANGUAGE.isCompliant(Arrays.asList())).isTrue();
+    assertThat(Main.Option.LanguageRequirement.ZERO_OR_ONE_LANGUAGE.isCompliant(Arrays.asList("foo"))).isTrue();
+    assertThat(Main.Option.LanguageRequirement.ZERO_OR_ONE_LANGUAGE.isCompliant(Arrays.asList("foo", "bar"))).isFalse();
+
+    assertThat(Main.Option.LanguageRequirement.ONE_AND_ONLY_ONE_LANGUAGE.isCompliant(null)).isFalse();
+    assertThat(Main.Option.LanguageRequirement.ONE_AND_ONLY_ONE_LANGUAGE.isCompliant(Arrays.asList())).isFalse();
+    assertThat(Main.Option.LanguageRequirement.ONE_AND_ONLY_ONE_LANGUAGE.isCompliant(Arrays.asList("foo"))).isTrue();
+    assertThat(Main.Option.LanguageRequirement.ONE_AND_ONLY_ONE_LANGUAGE.isCompliant(Arrays.asList("foo", "bar"))).isFalse();
+
+    assertThat(Main.Option.LanguageRequirement.ONE_OR_MORE_LANGUAGE.isCompliant(null)).isFalse();
+    assertThat(Main.Option.LanguageRequirement.ONE_OR_MORE_LANGUAGE.isCompliant(Arrays.asList())).isFalse();
+    assertThat(Main.Option.LanguageRequirement.ONE_OR_MORE_LANGUAGE.isCompliant(Arrays.asList("foo"))).isTrue();
+    assertThat(Main.Option.LanguageRequirement.ONE_OR_MORE_LANGUAGE.isCompliant(Arrays.asList("foo", "bar"))).isTrue();
+  }
+
+
   @Test
   public void testPrintHelpMessage() {
-    Main.printHelpMessage();
+    String[] args = {"--help"};
+    Main.main(args);
 
     assertThat(systemOutRule.getLog()).contains("USAGE");
   }
