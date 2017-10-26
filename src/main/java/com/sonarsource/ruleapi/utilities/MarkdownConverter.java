@@ -260,7 +260,7 @@ public class MarkdownConverter {
   }
 
   protected String handleUnescapeChar(String arg) {
-    return arg.replaceAll("\\\\([|_*?+{}^~\\-\\[\\]])","$1").replace("&#92;","\\");
+    return arg.replaceAll("\\\\([|_*!?+{}^~\\-\\[\\]])","$1").replace("&#92;","\\");
   }
 
   protected String handleDoubleCurly(String arg) {
