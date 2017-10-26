@@ -76,7 +76,7 @@ public class RuleFilesService {
   }
 
   public static RuleFilesService create(String baseDir, Language language, boolean preserveFileNames, boolean languageInFilenames) {
-    File baseDirFile = assertBaseDir(baseDir);
+    File baseDirFile = Utilities.assertBaseDir(baseDir);
     if(language == null) {
       throw new IllegalArgumentException("no language found");
     }
@@ -212,13 +212,13 @@ public class RuleFilesService {
   private Set<String> findRulesToUpdate() throws IOException {
     try(Stream<Path> pathStream = Files.list(baseDir.toPath())) {
       final Set<String> rulesToUpdateKeys = pathStream
-              .filter(Files::isRegularFile)
-              .map(path -> path.getFileName().toString())
-              .filter(RuleFilesService::matchRuleFileExtension)
-              .map(FilenameUtils::removeExtension)
-              .map(this::toRuleKey)
-              .filter(Objects::nonNull)
-              .collect(Collectors.toSet());
+          .filter(Files::isRegularFile)
+          .map(path -> path.getFileName().toString())
+          .filter(RuleFilesService::matchRuleFileExtension)
+          .map(FilenameUtils::removeExtension)
+          .map(this::toRuleKey)
+          .filter(Objects::nonNull)
+          .collect(Collectors.toSet());
       System.out.println(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
       return rulesToUpdateKeys;
     }
@@ -256,18 +256,6 @@ public class RuleFilesService {
       throw new RuleException(e);
     }
     countGeneratedFiles++;
-  }
-
-  private static File assertBaseDir(String baseDir) {
-    if (baseDir == null) {
-      throw new IllegalArgumentException("directory is required");
-    } else {
-      File baseDirFile = new File(baseDir);
-      if (!baseDirFile.isDirectory()) {
-        throw new IllegalArgumentException("directory does not exist");
-      }
-      return baseDirFile;
-    }
   }
 
   private static class RulesProfile {

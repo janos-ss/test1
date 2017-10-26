@@ -3,8 +3,8 @@
 Used to interact with the rule repository in an automated fashion as either an API or a CLI.
 
 As an API, it can be used to:
- 1. retrive rules from RSpec
- 1. retrive rules from a running SonarQube instance
+ 1. retrieve rules from RSpec
+ 1. retrieve rules from a running SonarQube instance
  1. compare two rules
  3. update RSpecs
  3. perform any of the functions available via the CLI
@@ -23,9 +23,20 @@ These options require -login and -password parameters.
   * `integrity`: RSpec internal integrity check. Requires -login and -password parameters.
 
 **Language plugin file generation**
-These options require `-language` and `-directory` parameters. Files will be named for the canonical keys of their rules; legacy keys are not supported.
-  * `generate`: Generates html description and json metadata files specified by `-rule` and `-language` parameters at directory specified by `-directory`
-  * `update`: Update html and json description files specified by `-language` found at directory specified by `-directory`
-Additional options:
+To create and maintain html and metadata rules files.
+It relies on the `sonarpedia.json` and a rules directory designated by the `sonarpedia.json` file. This `sonarpedia.json` is typically at the root directory of the language plugin and the following command are run from that directory.  
+  * `init`:  as `init -language foo -rulesDir (rules)`. In the current directory, generate a `sonarpedia.json` file pointing on a `rules` directory. This `rules` directory is to be populated with html description and json metadata files.
+  * `generate`: as  `generate -rule S1234 S3456`. Read the `sonarpedia.json` file in the current directory, generate html and json files for designated rules in the `rules` directory. 
+  * `update`: Read the `sonarpedia.json` file in the current directory, find the rules and update their html description. Update `sonarpedia.json` timestamps.
+    
+The format of `sonarpedia.json` is described in the [Sonarpedia-schema.json file](https://github.com/SonarSource/sonar-rule-api/blob/master/sonarpedia-schema.json).
+It permits to have more than one language.
+
+***Additional options:***
   * -preserve-filenames : Use the rule keys provided by "-rule" to construct the name of output files, this allow to use legacy keys.
-  * -no-language-in-filenames : Remove language from file name format (ex: "S123.json" instead of "S123_java.json")
+  * -no-language-in-filenames : Remove language from file name format (ex: "S123.json" instead of "S123_java.json").
+
+***Deprecated features***
+The use of the `-directory` option is deprecated and replaced by the use of `sonarpedia.json` file.
+    * `generate`:  Generates html description and json metadata files specified by `-rule` and `-language` parameters at directory specified by `-directory`
+    * `update`: Update html and json description files specified by `-language` found at directory specified by `-directory`
