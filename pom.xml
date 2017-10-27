@@ -38,7 +38,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <gitRepositoryName>sonar-rule-api</gitRepositoryName>
-    <artifactsToDownload>${project.groupId}:jar</artifactsToDownload>
+    <artifactsToDownload>${project.groupId}:rule-api:jar</artifactsToDownload>
   </properties>
 
   <dependencies>
