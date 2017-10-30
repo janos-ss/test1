@@ -8,7 +8,7 @@
   "properties": {
     "rules-metadata-path": {
       "type": "string",
-      "description": "Timestamp of rules data update"
+      "description": "Path to the directorty holding the rules metadata (.html and .json). This path is relative to the sonarpedia file"
     },
     "languages" : {
       "type": "array",
