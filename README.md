@@ -49,8 +49,8 @@ It relies on the `sonarpedia.json` file and a rules directory designated by the 
   └── sonarpedia.json
 ```
 This `sonarpedia.json` must be at the root of the repository of the language plugin and the following command are run from that directory.  
-  * `init`:  as `init -language foo`. It generates a `sonarpedia.json` file pointing on a `rules` directory. This `rules` directory will to be populated with html description and json metadata files.
-  * `generate`: as  `generate -rule S1234 S3456`. Read the `sonarpedia.json` file in the current directory, generate html and json files for designated rules in the `rules` directory. 
+  * `init`:  as `init -language foo`. It generates a `sonarpedia.json` file pointing on a `rules` directory. This `rules` directory will have to be populated with html description and json metadata files with the next option.
+  * `generate`: as  `generate -rule S1234 S3456`. Read the `sonarpedia.json` file in the current directory, generates html and json files for designated rules in the `rules` directory. 
   * `update`: Read the `sonarpedia.json` file in the current directory, find the rules and update their html descriptions. It updates `sonarpedia.json` timestamps.
 
 The format of `sonarpedia.json` is described in the [Sonarpedia-schema.json file](https://github.com/SonarSource/sonar-rule-api/blob/master/sonarpedia-schema.json).
@@ -58,7 +58,7 @@ It permits to have more than one language.
 
 By default this rules directory is near the `sonarpedia.json` file, this be set up in any place deeper in the hierarchy.
 
-As soon as a `sonarpedia.json` file is present, **Releasability** will test whether any `update` has been run since last release.
+As soon as a `sonarpedia.json` file is present, when running any **One-Click release**,  **Releasability** will check whether any `update` has been run since last release.
 
 #### Additional options:
 
