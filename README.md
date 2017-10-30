@@ -9,7 +9,7 @@ As an API, it can be used to:
  3. update RSpecs
  3. perform any of the functions available via the CLI
 
-*Usage*
+## Usage
 
 Download the latest version:
 
@@ -20,21 +20,21 @@ Use:
 `java -jar rula-api-`(version number)`.jar` (options)
 
 
-*Options*
+## Options
 
-**Reporting**
+### Reporting
 
 These options can take a `-instance` parameter, but default to SonarQube.com
   * `reports`: Generates all reports based on SonarQube.com (default) or a particular `-instance http:...`
   * `single_report`: Generate a single `-report` against `-instance` (defaults to SonarQube.com), `-language`, and `-tool`. Run with missing parameters for more detailed help
   * `diff`: Generates a diff report for the specified '-language' and '-instance'
 
-**RSpec corrections**
+### RSpec corrections
 These options require -login and -password parameters.
   * `outdated`: Marks RSpec rules outdated based on SonarQube.com or instance specified with `-instance` parameter. Requires -login and -password parameters.
   * `integrity`: RSpec internal integrity check. Requires -login and -password parameters.
 
-**Language plugin file generation**
+### Language plugin file generation
 
 To create and maintain html and metadata rules files.
 It relies on the `sonarpedia.json` file and a rules directory designated by the `sonarpedia.json` file.
@@ -60,12 +60,12 @@ By default this rules directory is near the `sonarpedia.json` file, this be set 
 
 As soon as a `sonarpedia.json` file is present, **Releasability** will test whether any `update` has been run since last release.
 
-***Additional options:***
+#### Additional options:
 
   * -preserve-filenames : Use the rule keys provided by "-rule" to construct the name of output files, this allow to use legacy keys.
   * -no-language-in-filenames : Remove language from file name format (ex: "S123.json" instead of "S123_java.json").
 
-***Deprecated features***
+#### Deprecated features:
 
 The use of the `-directory` option is deprecated and replaced by the use of `sonarpedia.json` file.
     * `generate`:  Generates html description and json metadata files specified by `-rule` and `-language` parameters at directory specified by `-directory`
