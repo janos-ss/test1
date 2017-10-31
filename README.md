@@ -13,7 +13,7 @@ As an API, it can be used to:
 
 Download the latest version:
 
-`curl -SLJO https://repox.sonarsource.com/sonarsource-private-releases/com/sonarsource/rule-api/rule-api/[RELEASE]/rule-api-[RELEASE].jar -u `(your LDAP login)
+`curl -SLJO "https://repox.sonarsource.com/sonarsource-private-releases/com/sonarsource/rule-api/rule-api/\[RELEASE\]/rule-api-\[RELEASE\].jar" -u `(your LDAP login)
 
 Use:
 
