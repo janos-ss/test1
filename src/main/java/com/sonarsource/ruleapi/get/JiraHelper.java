@@ -174,7 +174,7 @@ public class JiraHelper {
 
       } else {
         if (LOGGER.isLoggable(Level.WARNING)) {
-          LOGGER.warning(String.format("Unknown section %s in rule %s", pieceContent, rule.getKey()));
+          LOGGER.warning(String.format("Unknown section in rule %s: %s ", rule.getKey(), pieceContent));
         }
       }
     }
