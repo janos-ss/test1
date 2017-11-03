@@ -62,8 +62,8 @@ As soon as a `sonarpedia.json` file is present, when running any **One-Click rel
 
 #### Additional options:
 
-  * -preserve-filenames : Use the rule keys provided by "-rule" to construct the name of output files, this allow to use legacy keys.
-  * -no-language-in-filenames : Remove language from file name format (ex: "S123.json" instead of "S123_java.json").
+  * `-preserve-filenames` : Use the rule keys provided by "-rule" to construct the name of output files, this allow to use legacy keys.
+  * `-no-language-in-filenames` : Remove language from file name format (ex: "S123.json" instead of "S123_java.json").
 
 #### Deprecated features:
 
