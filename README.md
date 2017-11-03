@@ -11,7 +11,7 @@ As an API, it can be used to:
 
 ## Usage
 
-Download the latest version:
+The rule-api release is [available on repox](https://repox.sonarsource.com/sonarsource-private-releases/com/sonarsource/rule-api/rule-api/), this command will automatically download the latest:
 
 `curl -SLJO "https://repox.sonarsource.com/sonarsource-private-releases/com/sonarsource/rule-api/rule-api/\[RELEASE\]/rule-api-\[RELEASE\].jar" -u `(your LDAP login)
 
