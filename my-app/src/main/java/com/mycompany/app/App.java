@@ -19,6 +19,7 @@ public class App {
    *
    * @return name
    */
+  @Deprecated
   public String getName() {
     return "hello";
   }
