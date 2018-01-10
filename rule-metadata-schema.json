@@ -2,7 +2,7 @@
   "id": "http://www.sonarsource.org/rule-schema-v1.1",
   "title": "Rule Implementation",
   "type": "Object",
-  "required": ["title","type","status","tags","standards","defaultSeverity","ruleSpecification","repository","sqKey","compatibleLanguages"],
+  "required": ["title","type","status","tags","standards","defaultSeverity","ruleSpecification","repository","sqKey","compatibleLanguages","scope"],
   "description": "we must have one of these files for each implemented rule",
   "properties": {
     "title": {
@@ -49,6 +49,11 @@
       "minItems": 1,
       "items": { "type": "string" },
       "uniqueItems": true
+    },
+    "scope": {
+      "type": "string",
+      "enum": ["Main","Tests","All"],
+      "description": "scope the rule applies to"
     },
     "template": {
       "type": "boolean"

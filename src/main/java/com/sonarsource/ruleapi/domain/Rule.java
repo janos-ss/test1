@@ -97,7 +97,6 @@ public class Rule {
     }
   }
 
-
   private final String language;
   private String key = null;
   private String lookupKey = null;
@@ -137,6 +136,7 @@ public class Rule {
   private Set<String> targetedLanguages = new HashSet<>();
   private Set<String> coveredLanguages = new HashSet<>();
   private Set<String> irrelevantLanguages = new HashSet<>();
+  private String scope = "Main";
 
   private List<String> cwe = new ArrayList<>();
   private List<String> cert = new ArrayList<>();
@@ -619,6 +619,21 @@ public class Rule {
   public void setIrrelevantLanguages(Set<String> irrelevantLanguages) {
 
     this.irrelevantLanguages = irrelevantLanguages;
+  }
+
+  public String getScope() {
+    return scope;
+  }
+
+  public void setScope(Set<String> scope) {
+    this.scope = "Main";
+    if (scope.contains("Test Sources")) {
+      if (scope.contains("Main Sources")) {
+        this.scope = "All";
+      } else {
+        this.scope = "Tests";
+      }
+    }
   }
 
   public List<String> getReplacementLinks() {

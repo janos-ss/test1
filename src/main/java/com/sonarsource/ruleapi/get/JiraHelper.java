@@ -57,6 +57,7 @@ public class JiraHelper {
     rule.setTargetedLanguages(new HashSet<>(getCustomFieldStoredAsList(issue, "Targeted languages")));
     rule.setCoveredLanguages(new HashSet<>(getCustomFieldStoredAsList(issue, "Covered Languages")));
     rule.setIrrelevantLanguages(new HashSet<>(getCustomFieldStoredAsList(issue, "Irrelevant for Languages")));
+    rule.setScope(new HashSet<>(getCustomFieldStoredAsList(issue, "Analysis Scope")));
 
     rule.setTitle(getJsonFieldValue(issue, "summary"));
     rule.setMessage(getCustomFieldValue(issue, "Message"));
