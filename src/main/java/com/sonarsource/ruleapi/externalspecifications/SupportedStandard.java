@@ -14,20 +14,7 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.OwaspTopTen
 import com.sonarsource.ruleapi.externalspecifications.specifications.RuleSpec;
 import com.sonarsource.ruleapi.externalspecifications.specifications.RulesInLanguage;
 import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
-import com.sonarsource.ruleapi.externalspecifications.tools.Checkstyle;
-import com.sonarsource.ruleapi.externalspecifications.tools.Cppcheck;
-import com.sonarsource.ruleapi.externalspecifications.tools.EsLint;
-import com.sonarsource.ruleapi.externalspecifications.tools.FindBugs;
-import com.sonarsource.ruleapi.externalspecifications.tools.FxCop;
-import com.sonarsource.ruleapi.externalspecifications.tools.PcLintC;
-import com.sonarsource.ruleapi.externalspecifications.tools.PcLintCpp;
-import com.sonarsource.ruleapi.externalspecifications.tools.Pmd;
-import com.sonarsource.ruleapi.externalspecifications.tools.Pylint;
-import com.sonarsource.ruleapi.externalspecifications.tools.ReSharper;
-import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperJavaScript;
-import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperVbNet;
-import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperWarnings;
-import com.sonarsource.ruleapi.externalspecifications.tools.SwiftLint;
+import com.sonarsource.ruleapi.externalspecifications.tools.*;
 
 
 public enum SupportedStandard {
@@ -42,6 +29,7 @@ public enum SupportedStandard {
 
   // Tools
   FINDBUGS(new FindBugs()),
+  FINDSECBUGS(new FindSecBugs()),
   PMD(new Pmd()),
   CHECKSTYLE(new Checkstyle()),
   PYLINT(new Pylint()),
