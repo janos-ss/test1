@@ -34,9 +34,9 @@ public class SQFetcherImpl implements SQFetcher {
 
   @Override
   public List<JSONObject> fetchProfilesFromSonarQube(String instance) {
-    String url = instance + "/api/rules/app";
+    String url = instance + "/api/qualityprofiles/search";
 
     JSONObject rawResult = Fetcher.getJsonFromUrl(url);
-    return (JSONArray) rawResult.get("qualityprofiles");
+    return (JSONArray) rawResult.get("profiles");
   }
 }

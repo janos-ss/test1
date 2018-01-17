@@ -116,7 +116,7 @@ public class RuleMaker {
 
     for (JSONObject jobj : jsonProfiles) {
 
-      Language lang = Language.fromString((String) jobj.get("lang"));
+      Language lang = Language.fromString((String) jobj.get("language"));
       if (language != null && language.equals(lang)) {
         profiles.add(new Profile((String) jobj.get("name"), (String) jobj.get("key")));
       }
