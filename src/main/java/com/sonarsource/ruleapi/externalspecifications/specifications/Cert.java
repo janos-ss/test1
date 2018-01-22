@@ -47,7 +47,6 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
    * These are the IDs for the CERT confluence pages listing rules & recommendations for C++, C & Java.
    * C++:
    *   https://wiki.sei.cmu.edu/confluence/display/cplusplus/2+Rules
-   *   https://wiki.sei.cmu.edu/confluence/display/cplusplus/3+Recommendations
    * C:
    *   https://wiki.sei.cmu.edu/confluence/display/c/2+Rules
    *   https://wiki.sei.cmu.edu/confluence/display/c/3+Recommendations
@@ -57,7 +56,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
    *
    * They will be accessed via Confluence REST API to extract the rules.
    */
-  private static final CertType CPP = new CertType(Language.CPP, new String [] {"88046324", "88046323"});
+  private static final CertType CPP = new CertType(Language.CPP, new String [] {"88046324"});
   private static final CertType C = new CertType(Language.C, new String [] {"87151983", "87151929"});
   private static final CertType JAVA = new CertType(Language.JAVA, new String [] {"88487354", "88487355"});
 
