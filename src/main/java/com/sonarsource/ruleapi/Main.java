@@ -92,7 +92,7 @@ public class Main {
 
     switch (option) {
       case INTEGRITY:
-        new IntegrityEnforcementService(settings.login, settings.password, settings.instance).enforceIntegrity();
+        new IntegrityEnforcementService(settings.login, settings.password ).enforceIntegrity();
         break;
       case REPORTS:
         generateReports(settings, rs);

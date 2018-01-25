@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntegrityEnforcementServiceTest {
 
-  private IntegrityEnforcementService enforcer = new IntegrityEnforcementService("login", "password", "https://some.sq.instance");
+  private IntegrityEnforcementService enforcer = new IntegrityEnforcementService("login", "password");
 
 
   @Test

@@ -17,8 +17,6 @@ import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
-import com.sonarsource.ruleapi.utilities.Language;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -40,12 +38,10 @@ public class IntegrityEnforcementService extends RuleManager {
   private static final String LABELS = "Labels";
   public static final String DEFAULT_QUALITY_PROFILES = "Default Quality Profiles";
   private final RuleUpdater ruleUpdater;
-  private final String instance;
 
-  public IntegrityEnforcementService(String login, String password, String instance) {
+  public IntegrityEnforcementService(String login, String password) {
     super();
     ruleUpdater = new RuleUpdater(login, password);
-    this.instance = instance;
   }
 
 
