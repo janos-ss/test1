@@ -31,7 +31,6 @@ These options can take a `-instance` parameter, but default to SonarQube.com
 
 ### RSpec corrections
 These options require -login and -password parameters.
-  * `outdated`: Marks RSpec rules outdated based on SonarQube.com or instance specified with `-instance` parameter. Requires -login and -password parameters.
   * `integrity`: RSpec internal integrity check. Requires -login and -password parameters.
 
 ### Language plugin file generation
