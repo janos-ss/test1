@@ -91,9 +91,6 @@ public class Main {
     ReportService rs = new ReportService();
 
     switch (option) {
-      case OUTDATED:
-        new IntegrityEnforcementService(settings.login, settings.password, settings.instance).setCoveredLanguages();
-        break;
       case INTEGRITY:
         new IntegrityEnforcementService(settings.login, settings.password, settings.instance).enforceIntegrity();
         break;
@@ -265,9 +262,6 @@ public class Main {
     SINGLE_REPORT(false
         , LanguageRequirement.ONE_AND_ONLY_ONE_LANGUAGE
         , "Generate a single -report against -instance (defaults to Next), -language, and -tool."),
-    OUTDATED(true
-        , LanguageRequirement.NO_LANGUAGE
-        , "Marks RSpec rules outdated based on Next or instance specified with -instance parameter. Requires -login and -password parameters."),
     INTEGRITY(true
         , LanguageRequirement.NO_LANGUAGE
         , "RSpec internal integrity check. Requires -login and -password parameters."),
