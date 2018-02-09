@@ -1,4 +1,5 @@
 package com.mycompany.app;
+// TODO
 
 /**
  * Hello world!
@@ -12,6 +13,7 @@ public class App {
    */
   public App(String name) {
     // TODO do something useful
+    System.out.println("hello");
   }
 
   /**
