@@ -5,6 +5,7 @@ package com.mycompany.app;
  *
  */
 public class App {
+    // TODO
   /**
    * Constructor
    *
@@ -20,6 +21,7 @@ public class App {
    * @return name
    */
   public String getName() {
+      System.out.println("hello");
     return "hello";
   }
 
