@@ -111,9 +111,26 @@ public class JiraFetcherImpl implements JiraFetcher {
       String searchStr = BASE_QUERY + "(" + search + ")";
       searchStr = URLEncoder.encode(searchStr, ENCODING).replaceAll("\\+", "%20");
 
-      JSONObject sr = Fetcher.getJsonFromUrl(BASE_URL + SEARCH + searchStr);
-      propagateNames(sr);
-      return (List<JSONObject>) sr.get(ISSUES);
+      List<JSONObject> results = null;
+      long retrieved = 0;
+      long expected = 1;
+
+      while (retrieved < expected) {
+
+        JSONObject sr = Fetcher.getJsonFromUrl(BASE_URL + SEARCH + searchStr + "&startAt=" + retrieved+1);
+        propagateNames(sr);
+        expected = (long) sr.get("total");
+
+        JSONArray issues = (JSONArray) sr.get(ISSUES);
+
+        if (results == null) {
+          results = issues;
+        } else {
+          results.addAll(issues);
+        }
+        retrieved = results.size();
+      }
+      return results;
 
     } catch (UnsupportedEncodingException e) {
       throw new RuleException(e);
