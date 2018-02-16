@@ -117,7 +117,7 @@ public class JiraFetcherImpl implements JiraFetcher {
 
       while (retrieved < expected) {
 
-        JSONObject sr = Fetcher.getJsonFromUrl(BASE_URL + SEARCH + searchStr + "&startAt=" + retrieved+1);
+        JSONObject sr = Fetcher.getJsonFromUrl(BASE_URL + SEARCH + searchStr + "&startAt=" + retrieved);
         propagateNames(sr);
         expected = (long) sr.get("total");
 
