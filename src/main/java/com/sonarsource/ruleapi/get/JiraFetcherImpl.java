@@ -106,35 +106,7 @@ public class JiraFetcherImpl implements JiraFetcher {
   public List<JSONObject> fetchIssuesBySearch(String search) {
     ensureRspecsByKeyCachePopulated();
 
-    try {
-
-      String searchStr = BASE_QUERY + "(" + search + ")";
-      searchStr = URLEncoder.encode(searchStr, ENCODING).replaceAll("\\+", "%20");
-
-      List<JSONObject> results = null;
-      long retrieved = 0;
-      long expected = 1;
-
-      while (retrieved < expected) {
-
-        JSONObject sr = Fetcher.getJsonFromUrl(BASE_URL + SEARCH + searchStr + "&startAt=" + retrieved);
-        propagateNames(sr);
-        expected = (long) sr.get("total");
-
-        JSONArray issues = (JSONArray) sr.get(ISSUES);
-
-        if (results == null) {
-          results = issues;
-        } else {
-          results.addAll(issues);
-        }
-        retrieved = results.size();
-      }
-      return results;
-
-    } catch (UnsupportedEncodingException e) {
-      throw new RuleException(e);
-    }
+    return fetchPaginatedRspecs(BASE_QUERY + "(" + search + ")");
   }
 
 
@@ -149,18 +121,10 @@ public class JiraFetcherImpl implements JiraFetcher {
 
     ImmutableMap.Builder<String, JSONObject> builder = ImmutableMap.builder();
 
-    int startAt = 0;
-    JSONObject page;
-    while ((page = fetchRspecPage(startAt)) != null) {
-      propagateNames(page);
-
-      JSONArray issues = (JSONArray) page.get(ISSUES);
-      for (Object issueObject : issues) {
-        JSONObject issue = (JSONObject) issueObject;
-        builder.put((String) issue.get("key"), issue);
-      }
-
-      startAt += issues.size();
+    JSONArray issues = fetchPaginatedRspecs("project=RSPEC");
+    for (Object issueObject : issues) {
+      JSONObject issue = (JSONObject) issueObject;
+      builder.put((String) issue.get("key"), issue);
     }
 
     rspecJsonCacheByKey = builder.build();
@@ -182,14 +146,44 @@ public class JiraFetcherImpl implements JiraFetcher {
 
   }
 
+
+  private static JSONArray fetchPaginatedRspecs(String search) {
+
+    try {
+      String searchStr = URLEncoder.encode(search, ENCODING).replaceAll("\\+", "%20");
+
+      JSONArray results = new JSONArray();
+      long retrieved = 0;
+      long expected = 1;
+      JSONObject sr;
+
+      while (retrieved < expected && (sr = fetchRspecPage((int)retrieved, searchStr)) != null) {
+        propagateNames(sr);
+
+        results.addAll((JSONArray) sr.get(ISSUES));
+
+        expected = (long) sr.get("total");
+        retrieved = results.size();
+      }
+      return results;
+
+    } catch (UnsupportedEncodingException e) {
+      throw new RuleException(e);
+    }
+  }
+
   /**
    * Fetches a RSPEC issues page. Returns <code>null</code> if no issue is found.
+   *
+   * @param startAt the issue number in the result set at which to restart retrieval
+   * @param urlEncodedSearch the url-encoded search string to use
    */
   @CheckForNull
-  private static JSONObject fetchRspecPage(int startAt) {
+  private static JSONObject fetchRspecPage(int startAt, String urlEncodedSearch) {
+    
     JSONObject page = Fetcher.getJsonFromUrl(BASE_URL
       + SEARCH
-      + "project%3DRSPEC"
+      + urlEncodedSearch
       + FIELDS
       + "&startAt="
       + startAt);
