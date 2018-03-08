@@ -89,31 +89,31 @@ public class OwaspTest {
             "A1 - Injection" + linebreak +
             "\tSpecifying:   " + linebreak +
             linebreak +
-            "A2 - Broken Authentication and Session Management" + linebreak +
+            "A2 - Broken Authentication" + linebreak +
             "\tSpecifying:   " + linebreak +
             linebreak +
-            "A3 - Cross-Site Scripting (XSS)" + linebreak +
+            "A3 - Sensitive Data Exposure" + linebreak +
             "\tSpecifying:   " + linebreak +
             linebreak +
-            "A4 - Insecure Direct Object References" + linebreak +
+            "A4 - XML External Entities (XXE)" + linebreak +
             "\tSpecifying:   " + linebreak +
             linebreak +
-            "A5 - Security Misconfiguration" + linebreak +
+            "A5 - Broken Access Control" + linebreak +
             "\tSpecifying:   " + linebreak +
             linebreak +
-            "A6 - Sensitive Data Exposure" + linebreak +
+            "A6 - Security Misconfiguration" + linebreak +
             "\tSpecifying:   " + linebreak +
             linebreak +
-            "A7 - Missing Function Level Access Control" + linebreak +
+            "A7 - Cross-Site Scripting (XSS)" + linebreak +
             "\tSpecifying:   " + linebreak +
             linebreak +
-            "A8 - Cross-Site Request Forgery (CSRF)" + linebreak +
+            "A8 - Insecure Deserialization" + linebreak +
             "\tSpecifying:   " + linebreak +
             linebreak +
             "A9 - Using Components with Known Vulnerabilities" + linebreak +
             "\tSpecifying:   " + linebreak +
             linebreak +
-            "A10 - Unvalidated Redirects and Forwards" + linebreak +
+            "A10 - Insufficient Logging & Monitoring" + linebreak +
             "\tSpecifying:   " + linebreak +
             linebreak;
 
@@ -193,7 +193,7 @@ public class OwaspTest {
     String report = owasp.generateReport(instance);
 
     assertThat(report).isNotNull();
-    assertThat(report).contains("https://www.owasp.org/index.php/Top_10_2013-A1-Injection");
+    assertThat(report).contains("https://www.owasp.org/index.php/Top_10-2017-A1-Injection");
     assertThat(report).contains(Utilities.getFormattedDateString());
 
   }
