@@ -248,6 +248,9 @@ public class RuleFilesServiceTest {
     rule.setSeverity(com.sonarsource.ruleapi.domain.Rule.Severity.MINOR);
     rule.setKey("RSPEC-1234");
     rule.setSqKey("S1234");
+    HashSet<String> scope = new HashSet<>(0);
+    scope.add("Main Sources");
+    rule.setScope(scope);
 
     // well formatted nice looking JSON with ordered fields
     final String expected1 = "{\n" +
@@ -263,7 +266,8 @@ public class RuleFilesServiceTest {
             "  ],\n" +
             "  \"defaultSeverity\": \"Minor\",\n" +
             "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
-            "  \"sqKey\": \"S1234\"\n" +
+            "  \"sqKey\": \"S1234\",\n" +
+            "  \"scope\": \"Main\"\n" +
             "}";
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected1);
@@ -273,6 +277,10 @@ public class RuleFilesServiceTest {
     rule.setLinearArgDesc("dolor sit amet");
     rule.setLinearFactor("666");
     rule.setSeverity(com.sonarsource.ruleapi.domain.Rule.Severity.BLOCKER);
+    scope.clear();
+    scope.add("Main Sources");
+    scope.add("Test Sources");
+    rule.setScope(scope);
     final String expected2 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
             "  \"type\": \"CODE_SMELL\",\n" +
@@ -287,7 +295,8 @@ public class RuleFilesServiceTest {
             "  ],\n" +
             "  \"defaultSeverity\": \"Blocker\",\n" +
             "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
-            "  \"sqKey\": \"S1234\"\n" +
+            "  \"sqKey\": \"S1234\",\n" +
+            "  \"scope\": \"All\"\n" +
             "}";
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected2);
@@ -297,6 +306,9 @@ public class RuleFilesServiceTest {
     // without the optional fields
     rule.setSeverity(null);
     rule.setRemediationFunction(null);
+    scope.clear();
+    scope.add("Test Sources");
+    rule.setScope(scope);
     final String expected3 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
             "  \"type\": \"CODE_SMELL\",\n" +
@@ -305,7 +317,8 @@ public class RuleFilesServiceTest {
             "    \"qux\"\n" +
             "  ],\n" +
             "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
-            "  \"sqKey\": \"S1234\"\n" +
+            "  \"sqKey\": \"S1234\",\n" +
+            "  \"scope\": \"Tests\"\n" +
             "}";
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected3);
@@ -314,6 +327,9 @@ public class RuleFilesServiceTest {
     rule.setLinearArgDesc("dolor sit amet");
     rule.setLinearOffset("42");
     rule.setLinearFactor("666");
+    scope.clear();
+    scope.add("Test Sources");
+    rule.setScope(scope);
     final String expected4 = "{\n" +
       "  \"title\": \"Lorem Ipsum\",\n" +
       "  \"type\": \"CODE_SMELL\",\n" +
@@ -328,7 +344,8 @@ public class RuleFilesServiceTest {
       "    \"qux\"\n" +
       "  ],\n" +
       "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
-      "  \"sqKey\": \"S1234\"\n" +
+      "  \"sqKey\": \"S1234\",\n" +
+      "  \"scope\": \"Tests\"\n" +
       "}";
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected4);
