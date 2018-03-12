@@ -187,16 +187,15 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
 
   public enum StandardRule implements CodingStandardRule, DerivativeTaggableStandard {
     A1 ("Injection", IMPLEMENTABLE),
-    A2 ("Broken Authentication and Session Management", IMPLEMENTABLE),
-    A3 ("Cross-Site Scripting (XSS)", IMPLEMENTABLE),
-    A4 ("Insecure Direct Object References", IMPLEMENTABLE),
-    A5 ("Security Misconfiguration", IMPLEMENTABLE),
-    A6 ("Sensitive Data Exposure", IMPLEMENTABLE),
-    A7 ("Missing Function Level Access Control", IMPLEMENTABLE),
-    A8 ("Cross-Site Request Forgery (CSRF)", IMPLEMENTABLE),
+    A2 ("Broken Authentication", IMPLEMENTABLE),
+    A3 ("Sensitive Data Exposure", IMPLEMENTABLE),
+    A4 ("XML External Entities (XXE)", IMPLEMENTABLE),
+    A5 ("Broken Access Control", IMPLEMENTABLE),
+    A6 ("Security Misconfiguration", IMPLEMENTABLE),
+    A7 ("Cross-Site Scripting (XSS)", IMPLEMENTABLE),
+    A8 ("Insecure Deserialization", IMPLEMENTABLE),
     A9 ("Using Components with Known Vulnerabilities", IMPLEMENTABLE),
-    A10 ("Unvalidated Redirects and Forwards", IMPLEMENTABLE);
-
+    A10 ("Insufficient Logging & Monitoring", IMPLEMENTABLE);
 
     private static final String REFERENCE_PATTERN = "A\\d+";
 
@@ -215,7 +214,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
 
     public String getUrl() {
 
-      return "https://www.owasp.org/index.php/Top_10_2013-" + name() + "-" + title.replaceAll(" ", "_");
+      return "https://www.owasp.org/index.php/Top_10-2017-" + name() + "-" + title.replaceAll(" ", "_");
     }
 
     @Override
