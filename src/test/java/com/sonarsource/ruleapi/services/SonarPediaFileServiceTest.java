@@ -7,7 +7,6 @@ package com.sonarsource.ruleapi.services;
 
 import java.io.File;
 import java.util.List;
-import java.util.stream.Stream;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import java.util.Arrays;
 import org.junit.Rule;
@@ -31,7 +30,7 @@ public class SonarPediaFileServiceTest {
 
     SonarPediaJsonFile sonarPediaJsonFile = SonarPediaFileService.init(
       testFolder.getRoot(),
-      Arrays.asList(Language.COBOL, Language.JS));
+      Arrays.asList(Language.COBOL, Language.JS), false, true);
     assertThat(sonarPediaJsonFile.getRulesMetadataFilesDir()).exists();
     assertThat(sonarPediaJsonFile.getRulesMetadataFilesDir().list().length).isEqualTo(0);
     assertThat(sonarPediaJsonFile.getFile()).exists();
@@ -44,7 +43,7 @@ public class SonarPediaFileServiceTest {
     // create again a sonarpedia file, must reuse the existing directory
     systemOutRule.clearLog();
     SonarPediaFileService.init(
-      testFolder.getRoot(), Arrays.asList(Language.COBOL, Language.JS));
+      testFolder.getRoot(), Arrays.asList(Language.COBOL, Language.JS), false, true);
     assertThat(sonarPediaJsonFile.getRulesMetadataFilesDir()).exists();
     assertThat(sonarPediaJsonFile.getRulesMetadataFilesDir().list().length).isEqualTo(0);
     assertThat(sonarPediaJsonFile.getFile()).exists();
@@ -53,30 +52,30 @@ public class SonarPediaFileServiceTest {
     assertThat(systemOutRule.getLog()).contains("SonarPedia file created at ");
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void shoulNotAllowMultipleLanguageWoLanguageIntoFileName() throws Exception {
-    SonarPediaFileService.init(testFolder.getRoot(), Arrays.asList(Language.CSH, Language.FLEX));
-    SonarPediaFileService.create(testFolder.getRoot(), false, false);
+    SonarPediaFileService.init(testFolder.getRoot(), Arrays.asList(Language.CSH, Language.FLEX), false, false);
+    SonarPediaFileService.create(testFolder.getRoot());
   }
 
   @Test(expected = IllegalStateException.class)
   public void shouldGoBadIfNoSonarPedia() throws Exception {
     // no sonarpedia file
-    SonarPediaFileService.create(testFolder.getRoot(), false, false);
+    SonarPediaFileService.create(testFolder.getRoot());
   }
 
   @Test
   public void shouldRunTheFullCycle() throws Exception {
 
     SonarPediaJsonFile newFile = SonarPediaFileService.init(testFolder.getRoot(),
-      Arrays.asList(Language.PHP, Language.PY));
+      Arrays.asList(Language.PHP, Language.PY), false, true);
     final File rulesDir = newFile.getRulesMetadataFilesDir();
     List<String> rulesSet = Arrays.asList("RSPEC-2076", "RSPEC-1763", "RSPEC-4142");
 
-    SonarPediaFileService spfs = SonarPediaFileService.create(testFolder.getRoot(), false, true);
+    SonarPediaFileService spfs = SonarPediaFileService.create(testFolder.getRoot());
     assertThat(rulesDir.list().length).isEqualTo(0);
     spfs.generateRuleFiles(rulesSet);
-    assertThat(rulesDir.list().length).isEqualTo(rulesSet.size() * 2 * 2 + 1);
+    assertThat(rulesDir.list().length).isEqualTo(rulesSet.size() * 2 + 1);
     final long sonarpediaDateBeforeUpdate = newFile.getFile().lastModified();
     spfs.updateDescriptions();
     assertThat(systemOutRule.getLog()).contains(String.format("Found %d rule(s) to update", rulesSet.size()));

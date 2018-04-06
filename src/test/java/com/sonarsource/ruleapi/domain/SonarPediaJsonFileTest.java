@@ -31,13 +31,15 @@ public class SonarPediaJsonFileTest {
     // create a file
     SonarPediaJsonFile.create(
       testFolder.getRoot(),
-        rulesDir, Arrays.asList(Language.C, Language.JAVA));
+        rulesDir, Arrays.asList(Language.C, Language.JAVA), false, true);
 
     // find the file
     SonarPediaJsonFile underTest = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot());
     assertThat(underTest.getRulesMetadataFilesDir()).isEqualTo(rulesDirPath.toFile());
     assertThat(underTest.getUpdateTimeStamp()).isNull();
     assertThat(underTest.getLanguages()).containsExactlyInAnyOrder(Language.C, Language.JAVA);
+    assertThat(underTest.noLanguageInFileName()).isTrue();
+    assertThat(underTest.preserveFilenames()).isFalse();
 
     // update the data
     Instant now = Instant.now();
@@ -54,6 +56,28 @@ public class SonarPediaJsonFileTest {
     SonarPediaJsonFile afterSecondWrite = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot());
     assertThat(afterSecondWrite.getUpdateTimeStamp().toEpochMilli())
       .isGreaterThan(afterFirstWrite.getUpdateTimeStamp().toEpochMilli());
+    assertThat(afterSecondWrite.noLanguageInFileName()).isTrue();
+    assertThat(afterSecondWrite.preserveFilenames()).isFalse();
+  }
 
+  @Test
+  public void shouldCreateWithLanguageInFileNameAndPreserveFileNames() throws Exception {
+    Path rulesDirPath = testFolder.getRoot().toPath().resolve("intermediate/rules");
+    File rulesDir = Files.createDirectories(rulesDirPath).toFile();
+
+    // create the file
+    SonarPediaJsonFile.create(
+        testFolder.getRoot(),
+        rulesDir, Arrays.asList(Language.GO),
+        true,
+        false);
+
+    // read back
+    SonarPediaJsonFile underTest = SonarPediaJsonFile.findSonarPediaFile(testFolder.getRoot());
+    assertThat(underTest.getRulesMetadataFilesDir()).isEqualTo(rulesDirPath.toFile());
+    assertThat(underTest.getUpdateTimeStamp()).isNull();
+    assertThat(underTest.getLanguages()).containsExactlyInAnyOrder(Language.GO);
+    assertThat(underTest.noLanguageInFileName()).isFalse();
+    assertThat(underTest.preserveFilenames()).isTrue();
   }
 }

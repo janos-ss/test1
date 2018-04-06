@@ -23,7 +23,7 @@ public class SonarPediaFileService {
   }
 
   // initialize SonarPedia file and directory
-  public static SonarPediaJsonFile init(File baseDir, List<Language> languages) {
+  public static SonarPediaJsonFile init(File baseDir, List<Language> languages, boolean preserveFileNames, boolean noLanguageInFilenames) {
 
     // create a rules directory
     File rulesDir = new File(baseDir, "rules");
@@ -34,7 +34,7 @@ public class SonarPediaFileService {
       rulesDir.mkdir();
     }
 
-    SonarPediaJsonFile sonarPediaJsonFile = SonarPediaJsonFile.create(baseDir, rulesDir, languages);
+    SonarPediaJsonFile sonarPediaJsonFile = SonarPediaJsonFile.create(baseDir, rulesDir, languages, preserveFileNames, noLanguageInFilenames);
     sonarPediaJsonFile.writeToItsFile();
     System.out.println("SonarPedia file created at ./" + sonarPediaJsonFile.getFile().getName());
 
@@ -42,7 +42,7 @@ public class SonarPediaFileService {
   }
 
   // factory for file existing in current directory
-  public static SonarPediaFileService create(File baseDir, boolean preserveFileNames, boolean languageInFilenames) {
+  public static SonarPediaFileService create(File baseDir) {
     SonarPediaFileService returned = new SonarPediaFileService();
     try {
       returned.sonarPediaJsonFile = SonarPediaJsonFile.findSonarPediaFile(baseDir);
@@ -50,17 +50,13 @@ public class SonarPediaFileService {
       throw new IllegalStateException("can't find sonarpedia.json file", exception);
     }
 
-    if (!languageInFilenames && returned.sonarPediaJsonFile.getLanguages().size() > 1) {
-      throw new IllegalStateException("Multiple languages requires language in filenames");
-    }
-
     returned.ruleFilesServices = returned.sonarPediaJsonFile.getLanguages()
       .stream()
       .map(language -> RuleFilesService.create(
         returned.sonarPediaJsonFile.getRulesMetadataFilesDir().getAbsolutePath(),
         language,
-        preserveFileNames,
-        languageInFilenames))
+        returned.sonarPediaJsonFile.preserveFilenames(),
+        !returned.sonarPediaJsonFile.noLanguageInFileName()))
       .collect(Collectors.toList());
 
     return returned;
@@ -78,7 +74,6 @@ public class SonarPediaFileService {
       .forEach(RuleFilesService::updateDescriptions);
     sonarPediaJsonFile.updateTimeStamp().writeToItsFile();
     System.out.println("SonarPedia file updated");
-
   }
 
 }

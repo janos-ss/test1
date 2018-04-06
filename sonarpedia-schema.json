@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-06/schema#",
   "id": "http://www.sonarsource.org/sonarpedia-schema-v2.0",
   "title": "Analyzer configuration for sonarpedia",
-  "type": "Object",
+  "type": "object",
   "description": "sonarpedia files must be named 'sonarpedia.json' and must be placed at the project root",
   "required": ["rules-metadata-path", "languages"],
   "properties": {
@@ -30,6 +30,13 @@
       "type": "string",
       "format": "date-time",
       "description": "Timestamp of rules data update"
+    },
+    "options":{
+      "type": "object",
+      "properties": {
+        "no-language-in-filemanes":  { "type": "boolean", "default" : false },
+        "preserve-filenames":  { "type": "boolean", "default" : false }
+      }
     }
   }
 }

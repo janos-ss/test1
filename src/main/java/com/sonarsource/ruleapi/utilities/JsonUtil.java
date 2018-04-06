@@ -23,10 +23,11 @@ public class JsonUtil {
   }
 
   public static String toJson(Object object) {
-    // convert to IOS8601 2011-12-03T10:15:30Z
     Gson gson = new GsonBuilder().disableHtmlEscaping()
+        // convert to IOS8601 2011-12-03T10:15:30Z
       .registerTypeAdapter(Instant.class,
         (JsonSerializer<Instant>) (instant, type, context) -> new JsonPrimitive(instant.toString()))
+        // convert to languages with enums
       .registerTypeAdapter(Language.class,
         (JsonSerializer<Language>) (language, type, jsonDeserializationContext) -> new JsonPrimitive(language.toString()))
       .setPrettyPrinting()

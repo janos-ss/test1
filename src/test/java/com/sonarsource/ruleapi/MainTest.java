@@ -6,6 +6,7 @@
 package com.sonarsource.ruleapi;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.domain.SonarPediaJsonFile;
 import java.io.File;
@@ -154,38 +155,6 @@ public class MainTest {
     assertThat(Main.credentialsProvided(settings)).isFalse();
   }
 
-  @Test(expected = RuleException.class)
-  public void testDeprecatedGenerationWithOutLanguage() {
-    String[] argsGenerate = {"generate", "-directory", "."};
-    Main.main(argsGenerate);
-  }
-
-  @Test(expected = RuleException.class)
-  public void testUpdateWithOutLanguageShouldFail() {
-    String[] argsGenerate = {"update", "-directory", "."};
-    Main.main(argsGenerate);
-  }
-
-  @Test
-  public void testDeprecatedGenerationAndUpdateOfDescriptionFile() throws Exception {
-
-    File outputDir = testFolder.newFolder();
-
-    String[] argsGenerate = {"generate", "-rule", "S1543", "-language", "java", "-directory", outputDir.getAbsolutePath()
-    };
-    Main.main(argsGenerate);
-
-    assertThat(outputDir.listFiles().length).isGreaterThan(0);
-    assertThat(systemOutRule.getLog()).contains("deprecated");
-
-    String[] argsUpdate = {"update", "-language", "java", "-directory", outputDir.getAbsolutePath()
-    };
-    Main.main(argsUpdate);
-    // the "update" makes appear a second occurence of deprecated
-    assertThat(systemOutRule.getLog().indexOf("deprecated"))
-      .isNotEqualTo(systemOutRule.getLog().lastIndexOf("deprecated"));
-  }
-
   @Test
   public void testInitGenerationAndUpdateOfDescriptionFile() throws Exception {
 
@@ -283,7 +252,7 @@ public class MainTest {
     assertThat(systemOutRule.getLog()).contains("USAGE");
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = ParameterException.class)
   public void shouldFailToGenerateCweReportForUnknownLanguage() throws Exception {
     Main.main(new String[] {"single_report", "-tool", "cwe", "-report", "html", "-language", "polop"});
   }

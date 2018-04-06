@@ -59,14 +59,7 @@ By default this rules directory is near the `sonarpedia.json` file, this be set 
 
 As soon as a `sonarpedia.json` file is present, when running any **One-Click release**,  **Releasability** will check whether any `update` has been run since last release.
 
-#### Additional options:
+#### Additional options for `init`:
 
-  * `-preserve-filenames` : Use the rule keys provided by "-rule" to construct the name of output files, this allow to use legacy keys.
+  * `-preserve-filenames` : allows rules filenames like `NoSonar.json`, not only `S1291.json`. This is useful for supporting some legacy keys.
   * `-no-language-in-filenames` : Remove language from file name format (ex: "S123.json" instead of "S123_java.json").
-
-#### Deprecated features:
-
-The use of the `-directory` option is deprecated and replaced by the use of `sonarpedia.json` file.
-    * `generate`:  Generates html description and json metadata files specified by `-rule` and `-language` parameters at directory specified by `-directory`
-    * `update`: Update html and json description files specified by `-language` found at directory specified by `-directory`
-

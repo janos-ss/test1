@@ -17,8 +17,11 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import javax.annotation.CheckForNull;
 
 import static com.sonarsource.ruleapi.utilities.JsonUtil.fromJson;
 
@@ -32,7 +35,7 @@ public class SonarPediaJsonFile {
     // NOP
   }
 
-  public static SonarPediaJsonFile create(File baseDir, File rulesDir, List<Language> languages) {
+  public static SonarPediaJsonFile create(File baseDir, File rulesDir, List<Language> languages, boolean preserveFilenames, boolean noLanguageInFilenames) {
     File sonarPediaFile = new File(baseDir, sonarpediaFileName);
 
     SonarPediaJsonFile returned = new SonarPediaJsonFile();
@@ -40,8 +43,12 @@ public class SonarPediaJsonFile {
     returned.data = new SonarPediaFileData();
     returned.data.ruleMetadataPath = baseDir.toPath().resolve(rulesDir.toPath().normalize()).toString();
     returned.data.languages = languages;
+    returned.data.options = SonarPediaFileData.create(preserveFilenames, noLanguageInFilenames);
 
-    try (FileOutputStream fop = new FileOutputStream(sonarPediaFile);
+    returned.data.validate();
+
+    try (
+      FileOutputStream fop = new FileOutputStream(sonarPediaFile);
       OutputStreamWriter osw = new OutputStreamWriter(fop, StandardCharsets.UTF_8);
       BufferedWriter out = new BufferedWriter(osw)) {
 
@@ -106,6 +113,14 @@ public class SonarPediaJsonFile {
     return this.data.languages;
   }
 
+  public boolean noLanguageInFileName() {
+    return this.data.noLanguageInFileNames();
+  }
+
+  public boolean preserveFilenames() {
+    return this.data.preserveFilenames();
+  }
+
   private static class SonarPediaFileData {
     @SerializedName("rules-metadata-path")
     String ruleMetadataPath;
@@ -114,5 +129,40 @@ public class SonarPediaJsonFile {
     String defaultProfileName;
     @SerializedName("latest-update")
     Instant latestUpdate;
+    Map<String, Boolean> options;
+
+    private static final String NO_LANGUAGE_IN_FILENAMES = "no-language-in-filenames";
+    private static final String PRESERVE_FILENAMES = "preserve-filenames";
+
+    @CheckForNull
+    private static HashMap<String, Boolean> create(boolean preserveFilenames, boolean noLanguageInFilenames) {
+      if (preserveFilenames || noLanguageInFilenames) {
+        HashMap<String, Boolean> returned = new HashMap<>();
+        if (preserveFilenames) {
+          returned.put(PRESERVE_FILENAMES, true);
+        }
+        if (noLanguageInFilenames) {
+          returned.put(NO_LANGUAGE_IN_FILENAMES, true);
+        }
+        return returned;
+      } else {
+        return null;
+      }
+    }
+
+    private void validate() {
+      if (languages.size() > 1 && !noLanguageInFileNames()) {
+        throw new IllegalArgumentException("more than one language requires the option no-language-in-filemanes");
+      }
+    }
+
+    private boolean noLanguageInFileNames() {
+      return options != null && options.getOrDefault(NO_LANGUAGE_IN_FILENAMES, false);
+    }
+
+    private boolean preserveFilenames() {
+      return options != null && options.getOrDefault(PRESERVE_FILENAMES, false);
+    }
+
   }
 }
