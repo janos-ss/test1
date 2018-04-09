@@ -11,7 +11,7 @@ As an API, it can be used to:
 
 ## Usage
 
-The rule-api release is [available on repox](https://repox.sonarsource.com/sonarsource-private-releases/com/sonarsource/rule-api/rule-api/), this command will automatically download the latest:
+The rule-api release is available on repox at [this link](https://repox.sonarsource.com/sonarsource-private-releases/com/sonarsource/rule-api/rule-api/). The following command will automatically download the latest:
 
 `curl -SLJO "https://repox.sonarsource.com/sonarsource-private-releases/com/sonarsource/rule-api/rule-api/\[RELEASE\]/rule-api-\[RELEASE\].jar" -u `(your LDAP login)
 
@@ -33,7 +33,9 @@ These options can take a `-instance` parameter, but default to SonarQube.com
 These options require -login and -password parameters.
   * `integrity`: RSpec internal integrity check. Requires -login and -password parameters.
 
-### Language plugin file generation
+### Language plugin rules files
+
+##### Sonarpedia
 
 To create and maintain html and metadata rules files.
 It relies on the `sonarpedia.json` file and a rules directory designated by the `sonarpedia.json` file.
@@ -47,19 +49,22 @@ It relies on the `sonarpedia.json` file and a rules directory designated by the 
   │                                   └── Syyyy_(language).json
   └── sonarpedia.json
 ```
-This `sonarpedia.json` must be at the root of the repository of the language plugin and the following command are run from that directory.  
-  * `init`:  as `init -language foo`. It generates a `sonarpedia.json` file pointing on a `rules` directory. This `rules` directory will have to be populated with html description and json metadata files with the next option.
-  * `generate`: as  `generate -rule S1234 S3456`. Read the `sonarpedia.json` file in the current directory, generates html and json files for designated rules in the `rules` directory. 
-  * `update`: Read the `sonarpedia.json` file in the current directory, find the rules and update their html descriptions. It updates `sonarpedia.json` timestamps.
 
+It supports more than one language in the plugin.
+By default this `rules` directory is near the `sonarpedia.json` file, but this be set up in any place deeper in the hierarchy.
+This `sonarpedia.json` must be at the root of the repository of the language plugin and any rule-api command run from that root directory.  
 The format of `sonarpedia.json` is described in the [Sonarpedia-schema.json file](https://github.com/SonarSource/sonar-rule-api/blob/master/sonarpedia-schema.json).
-It permits to have more than one language.
-
-By default this rules directory is near the `sonarpedia.json` file, this be set up in any place deeper in the hierarchy.
-
 As soon as a `sonarpedia.json` file is present, when running any **One-Click release**,  **Releasability** will check whether any `update` has been run since last release.
 
-#### Additional options for `init`:
+#### Commands
 
-  * `-preserve-filenames` : allows rules filenames like `NoSonar.json`, not only `S1291.json`. This is useful for supporting some legacy keys.
-  * `-no-language-in-filenames` : Remove language from file name format (ex: "S123.json" instead of "S123_java.json").
+  * `init`:  as `init -language foo [-preserve-filenames] [-no-language-in-filenames]`. This generates a new `sonarpedia.json` file pointing on a `rules` directory. This `rules` directory will have to be populated with html description and json metadata files with the next option `generate`.
+    * The option  `-preserve-filenames` allows rules filenames as `NoSonar.json`, not only the `S1291.json` format. This is useful for supporting legacy keys. 
+    * The option `-no-language-in-filenames` does not include language in the file name format (ex: `S123.json` instead of `S123_java.json`).
+  * `generate`: as  `generate -rule S1234 S2345`. Read the `sonarpedia.json` file in the current directory, generates html and json files for designated rules in the `rules` directory. 
+  * `update`: Read the `sonarpedia.json` file in the current directory, find the rules and update their html descriptions. It updates `sonarpedia.json` timestamps.
+
+A usual usage of those commands is:  
+  * `java -jar ruleapi.jar init -language foo`  once to initialize the `sonarpedia.json` and `rules directory.
+  * `java -jar ruleapi.jar generate -rule S1234` everytime you have to add a new rule
+  * `java -jar ruleapi.jar update` at every release.
