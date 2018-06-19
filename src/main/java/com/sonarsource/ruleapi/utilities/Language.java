@@ -15,10 +15,12 @@ import java.util.Set;
 public enum Language {
   //     SonarQube      RSpec          common repo      reportName
   ABAP  ("abap",        "ABAP",        "common-abap",    "SonarABAP"),
+  APEX  ("apex",        "APEX",        "common-apex",    "SonarAPEX"),
   C     ("c",           "C",           "common-c",       "SonarC++ for C"),
   COBOL ("cobol",       "Cobol",       "common-cobol",   "SonarCOBOL"),
   CPP   ("cpp",         "C++",         "common-cpp",     "SonarC++"),
   CSH   ("csharpsquid", "C#",          "common-cs",      "SonarC#"),
+  CSS   ("css",         "CSS",         "common-css",     "SonarCSS"),
   FLEX  ("flex",        "Flex",        "common-flex",    "SonarFlex"),
   GO    ("go",          "Go",          "",               "SonarGo"),
   JAVA  ("squid",       "Java",        "common-java",    "SonarJava"),
@@ -29,6 +31,10 @@ public enum Language {
   PLSQL ("plsql",       "PL/SQL",      "common-plsql",   "SonarPLSQL"),
   PY    ("python",      "Python",      "common-py",      "SonarPython"),
   RPG   ("rpg",         "RPG",         "common-rpg",     "SonarRPG"),
+  RUBY  ("ruby",        "Ruby",        "common-ruby",    "SonarRuby"),
+  RUST  ("rust",        "Rust",        "common-rust",    "SonarRust"),
+  SCALA ("scala",       "Scala",       "common-scala",   "SonarScala"),
+  SOLIDITY ("solidity", "Solidity",    "common-solidity",   "SonarSolidity"),
   SWIFT ("swift",       "Swift",       "common-swift",   "SonarSwift"),
   TSQL  ("tsql",        "T-SQL",       "",               "SonarT-SQL"),
   TS    ("typescript",  "TypeScript",  "",               "SonarTS"),
@@ -51,6 +57,7 @@ public enum Language {
           Language.TSQL
   ));
   public static final Set<Language> STRONGLY_TYPED_LANGUAGES = Collections.unmodifiableSet(EnumSet.of(
+          Language.APEX,
           Language.C,
           Language.CPP,
           Language.CSH,
@@ -58,6 +65,10 @@ public enum Language {
           Language.GO,
           Language.JAVA,
           Language.OBJC,
+          Language.RUBY,
+          Language.RUST,
+          Language.SCALA,
+          Language.SOLIDITY,
           Language.SWIFT,
           Language.TS,
           Language.VB,

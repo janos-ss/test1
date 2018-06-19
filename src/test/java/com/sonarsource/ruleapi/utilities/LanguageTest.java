@@ -18,7 +18,7 @@ public class LanguageTest {
   @Test
   public void testLanguagesEnum() {
 
-    assertThat(Language.values().length).isEqualTo(22);
+    assertThat(Language.values().length).isEqualTo(28);
     assertThat(Language.ABAP.sq).isEqualTo("abap");
     assertThat(Language.ABAP.rspec).isEqualTo("ABAP");
     assertThat(Language.ABAP.getSqCommon()).isEqualTo("common-abap");
@@ -61,7 +61,8 @@ public class LanguageTest {
 
     assertThat(langs).doesNotContain(Language.XML);
     assertThat(langs).doesNotContain(Language.WEB);
-    assertThat(langs.size()).isEqualTo(Language.values().length - 2);
+    // xml, css, web
+    assertThat(langs.size()).isEqualTo(Language.values().length - 3);
 
   }
 
