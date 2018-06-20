@@ -80,7 +80,7 @@ public class AbstractReportableStandardTest {
   @Test
   public void testGetSqRepoList() {
     MisraC2004 misraC2004 = new MisraC2004();
-    String reposList = "abap,apex,c,cobol,cpp,csharpsquid,css,flex,go,squid,javascript,objc,php,pli,plsql,python,rpg,ruby,rust,scala,solidity,swift,tsql,typescript,vb,vbnet,Web,xml";
+    String reposList = "abap,apex,c,cobol,cpp,csharpsquid,css,flex,go,squid,javascript,kotlin,objc,php,pli,plsql,python,rpg,ruby,rust,scala,solidity,swift,tsql,typescript,vb,vbnet,Web,xml";
 
     assertThat(misraC2004.getSqRepoList()).isEqualTo(reposList);
   }
