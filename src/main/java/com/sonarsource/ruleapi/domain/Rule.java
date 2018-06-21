@@ -70,7 +70,8 @@ public class Rule {
   public enum Type {
     BUG("Bug"),
     VULNERABILITY("Vulnerability"),
-    CODE_SMELL("Code Smell");
+    CODE_SMELL("Code Smell"),
+    SECURITY_HOTSPOT("Security Hotspot");
 
     protected final String typeName;
 
