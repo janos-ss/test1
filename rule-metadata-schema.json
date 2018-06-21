@@ -57,6 +57,29 @@
     },
     "template": {
       "type": "boolean"
+    },
+    "securityStandards": {
+      "type": "Object",
+      "properties": {
+        "CWE": {
+          "type": "array",
+          "minItems": 0,
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "OWASP": {
+          "type": "array",
+          "minItems": 0,
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "SANS Top 25": {
+          "type": "array",
+          "minItems": 0,
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      }
     }
   }
 }

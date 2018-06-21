@@ -350,6 +350,31 @@ public class RuleFilesServiceTest {
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected4);
 
+    rule.setOwasp(Arrays.asList("A1"));
+    final String expected5 = "{\n" +
+            "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"type\": \"CODE_SMELL\",\n" +
+            "  \"status\": \"beta\",\n" +
+            "  \"remediation\": {\n" +
+            "    \"func\": \"Linear with offset\",\n" +
+            "    \"linearDesc\": \"dolor sit amet\",\n" +
+            "    \"linearOffset\": \"42\",\n" +
+            "    \"linearFactor\": \"666\"\n" +
+            "  },\n" +
+            "  \"tags\": [\n" +
+            "    \"qux\"\n" +
+            "  ],\n" +
+            "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
+            "  \"sqKey\": \"S1234\",\n" +
+            "  \"scope\": \"Tests\",\n" +
+            "  \"securityStandards\": {\n" +
+            "    \"OWASP\": [\n" +
+            "      \"A1\"\n" +
+            "    ]\n" +
+            "  }\n" +
+            "}";
+
+    assertThat( rfs.getSquidJson(rule)).isEqualTo(expected5);
   }
 
   @Test

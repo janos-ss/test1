@@ -24,6 +24,7 @@ import com.sonarsource.ruleapi.utilities.Utilities;
 import net.greypanther.natsort.CaseInsensitiveSimpleNaturalComparator;
 import org.apache.commons.io.FilenameUtils;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import javax.annotation.Nullable;
@@ -314,6 +315,11 @@ public class RuleFilesService {
     objOrderedFields.put("sqKey", rule.getSqKey());
     objOrderedFields.put("scope", rule.getScope());
 
+    JSONObject securityStandards = getSecurityStandards(rule);
+    if (!securityStandards.isEmpty()) {
+      objOrderedFields.put("securityStandards", securityStandards);
+    }
+
     try (Writer writer = new JSONWriter()) {
       JSONValue.writeJSONString(objOrderedFields, writer);
       return writer.toString();
@@ -335,5 +341,25 @@ public class RuleFilesService {
       }
     }
     return standards;
+  }
+
+  protected static JSONObject getSecurityStandards(Rule rule) {
+    JSONObject securityStandards = new JSONObject();
+    if (!rule.getCwe().isEmpty()) {
+      JSONArray values = new JSONArray();
+      values.addAll(rule.getCwe());
+      securityStandards.put("CWE", values);
+    }
+    if (!rule.getOwasp().isEmpty()) {
+      JSONArray values = new JSONArray();
+      values.addAll(rule.getOwasp());
+      securityStandards.put("OWASP", values);
+    }
+    if (!rule.getSansTop25().isEmpty()) {
+      JSONArray values = new JSONArray();
+      values.addAll(rule.getSansTop25());
+      securityStandards.put("SANS Top 25", values);
+    }
+    return securityStandards;
   }
 }
