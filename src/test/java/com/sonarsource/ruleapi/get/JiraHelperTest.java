@@ -402,5 +402,6 @@ public class JiraHelperTest {
     Rule rule = new Rule("");
     JiraHelper.populateFields(rule, (JSONObject) parser.parse(FULL_SECURITY_HOTSPOT_JSON));
     assertThat(rule.getType()).isEqualTo(Rule.Type.SECURITY_HOTSPOT);
+    assertThat(rule.getSansTop25()).isEmpty();
   }
 }

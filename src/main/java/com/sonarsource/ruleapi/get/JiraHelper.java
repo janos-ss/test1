@@ -316,6 +316,7 @@ public class JiraHelper {
     rule.setFbContrib(getCustomFieldValueAsList(issue, "fb-contrib"));
     rule.setFindSecBugs(getCustomFieldValueAsList(issue, "FindSecBugs"));
     rule.setOwasp(getCustomFieldValueAsList(issue, "OWASP"));
+    rule.setSansTop25(getCustomFieldValueAsList(issue, "SANS Top 25"));
     rule.setPmd(getCustomFieldValueAsList(issue, "PMD"));
     rule.setCheckstyle(getCustomFieldValueAsList(issue, "Checkstyle"));
     rule.setPhpFig(getCustomFieldValueAsList(issue, "PHP-FIG"));

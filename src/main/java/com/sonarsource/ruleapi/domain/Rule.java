@@ -150,6 +150,7 @@ public class Rule {
   private List<String> fbContrib = new ArrayList<>();
   private List<String> findSecBugs = new ArrayList<>();
   private List<String> owasp = new ArrayList<>();
+  private List<String> sansTop25 = new ArrayList<>();
   private List<String> pmd = new ArrayList<>();
   private List<String> checkstyle = new ArrayList<>();
   private List<String> phpFig = new ArrayList<>();
@@ -570,6 +571,16 @@ public class Rule {
   public void setOwasp(List<String> owasp) {
 
     this.owasp = owasp;
+  }
+
+  public List<String> getSansTop25() {
+
+    return sansTop25;
+  }
+
+  public void setSansTop25(List<String> sansTop25) {
+
+    this.sansTop25 = sansTop25;
   }
 
   public List<String> getPhpFig() {
