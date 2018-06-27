@@ -11,10 +11,7 @@ import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,71 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SansTop25Test {
 
   private SansTop25 sansTop25 = new SansTop25();
-
-  @Test
-  public void testAddTagIfMissingAddTag() {
-
-    Rule rule = new Rule("");
-    rule.setTags(new ArrayList<>());
-
-    rule.getSansTop25().add("Insecure Interaction Between Components");
-
-    Map<String, Object> updates = new HashMap<>();
-
-    SansTop25.Category.INSECURE_INTERACTION.addTagIfMissing(rule, updates);
-    assertThat(updates).hasSize(1);
-    assertThat((Set<String>)updates.get("Labels")).hasSize(1);
-    assertThat(rule.getTags()).hasSize(1);
-
-  }
-
-  @Test
-  public void testAddTagIfMissingDeprecated() {
-
-    Rule rule = new Rule("");
-    rule.setStatus(Rule.Status.DEPRECATED);
-    rule.setTags(new ArrayList<String>());
-
-    rule.getSansTop25().add("Insecure Interaction Between Components");
-
-    Map<String, Object> updates = new HashMap<>();
-
-    SansTop25.Category.INSECURE_INTERACTION.addTagIfMissing(rule, updates);
-    assertThat(updates).hasSize(0);
-    assertThat(rule.getTags()).hasSize(0);
-
-  }
-
-  @Test
-  public void testAddTagIfMissingDoNothing(){
-
-    Rule rule = new Rule("");
-    rule.setTags(new ArrayList<String>());
-    rule.getTags().add("sans-top25-insecure");
-
-    rule.getSansTop25().add("Insecure Interaction Between Components");
-
-    Map<String, Object> updates = new HashMap<>();
-
-    SansTop25.Category.INSECURE_INTERACTION.addTagIfMissing(rule, updates);
-    assertThat(updates).isEmpty();
-
-  }
-
-  @Test
-  public void testAddTagIfMissingRemoveTag(){
-
-    Rule rule = new Rule("");
-    rule.setTags(new ArrayList<String>());
-    rule.getTags().add("sans-top25-porous");
-
-    Map<String, Object> updates = new HashMap<>();
-
-    SansTop25.Category.POROUS_DEFENSES.addTagIfMissing(rule, updates);
-    assertThat(updates).hasSize(1);
-    assertThat((Set<String>) updates.get("Labels")).isEmpty();
-    assertThat(rule.getTags()).isEmpty();
-  }
 
   @Test
   public void testSummaryReport(){
@@ -110,27 +42,6 @@ public class SansTop25Test {
     String report = sans.getReport("");
     assertThat(report).contains(expectedSummaryReport);
     assertThat(report).contains("CWE-352");
-  }
-
-  @Test
-  public void testCheckReferencesInSeeSection() {
-
-    Rule rule = new Rule("");
-
-    String seeSection="<li><a href=\"cwe.mitre.org/data/definitions/459\">MITRE, CWE-459</a> - Incomplete Cleanup</li>" +
-            "<li><a href=\"http://www.sans.org/top25-software-errors/\">SANS Top 25</a> - Porous Defenses</li>";
-    rule.setReferences(seeSection);
-
-    SansTop25.Category.POROUS_DEFENSES.checkReferencesInSeeSection(rule);
-
-    assertThat(rule.getCwe()).isEmpty();
-    assertThat(rule.getReferences()).isEqualTo(seeSection);
-
-    rule.getSansTop25().add("Porous Defenses");
-    SansTop25.Category.POROUS_DEFENSES.checkReferencesInSeeSection(rule);
-
-    assertThat(rule.getSansTop25()).hasSize(1);
-    assertThat(rule.getReferences()).isEqualTo(seeSection);
   }
 
   @Test

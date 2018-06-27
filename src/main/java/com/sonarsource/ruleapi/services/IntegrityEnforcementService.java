@@ -14,7 +14,6 @@ import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard
 import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
-import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
@@ -462,7 +461,7 @@ public class IntegrityEnforcementService extends RuleManager {
         referenceFieldValues = taggable.getRspecReferenceFieldValues(rule);
       }
 
-      if (taggable instanceof DerivativeTaggableStandard && !(taggable instanceof SansTop25.Category)) {
+      if (taggable instanceof DerivativeTaggableStandard) {
         DerivativeTaggableStandard derivativeStandard = (DerivativeTaggableStandard) taggable;
 
         derivativeStandard.addTagIfMissing(rule, updates);

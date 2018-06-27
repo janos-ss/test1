@@ -9,10 +9,9 @@ import com.google.common.base.Enums;
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
-import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
+import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.services.ReportService;
-import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
@@ -20,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -347,7 +346,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     this.language = language;
   }
 
-  public enum Category implements DerivativeTaggableStandard {
+  public enum Category implements TaggableStandard {
     INSECURE_INTERACTION("Insecure Interaction Between Components", "http://www.sans.org/top25-software-errors/#cat1"),
     RISKY_RESOURCE("Risky Resource Management", "http://www.sans.org/top25-software-errors/#cat2"),
     POROUS_DEFENSES("Porous Defenses", "http://www.sans.org/top25-software-errors/#cat3");
@@ -376,8 +375,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
 
     @Override
     public String getTag() {
-
-      return TAG + "-" + getName().split(" ")[0].toLowerCase();
+      return TAG + "-" + getName().split(" ")[0].toLowerCase(Locale.ENGLISH);
     }
 
     @Override
@@ -409,16 +407,6 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
       return false;
     }
 
-    protected StandardRule getRuleForCwe(String cwe) {
-
-      for (StandardRule sr : StandardRule.values()) {
-        if (sr.getCodingStandardRuleId().equals(cwe)) {
-          return sr;
-        }
-      }
-      return null;
-    }
-
     @Override
     public String getStandardName() {
 
@@ -440,42 +428,6 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     @Override
     public void setRspecReferenceFieldValues(Rule rule, List<String> ids) {
       rule.setCwe(ids);
-    }
-
-
-    @Override
-    public void checkReferencesInSeeSection(Rule rule) {
-
-      String seeSection = ComparisonUtilities.stripHtml(rule.getReferences());
-
-      for (String sansCategory : getRspecReferenceFieldValues(rule)) {
-        String expectedReference = NAME + " - " + sansCategory;
-        if (!seeSection.contains(expectedReference)) {
-          LOGGER.log(Level.INFO, "Expected reference not found in {0}: {1}",
-                  new Object[]{rule.getKey(), expectedReference});
-        }
-      }
-    }
-
-    @Override
-    public void addTagIfMissing(Rule rule, Map<String, Object> updates) {
-
-      if (Rule.Status.DEPRECATED.equals(rule.getStatus())) {
-        return;
-      }
-
-      String tag = getTag();
-      Set<String> tags = rule.getTags();
-      boolean needsTag = !rule.getSansTop25().isEmpty();
-      boolean hasTag = tags.contains(tag);
-
-      if (needsTag && !hasTag) {
-        tags.add(tag);
-        updates.put("Labels", tags);
-      } else if (!needsTag && hasTag) {
-        tags.remove(tag);
-        updates.put("Labels", tags);
-      }
     }
   }
 
@@ -537,7 +489,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
           return sr;
         }
       }
-      return null;
+      throw new IllegalArgumentException("Could not find a SANS Top 25 rule for input string " + id);
     }
 
   }
