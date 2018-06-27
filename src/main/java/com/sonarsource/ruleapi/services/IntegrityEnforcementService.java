@@ -14,6 +14,7 @@ import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard
 import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
+import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
@@ -544,13 +545,14 @@ public class IntegrityEnforcementService extends RuleManager {
     List<String> refs = new ArrayList<>();
 
     String pattern = taggable.getReferencePattern();
+    String separator = (taggable instanceof SansTop25.Category ? " - " : " ");
 
     for (String reference : references) {
       if (!reference.matches(".*" + pattern + ".*")) {
         continue;
       }
 
-      String[] pieces = reference.split(" ");
+      String[] pieces = reference.split(separator);
       for (String piece : pieces) {
         if (piece.matches(pattern)) {
           refs.add(piece);

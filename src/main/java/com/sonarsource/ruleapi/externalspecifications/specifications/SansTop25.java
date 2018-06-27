@@ -393,16 +393,9 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     @Override
     public boolean doesReferenceNeedUpdating(String reference, List<String> updates, String ruleKey) {
 
-      if (reference.matches(REFERENCE_PATTERN)) {
-        updates.add(reference);
-        return true;
-      } else {
-        if (!reference.matches(REFERENCE_PATTERN)) {
-          LOGGER.log(Level.INFO, "Unrecognized SANS Top 25 reference {0} in {1}",
-            new Object[] {reference, ruleKey});
-        }
-
-        updates.add(reference);
+      if (!reference.matches(REFERENCE_PATTERN)) {
+        LOGGER.log(Level.INFO, "Unrecognized SANS Top 25 reference {0} in {1}",
+          new Object[] {reference, ruleKey});
       }
       return false;
     }
@@ -427,7 +420,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
 
     @Override
     public void setRspecReferenceFieldValues(Rule rule, List<String> ids) {
-      rule.setCwe(ids);
+      rule.setSansTop25(ids);
     }
   }
 

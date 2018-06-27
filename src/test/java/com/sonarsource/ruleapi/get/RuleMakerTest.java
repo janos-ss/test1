@@ -171,7 +171,7 @@ public class RuleMakerTest {
   @Test
   public void testFleshOutRuleNullIssue() {
     Rule rule = new Rule("");
-    RuleMaker.fleshOutRule(new JiraFetcherImpl(), rule, null);
+    RuleMaker.fleshOutRule(JiraFetcherImpl.instance(), rule, null);
     assertThat(rule.getTitle()).isNull();
   }
 
@@ -181,7 +181,7 @@ public class RuleMakerTest {
 
     Rule rule = new Rule("");
     try {
-      RuleMaker.fleshOutRule(new JiraFetcherImpl(), rule, (JSONObject) parser.parse(json));
+      RuleMaker.fleshOutRule(JiraFetcherImpl.instance(), rule, (JSONObject) parser.parse(json));
     } catch (ParseException e) {
       e.printStackTrace();
     }

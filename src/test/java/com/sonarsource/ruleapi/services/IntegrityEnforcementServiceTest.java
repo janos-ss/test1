@@ -308,8 +308,7 @@ public class IntegrityEnforcementServiceTest {
     Map<String,Object> updates = enforcer.getUpdates(rule, SansTop25.Category.INSECURE_INTERACTION);
 
     assertThat(updates).containsOnly(
-      entry("Labels", Collections.singleton("sans-top25-insecure")),
-      entry("SANS Top 25", Collections.singletonList("Insecure Interaction Between Components")));
+      entry("Labels", Collections.singleton("sans-top25-insecure")));
   }
 
   @Test

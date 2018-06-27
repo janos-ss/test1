@@ -40,7 +40,7 @@ public class JiraHelper {
   }
 
 
-  protected static void populateFields(Rule rule, JSONObject issue) {
+  public static void populateFields(Rule rule, JSONObject issue) {
     rule.setKey(issue.get("key").toString());
     setStatus(rule, issue);
     setReplacementLinks(rule, issue);

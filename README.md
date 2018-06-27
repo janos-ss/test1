@@ -68,3 +68,10 @@ A usual usage of those commands is:
   * `java -jar ruleapi.jar init -language foo`  once to initialize the `sonarpedia.json` and `rules directory.
   * `java -jar ruleapi.jar generate -rule S1234` everytime you have to add a new rule
   * `java -jar ruleapi.jar update` at every release.
+
+## Using another JIRA instance
+
+Due to a legacy architecture choice, the JIRA instance URL cannot be passed as a command line option.
+However, if the ``ruleApi.baseUrl`` system property is set, it will be used as the base URL for JIRA calls
+(instead of the default value ``https://jira.sonarsource.com/rest/api/latest/``). Note that this property
+must end with a ``/``.

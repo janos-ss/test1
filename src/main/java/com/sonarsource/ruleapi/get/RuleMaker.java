@@ -33,7 +33,6 @@ import java.util.Map;
  */
 public class RuleMaker {
 
-  private static final JiraFetcher JIRA_FETCHER = new JiraFetcherImpl();
   private static final SQFetcher SQ_FETCHER = new SQFetcherImpl();
 
   private RuleMaker() {
@@ -92,8 +91,8 @@ public class RuleMaker {
 
     Rule rule = new Rule(language);
     rule.setLookupKey(key);
-    JSONObject jsonRule = JIRA_FETCHER.fetchIssueByKey(key);
-    fleshOutRule(JIRA_FETCHER, rule, jsonRule);
+    JSONObject jsonRule = JiraFetcherImpl.instance().fetchIssueByKey(key);
+    fleshOutRule(JiraFetcherImpl.instance(), rule, jsonRule);
 
     return rule;
   }
@@ -133,11 +132,11 @@ public class RuleMaker {
   public static List<Rule> getRulesByJql(String query, String language) {
     List<Rule> rules = new ArrayList<>();
 
-    List<JSONObject> issues = JIRA_FETCHER.fetchIssuesBySearch(query);
+    List<JSONObject> issues = JiraFetcherImpl.instance().fetchIssuesBySearch(query);
 
     for (JSONObject jsonRule : issues) {
       Rule rule = new Rule(language);
-      fleshOutRule(JIRA_FETCHER, rule, jsonRule);
+      fleshOutRule(JiraFetcherImpl.instance(), rule, jsonRule);
       rules.add(rule);
     }
 
