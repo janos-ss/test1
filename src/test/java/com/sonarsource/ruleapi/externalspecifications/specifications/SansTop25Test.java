@@ -28,9 +28,9 @@ public class SansTop25Test {
   public void testAddTagIfMissingAddTag() {
 
     Rule rule = new Rule("");
-    rule.setTags(new ArrayList<String>());
+    rule.setTags(new ArrayList<>());
 
-    rule.getCwe().add("CWE-89");
+    rule.getSansTop25().add("Insecure Interaction Between Components");
 
     Map<String, Object> updates = new HashMap<>();
 
@@ -48,7 +48,7 @@ public class SansTop25Test {
     rule.setStatus(Rule.Status.DEPRECATED);
     rule.setTags(new ArrayList<String>());
 
-    rule.getCwe().add("CWE-89");
+    rule.getSansTop25().add("Insecure Interaction Between Components");
 
     Map<String, Object> updates = new HashMap<>();
 
@@ -65,7 +65,7 @@ public class SansTop25Test {
     rule.setTags(new ArrayList<String>());
     rule.getTags().add("sans-top25-insecure");
 
-    rule.getCwe().add("CWE-89");
+    rule.getSansTop25().add("Insecure Interaction Between Components");
 
     Map<String, Object> updates = new HashMap<>();
 
@@ -87,17 +87,6 @@ public class SansTop25Test {
     assertThat(updates).hasSize(1);
     assertThat((Set<String>) updates.get("Labels")).isEmpty();
     assertThat(rule.getTags()).isEmpty();
-  }
-
-  @Test
-  public void testIsSansRuleItsNot() {
-
-    Rule rule = new Rule("");
-
-    assertThat(SansTop25.Category.POROUS_DEFENSES.isSansCategoryRule(rule, null)).isFalse();
-
-    rule.getCwe().add("CWE-1");
-    assertThat(SansTop25.Category.RISKY_RESOURCE.isSansCategoryRule(rule,null)).isFalse();
   }
 
   @Test
@@ -137,10 +126,10 @@ public class SansTop25Test {
     assertThat(rule.getCwe()).isEmpty();
     assertThat(rule.getReferences()).isEqualTo(seeSection);
 
-    rule.getCwe().add("CWE-250");
+    rule.getSansTop25().add("Porous Defenses");
     SansTop25.Category.POROUS_DEFENSES.checkReferencesInSeeSection(rule);
 
-    assertThat(rule.getCwe()).hasSize(1);
+    assertThat(rule.getSansTop25()).hasSize(1);
     assertThat(rule.getReferences()).isEqualTo(seeSection);
   }
 
@@ -177,9 +166,10 @@ public class SansTop25Test {
 
     assertThat(sansTop25.getLanguage()).isNull();
     assertThat(sansTop25.getStandardName()).isEqualTo("SANS Top 25");
-    assertThat(sansTop25.getRSpecReferenceFieldName()).isEqualTo("CWE");
+    assertThat(sansTop25.getRSpecReferenceFieldName()).isEqualTo("SANS Top 25");
     assertThat(sansTop25.getCodingStandardRules()).hasSize(25);
-    assertThat(SansTop25.Category.RISKY_RESOURCE.getReferencePattern()).isEqualTo("CWE-\\d+");
+    assertThat(SansTop25.Category.RISKY_RESOURCE.getReferencePattern()).isEqualTo(
+      "Insecure Interaction Between Components|Risky Resource Management|Porous Defenses");
     assertThat(SansTop25.Category.INSECURE_INTERACTION.getTag()).isEqualTo("sans-top25-insecure");
     assertThat(SansTop25.Category.RISKY_RESOURCE.getTag()).isEqualTo("sans-top25-risky");
     assertThat(SansTop25.Category.POROUS_DEFENSES.getTag()).isEqualTo("sans-top25-porous");

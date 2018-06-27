@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 
 public class IntegrityEnforcementServiceTest {
@@ -299,21 +300,16 @@ public class IntegrityEnforcementServiceTest {
   }
 
   @Test
-  public void testGetCweUpdatesWithDerivativeTaggableStandard() {
+  public void testGetSansTop25Updates() {
 
     Rule rule = new Rule("");
-    rule.getCwe().add("CWE-89");
+    rule.getSansTop25().add("Insecure Interaction Between Components");
 
     Map<String,Object> updates = enforcer.getUpdates(rule, SansTop25.Category.INSECURE_INTERACTION);
 
-    Map<String, Object> expectedUpdates = new HashMap<>();
-
-    Set<String> tmp = new HashSet<>();
-    tmp.add("sans-top25-insecure");
-
-    expectedUpdates.put("Labels", tmp);
-
-    assertThat(updates).hasSize(1).isEqualTo(expectedUpdates);
+    assertThat(updates).containsOnly(
+      entry("Labels", Collections.singleton("sans-top25-insecure")),
+      entry("SANS Top 25", Collections.singletonList("Insecure Interaction Between Components")));
   }
 
   @Test
