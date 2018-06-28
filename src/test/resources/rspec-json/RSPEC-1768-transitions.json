@@ -1,0 +1,168 @@
+{
+  "expand": "transitions",
+  "transitions": [
+    {
+      "id": "13",
+      "name": "Deprecate Rule",
+      "to": {
+        "self": "https://jira.sonarsource.com/rest/api/2/status/10301",
+        "description": "Deprecated Rules",
+        "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/generic.png",
+        "name": "Deprecated",
+        "id": "10301",
+        "statusCategory": {
+          "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+          "id": 2,
+          "key": "new",
+          "colorName": "blue-gray",
+          "name": "To Do"
+        }
+      },
+      "fields": {}
+    },
+    {
+      "id": "43",
+      "name": "Supersede Rule",
+      "to": {
+        "self": "https://jira.sonarsource.com/rest/api/2/status/10701",
+        "description": "Superseded Rules",
+        "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/generic.png",
+        "name": "Superseded",
+        "id": "10701",
+        "statusCategory": {
+          "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+          "id": 3,
+          "key": "done",
+          "colorName": "green",
+          "name": "Done"
+        }
+      },
+      "fields": {}
+    },
+    {
+      "id": "2",
+      "name": "Close Issue",
+      "to": {
+        "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+        "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+        "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+        "name": "Closed",
+        "id": "6",
+        "statusCategory": {
+          "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+          "id": 3,
+          "key": "done",
+          "colorName": "green",
+          "name": "Done"
+        }
+      },
+      "fields": {
+        "assignee": {
+          "required": false,
+          "schema": {
+            "type": "user",
+            "system": "assignee"
+          },
+          "name": "Assignee",
+          "autoCompleteUrl": "https://jira.sonarsource.com/rest/api/latest/user/assignable/search?issueKey=RSPEC-2583&username=",
+          "operations": [
+            "set"
+          ]
+        },
+        "resolution": {
+          "required": true,
+          "schema": {
+            "type": "resolution",
+            "system": "resolution"
+          },
+          "name": "Resolution",
+          "operations": [
+            "set"
+          ],
+          "allowedValues": [
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/1",
+              "name": "Fixed",
+              "id": "1"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/2",
+              "name": "Won't Fix",
+              "id": "2"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/3",
+              "name": "Duplicate",
+              "id": "3"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/4",
+              "name": "Incomplete",
+              "id": "4"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/5",
+              "name": "Cannot Reproduce",
+              "id": "5"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/10000",
+              "name": "Done",
+              "id": "10000"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/10100",
+              "name": "Not an issue",
+              "id": "10100"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/10200",
+              "name": "Not A Bug",
+              "id": "10200"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/10201",
+              "name": "UNRESOLVED",
+              "id": "10201"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/10300",
+              "name": "Won't Do",
+              "id": "10300"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/10400",
+              "name": "Not Supported",
+              "id": "10400"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/10500",
+              "name": "Moved To GitHub",
+              "id": "10500"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/10600",
+              "name": "Deployed",
+              "id": "10600"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/10601",
+              "name": "Canceled",
+              "id": "10601"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/10602",
+              "name": "Announced",
+              "id": "10602"
+            },
+            {
+              "self": "https://jira.sonarsource.com/rest/api/latest/resolution/10603",
+              "name": "Failed",
+              "id": "10603"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

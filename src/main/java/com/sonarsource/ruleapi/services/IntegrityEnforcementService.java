@@ -136,7 +136,7 @@ public class IntegrityEnforcementService extends RuleManager {
   }
 
 
-  private void cleanUpDeprecatedRules() {
+  public void cleanUpDeprecatedRules() {
 
     List<Rule> rules = RuleMaker.getRulesByJql(" issueFunction in hasLinks(\"is deprecated by\") OR status = DEPRECATED", "");
     for (Rule rule : rules) {
