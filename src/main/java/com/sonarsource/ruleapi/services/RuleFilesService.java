@@ -355,11 +355,7 @@ public class RuleFilesService {
       values.addAll(rule.getOwasp());
       securityStandards.put("OWASP", values);
     }
-    if (!rule.getSansTop25().isEmpty()) {
-      JSONArray values = new JSONArray();
-      values.addAll(rule.getSansTop25());
-      securityStandards.put("SANS Top 25", values);
-    }
+    // "SANS Top 25" is not output, it is computed at runtime by SQ using CWE
     return securityStandards;
   }
 }
