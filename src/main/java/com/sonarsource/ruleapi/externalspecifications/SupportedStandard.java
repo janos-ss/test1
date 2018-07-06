@@ -14,7 +14,21 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.OwaspTopTen
 import com.sonarsource.ruleapi.externalspecifications.specifications.RuleSpec;
 import com.sonarsource.ruleapi.externalspecifications.specifications.RulesInLanguage;
 import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
-import com.sonarsource.ruleapi.externalspecifications.tools.*;
+import com.sonarsource.ruleapi.externalspecifications.tools.Checkstyle;
+import com.sonarsource.ruleapi.externalspecifications.tools.Cppcheck;
+import com.sonarsource.ruleapi.externalspecifications.tools.EsLint;
+import com.sonarsource.ruleapi.externalspecifications.tools.FindBugs;
+import com.sonarsource.ruleapi.externalspecifications.tools.FindSecBugs;
+import com.sonarsource.ruleapi.externalspecifications.tools.FxCop;
+import com.sonarsource.ruleapi.externalspecifications.tools.PcLintC;
+import com.sonarsource.ruleapi.externalspecifications.tools.PcLintCpp;
+import com.sonarsource.ruleapi.externalspecifications.tools.Pmd;
+import com.sonarsource.ruleapi.externalspecifications.tools.Pylint;
+import com.sonarsource.ruleapi.externalspecifications.tools.ReSharper;
+import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperJavaScript;
+import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperVbNet;
+import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperWarnings;
+import com.sonarsource.ruleapi.externalspecifications.tools.SwiftLint;
 
 
 public enum SupportedStandard {
