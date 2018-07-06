@@ -381,13 +381,13 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     @Override
     public String getSeeSectionSearchString() {
 
-      return NAME;
+      return name;
     }
 
     @Override
     public String getReferencePattern() {
 
-      return REFERENCE_PATTERN;
+      return name;
     }
 
     @Override
@@ -403,7 +403,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     @Override
     public String getStandardName() {
 
-      return NAME;
+      return NAME + " - " + name;
     }
 
     @Override

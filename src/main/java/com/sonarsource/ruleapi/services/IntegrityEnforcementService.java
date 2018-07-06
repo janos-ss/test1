@@ -473,7 +473,6 @@ public class IntegrityEnforcementService extends RuleManager {
         addTagIfMissing(rule, updates, taggable.getTag());
         addSeeToReferenceField(sees, referenceFieldValues, taggable.getRSpecReferenceFieldName(), updates);
         checkReferencesInSee(referenceFieldValues, sees, rule);
-
       }
     }
 

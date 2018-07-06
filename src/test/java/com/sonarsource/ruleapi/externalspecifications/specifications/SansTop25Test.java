@@ -79,8 +79,9 @@ public class SansTop25Test {
     assertThat(sansTop25.getStandardName()).isEqualTo("SANS Top 25");
     assertThat(sansTop25.getRSpecReferenceFieldName()).isEqualTo("SANS Top 25");
     assertThat(sansTop25.getCodingStandardRules()).hasSize(25);
-    assertThat(SansTop25.Category.RISKY_RESOURCE.getReferencePattern()).isEqualTo(
-      "Insecure Interaction Between Components|Risky Resource Management|Porous Defenses");
+    assertThat(SansTop25.Category.INSECURE_INTERACTION.getReferencePattern()).isEqualTo("Insecure Interaction Between Components");
+    assertThat(SansTop25.Category.RISKY_RESOURCE.getReferencePattern()).isEqualTo("Risky Resource Management");
+    assertThat(SansTop25.Category.POROUS_DEFENSES.getReferencePattern()).isEqualTo("Porous Defenses");
     assertThat(SansTop25.Category.INSECURE_INTERACTION.getTag()).isEqualTo("sans-top25-insecure");
     assertThat(SansTop25.Category.RISKY_RESOURCE.getTag()).isEqualTo("sans-top25-risky");
     assertThat(SansTop25.Category.POROUS_DEFENSES.getTag()).isEqualTo("sans-top25-porous");

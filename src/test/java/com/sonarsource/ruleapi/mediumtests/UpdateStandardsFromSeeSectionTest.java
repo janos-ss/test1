@@ -110,7 +110,7 @@ public class UpdateStandardsFromSeeSectionTest {
       param("jql", "project=RSPEC " +
         "AND resolution = Unresolved " +
         "AND issuetype != Language-Specification " +
-        "AND (('SANS Top 25' is not EMPTY OR description ~ 'SANS Top 25' OR labels = sans-top25-insecure))"),
+        "AND (('SANS Top 25' is not EMPTY OR description ~ 'Insecure Interaction Between Components' OR labels = sans-top25-insecure))"),
       param("maxResults", "1000"),
       param("fields", "*all,-comment,-assignee,-project,-reporter,-creator,-votes,-watches,-parent"),
       param("startAt", "0")
@@ -177,7 +177,7 @@ public class UpdateStandardsFromSeeSectionTest {
       param("jql", "project=RSPEC " +
         "AND resolution = Unresolved " +
         "AND issuetype != Language-Specification " +
-        "AND (('SANS Top 25' is not EMPTY OR description ~ 'SANS Top 25' OR labels = sans-top25-insecure))"),
+        "AND (('SANS Top 25' is not EMPTY OR description ~ 'Insecure Interaction Between Components' OR labels = sans-top25-insecure))"),
       param("maxResults", "1000"),
       param("fields", "*all,-comment,-assignee,-project,-reporter,-creator,-votes,-watches,-parent"),
       param("startAt", "0")
