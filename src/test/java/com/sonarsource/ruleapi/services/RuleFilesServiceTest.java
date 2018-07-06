@@ -7,6 +7,7 @@ package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.utilities.Language;
+import java.util.Collections;
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -350,7 +351,8 @@ public class RuleFilesServiceTest {
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected4);
 
-    rule.setOwasp(Arrays.asList("A1"));
+    rule.setOwasp(Collections.singletonList("A1"));
+    rule.setCwe(Arrays.asList("CWE-123", "CWE-456"));
     final String expected5 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
             "  \"type\": \"CODE_SMELL\",\n" +
@@ -368,6 +370,10 @@ public class RuleFilesServiceTest {
             "  \"sqKey\": \"S1234\",\n" +
             "  \"scope\": \"Tests\",\n" +
             "  \"securityStandards\": {\n" +
+            "    \"CWE\": [\n" +
+            "      123,\n" +
+            "      456\n" +
+            "    ],\n" +
             "    \"OWASP\": [\n" +
             "      \"A1\"\n" +
             "    ]\n" +

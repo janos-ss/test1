@@ -347,7 +347,7 @@ public class RuleFilesService {
     JSONObject securityStandards = new JSONObject();
     if (!rule.getCwe().isEmpty()) {
       JSONArray values = new JSONArray();
-      values.addAll(rule.getCwe());
+      values.addAll(rule.getCwe().stream().map(cweId -> Integer.parseInt(cweId.substring("CWE-".length()))).collect(Collectors.toList()));
       securityStandards.put("CWE", values);
     }
     if (!rule.getOwasp().isEmpty()) {
