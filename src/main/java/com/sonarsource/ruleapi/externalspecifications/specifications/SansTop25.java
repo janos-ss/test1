@@ -435,9 +435,6 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
       if (sansTop25.contains(name) && !seeSectionHasReference) {
         LOGGER.log(Level.INFO, "Expected reference not found in {0}: {1}",
           new Object[] {rule.getKey(), name});
-      } else if (!sansTop25.contains(name) && seeSectionHasReference) {
-        LOGGER.log(Level.WARNING, "{0} found erroneously in See section for {1}",
-          new Object[] {name, rule.getKey()});
       }
     }
 
