@@ -257,14 +257,7 @@ public class OwaspTopTen extends AbstractMultiLanguageStandard {
       boolean needsTag = getRspecReferenceFieldValues(rule).contains(name());
       boolean hasTag = tags.contains(tag);
 
-      if (!hasTag && needsTag) {
-        tags.add(tag);
-        updates.put("Labels", tags);
-      } else if (hasTag && !needsTag) {
-        tags.remove(tag);
-        updates.put("Labels", tags);
-      }
-
+      addOrRemoveTag(updates, tag, tags, needsTag, hasTag);
     }
 
     @Override

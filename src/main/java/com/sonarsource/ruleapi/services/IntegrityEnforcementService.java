@@ -466,6 +466,7 @@ public class IntegrityEnforcementService extends RuleManager {
         DerivativeTaggableStandard derivativeStandard = (DerivativeTaggableStandard) taggable;
 
         derivativeStandard.addTagIfMissing(rule, updates);
+        addSeeToReferenceField(sees, referenceFieldValues, derivativeStandard.getRSpecReferenceFieldName(), updates);
         derivativeStandard.checkReferencesInSeeSection(rule);
 
       } else {

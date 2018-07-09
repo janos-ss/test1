@@ -9,8 +9,8 @@ import com.google.common.base.Enums;
 import com.sonarsource.ruleapi.domain.CodingStandardRuleCoverage;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
+import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
-import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
 import com.sonarsource.ruleapi.services.ReportService;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
@@ -21,6 +21,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -346,7 +347,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     this.language = language;
   }
 
-  public enum Category implements TaggableStandard {
+  public enum Category implements DerivativeTaggableStandard {
     INSECURE_INTERACTION("Insecure Interaction Between Components", "http://www.sans.org/top25-software-errors/#cat1"),
     RISKY_RESOURCE("Risky Resource Management", "http://www.sans.org/top25-software-errors/#cat2"),
     POROUS_DEFENSES("Porous Defenses", "http://www.sans.org/top25-software-errors/#cat3");
@@ -421,6 +422,39 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
     @Override
     public void setRspecReferenceFieldValues(Rule rule, List<String> ids) {
       rule.setSansTop25(ids);
+    }
+
+    @Override
+    public void checkReferencesInSeeSection(Rule rule) {
+      List<String> sansTop25 = rule.getSansTop25();
+
+      String references = rule.getReferences().replaceAll("\n","");
+      String regex = ".*" + name + "\\<.*";
+      boolean seeSectionHasReference = references.matches(regex);
+
+      if (sansTop25.contains(name) && !seeSectionHasReference) {
+        LOGGER.log(Level.INFO, "Expected reference not found in {0}: {1}",
+          new Object[] {rule.getKey(), name});
+      } else if (!sansTop25.contains(name) && seeSectionHasReference) {
+        LOGGER.log(Level.WARNING, "{0} found erroneously in See section for {1}",
+          new Object[] {name, rule.getKey()});
+      }
+    }
+
+    @Override
+    public void addTagIfMissing(Rule rule, Map<String, Object> updates) {
+      if (Rule.Status.DEPRECATED.equals(rule.getStatus())) {
+        return;
+      }
+
+      String tag = getTag();
+      Set<String> tags = rule.getTags();
+
+      boolean needsTag = getRspecReferenceFieldValues(rule).contains(getReferencePattern())
+          || rule.getReferences().contains(getSeeSectionSearchString());
+      boolean hasTag = tags.contains(tag);
+
+      addOrRemoveTag(updates, tag, tags, needsTag, hasTag);
     }
   }
 
