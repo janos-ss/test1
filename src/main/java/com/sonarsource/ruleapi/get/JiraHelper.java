@@ -167,6 +167,12 @@ public class JiraHelper {
       } else if (piece.contains("Exceptions")) {
         rule.setExceptions(pieceContent);
 
+      } else if (piece.contains("Ask Yourself Whether")) {
+        rule.setAskYourself(pieceContent);
+
+      } else if (piece.contains("Recommended Secure Coding Practices")) {
+        rule.setRecommended(pieceContent);
+
       } else if (piece.contains("See")) {
         rule.setReferences(pieceContent);
 

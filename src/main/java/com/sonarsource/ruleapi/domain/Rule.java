@@ -122,6 +122,8 @@ public class Rule {
   private String nonCompliant = "";
   private String compliant = "";
   private String exceptions = "";
+  private String askYourself = "";
+  private String recommended = "";
   private String references = "";
   private String deprecation = "";
 
@@ -263,13 +265,19 @@ public class Rule {
     if (!Strings.isNullOrEmpty(subRule.exceptions)) {
       this.exceptions = subRule.exceptions;
     }
+    if (!Strings.isNullOrEmpty(subRule.askYourself)) {
+      this.askYourself = subRule.askYourself;
+    }
+    if (!Strings.isNullOrEmpty(subRule.recommended)) {
+      this.recommended = subRule.recommended;
+    }
     if (!Strings.isNullOrEmpty(subRule.references)) {
       this.references = subRule.references;
     }
   }
 
   public String getHtmlDescription() {
-    return description + nonCompliant + compliant + exceptions + references + deprecation;
+    return description + nonCompliant + compliant + exceptions + askYourself + recommended + references + deprecation;
   }
 
   public String getKey() {
@@ -424,6 +432,22 @@ public class Rule {
 
   public void setExceptions(String exceptions) {
     this.exceptions = exceptions;
+  }
+
+  public String getAskYourself() {
+    return askYourself;
+  }
+
+  public void setAskYourself(String askYourself) {
+    this.askYourself = askYourself;
+  }
+
+  public String getRecommended() {
+    return recommended;
+  }
+
+  public void setRecommended(String recommended) {
+    this.recommended = recommended;
   }
 
   public String getReferences() {

@@ -290,6 +290,12 @@ public class RuleComparison{
     logDifference(sb, "exceptions",
             ComparisonUtilities.getFirstDifferingToken(spec.getExceptions(), impl.getExceptions()));
 
+    logDifference(sb, "ask yourself whether",
+            ComparisonUtilities.getFirstDifferingToken(spec.getAskYourself(), impl.getAskYourself()));
+
+    logDifference(sb, "recommended secure coding practices",
+            ComparisonUtilities.getFirstDifferingToken(spec.getRecommended(), impl.getRecommended()));
+
     logDifference(sb, "references",
             ComparisonUtilities.getFirstDifferingToken(spec.getReferences(), impl.getReferences()));
 

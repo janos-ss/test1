@@ -138,6 +138,32 @@ public class RuleTest {
   }
 
   @Test
+  public void testMergeAskYourself() throws Exception {
+    Rule rule = new Rule(LANG);
+    rule.setAskYourself("Message one");
+    Rule subRule = new Rule(LANG);
+    subRule.setTitle(LANG);
+    subRule.setAskYourself("Message two");
+
+    rule.merge(subRule);
+
+    assertThat(rule.getAskYourself()).isEqualTo(subRule.getAskYourself());
+  }
+
+  @Test
+  public void testMergeRecommended() throws Exception {
+    Rule rule = new Rule(LANG);
+    rule.setRecommended("Message one");
+    Rule subRule = new Rule(LANG);
+    subRule.setTitle(LANG);
+    subRule.setRecommended("Message two");
+
+    rule.merge(subRule);
+
+    assertThat(rule.getRecommended()).isEqualTo(subRule.getRecommended());
+  }
+
+  @Test
   public void testMergeReferences() throws Exception {
     Rule rule = new Rule(LANG);
     rule.setReferences("Message one");
