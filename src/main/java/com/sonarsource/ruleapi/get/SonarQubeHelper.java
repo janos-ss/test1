@@ -80,7 +80,13 @@ public class SonarQubeHelper {
     for (int i = 1; i < pieces.length; i++) {
 
       String piece = pieces[i];
-      if (piece.contains("Noncompliant Code Example")) {
+      if (piece.contains("Ask Yourself Whether")) {
+        rule.setAskYourself(HTML_H2 + piece);
+
+      } else if (piece.contains("Recommended Secure Coding Practices")) {
+        rule.setRecommended(HTML_H2 + piece);
+
+      } else if (piece.contains("Noncompliant Code Example")) {
         rule.setNonCompliant(HTML_H2 + piece);
 
       } else if (piece.contains("Compliant Solution")) {

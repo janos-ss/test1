@@ -277,7 +277,7 @@ public class Rule {
   }
 
   public String getHtmlDescription() {
-    return description + nonCompliant + compliant + exceptions + askYourself + recommended + references + deprecation;
+    return description + askYourself + recommended + nonCompliant + compliant + exceptions + references + deprecation;
   }
 
   public String getKey() {
