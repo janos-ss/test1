@@ -347,7 +347,7 @@ public class MisraCPP2008 extends AbstractMisraSpecification {
 
   @Override
   public String getRSpecReferenceFieldName() {
-    return NAME;
+    return getStandardName();
   }
 
   @Override

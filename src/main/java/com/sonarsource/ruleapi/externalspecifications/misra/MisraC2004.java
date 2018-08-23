@@ -266,7 +266,7 @@ public class MisraC2004 extends AbstractMisraSpecification {
 
   @Override
   public String getRSpecReferenceFieldName() {
-    return NAME;
+    return getStandardName();
   }
 
 }
