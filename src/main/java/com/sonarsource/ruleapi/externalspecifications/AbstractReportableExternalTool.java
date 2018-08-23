@@ -156,7 +156,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
     for (CodingStandardRuleCoverage cov : getRulesCoverage().values()) {
       String csrId = cov.getCodingStandardRuleId();
-
+      // TODO fix this issue
       for (Rule rule : cov.getImplementedBy()) {
         List<String> csrIds = map.get(rule);
         if (csrIds == null) {
