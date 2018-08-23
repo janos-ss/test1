@@ -194,36 +194,13 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
       CodingStandardRuleCoverage cov = getRulesCoverage().get(id);
       if (!cov.getImplementedBy().isEmpty()) {
-        sb.append(TR_OPEN).append(id).append(TD);
-
-        if (csr instanceof HasLevel) {
-          sb.append(((HasLevel) csr).getLevel()).append(TD);
-        }
-
-        for (Rule rule : cov.getImplementedBy()) {
-          sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
-        }
-        sb.append(TR_CLOSE);
+        updateImplementedList(instance, sb, csr, id, cov);
 
       } else if (Implementability.REJECTED.equals(csr.getImplementability())) {
-        rejected.append(TR_OPEN).append(id);
-        if (csr instanceof HasLevel) {
-          rejected.append(TD).append(((HasLevel) csr).getLevel()).append(TD);
-        }
-
-        rejected.append(TR_CLOSE);
+        updateRejectedList(rejected, csr, id);
 
       } else {
-        pending.append(TR_OPEN).append(id).append(TD);
-        if (csr instanceof HasLevel) {
-          pending.append(((HasLevel) csr).getLevel()).append(TD);
-        }
-
-        for (Rule rule : cov.getSpecifiedBy()) {
-          pending.append(Utilities.getJiraLinkedRuleReference(rule));
-        }
-
-        pending.append(TR_CLOSE);
+        updatePendingList(pending, csr, id, cov);
 
       }
     }
@@ -236,6 +213,41 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
     sb.append(rejected);
 
     return sb.toString();
+  }
+
+  private static void updateImplementedList(String instance, StringBuilder sb, CodingStandardRule csr, String id, CodingStandardRuleCoverage cov) {
+    sb.append(TR_OPEN).append(id).append(TD);
+
+    if (csr instanceof HasLevel) {
+      sb.append(((HasLevel) csr).getLevel()).append(TD);
+    }
+
+    for (Rule rule : cov.getImplementedBy()) {
+      sb.append(Utilities.getNemoLinkedRuleReference(instance, rule));
+    }
+    sb.append(TR_CLOSE);
+  }
+
+  private static void updatePendingList(StringBuilder pending, CodingStandardRule csr, String id, CodingStandardRuleCoverage cov) {
+    pending.append(TR_OPEN).append(id).append(TD);
+    if (csr instanceof HasLevel) {
+      pending.append(((HasLevel) csr).getLevel()).append(TD);
+    }
+
+    for (Rule rule : cov.getSpecifiedBy()) {
+      pending.append(Utilities.getJiraLinkedRuleReference(rule));
+    }
+
+    pending.append(TR_CLOSE);
+  }
+
+  private static void updateRejectedList(StringBuilder rejected, CodingStandardRule csr, String id) {
+    rejected.append(TR_OPEN).append(id);
+    if (csr instanceof HasLevel) {
+      rejected.append(TD).append(((HasLevel) csr).getLevel()).append(TD);
+    }
+
+    rejected.append(TR_CLOSE);
   }
 
   public String getDeprecationReport(String instance) {
