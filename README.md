@@ -42,17 +42,23 @@ It relies on the `sonarpedia.json` file and a rules directory designated by the 
 ```
 (root)
   │
-  ├──  ./any/where/in/the/hierarchy/rules
-  │                                   ├── Sxxxx_(language).html
-  │                                   ├── Sxxxx_(language).json
-  │                                   ├── Syyyy_(language).html
-  │                                   └── Syyyy_(language).json
-  └── sonarpedia.json
+  └──  ./any/where/in/the/hierarchy/rules
+                  │                    ├── Sxxxx_(language).html
+                  │                    ├── Sxxxx_(language).json
+                  │                    ├── Syyyy_(language).html
+                  │                    └── Syyyy_(language).json
+                  └── sonarpedia.json
 ```
 
-It supports more than one language in the plugin.
+A repository may contain one or more `sonarpedia.json` file.
+`rule-api init`, `rule-api generate` and `rule-api update` must be run from the directory containing the `sonarpedia.json` file.
+Therefore when a repository contains several `sonarpedia.json` files, `rule-api ...` must be run several times to keep all the rules updated.
+
+A sonarpedia file may contain more than one language, in which case `rule-api update` will run on the different languages.
+
 By default this `rules` directory is near the `sonarpedia.json` file, but this be set up in any place deeper in the hierarchy.
-This `sonarpedia.json` must be at the root of the repository of the language plugin and any rule-api command run from that root directory.  
+
+
 The format of `sonarpedia.json` is described in the [Sonarpedia-schema.json file](https://github.com/SonarSource/sonar-rule-api/blob/master/sonarpedia-schema.json).
 As soon as a `sonarpedia.json` file is present, when running any **One-Click release**,  **Releasability** will check whether any `update` has been run since last release.
 

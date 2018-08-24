@@ -3,7 +3,7 @@
   "id": "http://www.sonarsource.org/sonarpedia-schema-v2.0",
   "title": "Analyzer configuration for sonarpedia",
   "type": "object",
-  "description": "sonarpedia files must be named 'sonarpedia.json' and must be placed at the project root",
+  "description": "sonarpedia files must be named 'sonarpedia.json'.",
   "required": ["rules-metadata-path", "languages"],
   "properties": {
     "rules-metadata-path": {
