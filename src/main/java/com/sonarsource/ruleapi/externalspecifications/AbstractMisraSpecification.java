@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -13,6 +13,7 @@ import com.sonarsource.ruleapi.utilities.Utilities;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -267,6 +268,6 @@ public abstract class AbstractMisraSpecification extends AbstractReportableStand
   }
 
   public String getPercent(int num, int denom) {
-    return String.format("%.2f%%",(double)num * 100 / denom);
+    return String.format(Locale.US, "%.2f%%",(double)num * 100 / denom);
   }
 }

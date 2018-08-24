@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -7,6 +7,7 @@ package com.sonarsource.ruleapi.utilities;
 
 import com.sonarsource.ruleapi.domain.Rule;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -140,5 +141,17 @@ public class Utilities {
   public static String getFormattedDateString(){
     LocalDateTime currentTime = LocalDateTime.now();
     return currentTime.format(DateTimeFormatter.ISO_LOCAL_DATE);
+  }
+
+  public static File assertBaseDir(String baseDir) {
+    if (baseDir == null) {
+      throw new IllegalArgumentException("directory is required");
+    } else {
+      File baseDirFile = new File(baseDir);
+      if (!baseDirFile.isDirectory()) {
+        throw new IllegalArgumentException("directory does not exist");
+      }
+      return baseDirFile;
+    }
   }
 }

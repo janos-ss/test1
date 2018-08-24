@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -38,7 +39,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
 
   private static final ReportType[] reportTypes = {
           ReportType.INTERNAL_COVERAGE, ReportType.INTERNAL_COVERAGE_SUMMARY,
-          ReportType.HTML, ReportType.DEPRECATION, ReportType.UNSPECIFIED};
+          ReportType.HTML, ReportType.UNSPECIFIED};
 
   protected Comparator<Rule> ruleKeyComparator = new RuleKeyComparator();
   private static class RuleKeyComparator implements Comparator<Rule> {
@@ -158,12 +159,7 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
       String csrId = cov.getCodingStandardRuleId();
       // TODO fix this issue
       for (Rule rule : cov.getImplementedBy()) {
-        List<String> csrIds = map.get(rule);
-        if (csrIds == null) {
-          csrIds = new ArrayList<>();
-          map.put(rule, csrIds);
-        }
-        csrIds.add(csrId);
+        map.computeIfAbsent(rule, r -> new ArrayList<>()).add(csrId);
       }
     }
 
@@ -296,8 +292,8 @@ public abstract class AbstractReportableExternalTool extends AbstractReportableS
   protected String formatLine(String label, int count, double percentage) {
 
     if (isHtml) {
-      return String.format("<tr><td>%s</td><td>%3d</td><td>%.2f%%</td></tr>", label, count, percentage);
+      return String.format(Locale.US, "<tr><td>%s</td><td>%3d</td><td>%.2f%%</td></tr>", label, count, percentage);
     }
-    return String.format("  %-15s %3d  %6.2f%%%n", label, count, percentage);
+    return String.format(Locale.US, "  %-15s %3d  %6.2f%%%n", label, count, percentage);
   }
 }

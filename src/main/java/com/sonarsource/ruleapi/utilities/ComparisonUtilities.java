@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
 package com.sonarsource.ruleapi.utilities;
 
 
-import org.fest.util.Strings;
+import com.google.common.base.Strings;
 
 import java.util.ArrayList;
 import java.util.Arrays;

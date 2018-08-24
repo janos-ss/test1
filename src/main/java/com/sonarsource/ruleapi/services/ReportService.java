@@ -1,10 +1,11 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
 package com.sonarsource.ruleapi.services;
 
+import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.ReportAndBadge;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.domain.RuleComparison;
@@ -22,7 +23,6 @@ import com.sonarsource.ruleapi.externalspecifications.specifications.AbstractMul
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
-import org.fest.util.Strings;
 import org.json.simple.JSONArray;
 
 import java.io.File;
@@ -200,13 +200,10 @@ public class ReportService extends RuleManager {
       if (supportedStandard.getStandard() instanceof AbstractReportableExternalTool) {
         AbstractReportableExternalTool externalTool = (AbstractReportableExternalTool) supportedStandard.getStandard();
 
-        LOGGER.log(Level.INFO, "Getting deprecated, unspecified ids for {0} on {1}",
+        LOGGER.log(Level.INFO, "Getting unspecified ids for {0} on {1}",
                 new Object[] {externalTool.getStandardName(), instance});
 
-        String report = externalTool.getDeprecationReport(instance);
-        writeFile("deprecated_" + externalTool.getStandardName().toLowerCase(Locale.ENGLISH) + "_ids.txt", report);
-
-        report = externalTool.getUnspecifiedReport();
+        String report = externalTool.getUnspecifiedReport();
         writeFile("unspecified_" + externalTool.getStandardName().toLowerCase(Locale.ENGLISH) + "_ids.txt", report);
       }
     }
@@ -291,7 +288,7 @@ public class ReportService extends RuleManager {
     String reportName = standard.getStandardName() + "_"
             + (language == null ? "" : (language.name() + "_"))
             + reportType.name()
-            + (reportType.isInternal() ? ".txt" : ".html");
+            + (reportType.isInternal() ? ".txt" : HTML);
 
     if (language == null) {
       LOGGER.info("null language found. Language may be required for the requested report");
@@ -307,9 +304,6 @@ public class ReportService extends RuleManager {
         } else {
           writeFile(reportName,((AbstractMultiLanguageStandard)standard).getHtmlLanguageReport(instance, language).getReport());
         }
-        break;
-      case DEPRECATION:
-        writeFile(reportName, ((AbstractReportableExternalTool)standard).getDeprecationReport(instance));
         break;
       case UNSPECIFIED:
         writeFile(reportName, ((AbstractReportableExternalTool)standard).getUnspecifiedReport());

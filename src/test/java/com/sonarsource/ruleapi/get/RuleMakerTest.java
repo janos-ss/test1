@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -8,7 +8,6 @@ package com.sonarsource.ruleapi.get;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.Rule;
 import com.sonarsource.ruleapi.utilities.Language;
-import org.fest.assertions.api.Assertions;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -20,8 +19,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class RuleMakerTest {
 
@@ -33,6 +32,7 @@ public class RuleMakerTest {
     Rule rule = RuleMaker.getRuleByKey("S2210", "Java");
     assertThat(rule).isNotNull();
     assertThat(rule.getKey()).isEqualTo("RSPEC-2210");
+    assertThat(rule.getSqKey()).isEqualTo("S2210");
     assertThat(rule.getLookupKey()).isEqualTo("S2210");
   }
 
@@ -171,7 +171,7 @@ public class RuleMakerTest {
   @Test
   public void testFleshOutRuleNullIssue() {
     Rule rule = new Rule("");
-    RuleMaker.fleshOutRule(new JiraFetcherImpl(), rule, null);
+    RuleMaker.fleshOutRule(JiraFetcherImpl.instance(), rule, null);
     assertThat(rule.getTitle()).isNull();
   }
 
@@ -181,7 +181,7 @@ public class RuleMakerTest {
 
     Rule rule = new Rule("");
     try {
-      RuleMaker.fleshOutRule(new JiraFetcherImpl(), rule, (JSONObject) parser.parse(json));
+      RuleMaker.fleshOutRule(JiraFetcherImpl.instance(), rule, (JSONObject) parser.parse(json));
     } catch (ParseException e) {
       e.printStackTrace();
     }
@@ -202,12 +202,12 @@ public class RuleMakerTest {
   @Test
   public void testGetProfiles() {
 
-    String json = "[{\"key\":\"java-android-lint-48163\",\"name\":\"Android Lint\",\"lang\":\"java\"},{\"key\":\"php-drupal-68026\",\"name\":\"Drupal\",\"lang\":\"php\"},{\"key\":\"web-nemo-web-profile-50403\",\"name\":\"Nemo Web profile\",\"lang\":\"web\"},{\"key\":\"php-psr-2-29775\",\"name\":\"PSR-2\",\"lang\":\"php\"},{\"key\":\"cs-sonar-c-way-58434\",\"name\":\"Sonar C# Way\",\"lang\":\"cs\"},{\"key\":\"abap-sonar-way-38370\",\"name\":\"Sonar way\",\"lang\":\"abap\"},{\"key\":\"c-sonar-way-44762\",\"name\":\"Sonar way\",\"lang\":\"c\"},{\"key\":\"cobol-sonar-way-41769\",\"name\":\"Sonar way\",\"lang\":\"cobol\"},{\"key\":\"cpp-sonar-way-81587\",\"name\":\"Sonar way\",\"lang\":\"cpp\"},{\"key\":\"cs-sonar-way-31865\",\"name\":\"Sonar way\",\"lang\":\"cs\"},{\"key\":\"css-sonar-way-50956\",\"name\":\"Sonar way\",\"lang\":\"css\"},{\"key\":\"flex-sonar-way-91920\",\"name\":\"Sonar way\",\"lang\":\"flex\"},{\"key\":\"grvy-sonar-way-20404\",\"name\":\"Sonar way\",\"lang\":\"grvy\"},{\"key\":\"java-sonar-way-45126\",\"name\":\"Sonar way\",\"lang\":\"java\"},{\"key\":\"js-sonar-way-56838\",\"name\":\"Sonar way\",\"lang\":\"js\"},{\"key\":\"objc-sonar-way-83399\",\"name\":\"Sonar way\",\"lang\":\"objc\"},{\"key\":\"php-sonar-way-05918\",\"name\":\"Sonar way\",\"lang\":\"php\"},{\"key\":\"pli-sonar-way-95331\",\"name\":\"Sonar way\",\"lang\":\"pli\"},{\"key\":\"plsql-sonar-way-37514\",\"name\":\"Sonar way\",\"lang\":\"plsql\"},{\"key\":\"py-sonar-way-67511\",\"name\":\"Sonar way\",\"lang\":\"py\"},{\"key\":\"rpg-sonar-way-64226\",\"name\":\"Sonar way\",\"lang\":\"rpg\"},{\"key\":\"swift-sonar-way-89786\",\"name\":\"Sonar way\",\"lang\":\"swift\"},{\"key\":\"vb-sonar-way-21338\",\"name\":\"Sonar way\",\"lang\":\"vb\"},{\"key\":\"vbnet-sonar-way-31082\",\"name\":\"Sonar way\",\"lang\":\"vbnet\"},{\"key\":\"web-sonar-way-50375\",\"name\":\"Sonar way\",\"lang\":\"web\"},{\"key\":\"xml-sonar-way-06052\",\"name\":\"Sonar way\",\"lang\":\"xml\"},{\"key\":\"java-java-security-quality-profile-60308\",\"name\":\"SonarQube Security way\",\"lang\":\"java\"}]";
+    String json = "[{\"key\":\"java-android-lint-48163\",\"name\":\"Android Lint\",\"language\":\"java\"},{\"key\":\"php-drupal-68026\",\"name\":\"Drupal\",\"language\":\"php\"},{\"key\":\"web-nemo-web-profile-50403\",\"name\":\"Nemo Web profile\",\"language\":\"web\"},{\"key\":\"php-psr-2-29775\",\"name\":\"PSR-2\",\"language\":\"php\"},{\"key\":\"cs-sonar-c-way-58434\",\"name\":\"Sonar C# Way\",\"language\":\"cs\"},{\"key\":\"abap-sonar-way-38370\",\"name\":\"Sonar way\",\"language\":\"abap\"},{\"key\":\"c-sonar-way-44762\",\"name\":\"Sonar way\",\"language\":\"c\"},{\"key\":\"cobol-sonar-way-41769\",\"name\":\"Sonar way\",\"language\":\"cobol\"},{\"key\":\"cpp-sonar-way-81587\",\"name\":\"Sonar way\",\"language\":\"cpp\"},{\"key\":\"cs-sonar-way-31865\",\"name\":\"Sonar way\",\"language\":\"cs\"},{\"key\":\"css-sonar-way-50956\",\"name\":\"Sonar way\",\"language\":\"css\"},{\"key\":\"flex-sonar-way-91920\",\"name\":\"Sonar way\",\"language\":\"flex\"},{\"key\":\"grvy-sonar-way-20404\",\"name\":\"Sonar way\",\"language\":\"grvy\"},{\"key\":\"java-sonar-way-45126\",\"name\":\"Sonar way\",\"language\":\"java\"},{\"key\":\"js-sonar-way-56838\",\"name\":\"Sonar way\",\"language\":\"js\"},{\"key\":\"objc-sonar-way-83399\",\"name\":\"Sonar way\",\"language\":\"objc\"},{\"key\":\"php-sonar-way-05918\",\"name\":\"Sonar way\",\"language\":\"php\"},{\"key\":\"pli-sonar-way-95331\",\"name\":\"Sonar way\",\"language\":\"pli\"},{\"key\":\"plsql-sonar-way-37514\",\"name\":\"Sonar way\",\"language\":\"plsql\"},{\"key\":\"py-sonar-way-67511\",\"name\":\"Sonar way\",\"language\":\"py\"},{\"key\":\"rpg-sonar-way-64226\",\"name\":\"Sonar way\",\"language\":\"rpg\"},{\"key\":\"swift-sonar-way-89786\",\"name\":\"Sonar way\",\"language\":\"swift\"},{\"key\":\"vb-sonar-way-21338\",\"name\":\"Sonar way\",\"language\":\"vb\"},{\"key\":\"vbnet-sonar-way-31082\",\"name\":\"Sonar way\",\"language\":\"vbnet\"},{\"key\":\"web-sonar-way-50375\",\"name\":\"Sonar way\",\"language\":\"web\"},{\"key\":\"xml-sonar-way-06052\",\"name\":\"Sonar way\",\"language\":\"xml\"},{\"key\":\"java-java-security-quality-profile-60308\",\"name\":\"SonarQube Security way\",\"language\":\"java\"}]";
 
     try {
       List<Profile> profiles = RuleMaker.getProfiles(Language.JAVA, (List<JSONObject>) parser.parse(json));
 
-      Assertions.assertThat(profiles).hasSize(3);
+      assertThat(profiles).hasSize(3);
     } catch (ParseException e) {
       fail("Unexpected exception thrown");
     }

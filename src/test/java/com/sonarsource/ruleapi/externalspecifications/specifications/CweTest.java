@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -16,7 +16,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static com.sonarsource.ruleapi.externalspecifications.Implementability.IMPLEMENTABLE;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class CweTest {
@@ -141,4 +142,13 @@ public class CweTest {
 
   }
 
+  @Test
+  public void shouldReturnNullCweRuleOnUnknownCweId() throws Exception {
+    assertThat(Cwe.CweRule.fromString("polop")).isNull();
+  }
+
+  @Test
+  public void shouldReturnImplementabilityOnImplementableRule() throws Exception {
+    assertThat(Cwe.CweRule.fromString("CWE-42").getImplementability()).isEqualTo(IMPLEMENTABLE);
+  }
 }

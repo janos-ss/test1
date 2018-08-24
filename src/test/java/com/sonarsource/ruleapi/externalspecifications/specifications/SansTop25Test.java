@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -11,94 +11,15 @@ import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class SansTop25Test {
 
   private SansTop25 sansTop25 = new SansTop25();
-
-  @Test
-  public void testAddTagIfMissingAddTag() {
-
-    Rule rule = new Rule("");
-    rule.setTags(new ArrayList<String>());
-
-    rule.getCwe().add("CWE-89");
-
-    Map<String, Object> updates = new HashMap<>();
-
-    SansTop25.Category.INSECURE_INTERACTION.addTagIfMissing(rule, updates);
-    assertThat(updates).hasSize(1);
-    assertThat((Set<String>)updates.get("Labels")).hasSize(1);
-    assertThat(rule.getTags()).hasSize(1);
-
-  }
-
-  @Test
-  public void testAddTagIfMissingDeprecated() {
-
-    Rule rule = new Rule("");
-    rule.setStatus(Rule.Status.DEPRECATED);
-    rule.setTags(new ArrayList<String>());
-
-    rule.getCwe().add("CWE-89");
-
-    Map<String, Object> updates = new HashMap<>();
-
-    SansTop25.Category.INSECURE_INTERACTION.addTagIfMissing(rule, updates);
-    assertThat(updates).hasSize(0);
-    assertThat(rule.getTags()).hasSize(0);
-
-  }
-
-  @Test
-  public void testAddTagIfMissingDoNothing(){
-
-    Rule rule = new Rule("");
-    rule.setTags(new ArrayList<String>());
-    rule.getTags().add("sans-top25-insecure");
-
-    rule.getCwe().add("CWE-89");
-
-    Map<String, Object> updates = new HashMap<>();
-
-    SansTop25.Category.INSECURE_INTERACTION.addTagIfMissing(rule, updates);
-    assertThat(updates).isEmpty();
-
-  }
-
-  @Test
-  public void testAddTagIfMissingRemoveTag(){
-
-    Rule rule = new Rule("");
-    rule.setTags(new ArrayList<String>());
-    rule.getTags().add("sans-top25-porous");
-
-    Map<String, Object> updates = new HashMap<>();
-
-    SansTop25.Category.POROUS_DEFENSES.addTagIfMissing(rule, updates);
-    assertThat(updates).hasSize(1);
-    assertThat((Set<String>) updates.get("Labels")).isEmpty();
-    assertThat(rule.getTags()).isEmpty();
-  }
-
-  @Test
-  public void testIsSansRuleItsNot() {
-
-    Rule rule = new Rule("");
-
-    assertThat(SansTop25.Category.POROUS_DEFENSES.isSansCategoryRule(rule, null)).isFalse();
-
-    rule.getCwe().add("CWE-1");
-    assertThat(SansTop25.Category.RISKY_RESOURCE.isSansCategoryRule(rule,null)).isFalse();
-  }
 
   @Test
   public void testSummaryReport(){
@@ -121,27 +42,6 @@ public class SansTop25Test {
     String report = sans.getReport("");
     assertThat(report).contains(expectedSummaryReport);
     assertThat(report).contains("CWE-352");
-  }
-
-  @Test
-  public void testCheckReferencesInSeeSection() {
-
-    Rule rule = new Rule("");
-
-    String seeSection="<li><a href=\"cwe.mitre.org/data/definitions/459\">MITRE, CWE-459</a> - Incomplete Cleanup</li>" +
-            "<li><a href=\"http://www.sans.org/top25-software-errors/\">SANS Top 25</a> - Porous Defenses</li>";
-    rule.setReferences(seeSection);
-
-    SansTop25.Category.POROUS_DEFENSES.checkReferencesInSeeSection(rule);
-
-    assertThat(rule.getCwe()).isEmpty();
-    assertThat(rule.getReferences()).isEqualTo(seeSection);
-
-    rule.getCwe().add("CWE-250");
-    SansTop25.Category.POROUS_DEFENSES.checkReferencesInSeeSection(rule);
-
-    assertThat(rule.getCwe()).hasSize(1);
-    assertThat(rule.getReferences()).isEqualTo(seeSection);
   }
 
   @Test
@@ -177,9 +77,11 @@ public class SansTop25Test {
 
     assertThat(sansTop25.getLanguage()).isNull();
     assertThat(sansTop25.getStandardName()).isEqualTo("SANS Top 25");
-    assertThat(sansTop25.getRSpecReferenceFieldName()).isEqualTo("CWE");
+    assertThat(sansTop25.getRSpecReferenceFieldName()).isEqualTo("SANS Top 25");
     assertThat(sansTop25.getCodingStandardRules()).hasSize(25);
-    assertThat(SansTop25.Category.RISKY_RESOURCE.getReferencePattern()).isEqualTo("CWE-\\d+");
+    assertThat(SansTop25.Category.INSECURE_INTERACTION.getReferencePattern()).isEqualTo("Insecure Interaction Between Components");
+    assertThat(SansTop25.Category.RISKY_RESOURCE.getReferencePattern()).isEqualTo("Risky Resource Management");
+    assertThat(SansTop25.Category.POROUS_DEFENSES.getReferencePattern()).isEqualTo("Porous Defenses");
     assertThat(SansTop25.Category.INSECURE_INTERACTION.getTag()).isEqualTo("sans-top25-insecure");
     assertThat(SansTop25.Category.RISKY_RESOURCE.getTag()).isEqualTo("sans-top25-risky");
     assertThat(SansTop25.Category.POROUS_DEFENSES.getTag()).isEqualTo("sans-top25-porous");

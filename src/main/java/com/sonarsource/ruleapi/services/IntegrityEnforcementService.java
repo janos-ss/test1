@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -14,11 +14,10 @@ import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard
 import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.externalspecifications.TaggableStandard;
+import com.sonarsource.ruleapi.externalspecifications.specifications.SansTop25;
 import com.sonarsource.ruleapi.get.RuleMaker;
 import com.sonarsource.ruleapi.update.RuleUpdater;
 import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
-import com.sonarsource.ruleapi.utilities.Language;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -67,7 +66,8 @@ public class IntegrityEnforcementService extends RuleManager {
     }
   }
 
-  private static void checkUrlInReferenceLine(String ruleKey, String line) {
+  @VisibleForTesting
+  static void checkUrlInReferenceLine(String ruleKey, String line) {
 
     if (line.contains("http")) {
 
@@ -136,7 +136,7 @@ public class IntegrityEnforcementService extends RuleManager {
   }
 
 
-  private void cleanUpDeprecatedRules() {
+  public void cleanUpDeprecatedRules() {
 
     List<Rule> rules = RuleMaker.getRulesByJql(" issueFunction in hasLinks(\"is deprecated by\") OR status = DEPRECATED", "");
     for (Rule rule : rules) {
@@ -413,77 +413,6 @@ public class IntegrityEnforcementService extends RuleManager {
   }
 
 
-  public void setCoveredLanguages() {
-    for (Language lang : Language.values()) {
-      LOGGER.info("Setting covered for " + lang.getRspec());
-      setCoveredForLanguage(lang);
-    }
-  }
-
-  private void setCoveredForLanguage(Language language) {
-    String rspecLanguage = language.getRspec();
-
-    Map<String,Rule> needsUpdating = new HashMap<>();
-
-    Map<String, Rule> rspecRules = getCoveredRulesForLanguage(language);
-
-    List<Rule> sqCovered = RuleMaker.getRulesFromSonarQubeForLanguage(language, RuleManager.SONARQUBE_COM);
-    List<Rule> specNotFound = standardizeKeysAndIdentifyMissingSpecs(language, sqCovered);
-
-    for (Rule sqRule : sqCovered) {
-
-      if (specNotFound.contains(sqRule)) {
-        continue;
-      }
-
-      String key = sqRule.getKey();
-      Rule rspecRule = rspecRules.remove(key);
-      if (rspecRule == null) {
-        rspecRule = RuleMaker.getRuleByKey(key, language.getRspec());
-      }
-
-      addCoveredForNemoRules(rspecLanguage, needsUpdating, rspecRule);
-    }
-
-    dropCoveredForNonNemoRules(rspecLanguage, rspecRules, needsUpdating);
-    for (Rule rule : needsUpdating.values()) {
-      Map<String, Object> updates = new HashMap<>();
-      updates.put("Covered Languages", rule.getCoveredLanguages());
-      updates.put(TARGETED_LANGUAGES, rule.getTargetedLanguages());
-      ruleUpdater.updateRule(rule.getKey(), updates);
-    }
-  }
-
-  @VisibleForTesting
-  protected void dropCoveredForNonNemoRules(String rspecLanguage, Map<String, Rule> rspecRules, Map<String, Rule> needsUpdating) {
-
-    for (Rule rspecRule : rspecRules.values()) {
-      rspecRule.getCoveredLanguages().remove(rspecLanguage);
-
-      rspecRule.getTargetedLanguages().add(rspecLanguage);
-      LOGGER.log(Level.INFO, "{0} {1} moving from covered to targeted",
-              new Object[]{ rspecLanguage, rspecRule.getKey()});
-
-      needsUpdating.put(rspecRule.getKey(), rspecRule);
-    }
-  }
-
-  @VisibleForTesting
-  protected void addCoveredForNemoRules(String rspecLanguage, Map<String, Rule> needsUpdating, Rule rspecRule) {
-
-    if (! rspecRule.getCoveredLanguages().contains(rspecLanguage)) {
-      rspecRule.getCoveredLanguages().add(rspecLanguage);
-      needsUpdating.put(rspecRule.getKey(), rspecRule);
-      LOGGER.log(Level.INFO, "{0} {1} adding covered",
-              new Object[] {rspecLanguage, rspecRule.getKey()});
-    }
-    if (rspecRule.getTargetedLanguages().remove(rspecLanguage) && ! needsUpdating.containsKey(rspecRule.getKey())) {
-      needsUpdating.put(rspecRule.getKey(), rspecRule);
-      LOGGER.log(Level.INFO, "{0} {1} removing targeted",
-              new Object[] {rspecLanguage, rspecRule.getKey()});
-    }
-  }
-
   private void enforceTagReferenceIntegrity() {
 
     for (SupportedStandard supportedStandard : SupportedStandard.values()) {
@@ -537,6 +466,7 @@ public class IntegrityEnforcementService extends RuleManager {
         DerivativeTaggableStandard derivativeStandard = (DerivativeTaggableStandard) taggable;
 
         derivativeStandard.addTagIfMissing(rule, updates);
+        addSeeToReferenceField(sees, referenceFieldValues, derivativeStandard.getRSpecReferenceFieldName(), updates);
         derivativeStandard.checkReferencesInSeeSection(rule);
 
       } else {
@@ -544,7 +474,6 @@ public class IntegrityEnforcementService extends RuleManager {
         addTagIfMissing(rule, updates, taggable.getTag());
         addSeeToReferenceField(sees, referenceFieldValues, taggable.getRSpecReferenceFieldName(), updates);
         checkReferencesInSee(referenceFieldValues, sees, rule);
-
       }
     }
 
@@ -581,7 +510,7 @@ public class IntegrityEnforcementService extends RuleManager {
     }
 
     Set<String> tags = rule.getTags();
-    LOGGER.log(Level.INFO, "Adding missing tag '{0}' to {1}",
+    LOGGER.log(Level.INFO, "Adding missing tag {0} to {1}",
             new Object[]{tag, rule.getKey()});
     if (!tags.contains(tag)) {
       tags.add(tag);
@@ -616,13 +545,14 @@ public class IntegrityEnforcementService extends RuleManager {
     List<String> refs = new ArrayList<>();
 
     String pattern = taggable.getReferencePattern();
+    String separator = (taggable instanceof SansTop25.Category ? " - " : " ");
 
     for (String reference : references) {
       if (!reference.matches(".*" + pattern + ".*")) {
         continue;
       }
 
-      String[] pieces = reference.split(" ");
+      String[] pieces = reference.split(separator);
       for (String piece : pieces) {
         if (piece.matches(pattern)) {
           refs.add(piece);

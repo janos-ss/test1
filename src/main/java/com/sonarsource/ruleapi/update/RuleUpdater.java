@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -31,11 +31,12 @@ import java.util.logging.Logger;
 public class RuleUpdater {
 
   private static final Logger LOGGER = Logger.getLogger(RuleUpdater.class.getName());
-  private static final String ISSUE_BASE_URL = JiraFetcherImpl.BASE_URL + JiraFetcherImpl.ISSUE;
+  private final String issueBaseUrl;
   private final String login;
   private final String password;
 
   public RuleUpdater(String login, String password) {
+    this.issueBaseUrl = JiraFetcherImpl.getBaseUrl() + JiraFetcherImpl.ISSUE;
     this.login = login;
     this.password = password;
   }
@@ -44,7 +45,7 @@ public class RuleUpdater {
     if (!ruleKey.matches("RSPEC-[0-9]+") || fieldValuesToUpdate.isEmpty()) {
       return false;
     }
-    JSONObject jobj = Fetcher.getJsonFromUrl(ISSUE_BASE_URL + ruleKey + "/editmeta", login, password);
+    JSONObject jobj = Fetcher.getJsonFromUrl(issueBaseUrl + ruleKey + "/editmeta", login, password);
     JSONObject fieldsMeta = (JSONObject)jobj.get("fields");
     JSONObject request = prepareRequest(fieldValuesToUpdate, fieldsMeta);
     LOGGER.log(Level.FINE, "Update {0} : {1}",
@@ -53,7 +54,7 @@ public class RuleUpdater {
   }
 
   public boolean updateRuleStatus(String ruleKey, Rule.Status status) {
-    JSONObject jobj = Fetcher.getJsonFromUrl(ISSUE_BASE_URL + ruleKey + "/transitions?expand=transitions.fields", login, password);
+    JSONObject jobj = Fetcher.getJsonFromUrl(issueBaseUrl + ruleKey + "/transitions?expand=transitions.fields", login, password);
     JSONObject request = prepareTransitionRequest(status, jobj);
     LOGGER.log(Level.FINE, "Update {0} : {1}",
             new Object[]{ruleKey, request.toJSONString()});
@@ -201,14 +202,14 @@ public class RuleUpdater {
 
   private boolean putIssueUpdate(String ruleKey, JSONObject request) {
     Client client = ClientBuilder.newClient().register(HttpAuthenticationFeature.basic(login, password));
-    WebTarget target = client.target(ISSUE_BASE_URL + ruleKey);
+    WebTarget target = client.target(issueBaseUrl + ruleKey);
     Response response = target.request(MediaType.APPLICATION_JSON_TYPE).put(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
     return readAndCloseResponse(client, response);
   }
 
   private boolean postIssueUpdate(String apiTarget, JSONObject request) {
     Client client = ClientBuilder.newClient().register(HttpAuthenticationFeature.basic(login, password));
-    WebTarget target = client.target(ISSUE_BASE_URL + apiTarget);
+    WebTarget target = client.target(issueBaseUrl + apiTarget);
     Response response = target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
     return readAndCloseResponse(client, response);
   }

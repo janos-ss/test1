@@ -1,0 +1,1347 @@
+{
+  "fields": {
+    "issuetype": {
+      "required": true,
+      "schema": {
+        "type": "issuetype",
+        "system": "issuetype"
+      },
+      "name": "Issue Type",
+      "operations": [],
+      "allowedValues": [
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10404",
+          "id": "10404",
+          "description": "",
+          "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+          "name": "Code Smell Detection",
+          "subtask": false,
+          "avatarId": 10386
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10403",
+          "id": "10403",
+          "description": "",
+          "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+          "name": "Bug Detection",
+          "subtask": false,
+          "avatarId": 10386
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10406",
+          "id": "10406",
+          "description": "",
+          "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+          "name": "Vulnerability Detection",
+          "subtask": false,
+          "avatarId": 10386
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10500",
+          "id": "10500",
+          "description": "",
+          "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+          "name": "Security Hotspot Detection",
+          "subtask": false,
+          "avatarId": 10386
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10405",
+          "id": "10405",
+          "description": "",
+          "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+          "name": "Finding Detection",
+          "subtask": false,
+          "avatarId": 10386
+        }
+      ]
+    },
+    "customfield_10030": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+        "customId": 10030
+      },
+      "name": "Message",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11042": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11042
+      },
+      "name": "FxCop",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10430": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10430
+      },
+      "name": "ReSharper",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10630": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10630
+      },
+      "name": "CPPCheck",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10631": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10631
+      },
+      "name": "Pylint",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11634": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11634
+      },
+      "name": "Fortify",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11030": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11030
+      },
+      "name": "PC-Lint",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11031": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+        "customId": 11031
+      },
+      "name": "Quick-fixes",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11230": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11230
+      },
+      "name": "VisualStudio",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11231": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11231
+      },
+      "name": "PVS-Studio",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11430": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11430
+      },
+      "name": "TSLint",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11432": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11432
+      },
+      "name": "SwiftLint",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11234": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11234
+      },
+      "name": "MSFT Roslyn",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11431": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11431
+      },
+      "name": "TSLint-SonarTS",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11632": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11632
+      },
+      "name": "Stylelint",
+      "operations": [
+        "set"
+      ]
+    },
+    "labels": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "system": "labels"
+      },
+      "name": "Labels",
+      "autoCompleteUrl": "https://jira.sonarsource.com/rest/api/1.0/labels/suggest?query=",
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ]
+    },
+    "customfield_10258": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10258
+      },
+      "name": "MISRA C 2012",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11340": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "custom": "com.onresolve.jira.groovy.groovyrunner:scripted-field",
+        "customId": 11340
+      },
+      "name": "Impact",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10250": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10250
+      },
+      "name": "PHP-FIG",
+      "operations": [
+        "set"
+      ]
+    },
+    "description": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "system": "description"
+      },
+      "name": "Description",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10251": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10251
+      },
+      "name": "CWE",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10252": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10252
+      },
+      "name": "SANS Top 25",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11341": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "custom": "com.onresolve.jira.groovy.groovyrunner:scripted-field",
+        "customId": 11341
+      },
+      "name": "Likelihood",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10011": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+        "customId": 10011
+      },
+      "name": "Remediation Function",
+      "operations": [
+        "set"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10083",
+          "value": "Linear",
+          "id": "10083"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10084",
+          "value": "Linear with offset",
+          "id": "10084"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10085",
+          "value": "Linear with threshold",
+          "id": "10085"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10086",
+          "value": "Constant/Issue",
+          "id": "10086"
+        }
+      ]
+    },
+    "customfield_10330": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:labels",
+        "customId": 10330
+      },
+      "name": "Implementation details",
+      "autoCompleteUrl": "https://jira.sonarsource.com/rest/api/1.0/labels/20441/suggest?customFieldId=10330&query=",
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ]
+    },
+    "customfield_10253": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10253
+      },
+      "name": "OWASP",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10012": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10012
+      },
+      "name": "Constant Cost",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10013": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10013
+      },
+      "name": "Linear Factor",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10255": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10255
+      },
+      "name": "CERT",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10256": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10256
+      },
+      "name": "Linear Argument Description",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10014": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10014
+      },
+      "name": "Linear Offset",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10015": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10015
+      },
+      "name": "Legacy Key",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10257": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10257
+      },
+      "name": "FindSecBugs",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10005": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+        "customId": 10005
+      },
+      "name": "List of parameters",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11535": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiselect",
+        "customId": 11535
+      },
+      "name": "Analysis Level",
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11335",
+          "value": "Lexical Analysis",
+          "id": "11335"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11336",
+          "value": "Syntactic Analysis",
+          "id": "11336"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11337",
+          "value": "Semantic Analysis",
+          "id": "11337"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11338",
+          "value": "Control-flow Analysis",
+          "id": "11338"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11339",
+          "value": "Abstract Interpretation",
+          "id": "11339"
+        }
+      ]
+    },
+    "customfield_10248": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10248
+      },
+      "name": "MISRA C 2004",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10007": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+        "customId": 10007
+      },
+      "name": "Default Severity",
+      "operations": [
+        "set"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10040",
+          "value": "Blocker",
+          "id": "10040"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10041",
+          "value": "Critical",
+          "id": "10041"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10042",
+          "value": "Major",
+          "id": "10042"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10043",
+          "value": "Minor",
+          "id": "10043"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10044",
+          "value": "Info",
+          "id": "10044"
+        }
+      ]
+    },
+    "customfield_10249": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10249
+      },
+      "name": "MISRA C++ 2008",
+      "operations": [
+        "set"
+      ]
+    },
+    "summary": {
+      "required": true,
+      "schema": {
+        "type": "string",
+        "system": "summary"
+      },
+      "name": "Summary",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11331": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11331
+      },
+      "name": "ESLint",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10242": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+        "customId": 10242
+      },
+      "name": "Template Rule",
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10329",
+          "value": "Yes",
+          "id": "10329"
+        }
+      ]
+    },
+    "customfield_11330": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiselect",
+        "customId": 11330
+      },
+      "name": "Analysis Scope",
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11020",
+          "value": "Main Sources",
+          "id": "11020"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11021",
+          "value": "Test Sources",
+          "id": "11021"
+        }
+      ]
+    },
+    "customfield_11134": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+        "customId": 11134
+      },
+      "name": "Highlighting",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10001": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiselect",
+        "customId": 10001
+      },
+      "name": "Targeted languages",
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10122",
+          "value": "ABAP",
+          "id": "10122"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11428",
+          "value": "APEX",
+          "id": "11428"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10021",
+          "value": "C#",
+          "id": "10021"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10124",
+          "value": "C",
+          "id": "10124"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10000",
+          "value": "C++",
+          "id": "10000"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10010",
+          "value": "Cobol",
+          "id": "10010"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10521",
+          "value": "CSS",
+          "id": "10521"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10013",
+          "value": "Flex",
+          "id": "10013"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11324",
+          "value": "Go",
+          "id": "11324"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10001",
+          "value": "Java",
+          "id": "10001"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10008",
+          "value": "JavaScript",
+          "id": "10008"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11426",
+          "value": "Kotlin",
+          "id": "11426"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10331",
+          "value": "Objective-C",
+          "id": "10331"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10007",
+          "value": "PHP",
+          "id": "10007"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10018",
+          "value": "PL/I",
+          "id": "10018"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10017",
+          "value": "PL/SQL",
+          "id": "10017"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10009",
+          "value": "Python",
+          "id": "10009"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10238",
+          "value": "RPG",
+          "id": "10238"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11427",
+          "value": "Ruby",
+          "id": "11427"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11441",
+          "value": "Rust",
+          "id": "11441"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11429",
+          "value": "Scala",
+          "id": "11429"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11430",
+          "value": "Solidity",
+          "id": "11430"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10426",
+          "value": "Swift",
+          "id": "10426"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11125",
+          "value": "T-SQL",
+          "id": "11125"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11131",
+          "value": "TypeScript",
+          "id": "11131"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10019",
+          "value": "VB.Net",
+          "id": "10019"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10020",
+          "value": "VB6",
+          "id": "10020"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10015",
+          "value": "Web",
+          "id": "10015"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10016",
+          "value": "XML",
+          "id": "10016"
+        }
+      ]
+    },
+    "customfield_11333": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11333
+      },
+      "name": "CppCoreGuidelines",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11531": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11531
+      },
+      "name": "Mono Gendarme",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11530": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+        "customId": 11530
+      },
+      "name": "Common Rule",
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11321",
+          "value": "Yes",
+          "id": "11321"
+        }
+      ]
+    },
+    "customfield_10244": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10244
+      },
+      "name": "FindBugs",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11332": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11332
+      },
+      "name": "JSHint",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_11533": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 11533
+      },
+      "name": "ESLint-SonarJS",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10245": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10245
+      },
+      "name": "PMD",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10004": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiselect",
+        "customId": 10004
+      },
+      "name": "Covered Languages",
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10121",
+          "value": "ABAP",
+          "id": "10121"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11435",
+          "value": "APEX",
+          "id": "11435"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10024",
+          "value": "C#",
+          "id": "10024"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10125",
+          "value": "C",
+          "id": "10125"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10025",
+          "value": "C++",
+          "id": "10025"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10026",
+          "value": "Cobol",
+          "id": "10026"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10520",
+          "value": "CSS",
+          "id": "10520"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10027",
+          "value": "Flex",
+          "id": "10027"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11433",
+          "value": "Kotlin",
+          "id": "11433"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11325",
+          "value": "Go",
+          "id": "11325"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10029",
+          "value": "Java",
+          "id": "10029"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10030",
+          "value": "JavaScript",
+          "id": "10030"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10332",
+          "value": "Objective-C",
+          "id": "10332"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10032",
+          "value": "PHP",
+          "id": "10032"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10033",
+          "value": "PL/I",
+          "id": "10033"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10034",
+          "value": "PL/SQL",
+          "id": "10034"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10035",
+          "value": "Python",
+          "id": "10035"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10239",
+          "value": "RPG",
+          "id": "10239"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11432",
+          "value": "Ruby",
+          "id": "11432"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11440",
+          "value": "Rust",
+          "id": "11440"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11431",
+          "value": "Scala",
+          "id": "11431"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11434",
+          "value": "Solidity",
+          "id": "11434"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10424",
+          "value": "Swift",
+          "id": "10424"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11126",
+          "value": "T-SQL",
+          "id": "11126"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11129",
+          "value": "TypeScript",
+          "id": "11129"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10036",
+          "value": "VB.Net",
+          "id": "10036"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10037",
+          "value": "VB6",
+          "id": "10037"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10038",
+          "value": "Web",
+          "id": "10038"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10039",
+          "value": "XML",
+          "id": "10039"
+        }
+      ]
+    },
+    "customfield_10246": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10246
+      },
+      "name": "Checkstyle",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10830": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiselect",
+        "customId": 10830
+      },
+      "name": "Default Quality Profiles",
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10620",
+          "value": "Sonar way",
+          "id": "10620"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11128",
+          "value": "Sonar way recommended",
+          "id": "11128"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10820",
+          "value": "Drupal",
+          "id": "10820"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10821",
+          "value": "PSR-2",
+          "id": "10821"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10823",
+          "value": "Override none",
+          "id": "10823"
+        }
+      ]
+    },
+    "customfield_10435": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10435
+      },
+      "name": "fb-contrib",
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10436": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiselect",
+        "customId": 10436
+      },
+      "name": "Irrelevant for Languages",
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10427",
+          "value": "ABAP",
+          "id": "10427"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11436",
+          "value": "APEX",
+          "id": "11436"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10428",
+          "value": "C#",
+          "id": "10428"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10447",
+          "value": "C",
+          "id": "10447"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10429",
+          "value": "C++",
+          "id": "10429"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10430",
+          "value": "Cobol",
+          "id": "10430"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10522",
+          "value": "CSS",
+          "id": "10522"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10431",
+          "value": "Flex",
+          "id": "10431"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11326",
+          "value": "Go",
+          "id": "11326"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10434",
+          "value": "Java",
+          "id": "10434"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10435",
+          "value": "JavaScript",
+          "id": "10435"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11443",
+          "value": "Kotlin",
+          "id": "11443"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10437",
+          "value": "Objective-C",
+          "id": "10437"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10438",
+          "value": "PHP",
+          "id": "10438"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10439",
+          "value": "PL/I",
+          "id": "10439"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10440",
+          "value": "PL/SQL",
+          "id": "10440"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10441",
+          "value": "Python",
+          "id": "10441"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10442",
+          "value": "RPG",
+          "id": "10442"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11442",
+          "value": "Ruby",
+          "id": "11442"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11439",
+          "value": "Rust",
+          "id": "11439"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11437",
+          "value": "Scala",
+          "id": "11437"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11438",
+          "value": "Solidity",
+          "id": "11438"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10443",
+          "value": "Swift",
+          "id": "10443"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11127",
+          "value": "T-SQL",
+          "id": "11127"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11130",
+          "value": "TypeScript",
+          "id": "11130"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10444",
+          "value": "VB.Net",
+          "id": "10444"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10445",
+          "value": "VB6",
+          "id": "10445"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10433",
+          "value": "Web",
+          "id": "10433"
+        },
+        {
+          "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10446",
+          "value": "XML",
+          "id": "10446"
+        }
+      ]
+    },
+    "comment": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "comment",
+        "system": "comment"
+      },
+      "name": "Comment",
+      "operations": [
+        "add",
+        "edit",
+        "remove"
+      ]
+    }
+  }
+}

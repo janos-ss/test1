@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -7,20 +7,23 @@ package com.sonarsource.ruleapi.services;
 
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.utilities.Language;
+import java.util.Collections;
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleFilesServiceTest {
 
@@ -244,6 +247,11 @@ public class RuleFilesServiceTest {
     tags.add("qux");
     rule.setTags(tags);
     rule.setSeverity(com.sonarsource.ruleapi.domain.Rule.Severity.MINOR);
+    rule.setKey("RSPEC-1234");
+    rule.setSqKey("S1234");
+    HashSet<String> scope = new HashSet<>(0);
+    scope.add("Main Sources");
+    rule.setScope(scope);
 
     // well formatted nice looking JSON with ordered fields
     final String expected1 = "{\n" +
@@ -257,7 +265,10 @@ public class RuleFilesServiceTest {
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ],\n" +
-            "  \"defaultSeverity\": \"Minor\"\n" +
+            "  \"defaultSeverity\": \"Minor\",\n" +
+            "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
+            "  \"sqKey\": \"S1234\",\n" +
+            "  \"scope\": \"Main\"\n" +
             "}";
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected1);
@@ -267,6 +278,10 @@ public class RuleFilesServiceTest {
     rule.setLinearArgDesc("dolor sit amet");
     rule.setLinearFactor("666");
     rule.setSeverity(com.sonarsource.ruleapi.domain.Rule.Severity.BLOCKER);
+    scope.clear();
+    scope.add("Main Sources");
+    scope.add("Test Sources");
+    rule.setScope(scope);
     final String expected2 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
             "  \"type\": \"CODE_SMELL\",\n" +
@@ -279,7 +294,10 @@ public class RuleFilesServiceTest {
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
             "  ],\n" +
-            "  \"defaultSeverity\": \"Blocker\"\n" +
+            "  \"defaultSeverity\": \"Blocker\",\n" +
+            "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
+            "  \"sqKey\": \"S1234\",\n" +
+            "  \"scope\": \"All\"\n" +
             "}";
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected2);
@@ -289,16 +307,97 @@ public class RuleFilesServiceTest {
     // without the optional fields
     rule.setSeverity(null);
     rule.setRemediationFunction(null);
+    scope.clear();
+    scope.add("Test Sources");
+    rule.setScope(scope);
     final String expected3 = "{\n" +
             "  \"title\": \"Lorem Ipsum\",\n" +
             "  \"type\": \"CODE_SMELL\",\n" +
             "  \"status\": \"beta\",\n" +
             "  \"tags\": [\n" +
             "    \"qux\"\n" +
-            "  ]\n" +
+            "  ],\n" +
+            "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
+            "  \"sqKey\": \"S1234\",\n" +
+            "  \"scope\": \"Tests\"\n" +
             "}";
 
     assertThat( rfs.getSquidJson(rule)).isEqualTo(expected3);
 
+    rule.setRemediationFunction(com.sonarsource.ruleapi.domain.Rule.RemediationFunction.LINEAR_OFFSET);
+    rule.setLinearArgDesc("dolor sit amet");
+    rule.setLinearOffset("42");
+    rule.setLinearFactor("666");
+    scope.clear();
+    scope.add("Test Sources");
+    rule.setScope(scope);
+    final String expected4 = "{\n" +
+      "  \"title\": \"Lorem Ipsum\",\n" +
+      "  \"type\": \"CODE_SMELL\",\n" +
+      "  \"status\": \"beta\",\n" +
+      "  \"remediation\": {\n" +
+      "    \"func\": \"Linear with offset\",\n" +
+      "    \"linearDesc\": \"dolor sit amet\",\n" +
+      "    \"linearOffset\": \"42\",\n" +
+      "    \"linearFactor\": \"666\"\n" +
+      "  },\n" +
+      "  \"tags\": [\n" +
+      "    \"qux\"\n" +
+      "  ],\n" +
+      "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
+      "  \"sqKey\": \"S1234\",\n" +
+      "  \"scope\": \"Tests\"\n" +
+      "}";
+
+    assertThat( rfs.getSquidJson(rule)).isEqualTo(expected4);
+
+    rule.setOwasp(Collections.singletonList("A1"));
+    rule.setCwe(Arrays.asList("CWE-123", "CWE-456"));
+    final String expected5 = "{\n" +
+            "  \"title\": \"Lorem Ipsum\",\n" +
+            "  \"type\": \"CODE_SMELL\",\n" +
+            "  \"status\": \"beta\",\n" +
+            "  \"remediation\": {\n" +
+            "    \"func\": \"Linear with offset\",\n" +
+            "    \"linearDesc\": \"dolor sit amet\",\n" +
+            "    \"linearOffset\": \"42\",\n" +
+            "    \"linearFactor\": \"666\"\n" +
+            "  },\n" +
+            "  \"tags\": [\n" +
+            "    \"qux\"\n" +
+            "  ],\n" +
+            "  \"ruleSpecification\": \"RSPEC-1234\",\n" +
+            "  \"sqKey\": \"S1234\",\n" +
+            "  \"scope\": \"Tests\",\n" +
+            "  \"securityStandards\": {\n" +
+            "    \"CWE\": [\n" +
+            "      123,\n" +
+            "      456\n" +
+            "    ],\n" +
+            "    \"OWASP\": [\n" +
+            "      \"A1\"\n" +
+            "    ]\n" +
+            "  }\n" +
+            "}";
+
+    assertThat( rfs.getSquidJson(rule)).isEqualTo(expected5);
+  }
+
+  @Test
+  public void shouldPrintProgressEveryNthRule() throws Exception {
+    ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+    PrintStream stream = new PrintStream(outputBuffer);
+
+    RuleFilesService.printProgressIfNeeded(9, stream);
+    RuleFilesService.printProgressIfNeeded(10, stream);
+    RuleFilesService.printProgressIfNeeded(11, stream);
+    RuleFilesService.printProgressIfNeeded(999, stream);
+    RuleFilesService.printProgressIfNeeded(1000, stream);
+    RuleFilesService.printProgressIfNeeded(1001, stream);
+
+    assertThat(outputBuffer.toString("US-ASCII")).isEqualTo(
+      "  10 rules processed\n" +
+              "1000 rules processed\n"
+    );
   }
 }

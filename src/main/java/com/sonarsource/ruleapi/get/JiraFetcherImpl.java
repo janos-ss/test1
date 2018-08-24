@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -33,7 +33,25 @@ public class JiraFetcherImpl implements JiraFetcher {
   private static final String ENCODING = "UTF-8";
   private static final String ISSUES = "issues";
 
+  private String baseUrl;
+
   private Map<String, JSONObject> rspecJsonCacheByKey = null;
+
+  private JiraFetcherImpl() {
+    this(getBaseUrl());
+  }
+
+  public static JiraFetcherImpl instance() {
+    return new JiraFetcherImpl();
+  }
+
+  public static String getBaseUrl() {
+    return System.getProperty("ruleApi.baseUrl", BASE_URL);
+  }
+
+  private JiraFetcherImpl(String baseUrl) {
+    this.baseUrl = baseUrl;
+  }
 
   @Override
   public JSONObject fetchIssueByKey(String key) {
@@ -53,7 +71,7 @@ public class JiraFetcherImpl implements JiraFetcher {
     if (rspecJsonCacheByKey != null) {
       return rspecJsonCacheByKey.get(issueKey);
     } else {
-      return Fetcher.getJsonFromUrl(BASE_URL + ISSUE + issueKey + "?expand=names" + FIELDS);
+      return Fetcher.getJsonFromUrl(baseUrl + ISSUE + issueKey + "?expand=names" + FIELDS);
     }
   }
 
@@ -66,7 +84,7 @@ public class JiraFetcherImpl implements JiraFetcher {
     try {
       String searchStr = URLEncoder.encode(BASE_QUERY + query, ENCODING).replaceAll("\\+", "%20");
 
-      JSONObject sr = Fetcher.getJsonFromUrl(BASE_URL + SEARCH + searchStr);
+      JSONObject sr = Fetcher.getJsonFromUrl(baseUrl + SEARCH + searchStr);
       JSONArray issues = (JSONArray) sr.get(ISSUES);
 
       if (issues.size() == 1) {
@@ -106,18 +124,7 @@ public class JiraFetcherImpl implements JiraFetcher {
   public List<JSONObject> fetchIssuesBySearch(String search) {
     ensureRspecsByKeyCachePopulated();
 
-    try {
-
-      String searchStr = BASE_QUERY + "(" + search + ")";
-      searchStr = URLEncoder.encode(searchStr, ENCODING).replaceAll("\\+", "%20");
-
-      JSONObject sr = Fetcher.getJsonFromUrl(BASE_URL + SEARCH + searchStr);
-      propagateNames(sr);
-      return (List<JSONObject>) sr.get(ISSUES);
-
-    } catch (UnsupportedEncodingException e) {
-      throw new RuleException(e);
-    }
+    return fetchPaginatedRspecs(BASE_QUERY + "(" + search + ")");
   }
 
 
@@ -132,18 +139,10 @@ public class JiraFetcherImpl implements JiraFetcher {
 
     ImmutableMap.Builder<String, JSONObject> builder = ImmutableMap.builder();
 
-    int startAt = 0;
-    JSONObject page;
-    while ((page = fetchRspecPage(startAt)) != null) {
-      propagateNames(page);
-
-      JSONArray issues = (JSONArray) page.get(ISSUES);
-      for (Object issueObject : issues) {
-        JSONObject issue = (JSONObject) issueObject;
-        builder.put((String) issue.get("key"), issue);
-      }
-
-      startAt += issues.size();
+    JSONArray issues = fetchPaginatedRspecs("project=RSPEC");
+    for (Object issueObject : issues) {
+      JSONObject issue = (JSONObject) issueObject;
+      builder.put((String) issue.get("key"), issue);
     }
 
     rspecJsonCacheByKey = builder.build();
@@ -165,14 +164,44 @@ public class JiraFetcherImpl implements JiraFetcher {
 
   }
 
+
+  private JSONArray fetchPaginatedRspecs(String search) {
+
+    try {
+      String searchStr = URLEncoder.encode(search, ENCODING).replaceAll("\\+", "%20");
+
+      JSONArray results = new JSONArray();
+      long retrieved = 0;
+      long expected = 1;
+      JSONObject sr;
+
+      while (retrieved < expected && (sr = fetchRspecPage((int)retrieved, searchStr)) != null) {
+        propagateNames(sr);
+
+        results.addAll((JSONArray) sr.get(ISSUES));
+
+        expected = (long) sr.get("total");
+        retrieved = results.size();
+      }
+      return results;
+
+    } catch (UnsupportedEncodingException e) {
+      throw new RuleException(e);
+    }
+  }
+
   /**
    * Fetches a RSPEC issues page. Returns <code>null</code> if no issue is found.
+   *
+   * @param startAt the issue number in the result set at which to restart retrieval
+   * @param urlEncodedSearch the url-encoded search string to use
    */
   @CheckForNull
-  private static JSONObject fetchRspecPage(int startAt) {
-    JSONObject page = Fetcher.getJsonFromUrl(BASE_URL
+  private JSONObject fetchRspecPage(int startAt, String urlEncodedSearch) {
+    
+    JSONObject page = Fetcher.getJsonFromUrl(baseUrl
       + SEARCH
-      + "project%3DRSPEC"
+      + urlEncodedSearch
       + FIELDS
       + "&startAt="
       + startAt);

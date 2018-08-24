@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -8,11 +8,11 @@ package com.sonarsource.ruleapi.get;
 import org.json.simple.JSONObject;
 import org.junit.Test;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FetcherIntegrationTest {
 
-  private final JiraFetcherImpl fetcher = new JiraFetcherImpl();
+  private final JiraFetcherImpl fetcher = JiraFetcherImpl.instance();
   @Test
   public void testActualFetches() {
 

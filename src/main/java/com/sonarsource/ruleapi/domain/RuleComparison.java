@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -289,6 +289,12 @@ public class RuleComparison{
 
     logDifference(sb, "exceptions",
             ComparisonUtilities.getFirstDifferingToken(spec.getExceptions(), impl.getExceptions()));
+
+    logDifference(sb, "ask yourself whether",
+            ComparisonUtilities.getFirstDifferingToken(spec.getAskYourself(), impl.getAskYourself()));
+
+    logDifference(sb, "recommended secure coding practices",
+            ComparisonUtilities.getFirstDifferingToken(spec.getRecommended(), impl.getRecommended()));
 
     logDifference(sb, "references",
             ComparisonUtilities.getFirstDifferingToken(spec.getReferences(), impl.getReferences()));

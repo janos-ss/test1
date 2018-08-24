@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -43,9 +43,22 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
           "<p>The following table lists the CERT %2$s standard items %1$s is able to detect, " +
           "and for each of them, the rules providing this coverage.</p>";
 
-  private static final CertType CPP = new CertType(Language.CPP, new String [] {"146440541", "146440543"});
-  private static final CertType C = new CertType(Language.C, new String [] {"158237133", "158237251"});
-  private static final CertType JAVA = new CertType(Language.JAVA, new String [] {"158237393","158237397"});
+  /**
+   * These are the IDs for the CERT confluence pages listing rules & recommendations for C++, C & Java.
+   * C++:
+   *   https://wiki.sei.cmu.edu/confluence/display/cplusplus/2+Rules
+   * C:
+   *   https://wiki.sei.cmu.edu/confluence/display/c/2+Rules
+   *   https://wiki.sei.cmu.edu/confluence/display/c/3+Recommendations
+   * Java:
+   *   https://wiki.sei.cmu.edu/confluence/display/java/2+Rules
+   *   https://wiki.sei.cmu.edu/confluence/display/java/3+Recommendations
+   *
+   * They will be accessed via Confluence REST API to extract the rules.
+   */
+  private static final CertType CPP = new CertType(Language.CPP, new String [] {"88046324"});
+  private static final CertType C = new CertType(Language.C, new String [] {"87151983", "87151929"});
+  private static final CertType JAVA = new CertType(Language.JAVA, new String [] {"88487354", "88487355"});
 
 
   private CertType currentCertLanguage = null;
@@ -182,7 +195,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
 
   protected void checkReference(StringBuilder sb, String ruleKey, String ref, String title) {
 
-    String baseUrl = "https://www.securecoding.cert.org/confluence/rest/api/content?title=";
+    String baseUrl = "https://wiki.sei.cmu.edu/confluence/rest/api/content?title=";
     String newline = "\n";
 
     try {
@@ -328,7 +341,7 @@ public class Cert extends AbstractMultiLanguageStandard implements TaggableStand
     public CodingStandardRule[] getCodingStandardRules(){
       if (rules.isEmpty()) {
 
-        String baseUrl = "https://www.securecoding.cert.org/confluence";
+        String baseUrl = "https://wiki.sei.cmu.edu/confluence";
         String url = "%s/rest/api/content/%s/child/page?expand=title,metadata.labels&limit=200";
         List<String> ids = new ArrayList<>();
         ids.addAll(wikiPageId);

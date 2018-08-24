@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -12,7 +12,6 @@ import com.sonarsource.ruleapi.externalspecifications.CodingStandardRule;
 import com.sonarsource.ruleapi.externalspecifications.DerivativeTaggableStandard;
 import com.sonarsource.ruleapi.externalspecifications.Implementability;
 import com.sonarsource.ruleapi.services.ReportService;
-import com.sonarsource.ruleapi.utilities.ComparisonUtilities;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.Utilities;
 
@@ -20,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -32,8 +32,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
 
   private static final String NAME = "SANS Top 25";
   private static final String TAG = "sans-top25";
-  private static final String REFERENCE_PATTERN = "CWE-\\d+";
-  private static final String CWE = "CWE";
+  private static final String REFERENCE_PATTERN = String.format("%s|%s|%s", Category.INSECURE_INTERACTION.name, Category.RISKY_RESOURCE.name, Category.POROUS_DEFENSES.name);
   private static final String TITLE_AND_INTRO = "<h2>%1$s Coverage of SANS Top 25</h2>\n" +
           "<p>SANS Top 25 is a sub-set of the Common Weakness Enumeration (CWE). The following table lists the " +
           "CWE standard items in the SANS Top 25 that %1$s is able to detect, " +
@@ -66,13 +65,13 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
   @Override
   public String getRSpecReferenceFieldName() {
 
-    return CWE;
+    return NAME;
   }
 
   @Override
   public List<String> getRspecReferenceFieldValues(Rule rule) {
 
-    return rule.getCwe();
+    return rule.getSansTop25();
   }
 
   @Override
@@ -377,118 +376,82 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
 
     @Override
     public String getTag() {
-
-      return TAG + "-" + getName().split(" ")[0].toLowerCase();
+      return TAG + "-" + getName().split(" ")[0].toLowerCase(Locale.ENGLISH);
     }
 
     @Override
     public String getSeeSectionSearchString() {
 
-      return NAME;
+      return name;
     }
 
     @Override
     public String getReferencePattern() {
 
-      return REFERENCE_PATTERN;
+      return name;
     }
 
     @Override
     public boolean doesReferenceNeedUpdating(String reference, List<String> updates, String ruleKey) {
 
-      return false;
-    }
-
-    protected boolean isSansCategoryRule(Rule rule, Category category) {
-
-      List<String> refs = getRspecReferenceFieldValues(rule);
-      for (String cwe : refs) {
-
-        StandardRule sr = getRuleForCwe(cwe);
-
-        if (sr != null && (category == null || sr.category.equals(category))) {
-          return true;
-        }
+      if (!reference.matches(REFERENCE_PATTERN)) {
+        LOGGER.log(Level.INFO, "Unrecognized SANS Top 25 reference {0} in {1}",
+          new Object[] {reference, ruleKey});
       }
       return false;
-    }
-
-    protected StandardRule getRuleForCwe(String cwe) {
-
-      for (StandardRule sr : StandardRule.values()) {
-        if (sr.getCodingStandardRuleId().equals(cwe)) {
-          return sr;
-        }
-      }
-      return null;
     }
 
     @Override
     public String getStandardName() {
 
-      return NAME;
+      return NAME + " - " + name;
     }
 
     @Override
     public String getRSpecReferenceFieldName() {
 
-      return CWE;
+      return NAME;
     }
 
     @Override
     public List<String> getRspecReferenceFieldValues(Rule rule) {
 
-      return rule.getCwe();
+      return rule.getSansTop25();
     }
 
     @Override
     public void setRspecReferenceFieldValues(Rule rule, List<String> ids) {
-      rule.setCwe(ids);
+      rule.setSansTop25(ids);
     }
-
 
     @Override
     public void checkReferencesInSeeSection(Rule rule) {
+      List<String> sansTop25 = rule.getSansTop25();
 
-      if (! isSansCategoryRule(rule, null) && rule.getReferences().contains(NAME)) {
-        LOGGER.log(Level.WARNING,"{0} found erroneously in See section for {1}",
-                new Object[]{NAME , rule.getKey()});
-        return;
-      }
+      String references = rule.getReferences().replaceAll("\n","");
+      String regex = ".*" + name + "\\<.*";
+      boolean seeSectionHasReference = references.matches(regex);
 
-      String seeSection = ComparisonUtilities.stripHtml(rule.getReferences());
-
-      for (String cwe : getRspecReferenceFieldValues(rule)) {
-        StandardRule sr = getRuleForCwe(cwe);
-        if (sr != null) {
-          String expectedReference = NAME + " - " + sr.category.getName();
-          if (!seeSection.contains(expectedReference)) {
-            LOGGER.log(Level.INFO, "Expected reference not found in {0}: {1}",
-                    new Object[]{rule.getKey(), expectedReference});
-          }
-        }
+      if (sansTop25.contains(name) && !seeSectionHasReference) {
+        LOGGER.log(Level.INFO, "Expected reference not found in {0}: {1}",
+          new Object[] {rule.getKey(), name});
       }
     }
 
     @Override
     public void addTagIfMissing(Rule rule, Map<String, Object> updates) {
-
       if (Rule.Status.DEPRECATED.equals(rule.getStatus())) {
         return;
       }
 
       String tag = getTag();
       Set<String> tags = rule.getTags();
-      boolean needsTag = isSansCategoryRule(rule, this);
+
+      boolean needsTag = getRspecReferenceFieldValues(rule).contains(getReferencePattern())
+          || rule.getReferences().contains(getSeeSectionSearchString());
       boolean hasTag = tags.contains(tag);
 
-      if (needsTag && !hasTag) {
-        tags.add(tag);
-        updates.put("Labels", tags);
-      } else if (!needsTag && hasTag) {
-        tags.remove(tag);
-        updates.put("Labels", tags);
-      }
+      addOrRemoveTag(updates, tag, tags, needsTag, hasTag);
     }
   }
 
@@ -550,7 +513,7 @@ public class SansTop25  extends AbstractMultiLanguageStandard {
           return sr;
         }
       }
-      return null;
+      throw new IllegalArgumentException("Could not find a SANS Top 25 rule for input string " + id);
     }
 
   }

@@ -1,10 +1,11 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
 package com.sonarsource.ruleapi.externalspecifications.specifications;
 
+import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.ReportAndBadge;
 import com.sonarsource.ruleapi.domain.Rule;
@@ -16,7 +17,6 @@ import com.sonarsource.ruleapi.services.badge.BadgeGenerator;
 import com.sonarsource.ruleapi.utilities.Language;
 import com.sonarsource.ruleapi.utilities.MarkdownConverter;
 import com.sonarsource.ruleapi.utilities.Utilities;
-import org.fest.util.Strings;
 import org.json.simple.JSONObject;
 
 import java.text.NumberFormat;

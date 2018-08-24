@@ -1,0 +1,1620 @@
+{
+  "expand": "renderedFields,names,schema,transitions,operations,editmeta,changelog",
+  "id": "20528",
+  "self": "https://jira.sonarsource.com/rest/api/latest/issue/20528",
+  "key": "RSPEC-2583",
+  "fields": {
+    "customfield_11041": "0|i00abj:",
+    "customfield_11042": null,
+    "resolution": null,
+    "customfield_10630": "assignIfError, comparisonError, incorrectLogicOperator, moduloAlwaysTrueFalse, oppositeInnerCondition, incorrectStringBooleanError, unsignedLessThanZero, unsignedPositive, secondAlwaysTrueFalseWhenFirstTrue, redundantCondition",
+    "customfield_10631": null,
+    "lastViewed": "2018-06-26T13:26:49.929+0200",
+    "customfield_11030": "506, 1506, 587, 1587, 588, 1588, 589, 1589, 590, 1590, 685, 1685, 774, 1774, 944, 1944, 948, 1948, 568, 1568, 775, 1775",
+    "customfield_11031": null,
+    "customfield_11032": null,
+    "customfield_11033": null,
+    "customfield_11430": null,
+    "customfield_11432": null,
+    "customfield_11036": null,
+    "customfield_11431": null,
+    "labels": [
+      "cert",
+      "cwe",
+      "misra",
+      "pitfall",
+      "unused"
+    ],
+    "customfield_11038": null,
+    "issuelinks": [
+      {
+        "id": "25013",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/25013",
+        "type": {
+          "id": "10020",
+          "name": "Deprecate",
+          "inward": "is deprecated by",
+          "outward": "deprecates",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10020"
+        },
+        "outwardIssue": {
+          "id": "40183",
+          "key": "RSPEC-3223",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/40183",
+          "fields": {
+            "summary": "String literals should not be used as \"bool\" values",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10405",
+              "id": "10405",
+              "description": "",
+              "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+              "name": "Finding Detection",
+              "subtask": false,
+              "avatarId": 10386
+            }
+          }
+        }
+      },
+      {
+        "id": "29336",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/29336",
+        "type": {
+          "id": "10120",
+          "name": "Related",
+          "inward": "is related to",
+          "outward": "relates to",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10120"
+        },
+        "inwardIssue": {
+          "id": "57813",
+          "key": "SONARJAVA-2119",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/57813",
+          "fields": {
+            "summary": "S2583 (CATOF) does not handle enums correctly",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/1",
+              "description": "The issue is open and ready for the assignee to start work on it.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+              "name": "Open",
+              "id": "1",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/4",
+              "id": "4",
+              "description": "An improvement or enhancement to an existing feature or task.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/improvement.png",
+              "name": "Improvement",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "29339",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/29339",
+        "type": {
+          "id": "10120",
+          "name": "Related",
+          "inward": "is related to",
+          "outward": "relates to",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10120"
+        },
+        "inwardIssue": {
+          "id": "57827",
+          "key": "SONARJAVA-2122",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/57827",
+          "fields": {
+            "summary": "S2583: eliminate false negatives",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/1",
+              "description": "The issue is open and ready for the assignee to start work on it.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+              "name": "Open",
+              "id": "1",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/4",
+              "id": "4",
+              "description": "An improvement or enhancement to an existing feature or task.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/improvement.png",
+              "name": "Improvement",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "26269",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/26269",
+        "type": {
+          "id": "10120",
+          "name": "Related",
+          "inward": "is related to",
+          "outward": "relates to",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10120"
+        },
+        "inwardIssue": {
+          "id": "52534",
+          "key": "SLVS-1060",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/52534",
+          "fields": {
+            "summary": "S1764 and S2583 should not report on the same expression",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/4",
+              "id": "4",
+              "description": "An improvement or enhancement to an existing feature or task.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/improvement.png",
+              "name": "Improvement",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "26645",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/26645",
+        "type": {
+          "id": "10120",
+          "name": "Related",
+          "inward": "is related to",
+          "outward": "relates to",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10120"
+        },
+        "inwardIssue": {
+          "id": "53161",
+          "key": "MMF-511",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/53161",
+          "fields": {
+            "summary": "C++ SE: Reach maturity level 1",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10300",
+              "id": "10300",
+              "description": "Minimum Marketable Feature",
+              "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10399&avatarType=issuetype",
+              "name": "MMF",
+              "subtask": false,
+              "avatarId": 10399
+            }
+          }
+        }
+      },
+      {
+        "id": "23499",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/23499",
+        "type": {
+          "id": "10120",
+          "name": "Related",
+          "inward": "is related to",
+          "outward": "relates to",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10120"
+        },
+        "inwardIssue": {
+          "id": "48513",
+          "key": "SONARJAVA-1650",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/48513",
+          "fields": {
+            "summary": "FP on S2583 (Conditions always true/false): variables modified in body of loops",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10400",
+              "id": "10400",
+              "description": "Unexpected issue reported by a rule",
+              "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10384&avatarType=issuetype",
+              "name": "False-Positive",
+              "subtask": false,
+              "avatarId": 10384
+            }
+          }
+        }
+      },
+      {
+        "id": "24320",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/24320",
+        "type": {
+          "id": "10120",
+          "name": "Related",
+          "inward": "is related to",
+          "outward": "relates to",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10120"
+        },
+        "inwardIssue": {
+          "id": "49846",
+          "key": "RSPEC-3633",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/49846",
+          "fields": {
+            "summary": "\"WHERE\" clause conditions should not be contradictory",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/10000",
+              "description": "Active Rule",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+              "name": "Active",
+              "id": "10000",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+              }
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10403",
+              "id": "10403",
+              "description": "",
+              "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+              "name": "Bug Detection",
+              "subtask": false,
+              "avatarId": 10386
+            }
+          }
+        }
+      },
+      {
+        "id": "24421",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/24421",
+        "type": {
+          "id": "10120",
+          "name": "Related",
+          "inward": "is related to",
+          "outward": "relates to",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10120"
+        },
+        "inwardIssue": {
+          "id": "49969",
+          "key": "RSPEC-3651",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/49969",
+          "fields": {
+            "summary": "Individual \"WHERE\" clause conditions should not be unconditionally true or false",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/10000",
+              "description": "Active Rule",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+              "name": "Active",
+              "id": "10000",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+              }
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10403",
+              "id": "10403",
+              "description": "",
+              "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+              "name": "Bug Detection",
+              "subtask": false,
+              "avatarId": 10386
+            }
+          }
+        }
+      },
+      {
+        "id": "29808",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/29808",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "outwardIssue": {
+          "id": "57956",
+          "key": "SONARCS-816",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/57956",
+          "fields": {
+            "summary": "Fix S2583: Avoid FP on Singleton pattern implementation with lock",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10400",
+              "id": "10400",
+              "description": "Unexpected issue reported by a rule",
+              "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10384&avatarType=issuetype",
+              "name": "False-Positive",
+              "subtask": false,
+              "avatarId": 10384
+            }
+          }
+        }
+      },
+      {
+        "id": "19838",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/19838",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "inwardIssue": {
+          "id": "41018",
+          "key": "SONARJAVA-1213",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/41018",
+          "fields": {
+            "summary": "S2583: NPE UselessConditionCheck when bitwise operators are used with ternary operators",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/1",
+              "id": "1",
+              "description": "A problem which impairs or prevents the functions of the product.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/bug.png",
+              "name": "Bug",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "33182",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/33182",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "inwardIssue": {
+          "id": "64024",
+          "key": "SONARABAP-321",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/64024",
+          "fields": {
+            "summary": "Rule: Conditionally executed blocks should be reachable",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/1",
+              "description": "The issue is open and ready for the assignee to start work on it.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+              "name": "Open",
+              "id": "1",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/2",
+              "id": "2",
+              "description": "A new feature of the product, which has yet to be developed.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/newfeature.png",
+              "name": "New Feature",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "33186",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/33186",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "inwardIssue": {
+          "id": "64026",
+          "key": "SONARPLSQL-629",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/64026",
+          "fields": {
+            "summary": "Rule: Conditionally executed blocks should be reachable",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/1",
+              "description": "The issue is open and ready for the assignee to start work on it.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+              "name": "Open",
+              "id": "1",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/2",
+              "id": "2",
+              "description": "A new feature of the product, which has yet to be developed.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/newfeature.png",
+              "name": "New Feature",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "33190",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/33190",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "inwardIssue": {
+          "id": "64028",
+          "key": "SONARSWIFT-304",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/64028",
+          "fields": {
+            "summary": "Rule: Conditionally executed blocks should be reachable",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/1",
+              "description": "The issue is open and ready for the assignee to start work on it.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+              "name": "Open",
+              "id": "1",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/2",
+              "id": "2",
+              "description": "A new feature of the product, which has yet to be developed.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/newfeature.png",
+              "name": "New Feature",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "33194",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/33194",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "inwardIssue": {
+          "id": "64030",
+          "key": "SONARTSQL-72",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/64030",
+          "fields": {
+            "summary": "Rule: Conditionally executed blocks should be reachable",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/1",
+              "description": "The issue is open and ready for the assignee to start work on it.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+              "name": "Open",
+              "id": "1",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/2",
+              "id": "2",
+              "description": "A new feature of the product, which has yet to be developed.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/newfeature.png",
+              "name": "New Feature",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "14112",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/14112",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "inwardIssue": {
+          "id": "21010",
+          "key": "CPP-1067",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/21010",
+          "fields": {
+            "summary": "C Rule: Conditions should not unconditionally evaluate to \"TRUE\" or to \"FALSE\"",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/2",
+              "id": "2",
+              "description": "A new feature of the product, which has yet to be developed.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/newfeature.png",
+              "name": "New Feature",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "27199",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/27199",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "inwardIssue": {
+          "id": "53220",
+          "key": "CPP-1656",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/53220",
+          "fields": {
+            "summary": "C++ Rule: Conditions should not unconditionally evaluate to \"TRUE\" or to \"FALSE\"",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/2",
+              "id": "2",
+              "description": "A new feature of the product, which has yet to be developed.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/newfeature.png",
+              "name": "New Feature",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "24185",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/24185",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "inwardIssue": {
+          "id": "49590",
+          "key": "SLVS-905",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/49590",
+          "fields": {
+            "summary": "S2583 - Conditions should not unconditionally evaluate to \"true\" or to \"false\"",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/2",
+              "id": "2",
+              "description": "A new feature of the product, which has yet to be developed.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/newfeature.png",
+              "name": "New Feature",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "14078",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/14078",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "inwardIssue": {
+          "id": "20529",
+          "key": "SONARCOBOL-1189",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/20529",
+          "fields": {
+            "summary": "Rule: Conditions should not unconditionally evaluate to \"true\" or to \"false\"",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/2",
+              "id": "2",
+              "description": "A new feature of the product, which has yet to be developed.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/newfeature.png",
+              "name": "New Feature",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "19415",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/19415",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "inwardIssue": {
+          "id": "36013",
+          "key": "SONARJAVA-966",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/36013",
+          "fields": {
+            "summary": "Rule: Conditions should not unconditionally evaluate to \"TRUE\" or to \"FALSE\"",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/2",
+              "id": "2",
+              "description": "A new feature of the product, which has yet to be developed.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/newfeature.png",
+              "name": "New Feature",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "22929",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/22929",
+        "type": {
+          "id": "10010",
+          "name": "Rule specification",
+          "inward": "is implemented by",
+          "outward": "implements",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10010"
+        },
+        "inwardIssue": {
+          "id": "47681",
+          "key": "SONARJS-663",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/47681",
+          "fields": {
+            "summary": "Rule: Conditions should not unconditionally evaluate to \"TRUE\" or to \"FALSE\"",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/6",
+              "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/closed.png",
+              "name": "Closed",
+              "id": "6",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://jira.sonarsource.com/rest/api/2/priority/3",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/priorities/major.png",
+              "name": "Major",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/2",
+              "id": "2",
+              "description": "A new feature of the product, which has yet to be developed.",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/newfeature.png",
+              "name": "New Feature",
+              "subtask": false
+            }
+          }
+        }
+      },
+      {
+        "id": "22454",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/22454",
+        "type": {
+          "id": "10121",
+          "name": "Supercedes",
+          "inward": "is superceded by",
+          "outward": "supercedes",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10121"
+        },
+        "outwardIssue": {
+          "id": "15347",
+          "key": "RSPEC-1145",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/15347",
+          "fields": {
+            "summary": "Useless \"if(true) {...}\" and \"if(false){...}\" blocks should be removed",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/10701",
+              "description": "Superseded Rules",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/generic.png",
+              "name": "Superseded",
+              "id": "10701",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10403",
+              "id": "10403",
+              "description": "",
+              "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+              "name": "Bug Detection",
+              "subtask": false,
+              "avatarId": 10386
+            }
+          }
+        }
+      },
+      {
+        "id": "22461",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/22461",
+        "type": {
+          "id": "10121",
+          "name": "Supercedes",
+          "inward": "is superceded by",
+          "outward": "supercedes",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10121"
+        },
+        "outwardIssue": {
+          "id": "17205",
+          "key": "RSPEC-1768",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/17205",
+          "fields": {
+            "summary": "The sign of an unsigned variable should not be tested",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/10701",
+              "description": "Superseded Rules",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/generic.png",
+              "name": "Superseded",
+              "id": "10701",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10404",
+              "id": "10404",
+              "description": "",
+              "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+              "name": "Code Smell Detection",
+              "subtask": false,
+              "avatarId": 10386
+            }
+          }
+        }
+      },
+      {
+        "id": "22462",
+        "self": "https://jira.sonarsource.com/rest/api/2/issueLink/22462",
+        "type": {
+          "id": "10121",
+          "name": "Supercedes",
+          "inward": "is superceded by",
+          "outward": "supercedes",
+          "self": "https://jira.sonarsource.com/rest/api/2/issueLinkType/10121"
+        },
+        "outwardIssue": {
+          "id": "21684",
+          "key": "RSPEC-2815",
+          "self": "https://jira.sonarsource.com/rest/api/2/issue/21684",
+          "fields": {
+            "summary": "\"this\" should not be compared with null",
+            "status": {
+              "self": "https://jira.sonarsource.com/rest/api/2/status/10701",
+              "description": "Superseded Rules",
+              "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/generic.png",
+              "name": "Superseded",
+              "id": "10701",
+              "statusCategory": {
+                "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "issuetype": {
+              "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10404",
+              "id": "10404",
+              "description": "",
+              "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+              "name": "Code Smell Detection",
+              "subtask": false,
+              "avatarId": 10386
+            }
+          }
+        }
+      }
+    ],
+    "status": {
+      "self": "https://jira.sonarsource.com/rest/api/2/status/10000",
+      "description": "Active Rule",
+      "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+      "name": "Active",
+      "id": "10000",
+      "statusCategory": {
+        "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+        "id": 2,
+        "key": "new",
+        "colorName": "blue-gray",
+        "name": "To Do"
+      }
+    },
+    "customfield_11140": null,
+    "customfield_11141": null,
+    "customfield_10330": [
+      "c#-top",
+      "swift-top",
+      "symbolic_execution"
+    ],
+    "customfield_10730": null,
+    "customfield_11535": [
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11338",
+        "value": "Control-flow Analysis",
+        "id": "11338"
+      }
+    ],
+    "customfield_11139": null,
+    "subtasks": [
+      {
+        "id": "59502",
+        "key": "RSPEC-3953",
+        "self": "https://jira.sonarsource.com/rest/api/2/issue/59502",
+        "fields": {
+          "summary": "COBOL",
+          "status": {
+            "self": "https://jira.sonarsource.com/rest/api/2/status/10000",
+            "description": "Active Rule",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+            "name": "Active",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "To Do"
+            }
+          },
+          "issuetype": {
+            "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10",
+            "id": "10",
+            "description": "Type used to overload a rule specification for a language",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/subtask_alternate.png",
+            "name": "Language-Specification",
+            "subtask": true
+          }
+        }
+      },
+      {
+        "id": "60065",
+        "key": "RSPEC-3969",
+        "self": "https://jira.sonarsource.com/rest/api/2/issue/60065",
+        "fields": {
+          "summary": "C#",
+          "status": {
+            "self": "https://jira.sonarsource.com/rest/api/2/status/10000",
+            "description": "Active Rule",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+            "name": "Active",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "To Do"
+            }
+          },
+          "issuetype": {
+            "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10",
+            "id": "10",
+            "description": "Type used to overload a rule specification for a language",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/subtask_alternate.png",
+            "name": "Language-Specification",
+            "subtask": true
+          }
+        }
+      },
+      {
+        "id": "60204",
+        "key": "RSPEC-3975",
+        "self": "https://jira.sonarsource.com/rest/api/2/issue/60204",
+        "fields": {
+          "summary": "JavaScript",
+          "status": {
+            "self": "https://jira.sonarsource.com/rest/api/2/status/10000",
+            "description": "Active Rule",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+            "name": "Active",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "To Do"
+            }
+          },
+          "issuetype": {
+            "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10",
+            "id": "10",
+            "description": "Type used to overload a rule specification for a language",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/subtask_alternate.png",
+            "name": "Language-Specification",
+            "subtask": true
+          }
+        }
+      },
+      {
+        "id": "65338",
+        "key": "RSPEC-4271",
+        "self": "https://jira.sonarsource.com/rest/api/2/issue/65338",
+        "fields": {
+          "summary": "C-Family",
+          "status": {
+            "self": "https://jira.sonarsource.com/rest/api/2/status/10000",
+            "description": "Active Rule",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+            "name": "Active",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "To Do"
+            }
+          },
+          "issuetype": {
+            "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10",
+            "id": "10",
+            "description": "Type used to overload a rule specification for a language",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/subtask_alternate.png",
+            "name": "Language-Specification",
+            "subtask": true
+          }
+        }
+      },
+      {
+        "id": "65341",
+        "key": "RSPEC-4272",
+        "self": "https://jira.sonarsource.com/rest/api/2/issue/65341",
+        "fields": {
+          "summary": "Java",
+          "status": {
+            "self": "https://jira.sonarsource.com/rest/api/2/status/10000",
+            "description": "Active Rule",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+            "name": "Active",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "To Do"
+            }
+          },
+          "issuetype": {
+            "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10",
+            "id": "10",
+            "description": "Type used to overload a rule specification for a language",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/subtask_alternate.png",
+            "name": "Language-Specification",
+            "subtask": true
+          }
+        }
+      },
+      {
+        "id": "66459",
+        "key": "RSPEC-4318",
+        "self": "https://jira.sonarsource.com/rest/api/2/issue/66459",
+        "fields": {
+          "summary": "TypeScript",
+          "status": {
+            "self": "https://jira.sonarsource.com/rest/api/2/status/10000",
+            "description": "Active Rule",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/statuses/open.png",
+            "name": "Active",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://jira.sonarsource.com/rest/api/2/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "To Do"
+            }
+          },
+          "issuetype": {
+            "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10",
+            "id": "10",
+            "description": "Type used to overload a rule specification for a language",
+            "iconUrl": "https://jira.sonarsource.com/images/icons/issuetypes/subtask_alternate.png",
+            "name": "Language-Specification",
+            "subtask": true
+          }
+        }
+      }
+    ],
+    "customfield_11130": null,
+    "customfield_11131": null,
+    "customfield_11132": null,
+    "customfield_11133": null,
+    "customfield_11134": "Primary: condition which always evaluates to the same value\r\n* Secondary: \r\n**  Parts of code which are never reached with message \"Never reached\"\r\n* Flow\r\n** The last locations in the code leading to know something on each variable part of the condition. ",
+    "customfield_11531": null,
+    "customfield_11530": [
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11321",
+        "value": "Yes",
+        "id": "11321"
+      }
+    ],
+    "customfield_11533": null,
+    "customfield_10830": [
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10620",
+        "value": "Sonar way",
+        "id": "10620"
+      }
+    ],
+    "customfield_10434": null,
+    "customfield_10435": null,
+    "customfield_10436": null,
+    "customfield_10437": {
+      "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10449",
+      "value": "< 4.5",
+      "id": "10449"
+    },
+    "customfield_10438": [],
+    "issuetype": {
+      "self": "https://jira.sonarsource.com/rest/api/2/issuetype/10403",
+      "id": "10403",
+      "description": "",
+      "iconUrl": "https://jira.sonarsource.com/secure/viewavatar?size=xsmall&avatarId=10386&avatarType=issuetype",
+      "name": "Bug Detection",
+      "subtask": false,
+      "avatarId": 10386
+    },
+    "customfield_10030": "Change this condition so that it does not always evaluate to \"[true|false]\"; some subsequent code is never executed.",
+    "customfield_10430": "ConditionIsAlwaysTrueOrFalse",
+    "customfield_10431": null,
+    "customfield_10432": null,
+    "customfield_10433": null,
+    "customfield_11634": null,
+    "resolutiondate": null,
+    "workratio": -1,
+    "created": "2015-02-11T15:28:32.000+0100",
+    "customfield_11230": null,
+    "customfield_11231": null,
+    "customfield_11233": null,
+    "customfield_11234": null,
+    "customfield_11632": null,
+    "customfield_10258": "14.3",
+    "customfield_11348": null,
+    "customfield_10930": null,
+    "customfield_11347": null,
+    "customfield_10931": null,
+    "customfield_10932": null,
+    "updated": "2018-06-27T16:05:58.000+0200",
+    "customfield_10250": null,
+    "customfield_11340": "Low",
+    "description": "Conditional expressions which are always {{true}} or {{false}} can lead to dead code. Such code is always buggy and should never be used in production.\r\n\r\nh2. Noncompliant Code Example\r\n{code}\r\na = false;\r\nif (a) { // Noncompliant\r\n  doSomething(); // never executed\r\n}\r\n\r\nif (!a || b) { // Noncompliant; \"!a\" is always \"true\", \"b\" is never evaluated\r\n  doSomething();\r\n} else {\r\n  doSomethingElse(); // never executed\r\n}\r\n{code}\r\n\r\nh2. See\r\n* MISRA C:2004, 13.7 - Boolean operations whose results are invariant shall not be permitted.\r\n* MISRA C:2012, 14.3 - Controlling expressions shall not be invariant\r\n* [MITRE, CWE-570|http://cwe.mitre.org/data/definitions/570.html] - Expression is Always False\r\n* [MITRE, CWE-571|http://cwe.mitre.org/data/definitions/571] - Expression is Always True\r\n* [CERT, MSC12-C.|https://www.securecoding.cert.org/confluence/x/NYA5] - Detect and remove code that has no effect or is never executed",
+    "customfield_10251": "CWE-489, CWE-571, CWE-570",
+    "customfield_10011": {
+      "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10086",
+      "value": "Constant/Issue",
+      "id": "10086"
+    },
+    "customfield_10253": null,
+    "customfield_11341": "High",
+    "customfield_10012": "15min",
+    "customfield_11344": null,
+    "customfield_10013": null,
+    "customfield_10255": "MSC12-C.",
+    "customfield_10530": null,
+    "customfield_11343": null,
+    "customfield_10014": null,
+    "customfield_10256": null,
+    "customfield_11346": null,
+    "customfield_10015": null,
+    "customfield_10257": null,
+    "customfield_11345": null,
+    "customfield_10005": null,
+    "customfield_11337": null,
+    "customfield_10248": "13.7",
+    "customfield_10007": {
+      "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10042",
+      "value": "Major",
+      "id": "10042"
+    },
+    "customfield_10249": null,
+    "customfield_11338": null,
+    "summary": "Conditionally executed blocks should be reachable",
+    "customfield_11331": "no-constant-condition, no-self-compare, no-unsafe-negation",
+    "customfield_10242": null,
+    "customfield_11330": [
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11020",
+        "value": "Main Sources",
+        "id": "11020"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11021",
+        "value": "Test Sources",
+        "id": "11021"
+      }
+    ],
+    "customfield_10001": [
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10122",
+        "value": "ABAP",
+        "id": "10122"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10013",
+        "value": "Flex",
+        "id": "10013"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11324",
+        "value": "Go",
+        "id": "11324"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10331",
+        "value": "Objective-C",
+        "id": "10331"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10007",
+        "value": "PHP",
+        "id": "10007"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10018",
+        "value": "PL/I",
+        "id": "10018"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10017",
+        "value": "PL/SQL",
+        "id": "10017"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10009",
+        "value": "Python",
+        "id": "10009"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10238",
+        "value": "RPG",
+        "id": "10238"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10426",
+        "value": "Swift",
+        "id": "10426"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11125",
+        "value": "T-SQL",
+        "id": "11125"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/11131",
+        "value": "TypeScript",
+        "id": "11131"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10019",
+        "value": "VB.Net",
+        "id": "10019"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10020",
+        "value": "VB6",
+        "id": "10020"
+      }
+    ],
+    "customfield_10243": null,
+    "customfield_11333": null,
+    "customfield_10244": "BIT_AND, BIT_AND_ZZ, BIT_IOR, BIT_SIGNED_CHECK, BIT_SIGNED_CHECK_HIGH_BIT, UC_USELESS_CONDITION, UC_USELESS_CONDITION_TYPE, RCN_REDUNDANT.*",
+    "customfield_11332": null,
+    "customfield_10245": "UnconditionalIfStatement",
+    "customfield_11335": null,
+    "customfield_10004": [
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10024",
+        "value": "C#",
+        "id": "10024"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10125",
+        "value": "C",
+        "id": "10125"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10025",
+        "value": "C++",
+        "id": "10025"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10026",
+        "value": "Cobol",
+        "id": "10026"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10029",
+        "value": "Java",
+        "id": "10029"
+      },
+      {
+        "self": "https://jira.sonarsource.com/rest/api/2/customFieldOption/10030",
+        "value": "JavaScript",
+        "id": "10030"
+      }
+    ],
+    "customfield_10246": null,
+    "customfield_11334": null
+  },
+  "names": {
+    "customfield_11041": "Rank",
+    "customfield_11042": "FxCop",
+    "resolution": "Resolution",
+    "customfield_10630": "CPPCheck",
+    "customfield_10631": "Pylint",
+    "lastViewed": "Last Viewed",
+    "customfield_11030": "PC-Lint",
+    "customfield_11031": "Quick-fixes",
+    "customfield_11032": "Flagged",
+    "customfield_11033": "Epic/Theme",
+    "customfield_11430": "TSLint",
+    "customfield_11432": "SwiftLint",
+    "customfield_11036": "Sprint",
+    "customfield_11431": "TSLint-SonarTS",
+    "labels": "Labels",
+    "customfield_11038": "Epic Link",
+    "issuelinks": "Linked Issues",
+    "status": "Status",
+    "customfield_11140": "Waiting for customer - 7 days",
+    "customfield_11141": "Waiting for customer - 9 days",
+    "customfield_10330": "Implementation details",
+    "customfield_10730": "Issue in trouble",
+    "customfield_11535": "Analysis Level",
+    "customfield_11139": "Waiting for customer new",
+    "subtasks": "Sub-Tasks",
+    "customfield_11130": "First customer SLA",
+    "customfield_11131": "Second customer SLA",
+    "customfield_11132": "Third customer SLA",
+    "customfield_11133": "Test SLA",
+    "customfield_11134": "Highlighting",
+    "customfield_11531": "Mono Gendarme",
+    "customfield_11530": "Common Rule",
+    "customfield_11533": "ESLint-SonarJS",
+    "customfield_10830": "Default Quality Profiles",
+    "customfield_10434": "Time to answer",
+    "customfield_10435": "fb-contrib",
+    "customfield_10436": "Irrelevant for Languages",
+    "customfield_10437": "SonarQube version",
+    "customfield_10438": "Request participants",
+    "issuetype": "Issue Type",
+    "customfield_10030": "Message",
+    "customfield_10430": "ReSharper",
+    "customfield_10431": "Customer Request Type",
+    "customfield_10432": "Time to resolution",
+    "customfield_10433": "Golden customer",
+    "customfield_11634": "Fortify",
+    "resolutiondate": "Resolved",
+    "workratio": "Work Ratio",
+    "created": "Created",
+    "customfield_11230": "VisualStudio",
+    "customfield_11231": "PVS-Studio",
+    "customfield_11233": "Qualification",
+    "customfield_11234": "MSFT Roslyn",
+    "customfield_11632": "Stylelint",
+    "customfield_10258": "MISRA C 2012",
+    "customfield_11348": "SF Account Edition",
+    "customfield_10930": "Source ID",
+    "customfield_11347": "SF Account URL",
+    "customfield_10931": "Testcase included",
+    "customfield_10932": "Patch Submitted",
+    "updated": "Updated",
+    "customfield_10250": "PHP-FIG",
+    "customfield_11340": "Impact",
+    "description": "Description",
+    "customfield_10251": "CWE",
+    "customfield_10011": "Remediation Function",
+    "customfield_10253": "OWASP",
+    "customfield_11341": "Likelihood",
+    "customfield_10012": "Constant Cost",
+    "customfield_11344": "Email",
+    "customfield_10013": "Linear Factor",
+    "customfield_10255": "CERT",
+    "customfield_10530": "Waiting for customer",
+    "customfield_11343": "Task type",
+    "customfield_10014": "Linear Offset",
+    "customfield_10256": "Linear Argument Description",
+    "customfield_11346": "SF Account Owner",
+    "customfield_10015": "Legacy Key",
+    "customfield_10257": "FindSecBugs",
+    "customfield_11345": "Team",
+    "customfield_10005": "List of parameters",
+    "customfield_11337": "Working Place",
+    "customfield_10248": "MISRA C 2004",
+    "customfield_10007": "Default Severity",
+    "customfield_10249": "MISRA C++ 2008",
+    "customfield_11338": "Quantity",
+    "summary": "Summary",
+    "customfield_11331": "ESLint",
+    "customfield_10242": "Template Rule",
+    "customfield_11330": "Analysis Scope",
+    "customfield_10001": "Targeted languages",
+    "customfield_10243": "issueFunction",
+    "customfield_11333": "CppCoreGuidelines",
+    "customfield_10244": "FindBugs",
+    "customfield_11332": "JSHint",
+    "customfield_10245": "PMD",
+    "customfield_11335": "Surname",
+    "customfield_10004": "Covered Languages",
+    "customfield_10246": "Checkstyle",
+    "customfield_11334": "First Name"
+  }
+}

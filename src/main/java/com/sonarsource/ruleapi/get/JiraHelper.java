@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -25,6 +27,8 @@ import java.util.Map;
  * into the fields of a Rule
  */
 public class JiraHelper {
+
+  private static final Logger LOGGER = Logger.getAnonymousLogger();
 
   private static final String MARKDOWN_H2 = "h2.";
   private static final String FIELDS = "fields";
@@ -36,7 +40,7 @@ public class JiraHelper {
   }
 
 
-  protected static void populateFields(Rule rule, JSONObject issue) {
+  public static void populateFields(Rule rule, JSONObject issue) {
     rule.setKey(issue.get("key").toString());
     setStatus(rule, issue);
     setReplacementLinks(rule, issue);
@@ -53,6 +57,7 @@ public class JiraHelper {
     rule.setTargetedLanguages(new HashSet<>(getCustomFieldStoredAsList(issue, "Targeted languages")));
     rule.setCoveredLanguages(new HashSet<>(getCustomFieldStoredAsList(issue, "Covered Languages")));
     rule.setIrrelevantLanguages(new HashSet<>(getCustomFieldStoredAsList(issue, "Irrelevant for Languages")));
+    rule.setScope(new HashSet<>(getCustomFieldStoredAsList(issue, "Analysis Scope")));
 
     rule.setTitle(getJsonFieldValue(issue, "summary"));
     rule.setMessage(getCustomFieldValue(issue, "Message"));
@@ -73,6 +78,8 @@ public class JiraHelper {
     setReferences(rule, issue);
 
     validateRuleDeprecation(rule, RuleMaker.getReplacingRules(rule));
+
+    initializeLegacyKey(rule);
   }
 
   /**
@@ -112,6 +119,13 @@ public class JiraHelper {
     setDeprecationMessage(rule, implementedReplacements);
   }
 
+  private static void initializeLegacyKey(Rule rule) {
+    rule.setSqKey(Utilities.denormalizeKey(rule.getKey()));
+    if (rule.getCoveredLanguages().size() == 1 && rule.getLegacyKeys().size() == 1) {
+      rule.setSqKey(rule.getLegacyKeys().get(0));
+    }
+  }
+
   static void setDeprecationMessage(Rule rule, List<String> implementedReplacements){
     if (Rule.Status.DEPRECATED == rule.getStatus()) {
       StringBuilder sb = new StringBuilder();
@@ -143,20 +157,32 @@ public class JiraHelper {
     for (int i = 1; i < pieces.length; i++) {
 
       String piece = pieces[i];
+      String pieceContent = markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage());
       if (piece.contains("Noncompliant Code Example")) {
-        rule.setNonCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
+        rule.setNonCompliant(pieceContent);
 
       } else if (piece.contains("Compliant Solution")) {
-        rule.setCompliant(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
+        rule.setCompliant(pieceContent);
 
       } else if (piece.contains("Exceptions")) {
-        rule.setExceptions(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
+        rule.setExceptions(pieceContent);
+
+      } else if (piece.contains("Ask Yourself Whether")) {
+        rule.setAskYourself(pieceContent);
+
+      } else if (piece.contains("Recommended Secure Coding Practices")) {
+        rule.setRecommended(pieceContent);
 
       } else if (piece.contains("See")) {
-        rule.setReferences(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
+        rule.setReferences(pieceContent);
 
       } else if (piece.contains("Deprecated")) {
-        rule.setDeprecation(markdownConverter.transform(MARKDOWN_H2 + piece, rule.getLanguage()));
+        rule.setDeprecation(pieceContent);
+
+      } else {
+        if (LOGGER.isLoggable(Level.WARNING)) {
+          LOGGER.warning(String.format("Unknown section in rule %s: %s ", rule.getKey(), pieceContent));
+        }
       }
     }
   }
@@ -206,7 +232,7 @@ public class JiraHelper {
         List<JSONObject> value = (List<JSONObject>) obj;
 
         for (JSONObject aValue : value) {
-          list.add((String) aValue.get("value"));
+          list.add((String) aValue.get(VALUE));
         }
       }
     }
@@ -296,6 +322,7 @@ public class JiraHelper {
     rule.setFbContrib(getCustomFieldValueAsList(issue, "fb-contrib"));
     rule.setFindSecBugs(getCustomFieldValueAsList(issue, "FindSecBugs"));
     rule.setOwasp(getCustomFieldValueAsList(issue, "OWASP"));
+    rule.setSansTop25(getCustomFieldValueAsList(issue, "SANS Top 25"));
     rule.setPmd(getCustomFieldValueAsList(issue, "PMD"));
     rule.setCheckstyle(getCustomFieldValueAsList(issue, "Checkstyle"));
     rule.setPhpFig(getCustomFieldValueAsList(issue, "PHP-FIG"));
@@ -305,6 +332,7 @@ public class JiraHelper {
     rule.setFxCop(getCustomFieldValueAsList(issue, "FxCop"));
     rule.setPcLint(getCustomFieldValueAsList(issue, "PC-Lint"));
     rule.setMsftRoslyn(getCustomFieldValueAsList(issue, "MSFT Roslyn"));
+    rule.setSwiftLint(getCustomFieldValueAsList(issue, "SwiftLint"));
   }
 
   protected static void setRemediation(Rule rule, JSONObject issue) {

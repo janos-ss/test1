@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -70,7 +70,8 @@ public class Rule {
   public enum Type {
     BUG("Bug"),
     VULNERABILITY("Vulnerability"),
-    CODE_SMELL("Code Smell");
+    CODE_SMELL("Code Smell"),
+    SECURITY_HOTSPOT("Security Hotspot");
 
     protected final String typeName;
 
@@ -97,7 +98,6 @@ public class Rule {
     }
   }
 
-
   private final String language;
   private String key = null;
   private String lookupKey = null;
@@ -111,6 +111,7 @@ public class Rule {
   private boolean template = false;
   private String keyOfTemplate = null;
   private List<String> legacyKeys = new ArrayList<>();
+  private String sqKey = null;
 
   private Set<Profile> defaultProfiles = new HashSet<>();
 
@@ -121,6 +122,8 @@ public class Rule {
   private String nonCompliant = "";
   private String compliant = "";
   private String exceptions = "";
+  private String askYourself = "";
+  private String recommended = "";
   private String references = "";
   private String deprecation = "";
 
@@ -136,6 +139,7 @@ public class Rule {
   private Set<String> targetedLanguages = new HashSet<>();
   private Set<String> coveredLanguages = new HashSet<>();
   private Set<String> irrelevantLanguages = new HashSet<>();
+  private String scope = "Main";
 
   private List<String> cwe = new ArrayList<>();
   private List<String> cert = new ArrayList<>();
@@ -148,6 +152,7 @@ public class Rule {
   private List<String> fbContrib = new ArrayList<>();
   private List<String> findSecBugs = new ArrayList<>();
   private List<String> owasp = new ArrayList<>();
+  private List<String> sansTop25 = new ArrayList<>();
   private List<String> pmd = new ArrayList<>();
   private List<String> checkstyle = new ArrayList<>();
   private List<String> phpFig = new ArrayList<>();
@@ -156,6 +161,7 @@ public class Rule {
   private List<String> fxCop = new ArrayList<>();
   private List<String> pcLint = new ArrayList<>();
   private List<String> msftRoslyn = new ArrayList<>();
+  private List<String> swiftLint = new ArrayList<>();
 
   public Rule(String language) {
     this.language = language;
@@ -179,6 +185,9 @@ public class Rule {
     }
     if (subRule.parameterList != null && !subRule.parameterList.isEmpty()) {
       this.parameterList = subRule.parameterList;
+    }
+    if (! subRule.legacyKeys.isEmpty()) {
+      this.setSqKey(subRule.legacyKeys.get(0));
     }
     mergeDescriptionPieces(subRule);
     mergeRemediationPieces(subRule);
@@ -256,13 +265,19 @@ public class Rule {
     if (!Strings.isNullOrEmpty(subRule.exceptions)) {
       this.exceptions = subRule.exceptions;
     }
+    if (!Strings.isNullOrEmpty(subRule.askYourself)) {
+      this.askYourself = subRule.askYourself;
+    }
+    if (!Strings.isNullOrEmpty(subRule.recommended)) {
+      this.recommended = subRule.recommended;
+    }
     if (!Strings.isNullOrEmpty(subRule.references)) {
       this.references = subRule.references;
     }
   }
 
   public String getHtmlDescription() {
-    return description + nonCompliant + compliant + exceptions + references + deprecation;
+    return description + askYourself + recommended + nonCompliant + compliant + exceptions + references + deprecation;
   }
 
   public String getKey() {
@@ -378,6 +393,15 @@ public class Rule {
     this.legacyKeys = legacyKeys;
   }
 
+
+  public String getSqKey() {
+    return sqKey;
+  }
+
+  public void setSqKey(String sqKey) {
+    this.sqKey = sqKey;
+  }
+
   public String getDescription() {
     return description;
   }
@@ -408,6 +432,22 @@ public class Rule {
 
   public void setExceptions(String exceptions) {
     this.exceptions = exceptions;
+  }
+
+  public String getAskYourself() {
+    return askYourself;
+  }
+
+  public void setAskYourself(String askYourself) {
+    this.askYourself = askYourself;
+  }
+
+  public String getRecommended() {
+    return recommended;
+  }
+
+  public void setRecommended(String recommended) {
+    this.recommended = recommended;
   }
 
   public String getReferences() {
@@ -557,6 +597,16 @@ public class Rule {
     this.owasp = owasp;
   }
 
+  public List<String> getSansTop25() {
+
+    return sansTop25;
+  }
+
+  public void setSansTop25(List<String> sansTop25) {
+
+    this.sansTop25 = sansTop25;
+  }
+
   public List<String> getPhpFig() {
 
     return phpFig;
@@ -605,6 +655,21 @@ public class Rule {
   public void setIrrelevantLanguages(Set<String> irrelevantLanguages) {
 
     this.irrelevantLanguages = irrelevantLanguages;
+  }
+
+  public String getScope() {
+    return scope;
+  }
+
+  public void setScope(Set<String> scope) {
+    this.scope = "Main";
+    if (scope.contains("Test Sources")) {
+      if (scope.contains("Main Sources")) {
+        this.scope = "All";
+      } else {
+        this.scope = "Tests";
+      }
+    }
   }
 
   public List<String> getReplacementLinks() {
@@ -721,6 +786,14 @@ public class Rule {
 
   public void setEsLint(List<String> esLint) {
     this.esLint = esLint;
+  }
+
+  public List<String> getSwiftLint() {
+    return swiftLint;
+  }
+
+  public void setSwiftLint(List<String> swiftLint) {
+    this.swiftLint = swiftLint;
   }
 
   public String getKeyOfTemplate() {

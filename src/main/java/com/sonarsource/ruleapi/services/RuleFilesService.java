@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -24,6 +24,7 @@ import com.sonarsource.ruleapi.utilities.Utilities;
 import net.greypanther.natsort.CaseInsensitiveSimpleNaturalComparator;
 import org.apache.commons.io.FilenameUtils;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import javax.annotation.Nullable;
@@ -31,9 +32,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,6 +49,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RuleFilesService {
 
@@ -73,7 +77,7 @@ public class RuleFilesService {
   }
 
   public static RuleFilesService create(String baseDir, Language language, boolean preserveFileNames, boolean languageInFilenames) {
-    File baseDirFile = assertBaseDir(baseDir);
+    File baseDirFile = Utilities.assertBaseDir(baseDir);
     if(language == null) {
       throw new IllegalArgumentException("no language found");
     }
@@ -94,13 +98,17 @@ public class RuleFilesService {
         updatedRules.add(rule);
 
         countRulesProcessed++;
-        if (countRulesProcessed % 10 == 0) {
-          System.out.println(String.format("%4d rules processed",countRulesProcessed ));
-        }
+        printProgressIfNeeded(countRulesProcessed, System.out);
       }
       updateProfiles(updatedRules);
     }
     System.out.println(String.format("Output: (%d) files", countGeneratedFiles));
+  }
+
+  static void printProgressIfNeeded(int countRulesProcessed, PrintStream stream) {
+    if (countRulesProcessed % 10 == 0) {
+      stream.println(String.format(Locale.US, "%4d rules processed",countRulesProcessed ));
+    }
   }
 
   private void updateProfiles(List<Rule> updatedRules) {
@@ -203,16 +211,18 @@ public class RuleFilesService {
   }
 
   private Set<String> findRulesToUpdate() throws IOException {
-    final Set<String> rulesToUpdateKeys = Files.list(baseDir.toPath())
-        .filter(Files::isRegularFile)
-        .map(path -> path.getFileName().toString())
-        .filter(RuleFilesService::matchRuleFileExtension)
-        .map(FilenameUtils::removeExtension)
-        .map(this::toRuleKey)
-        .filter(Objects::nonNull)
-        .collect(Collectors.toSet());
-    System.out.println(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
-    return rulesToUpdateKeys;
+    try(Stream<Path> pathStream = Files.list(baseDir.toPath())) {
+      final Set<String> rulesToUpdateKeys = pathStream
+          .filter(Files::isRegularFile)
+          .map(path -> path.getFileName().toString())
+          .filter(RuleFilesService::matchRuleFileExtension)
+          .map(FilenameUtils::removeExtension)
+          .map(this::toRuleKey)
+          .filter(Objects::nonNull)
+          .collect(Collectors.toSet());
+      System.out.println(String.format("Found %d rule(s) to update", rulesToUpdateKeys.size()));
+      return rulesToUpdateKeys;
+    }
   }
 
   private static boolean matchRuleFileExtension(String fileName) {
@@ -249,18 +259,6 @@ public class RuleFilesService {
     countGeneratedFiles++;
   }
 
-  private static File assertBaseDir(String baseDir) {
-    if (baseDir == null) {
-      throw new IllegalArgumentException("directory is required");
-    } else {
-      File baseDirFile = new File(baseDir);
-      if (!baseDirFile.isDirectory()) {
-        throw new IllegalArgumentException("directory does not exist");
-      }
-      return baseDirFile;
-    }
-  }
-
   private static class RulesProfile {
     String name;
     List<String> ruleKeys;
@@ -268,7 +266,7 @@ public class RuleFilesService {
 
   public String getSquidJson(Rule rule) {
 
-    LinkedHashMap objOrderedFields = new LinkedHashMap();
+    LinkedHashMap<String, Object> objOrderedFields = new LinkedHashMap<>();
     objOrderedFields.put("title", rule.getTitle());
     objOrderedFields.put("type", rule.getType().name());
 
@@ -277,7 +275,7 @@ public class RuleFilesService {
     }
 
     if (rule.getRemediationFunction()!= null) {
-      LinkedHashMap remediation = new LinkedHashMap();
+      LinkedHashMap<String, String> remediation = new LinkedHashMap<>();
       remediation.put("func", rule.getRemediationFunction().getFunctionName());
       switch (rule.getRemediationFunction()) {
         case CONSTANT_ISSUE:
@@ -313,6 +311,15 @@ public class RuleFilesService {
       objOrderedFields.put("defaultSeverity", rule.getSeverity().getSeverityName());
     }
 
+    objOrderedFields.put("ruleSpecification", rule.getKey());
+    objOrderedFields.put("sqKey", rule.getSqKey());
+    objOrderedFields.put("scope", rule.getScope());
+
+    JSONObject securityStandards = getSecurityStandards(rule);
+    if (!securityStandards.isEmpty()) {
+      objOrderedFields.put("securityStandards", securityStandards);
+    }
+
     try (Writer writer = new JSONWriter()) {
       JSONValue.writeJSONString(objOrderedFields, writer);
       return writer.toString();
@@ -334,5 +341,21 @@ public class RuleFilesService {
       }
     }
     return standards;
+  }
+
+  protected static JSONObject getSecurityStandards(Rule rule) {
+    JSONObject securityStandards = new JSONObject();
+    if (!rule.getCwe().isEmpty()) {
+      JSONArray values = new JSONArray();
+      values.addAll(rule.getCwe().stream().map(cweId -> Integer.parseInt(cweId.substring("CWE-".length()))).collect(Collectors.toList()));
+      securityStandards.put("CWE", values);
+    }
+    if (!rule.getOwasp().isEmpty()) {
+      JSONArray values = new JSONArray();
+      values.addAll(rule.getOwasp());
+      securityStandards.put("OWASP", values);
+    }
+    // "SANS Top 25" is not output, it is computed at runtime by SQ using CWE
+    return securityStandards;
   }
 }

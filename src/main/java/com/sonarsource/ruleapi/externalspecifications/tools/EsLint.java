@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -281,7 +281,7 @@ public class EsLint extends AbstractReportableExternalTool{
     REST_SPREAD_SPACING ("rest-spread-spacing", "enforce spacing between rest and spread operators and their expressions", Implementability.REJECTED),
     SORT_IMPORTS ("sort-imports", "enforce sorted import declarations within modules", Implementability.IMPLEMENTABLE),
     SYMBOL_DESCRIPTION ("symbol-description", "require symbol descriptions", Implementability.IMPLEMENTABLE),
-    TEMPLATE_CURLY_SPACING ("template-curly-spacing", "require or disallow spacing around embedded expressions of template strings", Implementability.IMPLEMENTABLE),
+    TEMPLATE_CURLY_SPACING ("template-curly-spacing", "require or disallow spacing around embedded expressions of template strings", Implementability.REJECTED),
     YIELD_STAR_SPACING ("yield-star-spacing", "require or disallow spacing around the * in yield* expressions", Implementability.REJECTED);
 
 

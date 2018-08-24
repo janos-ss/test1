@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "id": "http://www.sonarsource.org/sonarpedia-schema-v2.0",
+  "title": "Analyzer configuration for sonarpedia",
+  "type": "object",
+  "description": "sonarpedia files must be named 'sonarpedia.json'.",
+  "required": ["rules-metadata-path", "languages"],
+  "properties": {
+    "rules-metadata-path": {
+      "type": "string",
+      "description": "Path to the directorty holding the rules metadata (.html and .json). This path is relative to the sonarpedia file"
+    },
+    "languages" : {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "profiles-path": {
+      "type": "string",
+      "description": "if absent, default is rules-metadata-path"
+    },
+    "default-profile-name": {
+      "type": "string",
+      "description": "if absent, default is 'Sonar_way_profile.json'"
+    },
+    "latest-update" : {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of rules data update"
+    },
+    "options":{
+      "type": "object",
+      "properties": {
+        "no-language-in-filemanes":  { "type": "boolean", "default" : false },
+        "preserve-filenames":  { "type": "boolean", "default" : false }
+      }
+    }
+  }
+}

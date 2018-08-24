@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -954,7 +954,7 @@ public class Cwe extends AbstractMultiLanguageStandard implements TaggableStanda
 
     public static CweRule fromString(String id) {
       String test = id;
-      if (id.matches("CWE-\\d+")) {
+      if (id.matches(REFERENCE_PATTERN)) {
         test = test.replace('-','_');
       }
       if (test.matches("CWE_\\d+")) {

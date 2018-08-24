@@ -1,16 +1,16 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
 package com.sonarsource.ruleapi.utilities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class LanguageTest {
@@ -18,7 +18,7 @@ public class LanguageTest {
   @Test
   public void testLanguagesEnum() {
 
-    assertThat(Language.values().length).isEqualTo(19);
+    assertThat(Language.values().length).isEqualTo(29);
     assertThat(Language.ABAP.sq).isEqualTo("abap");
     assertThat(Language.ABAP.rspec).isEqualTo("ABAP");
     assertThat(Language.ABAP.getSqCommon()).isEqualTo("common-abap");
@@ -40,18 +40,18 @@ public class LanguageTest {
   public void languageTypeMembership(){
 
     for (Language lang : Language.LEGACY_LANGUAGES) {
-      assertThat(Language.LOOSLY_TYPE_LANGUAGES).excludes(lang);
-      assertThat(Language.STRONGLY_TYPED_LANGUAGES).excludes(lang);
+      assertThat(Language.LOOSLY_TYPE_LANGUAGES).doesNotContain(lang);
+      assertThat(Language.STRONGLY_TYPED_LANGUAGES).doesNotContain(lang);
     }
 
     for (Language lang : Language.STRONGLY_TYPED_LANGUAGES) {
-      assertThat(Language.LOOSLY_TYPE_LANGUAGES).excludes(lang);
-      assertThat(Language.LEGACY_LANGUAGES).excludes(lang);
+      assertThat(Language.LOOSLY_TYPE_LANGUAGES).doesNotContain(lang);
+      assertThat(Language.LEGACY_LANGUAGES).doesNotContain(lang);
     }
 
     for (Language lang : Language.LOOSLY_TYPE_LANGUAGES) {
-      assertThat(Language.LEGACY_LANGUAGES).excludes(lang);
-      assertThat(Language.STRONGLY_TYPED_LANGUAGES).excludes(lang);
+      assertThat(Language.LEGACY_LANGUAGES).doesNotContain(lang);
+      assertThat(Language.STRONGLY_TYPED_LANGUAGES).doesNotContain(lang);
     }
 
     List<Language> langs = new ArrayList<>(Language.values().length);
@@ -59,9 +59,10 @@ public class LanguageTest {
     langs.addAll(Language.LOOSLY_TYPE_LANGUAGES);
     langs.addAll(Language.STRONGLY_TYPED_LANGUAGES);
 
-    assertThat(langs).excludes(Language.XML);
-    assertThat(langs).excludes(Language.WEB);
-    assertThat(langs.size()).isEqualTo(Language.values().length - 2);
+    assertThat(langs).doesNotContain(Language.XML);
+    assertThat(langs).doesNotContain(Language.WEB);
+    // xml, css, web
+    assertThat(langs.size()).isEqualTo(Language.values().length - 3);
 
   }
 

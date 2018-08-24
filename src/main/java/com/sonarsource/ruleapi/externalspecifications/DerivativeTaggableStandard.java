@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -8,6 +8,7 @@ package com.sonarsource.ruleapi.externalspecifications;
 import com.sonarsource.ruleapi.domain.Rule;
 
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -27,4 +28,14 @@ public interface DerivativeTaggableStandard extends TaggableStandard {
   void checkReferencesInSeeSection(Rule rule);
 
   void addTagIfMissing(Rule rule, Map<String, Object>  updates);
+
+  default void addOrRemoveTag(Map<String, Object> updates, String myTag, Set<String> ruleTags, boolean ruleNeedsTag, boolean ruleHasTag) {
+    if (!ruleHasTag && ruleNeedsTag) {
+      ruleTags.add(myTag);
+      updates.put("Labels", ruleTags);
+    } else if (ruleHasTag && !ruleNeedsTag) {
+      ruleTags.remove(myTag);
+      updates.put("Labels", ruleTags);
+    }
+  }
 }

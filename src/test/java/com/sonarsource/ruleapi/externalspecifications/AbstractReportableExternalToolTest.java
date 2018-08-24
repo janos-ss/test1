@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class AbstractReportableExternalToolTest {
@@ -85,15 +85,6 @@ public class AbstractReportableExternalToolTest {
     r2.setKey("b");
 
     assertThat(findBugsTestInstance.ruleKeyComparator.compare(r1, r2)).isEqualTo(-1);
-  }
-
-  @Test
-  public void testDeprecationReport(){
-    String expectedReport = "BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS\tS1234\n" +
-            "AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION\tS1234\n";
-
-    assertThat(findBugsTestInstance.getDeprecationReport("")).isEqualTo(expectedReport);
-
   }
 
   private static String FB_ID = "BC_IMPOSSIBLE_CAST";

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -8,8 +8,9 @@ package com.sonarsource.ruleapi.domain;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class RuleTest {
@@ -134,6 +135,32 @@ public class RuleTest {
     rule.merge(subRule);
 
     assertThat(rule.getExceptions()).isEqualTo(subRule.getExceptions());
+  }
+
+  @Test
+  public void testMergeAskYourself() throws Exception {
+    Rule rule = new Rule(LANG);
+    rule.setAskYourself("Message one");
+    Rule subRule = new Rule(LANG);
+    subRule.setTitle(LANG);
+    subRule.setAskYourself("Message two");
+
+    rule.merge(subRule);
+
+    assertThat(rule.getAskYourself()).isEqualTo(subRule.getAskYourself());
+  }
+
+  @Test
+  public void testMergeRecommended() throws Exception {
+    Rule rule = new Rule(LANG);
+    rule.setRecommended("Message one");
+    Rule subRule = new Rule(LANG);
+    subRule.setTitle(LANG);
+    subRule.setRecommended("Message two");
+
+    rule.merge(subRule);
+
+    assertThat(rule.getRecommended()).isEqualTo(subRule.getRecommended());
   }
 
   @Test
@@ -296,4 +323,17 @@ public class RuleTest {
 
   }
 
+  @Test
+  public void testMergeSqKey() {
+    Rule rule = new Rule("");
+    Rule subRule = new Rule("");
+    subRule.setTitle("Java");
+
+    rule.setSqKey("S1234");
+    subRule.setLegacyKeys(Collections.singletonList("SomeLegacyKey"));
+
+    rule.merge(subRule);
+
+    assertThat(rule.getSqKey()).isEqualTo("SomeLegacyKey");
+  }
 }

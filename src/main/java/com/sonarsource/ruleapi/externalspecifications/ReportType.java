@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -14,7 +14,6 @@ public enum ReportType {
   INTERNAL_COVERAGE(true),
   INTERNAL_COVERAGE_SUMMARY(true),
   HTML(false),
-  DEPRECATION(true),
   UNSPECIFIED(true);
 
   private boolean internal = true;

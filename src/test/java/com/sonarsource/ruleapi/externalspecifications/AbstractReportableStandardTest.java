@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class AbstractReportableStandardTest {
@@ -80,7 +80,7 @@ public class AbstractReportableStandardTest {
   @Test
   public void testGetSqRepoList() {
     MisraC2004 misraC2004 = new MisraC2004();
-    String reposList = "abap,c,cobol,cpp,csharpsquid,flex,squid,javascript,objc,php,pli,plsql,python,rpg,swift,vb,vbnet,Web,xml";
+    String reposList = "abap,apex,c,cobol,cpp,csharpsquid,css,flex,go,squid,javascript,kotlin,objc,php,pli,plsql,python,rpg,ruby,rust,scala,solidity,swift,tsql,typescript,vb,vbnet,Web,xml";
 
     assertThat(misraC2004.getSqRepoList()).isEqualTo(reposList);
   }

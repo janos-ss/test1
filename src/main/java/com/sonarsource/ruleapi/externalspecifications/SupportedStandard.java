@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -18,6 +18,7 @@ import com.sonarsource.ruleapi.externalspecifications.tools.Checkstyle;
 import com.sonarsource.ruleapi.externalspecifications.tools.Cppcheck;
 import com.sonarsource.ruleapi.externalspecifications.tools.EsLint;
 import com.sonarsource.ruleapi.externalspecifications.tools.FindBugs;
+import com.sonarsource.ruleapi.externalspecifications.tools.FindSecBugs;
 import com.sonarsource.ruleapi.externalspecifications.tools.FxCop;
 import com.sonarsource.ruleapi.externalspecifications.tools.PcLintC;
 import com.sonarsource.ruleapi.externalspecifications.tools.PcLintCpp;
@@ -27,6 +28,7 @@ import com.sonarsource.ruleapi.externalspecifications.tools.ReSharper;
 import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperJavaScript;
 import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperVbNet;
 import com.sonarsource.ruleapi.externalspecifications.tools.ReSharperWarnings;
+import com.sonarsource.ruleapi.externalspecifications.tools.SwiftLint;
 
 
 public enum SupportedStandard {
@@ -41,6 +43,7 @@ public enum SupportedStandard {
 
   // Tools
   FINDBUGS(new FindBugs()),
+  FINDSECBUGS(new FindSecBugs()),
   PMD(new Pmd()),
   CHECKSTYLE(new Checkstyle()),
   PYLINT(new Pylint()),
@@ -53,6 +56,7 @@ public enum SupportedStandard {
   PC_LINT_C(new PcLintC()),
   PC_LINT_CPP(new PcLintCpp()),
   ESLINT(new EsLint()),
+  SWIFTLINT(new SwiftLint()),
 
   // TaggableStandards
   CWE(new Cwe()),

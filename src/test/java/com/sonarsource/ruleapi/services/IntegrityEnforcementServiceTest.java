@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -24,16 +24,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 
 public class IntegrityEnforcementServiceTest {
 
-  IntegrityEnforcementService enforcer = new IntegrityEnforcementService("login", "password");
+  private IntegrityEnforcementService enforcer = new IntegrityEnforcementService("login", "password");
 
 
   @Test
-  public void testDoDropTargetedForIrrlevant() {
+  public void testDoDropTargetedForIrrelevant() {
 
     Rule rule = new Rule("Java");
     rule.getIrrelevantLanguages().add("C#");
@@ -54,7 +55,7 @@ public class IntegrityEnforcementServiceTest {
   @Test
   public void testDropEmptyMapEntries(){
     Map <Rule, Map<String,Object>> map = new HashMap<>();
-    map.put(new Rule(""), new HashMap<String, Object>());
+    map.put(new Rule(""), new HashMap<>());
 
     Map<String, Object> child = new HashMap<>();
     child.put("blah", new Object());
@@ -87,7 +88,7 @@ public class IntegrityEnforcementServiceTest {
     newRule.getCwe().add("CWE-345");
     newRule.getMisraC04().add(misra);
     Map<Rule, Map<String,Object>> newRules = new HashMap<>();
-    newRules.put(newRule, new HashMap<String, Object>());
+    newRules.put(newRule, new HashMap<>());
 
     assertThat(newRule.getCwe()).hasSize(1);
     assertThat(newRule.getFindbugs()).hasSize(0);
@@ -161,7 +162,7 @@ public class IntegrityEnforcementServiceTest {
   public void testAddTagIfMissing() {
 
     Rule rule = new Rule("");
-    rule.setTags(new ArrayList<String>());
+    rule.setTags(new ArrayList<>());
 
     Map<String, Object> updates = new HashMap<>();
 
@@ -272,8 +273,6 @@ public class IntegrityEnforcementServiceTest {
   public void testGetCweUpdates2() {
 
     Rule rule = new Rule("");
-    boolean tagPresent = true;
-    List<String> references = new ArrayList<>();
 
     List<String> cweField = new ArrayList<>();
     rule.setCwe(cweField);
@@ -301,21 +300,15 @@ public class IntegrityEnforcementServiceTest {
   }
 
   @Test
-  public void testGetCweUpdatesWithDerivativeTaggableStandard() {
+  public void testGetSansTop25Updates() {
 
     Rule rule = new Rule("");
-    rule.getCwe().add("CWE-89");
+    rule.getSansTop25().add("Insecure Interaction Between Components");
 
     Map<String,Object> updates = enforcer.getUpdates(rule, SansTop25.Category.INSECURE_INTERACTION);
 
-    Map<String, Object> expectedUpdates = new HashMap<>();
-
-    Set<String> tmp = new HashSet<>();
-    tmp.add("sans-top25-insecure");
-
-    expectedUpdates.put("Labels", tmp);
-
-    assertThat(updates).hasSize(1).isEqualTo(expectedUpdates);
+    assertThat(updates).containsOnly(
+      entry("Labels", Collections.singleton("sans-top25-insecure")));
   }
 
   @Test
@@ -345,71 +338,6 @@ public class IntegrityEnforcementServiceTest {
     assertThat(updates.get("OWASP")).isEqualTo(expectedReferenceUpdate);
 
   }
-
-  @Test
-  public void testDropCovered() {
-
-    String language = "Yellow";
-
-    Rule rule = new Rule("");
-    rule.getCoveredLanguages().add(language);
-    Map<String, Rule> rspecRules = new HashMap<>();
-    rspecRules.put("key", rule);
-
-    Map<String, Rule> needsUpdating = new HashMap<>();
-
-    enforcer.dropCoveredForNonNemoRules(language, rspecRules, needsUpdating);
-
-    assertThat(needsUpdating).hasSize(1);
-    assertThat(rule.getCoveredLanguages()).isEmpty();
-    assertThat(rule.getTargetedLanguages()).hasSize(1);
-  }
-
-  @Test
-  public void testAddCovered() {
-    String language = "Yellow";
-
-    Rule rule = new Rule("");
-    rule.getTargetedLanguages().add(language);
-
-    Map<String, Rule> needsUpdating = new HashMap<>();
-
-    enforcer.addCoveredForNemoRules(language,needsUpdating,rule);
-
-    assertThat(rule.getTargetedLanguages()).isEmpty();
-    assertThat(rule.getCoveredLanguages()).hasSize(1);
-  }
-
-  @Test
-  public void testAddCovered2() {
-    String language = "Yellow";
-
-    Rule rule = new Rule("");
-    rule.getCoveredLanguages().add(language);
-    rule.getTargetedLanguages().add(language);
-
-    Map<String, Rule> needsUpdating = new HashMap<>();
-
-    enforcer.addCoveredForNemoRules(language,needsUpdating,rule);
-
-    assertThat(rule.getTargetedLanguages()).isEmpty();
-    assertThat(rule.getCoveredLanguages()).hasSize(1);
-  }
-
-  @Test
-  public void testAddCovered3(){
-    String language = "Yellow";
-
-    Rule rule = new Rule("");
-    Map<String, Rule> needsUpdating = new HashMap<>();
-
-    enforcer.addCoveredForNemoRules(language,needsUpdating,rule);
-
-    assertThat(rule.getTargetedLanguages()).isEmpty();
-    assertThat(rule.getCoveredLanguages()).hasSize(1);
-
-  }
-
 
   @Test
   public void testSeeAlsoReferencesIgnored() {
@@ -454,7 +382,7 @@ public class IntegrityEnforcementServiceTest {
     Map<Rule,Map<String,Object>> newRules = new HashMap<>();
     Rule newRule = new Rule("Java");
     newRule.setKey("RSPEC-4899");
-    newRules.put(newRule, new HashMap<String, Object>());
+    newRules.put(newRule, new HashMap<>());
 
     enforcer.getDeprecationUpdates(oldRule, oldRuleUpdates, newRules);
 
@@ -474,7 +402,7 @@ public class IntegrityEnforcementServiceTest {
     Map<Rule,Map<String,Object>> newRules = new HashMap<>();
     Rule newRule = new Rule("Java");
     newRule.setKey("RSPEC-4899");
-    newRules.put(newRule, new HashMap<String, Object>());
+    newRules.put(newRule, new HashMap<>());
 
     enforcer.getSupersederUpdates(oldRule, newRules);
 
@@ -504,7 +432,7 @@ public class IntegrityEnforcementServiceTest {
     newRule.getTargetedLanguages().add("java");
     newRule.getTargetedLanguages().add("javascript");
     Map<Rule,Map<String,Object>> newRules = new HashMap<>();
-    newRules.put(newRule, new HashMap<String, Object>());
+    newRules.put(newRule, new HashMap<>());
 
     enforcer.moveLanguagesToReplacingRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(1);
@@ -525,7 +453,7 @@ public class IntegrityEnforcementServiceTest {
     Map<String, Object> oldRuleUpdates = new HashMap<>();
     Rule newRule = new Rule("");
     Map<Rule,Map<String,Object>> newRules = new HashMap<>();
-    newRules.put(newRule, new HashMap<String, Object>());
+    newRules.put(newRule, new HashMap<>());
 
     enforcer.moveLanguagesToReplacingRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(0);
@@ -548,7 +476,7 @@ public class IntegrityEnforcementServiceTest {
     Map<String, Object> oldRuleUpdates = new HashMap<>();
     Rule newRule = new Rule("");
     Map<Rule,Map<String,Object>> newRules = new HashMap<>();
-    newRules.put(newRule, new HashMap<String, Object>());
+    newRules.put(newRule, new HashMap<>());
 
     enforcer.moveLanguagesToReplacingRules(oldRule, oldRuleUpdates, newRules);
     assertThat(newRules.get(newRule)).hasSize(0);

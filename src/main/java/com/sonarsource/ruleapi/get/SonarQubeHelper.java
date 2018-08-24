@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
@@ -54,9 +54,7 @@ public class SonarQubeHelper {
     rule.setTemplate((Boolean) jsonRule.get("isTemplate"));
     rule.setKeyOfTemplate((String) jsonRule.get("templateKey"));
 
-    handleTags(jsonRule, rule);
-
-    rule.setTemplate((Boolean) jsonRule.get("isTemplate"));
+    rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
 
     JSONArray jsonParams = (JSONArray) jsonRule.get("params");
     for (JSONObject obj : (List<JSONObject>)jsonParams) {
@@ -75,17 +73,6 @@ public class SonarQubeHelper {
     return rule;
   }
 
-  private static void handleTags(JSONObject jsonRule, Rule rule) {
-
-    rule.setTags(new ArrayList<String>((JSONArray) jsonRule.get("sysTags")));
-    if (rule.getType().equals(Rule.Type.BUG)) {
-      rule.getTags().add("bug");
-    } else if (rule.getType().equals(Rule.Type.VULNERABILITY)) {
-      rule.getTags().add("security");
-    }
-  }
-
-
   static void handleHtml(Rule rule, String[] pieces) {
 
     rule.setDescription(pieces[0].replaceAll("&lt;", "<").replaceAll("&gt;", ">"));
@@ -93,7 +80,13 @@ public class SonarQubeHelper {
     for (int i = 1; i < pieces.length; i++) {
 
       String piece = pieces[i];
-      if (piece.contains("Noncompliant Code Example")) {
+      if (piece.contains("Ask Yourself Whether")) {
+        rule.setAskYourself(HTML_H2 + piece);
+
+      } else if (piece.contains("Recommended Secure Coding Practices")) {
+        rule.setRecommended(HTML_H2 + piece);
+
+      } else if (piece.contains("Noncompliant Code Example")) {
         rule.setNonCompliant(HTML_H2 + piece);
 
       } else if (piece.contains("Compliant Solution")) {

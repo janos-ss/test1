@@ -1,12 +1,15 @@
 /*
- * Copyright (C) 2014-2017 SonarSource SA
+ * Copyright (C) 2014-2018 SonarSource SA
  * All rights reserved
  * mailto:info AT sonarsource DOT com
  */
 package com.sonarsource.ruleapi;
 
+import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
+import com.google.common.base.Strings;
 import com.sonarsource.ruleapi.domain.RuleException;
 import com.sonarsource.ruleapi.externalspecifications.AbstractReportableStandard;
 import com.sonarsource.ruleapi.externalspecifications.ReportType;
@@ -14,15 +17,16 @@ import com.sonarsource.ruleapi.externalspecifications.Standard;
 import com.sonarsource.ruleapi.externalspecifications.SupportedStandard;
 import com.sonarsource.ruleapi.services.IntegrityEnforcementService;
 import com.sonarsource.ruleapi.services.ReportService;
-import com.sonarsource.ruleapi.services.RuleFilesService;
 import com.sonarsource.ruleapi.services.RuleManager;
+import com.sonarsource.ruleapi.services.SonarPediaFileService;
 import com.sonarsource.ruleapi.utilities.Language;
-import org.fest.util.Strings;
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -30,7 +34,7 @@ public class Main {
     // utility class private constructor
   }
 
-  public static void main(String [] args) {
+  public static void main(String[] args) {
 
     if (args.length == 0) {
       printHelpMessage();
@@ -38,38 +42,37 @@ public class Main {
     }
 
     Settings settings = new Settings();
-    new JCommander(settings, args);
+    new JCommander(settings, null, args);
 
     if (settings.help || settings.option.isEmpty()) {
       printHelpMessage();
       return;
     }
 
-    List<Option> options = new ArrayList<>();
-    for (String str : settings.option) {
+    List<Option> options = settings.option
+      .stream()
+      .distinct()
+      .map(Option::fromString)
+      .filter(Objects::nonNull)
+      .collect(Collectors.toList());
 
-      Option option = Option.fromString(str);
-      if (option == null) {
-        continue;
-      }
+    long countValidOptions = options
+      .stream()
+      .filter(option -> !option.requiresCredentials || credentialsProvided(settings))
+      .filter(option -> option.languageRequirement.isCompliant(settings.language))
+      .count();
 
-      if (option.requiresCredentials && !credentialsProvided(settings)) {
-        printHelpMessage();
-        return;
-      }
-
-      if (! options.contains(option)) {
-        options.add(option);
-      }
+    if (countValidOptions != options.size()) {
+      printHelpMessage();
+      return;
     }
 
     for (Option option : options) {
       doRequestedOption(option, settings);
-
     }
   }
 
-  protected static void printHelpMessage() {
+  static void printHelpMessage() {
 
     StringBuilder sb = new StringBuilder();
     sb.append("\nUSAGE: option [-parameter paramValue]\n\n");
@@ -77,35 +80,37 @@ public class Main {
     for (Option option : Option.values()) {
       sb.append("  ").append(option.name().toLowerCase()).append(": ").append(option.description).append("\n");
     }
+    sb.append("\n");
+    sb.append("Additional parameters can be used with 'init':\n");
+    sb.append("  -preserve-filenames : Use the rule keys provided by \"-rule\" to construct the name of output files, this allow to use legacy keys.\n");
+    sb.append("  -no-language-in-filenames : do not include language in file name (ex: \"S123.json\" instead of \"S123_java.json\"\n");
     System.out.println(sb.toString());
   }
 
-  protected static void doRequestedOption(Option option, Settings settings) {
+  private static void doRequestedOption(Option option, Settings settings) {
 
-
+    final File baseDir = new File(settings.baseDir);
     ReportService rs = new ReportService();
-    Language language = Language.fromString(settings.language);
 
     switch (option) {
-      case OUTDATED :
-        new IntegrityEnforcementService(settings.login, settings.password).setCoveredLanguages();
-        break;
-      case INTEGRITY :
+      case INTEGRITY:
         new IntegrityEnforcementService(settings.login, settings.password).enforceIntegrity();
         break;
       case REPORTS:
         generateReports(settings, rs);
         break;
+      case INIT:
+        List<Language> languages = settings.language.stream().map(Language::fromString).collect(Collectors.toList());
+        SonarPediaFileService.init(baseDir, languages, settings.preserveFileNames, settings.noLanguageInFilenames);
+        break;
       case GENERATE:
-        RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
-            .generateRuleFiles(settings.ruleKeys);
+        handleGenerate(settings);
         break;
       case UPDATE:
-        RuleFilesService.create(settings.directory, language, settings.preserveFileNames, !settings.noLanguageInFilenames)
-            .updateDescriptions();
+        handleUpdate(settings);
         break;
       case DIFF:
-        rs.writeOutdatedRulesReport(language, settings.instance);
+        rs.writeOutdatedRulesReport(Language.fromString(settings.language.get(0)), settings.instance);
         break;
       case SINGLE_REPORT:
         handleSingleReport(settings, rs);
@@ -117,23 +122,36 @@ public class Main {
     }
   }
 
-  private static void handleSingleReport(Settings settings, ReportService rs) {
+  private static void handleGenerate(Settings settings) {
+    SonarPediaFileService.create(new File(settings.baseDir))
+      .generateRuleFiles(settings.ruleKeys);
+  }
 
-    checkSingleReportInputs(settings);
+  private static void handleUpdate(Settings settings) {
+    SonarPediaFileService.create(new File(settings.baseDir))
+      .updateDescriptions();
+  }
 
-    SupportedStandard std = SupportedStandard.fromString(settings.tool);
-    if (std.getStandard() instanceof AbstractReportableStandard) {
-      AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
-
-      rs.writeSingleReport(Language.fromString(settings.language), settings.instance, ars, ReportType.fromString(settings.report));
+  static void checkGenerateInput(Settings settings) {
+    if (settings.ruleKeys.isEmpty()) {
+      throw new RuleException("At least one -rule must be provided to generate");
     }
   }
 
-  protected static void checkSingleReportInputs(Settings settings) {
+  private static void handleSingleReport(Settings settings, ReportService rs) {
+
+    SupportedStandard std = checkSingleReportInputs(settings);
+
+    AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
+
+    rs.writeSingleReport(Language.fromString(settings.language.get(0)), settings.instance, ars, ReportType.fromString(settings.report));
+  }
+
+  static SupportedStandard checkSingleReportInputs(Settings settings) {
 
     ReportType rt = ReportType.fromString(settings.report);
     SupportedStandard std = SupportedStandard.fromString(settings.tool);
-    if (std == null || ! (std.getStandard() instanceof AbstractReportableStandard)) {
+    if (std == null || !(std.getStandard() instanceof AbstractReportableStandard)) {
 
       StringBuilder sb = new StringBuilder();
       sb.append("A recognized -tool must be provided: ");
@@ -149,7 +167,7 @@ public class Main {
 
     AbstractReportableStandard ars = (AbstractReportableStandard) std.getStandard();
     List<ReportType> reportTypes = Arrays.asList(ars.getReportTypes());
-    if (! reportTypes.contains(rt)) {
+    if (!reportTypes.contains(rt)) {
       StringBuilder sb = new StringBuilder();
       sb.append("Recognized report types for ").append(settings.tool).append(": ");
       for (ReportType type : reportTypes) {
@@ -158,8 +176,8 @@ public class Main {
       throw new RuleException(sb.toString());
     }
 
+    return std;
   }
-
 
   private static void generateReports(Settings settings, ReportService rs) {
 
@@ -169,17 +187,15 @@ public class Main {
   }
 
   protected static boolean credentialsProvided(Settings settings) {
-
     return !(Strings.isNullOrEmpty(settings.login) || Strings.isNullOrEmpty(settings.password));
   }
 
-
-  public static class Settings{
+  public static class Settings {
 
     @Parameter(names = "--help", help = true)
     private boolean help;
 
-    @Parameter(required = true)
+    @Parameter(description = "option", required = true)
     private List<String> option = new ArrayList<>();
 
     @Parameter(names = "-instance")
@@ -191,50 +207,65 @@ public class Main {
     @Parameter(names = "-password")
     private String password;
 
-    @Parameter(names="-rule", variableArity = true)
+    @Parameter(names = "-rule", variableArity = true)
     public List<String> ruleKeys = new ArrayList<>();
 
-    @Parameter(names="-language")
-    private String language;
+    @Parameter(names = "-language", validateWith = {LanguageValidator.class}, variableArity = true)
+    private List<String> language;
 
-    @Parameter(names="-report")
+    @Parameter(names = "-report")
     private String report;
 
-    @Parameter(names="-directory")
-    private String directory;
-
-    @Parameter(names="-tool")
+    @Parameter(names = "-tool")
     private String tool;
 
-    @Parameter(names="-preserve-filenames")
+    @Parameter(names = "-preserve-filenames")
     private boolean preserveFileNames = false;
 
-    @Parameter(names="-no-language-in-filenames")
+    @Parameter(names = "-no-language-in-filenames")
     private boolean noLanguageInFilenames = false;
+
+    // for the purpose of testing
+    @Parameter(names = "-baseDir", hidden = true)
+    private String baseDir = ".";
+
+    public static class LanguageValidator implements IParameterValidator {
+      @Override
+      public void validate(String optionName, String languageStringToValidate) {
+        if (Language.fromString(languageStringToValidate) == null) {
+          final String permittedValues = Stream.of(Language.values()).map(Enum::name).collect(Collectors.joining(","));
+          throw new ParameterException("language " + languageStringToValidate + " unknown, permitted values are [" + permittedValues + "]");
+        }
+      }
+    }
 
   }
 
   public enum Option {
-    REPORTS(false,  "Generates all reports based on Nemo (default) or a particular -instance http:..."),
-    SINGLE_REPORT(false, "Generate a single -report against -instance (defaults to Nemo), -language, and -tool."),
-    OUTDATED(true,  "Marks RSpec rules outdated based on Nemo or instance specified with -instance parameter. Requires -login and -password parameters."),
-    INTEGRITY(true, "RSpec internal integrity check. Requires -login and -password parameters."),
-    GENERATE(false, "Generates html description and json metadata files specified by -rule and -language parameters at directory specified by -directory"),
-    UPDATE(false, "Update html and json description files specified by -language found at directory specified by -directory"),
-    DIFF(false, "Generates a diff report for the specified -language and -instance");
+    REPORTS(false, LanguageRequirement.NO_LANGUAGE, "Generates all reports based on Next (default) or a particular -instance http:..."),
+    SINGLE_REPORT(false, LanguageRequirement.ONE_AND_ONLY_ONE_LANGUAGE, "Generate a single -report against -instance (defaults to Next), -language, and -tool."),
+    INTEGRITY(true, LanguageRequirement.NO_LANGUAGE, "RSpec internal integrity check. Requires -login and -password parameters."),
+    INIT(false, LanguageRequirement.ONE_OR_MORE_LANGUAGE,
+      "Create a sonarpedia.json file with its rules directory, the -language parameter specifies the language. " +
+        "More than one language is also supported, use comma as a separator.\n"),
+    GENERATE(false, LanguageRequirement.ZERO_OR_ONE_LANGUAGE, "Generates html description and json metadata files for rule(s) specified by the -rule parameter."),
+    UPDATE(false, LanguageRequirement.ZERO_OR_ONE_LANGUAGE, "Update html and json description files."),
+    DIFF(false, LanguageRequirement.ONE_AND_ONLY_ONE_LANGUAGE, "Generates a diff report for the specified -language and -instance");
 
     private String description;
     private boolean requiresCredentials;
+    private LanguageRequirement languageRequirement;
 
-    Option(boolean requiresCredentials, String description) {
+    Option(boolean requiresCredentials, LanguageRequirement languageRequirement, String description) {
       this.requiresCredentials = requiresCredentials;
+      this.languageRequirement = languageRequirement;
       this.description = description;
     }
 
     public static Option fromString(String input) {
 
-      for(Option output : Option.values()) {
-        if(output.toString().equalsIgnoreCase(input)) {
+      for (Option output : Option.values()) {
+        if (output.toString().equalsIgnoreCase(input)) {
           return output;
         }
       }
@@ -242,6 +273,26 @@ public class Main {
       return null;
     }
 
-  }
+    public enum LanguageRequirement {
+      NO_LANGUAGE,
+      ZERO_OR_ONE_LANGUAGE,
+      ONE_AND_ONLY_ONE_LANGUAGE,
+      ONE_OR_MORE_LANGUAGE;
 
+      public boolean isCompliant(List<String> languages) {
+        switch (this) {
+          case NO_LANGUAGE:
+            return languages == null || languages.isEmpty();
+          case ONE_AND_ONLY_ONE_LANGUAGE:
+            return languages != null && languages.size() == 1;
+          case ONE_OR_MORE_LANGUAGE:
+            return languages != null && !languages.isEmpty();
+          case ZERO_OR_ONE_LANGUAGE:
+            return languages == null || languages.isEmpty() || languages.size() == 1;
+          default:
+            throw new IllegalStateException();
+        }
+      }
+    }
+  }
 }
