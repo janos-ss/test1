@@ -28,10 +28,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// TODO
 public class Main {
 
   private Main() {
     // utility class private constructor
+    System.out.println("ctor Main");
   }
 
   public static void main(String[] args) {
