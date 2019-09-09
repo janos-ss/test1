@@ -1,4 +1,4 @@
-# sonar-rule-api
+# Sonar Rule API
 
 Used to interact with the rule repository in an automated fashion as either an API or a CLI.
 
